@@ -33,10 +33,10 @@ This directory contains the reference software implementation submitted to **Sof
 
 ### Step-by-Step Execution
 
-1. **Clone & Navigate to Code Directory**:
+1. **Clone & Navigate to Repository**:
    ```bash
-   git clone https://github.com/your-org/CRMsDataSpace-SoftwareX.git
-   cd SoftwareX/code
+   git clone https://github.com/felixdmv/CRMsDataSpace-SoftwareX.git
+   cd CRMsDataSpace-SoftwareX
    ```
 
 2. **Launch Web Server**:
