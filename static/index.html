@@ -324,72 +324,52 @@
           <!-- Chat messages will be dynamically added here -->
         </div>
 
-        <!-- Provider Selection Box (Positioned close to Query Bar on the left) -->
-        <div class="px-3 pt-2.5 pb-1 bg-[#0b0e1b] border-t border-geodark-border flex flex-col gap-2 shrink-0 z-10">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2 text-xs font-mono">
-              <span class="relative flex h-2 w-2">
-                <span id="provider-pulse" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span id="provider-dot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span class="text-slate-400 text-[10px]">Proveedor LLM Activo:</span>
-              <span id="provider-status-badge" class="text-emerald-400 font-bold text-[10px] uppercase">Standalone Mock (Zero Setup)</span>
-            </div>
-            
-            <button 
-              type="button" 
-              onclick="toggleProviderConfig()" 
-              class="text-[10px] font-semibold text-emerald-400 hover:text-emerald-300 bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-800/60 px-2 py-0.5 rounded transition-all flex items-center gap-1"
+        <!-- Input Bar with integrated LLM Provider Selector right next to query box -->
+        <form onsubmit="handleCustomSubmit(event)" class="p-3 bg-[#0d1222] border-t border-geodark-border flex flex-col gap-2 shrink-0 z-10">
+          <div class="flex items-center gap-2 w-full">
+            <!-- LLM Provider Selector directly to the left of the query box & submit button -->
+            <select 
+              id="llm-provider-select" 
+              onchange="changeLLMProvider(this.value)" 
+              class="bg-slate-950 border border-emerald-500/80 hover:border-emerald-400 text-emerald-400 font-bold text-[11px] px-2 py-2 rounded-lg focus:outline-none cursor-pointer transition-all shadow-md shrink-0"
+              title="Modelo LLM a utilizar"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <option value="rules">⚡ Mock (Reglas)</option>
+              <option value="gemini">✨ Gemini 1.5</option>
+              <option value="openai">🤖 OpenAI GPT-4o</option>
+            </select>
+
+            <input 
+              type="text" 
+              id="custom-input"
+              placeholder="Pregunte por cobre, litio, normativa, etc..." 
+              class="flex-1 bg-slate-950 border border-geodark-border rounded-lg px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500/80"
+            />
+
+            <button 
+              type="submit"
+              class="bg-emerald-600 hover:bg-emerald-500 border border-emerald-500/20 text-white font-medium text-xs px-4 py-2 rounded-lg transition-all flex items-center gap-1.5 shrink-0"
+            >
+              <span>Enviar</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
-              <span>Cambiar Modelo</span>
             </button>
           </div>
-          
-          <div id="provider-config-box" class="hidden flex-col gap-2 p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs mt-1">
-            <div class="flex items-center justify-between gap-2">
-              <label class="text-[10px] text-slate-300 font-semibold">Seleccionar Modelo LLM:</label>
-              <select id="llm-provider-select" onchange="changeLLMProvider(this.value)" class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[11px] text-slate-200 focus:border-emerald-500 focus:outline-none">
-                <option value="rules">Standalone Mock Mode (Reglas Locales - Zero Setup)</option>
-                <option value="gemini">Google Gemini 1.5 Pro / Flash</option>
-                <option value="openai">OpenAI GPT-4o / 4o-mini</option>
-              </select>
-            </div>
-            
-            <div id="api-key-container" class="flex gap-1.5 items-center">
-              <input 
-                type="password" 
-                id="api-key-input" 
-                placeholder="Introduce tu Gemini / OpenAI API Key (Opcional)..." 
-                class="flex-1 bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-[10.5px] text-slate-200 focus:border-emerald-500 focus:outline-none" 
-              />
-              <button onclick="saveAPIKey()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-[10px] px-3 py-1 rounded transition-all">
-                Guardar
-              </button>
-            </div>
-          </div>
-        </div>
 
-        <!-- Input Bar -->
-        <form onsubmit="handleCustomSubmit(event)" class="p-3 bg-[#0d1222] border-t border-geodark-border flex gap-2 shrink-0 z-10">
-          <input 
-            type="text" 
-            id="custom-input"
-            placeholder="Pregunte por cobre, litio, normativa, etc..." 
-            class="flex-1 bg-slate-950 border border-geodark-border rounded-lg px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500/80"
-          />
-          <button 
-            type="submit"
-            class="bg-emerald-600 hover:bg-emerald-500 border border-emerald-500/20 text-white font-medium text-xs px-4 py-2 rounded-lg transition-all flex items-center gap-1.5"
-          >
-            <span>Enviar</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </button>
+          <!-- API Key Input Field if Gemini or OpenAI is selected -->
+          <div id="api-key-container" class="hidden flex items-center gap-2 bg-slate-950 p-2 border border-slate-800 rounded-lg">
+            <span class="text-[10px] text-amber-400 font-semibold shrink-0">API Key:</span>
+            <input 
+              type="password" 
+              id="api-key-input" 
+              placeholder="Introduce tu Gemini / OpenAI API Key..." 
+              class="flex-1 bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-[10.5px] text-slate-200 focus:border-emerald-500 focus:outline-none" 
+            />
+            <button type="button" onclick="saveAPIKey()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-[10px] px-3 py-1 rounded transition-all shrink-0">
+              Guardar Key
+            </button>
+          </div>
         </form>
 
       </section>
