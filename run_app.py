@@ -113,9 +113,12 @@ class SoftwareXHandler(SimpleHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
 
+class SoftwareXHTTPServer(HTTPServer):
+    allow_reuse_address = True
+
 def run_server(port=PORT):
     server_address = ('', port)
-    httpd = HTTPServer(server_address, SoftwareXHandler)
+    httpd = SoftwareXHTTPServer(server_address, SoftwareXHandler)
     url = f"http://localhost:{port}"
     print("=" * 60)
     print("  CRMs Data Space - SoftwareX Architecture Demonstrator")
