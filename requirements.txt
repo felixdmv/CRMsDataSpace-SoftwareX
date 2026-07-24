@@ -1,0 +1,6 @@
+# SoftwareX Minimal Requirements
+# Standalone execution in Mock Mode requires 0 additional external packages (Python stdlib).
+# For live Gemini / OpenAI calls:
+google-generativeai>=0.8.0
+openai>=1.30.0
+python-dotenv>=1.0.0

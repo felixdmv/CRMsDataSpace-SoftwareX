@@ -1,0 +1,2562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geo-RAG Explorer | Espacio de Datos de Materias Primas Críticas</title>
+  
+  <!-- Google Fonts: Outfit (modern & clean) & JetBrains Mono (for code) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind CSS Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            emerald: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              900: '#064e3b',
+              950: '#022c22',
+            },
+            amber: {
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+              700: '#b45309',
+            },
+            slate: {
+              750: '#1e293b',
+              850: '#0f172a',
+              950: '#020617',
+            },
+            geodark: {
+              bg: '#070a13',
+              card: '#0d1322',
+              cardLight: '#161f33',
+              border: '#1e2942',
+              textMuted: '#94a3b8'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Custom styles for map custom pins, dark scrollbars, and Leaflet overrides -->
+  <style>
+    /* Global scrollbar style */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #070a13;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e2942;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #10b981;
+    }
+
+    /* Pulse marker animation */
+    @keyframes pulse-marker {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.9;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      }
+      70% {
+        transform: scale(1.2);
+        opacity: 0.4;
+        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+      }
+      100% {
+        transform: scale(0.95);
+        opacity: 0.9;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+      }
+    }
+
+    @keyframes pulse-marker-gold {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.9;
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+      }
+      70% {
+        transform: scale(1.2);
+        opacity: 0.4;
+        box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+      }
+      100% {
+        transform: scale(0.95);
+        opacity: 0.9;
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+      }
+    }
+
+    @keyframes pulse-marker-blue {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.9;
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+      }
+      70% {
+        transform: scale(1.2);
+        opacity: 0.4;
+        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+      }
+      100% {
+        transform: scale(0.95);
+        opacity: 0.9;
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+      }
+    }
+
+    .marker-pulse-emerald {
+      animation: pulse-marker 2s infinite;
+    }
+    .marker-pulse-gold {
+      animation: pulse-marker-gold 2s infinite;
+    }
+    .marker-pulse-blue {
+      animation: pulse-marker-blue 2s infinite;
+    }
+
+    /* Override Leaflet popup styles to match Dark Mode */
+    .leaflet-popup-content-wrapper {
+      background: #0d1322 !important;
+      color: #f1f5f9 !important;
+      border: 1px solid #1e2942 !important;
+      border-radius: 8px !important;
+      padding: 0px !important;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+    }
+    .leaflet-popup-content {
+      margin: 8px 12px !important;
+    }
+    .leaflet-popup-tip {
+      background: #0d1322 !important;
+      border-left: 1px solid #1e2942 !important;
+      border-bottom: 1px solid #1e2942 !important;
+    }
+    
+    /* Code block syntax colors */
+    .json-key { color: #f43f5e; }     /* Pink */
+    .json-string { color: #34d399; }  /* Green */
+    .json-value { color: #fbbf24; }   /* Gold/Yellow */
+    .json-number { color: #3b82f6; }  /* Blue */
+    .json-boolean { color: #a855f7; } /* Purple */
+  </style>
+</head>
+<body class="bg-geodark-bg text-slate-100 antialiased overflow-hidden w-screen h-screen font-sans flex flex-col">
+
+  <!-- ==========================================
+      HEADER (BARRA SUPERIOR)
+      ========================================== -->
+  <header class="h-16 bg-geodark-card border-b border-geodark-border px-6 flex items-center justify-between shrink-0 shadow-lg relative z-20">
+    <div class="flex items-center gap-3">
+      <!-- Emerald stylized icon -->
+      <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-md shadow-emerald-500/20">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-md font-bold tracking-tight text-white flex items-center gap-2">
+          Geo-RAG Explorer 
+          <span class="text-[10px] font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 px-2 py-0.5 rounded-full uppercase tracking-wider">
+            Espacio de Datos CRM
+          </span>
+        </h1>
+        <p class="text-[10px] text-geodark-textMuted uppercase tracking-widest font-medium">Búsqueda Geoespacial y Evidencias Científicas</p>
+      </div>
+    </div>
+
+    <!-- Architecture indicators -->
+    <div class="flex items-center gap-4 text-xs font-mono">
+      <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-md">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="text-slate-400 text-[10px]">Solr Index:</span>
+        <span class="text-emerald-400 font-bold text-[10px] uppercase">Active (localhost:8983)</span>
+      </div>
+      
+      <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-md">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+        </span>
+        <span class="text-slate-400 text-[10px]">IA Agent:</span>
+        <span class="text-amber-400 font-bold text-[10px] uppercase">Gemini 3 Pro</span>
+      </div>
+      
+      <div class="text-[10px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/40 px-2.5 py-1.5 rounded-md hidden lg:block">
+        TESIS DOCTORAL DEMO
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================
+      MAIN CONTENT CONTAINER
+      ========================================== -->
+  <main class="flex-1 flex flex-col overflow-hidden relative">
+    
+    <!-- Middle: Horizontal split Panels (Chat | Map & Technical) -->
+    <div class="flex-1 flex flex-row overflow-hidden">
+      
+      <!-- ==========================================
+          LEFT PANEL: CHAT & EVIDENCIAS (50%)
+          ========================================== -->
+      <section class="w-1/2 h-full flex flex-col border-r border-geodark-border bg-[#0a0d18] relative z-10">
+        
+        <!-- Predefined scenarios bar -->
+        <div class="p-3 bg-[#0d1222] border-b border-geodark-border flex flex-col gap-1.5 shadow-sm">
+          <div class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            Simulación de Casos de Tesis (Búsqueda Solr)
+          </div>
+          
+          <div class="grid grid-cols-3 gap-2">
+            <button 
+              id="btn-scenario-1"
+              onclick="runScenario('query_1')"
+              class="text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-geodark-card border-geodark-border hover:border-slate-600 text-slate-300"
+            >
+              <span class="font-semibold block text-emerald-400 mb-1">Caso 1: Geo-kNN Wolframio</span>
+              <span class="text-slate-400 text-[10px]">Escombreras en Galicia de wolframio activas</span>
+            </button>
+            
+            <button 
+              id="btn-scenario-2"
+              onclick="runScenario('query_2')"
+              class="text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-geodark-card border-geodark-border hover:border-slate-600 text-slate-300"
+            >
+              <span class="font-semibold block text-emerald-400 mb-1">Caso 2: Búsqueda Semántica</span>
+              <span class="text-slate-400 text-[10px]">Normativa ambiental de estériles en CyL</span>
+            </button>
+            
+            <button 
+              id="btn-scenario-3"
+              onclick="runScenario('query_3')"
+              class="text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-geodark-card border-geodark-border hover:border-slate-600 text-slate-300"
+            >
+              <span class="font-semibold block text-emerald-400 mb-1">Caso 3: Subproductos Críticos</span>
+              <span class="text-slate-400 text-[10px]">Balsas con cobalto o tierras raras</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Manual Filters Interactive Bar -->
+        <div class="p-2.5 bg-[#0e1424] border-b border-geodark-border flex flex-col gap-2 shrink-0">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              Filtros Manuales Directos (Sin LLM)
+            </span>
+            <button type="button" onclick="resetManualFilters()" class="text-[9.5px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-2 py-0.5 rounded transition-all">
+              Limpiar Filtros
+            </button>
+          </div>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-1.5 text-[10.5px]">
+            <select id="manual-filter-commodity" onchange="applyManualFilters()" class="bg-slate-950 border border-geodark-border rounded px-2 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none">
+              <option value="">Mineral: Todos</option>
+              <option value="lithium">Litio (Li)</option>
+              <option value="tungsten">Wolframio (W)</option>
+              <option value="copper">Cobre (Cu)</option>
+              <option value="cobalt">Cobalto (Co)</option>
+              <option value="rare earth elements">Tierras Raras (REE)</option>
+              <option value="tin">Estaño (Sn)</option>
+            </select>
+            <select id="manual-filter-region" onchange="applyManualFilters()" class="bg-slate-950 border border-geodark-border rounded px-2 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none">
+              <option value="">Región: Todas</option>
+              <option value="galicia">Galicia</option>
+              <option value="castilla y leon">Castilla y León</option>
+              <option value="extremadura">Extremadura</option>
+              <option value="andalucia">Andalucía</option>
+            </select>
+            <select id="manual-filter-status" onchange="applyManualFilters()" class="bg-slate-950 border border-geodark-border rounded px-2 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none">
+              <option value="">Estado: Todos</option>
+              <option value="active">Activos</option>
+              <option value="inactive">Inactivos</option>
+              <option value="development">En Desarrollo</option>
+            </select>
+            <select id="manual-filter-facility" onchange="applyManualFilters()" class="bg-slate-950 border border-geodark-border rounded px-2 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none">
+              <option value="">Instalación: Todas</option>
+              <option value="waste dump">Escombrera</option>
+              <option value="tailings">Balsa / Relaves</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Chat Feed -->
+        <div id="chat-feed" class="flex-1 overflow-y-auto p-4 space-y-4">
+          <!-- Chat messages will be dynamically added here -->
+        </div>
+
+        <!-- Provider Selection Box (Positioned close to Query Bar on the left) -->
+        <div class="px-3 pt-2.5 pb-1 bg-[#0b0e1b] border-t border-geodark-border flex flex-col gap-2 shrink-0 z-10">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 text-xs font-mono">
+              <span class="relative flex h-2 w-2">
+                <span id="provider-pulse" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span id="provider-dot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span class="text-slate-400 text-[10px]">Proveedor LLM Activo:</span>
+              <span id="provider-status-badge" class="text-emerald-400 font-bold text-[10px] uppercase">Standalone Mock (Zero Setup)</span>
+            </div>
+            
+            <button 
+              type="button" 
+              onclick="toggleProviderConfig()" 
+              class="text-[10px] font-semibold text-emerald-400 hover:text-emerald-300 bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-800/60 px-2 py-0.5 rounded transition-all flex items-center gap-1"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span>Cambiar Modelo</span>
+            </button>
+          </div>
+          
+          <div id="provider-config-box" class="hidden flex-col gap-2 p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs mt-1">
+            <div class="flex items-center justify-between gap-2">
+              <label class="text-[10px] text-slate-300 font-semibold">Seleccionar Modelo LLM:</label>
+              <select id="llm-provider-select" onchange="changeLLMProvider(this.value)" class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[11px] text-slate-200 focus:border-emerald-500 focus:outline-none">
+                <option value="rules">Standalone Mock Mode (Reglas Locales - Zero Setup)</option>
+                <option value="gemini">Google Gemini 1.5 Pro / Flash</option>
+                <option value="openai">OpenAI GPT-4o / 4o-mini</option>
+              </select>
+            </div>
+            
+            <div id="api-key-container" class="flex gap-1.5 items-center">
+              <input 
+                type="password" 
+                id="api-key-input" 
+                placeholder="Introduce tu Gemini / OpenAI API Key (Opcional)..." 
+                class="flex-1 bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-[10.5px] text-slate-200 focus:border-emerald-500 focus:outline-none" 
+              />
+              <button onclick="saveAPIKey()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-[10px] px-3 py-1 rounded transition-all">
+                Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input Bar -->
+        <form onsubmit="handleCustomSubmit(event)" class="p-3 bg-[#0d1222] border-t border-geodark-border flex gap-2 shrink-0 z-10">
+          <input 
+            type="text" 
+            id="custom-input"
+            placeholder="Pregunte por cobre, litio, normativa, etc..." 
+            class="flex-1 bg-slate-950 border border-geodark-border rounded-lg px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500/80"
+          />
+          <button 
+            type="submit"
+            class="bg-emerald-600 hover:bg-emerald-500 border border-emerald-500/20 text-white font-medium text-xs px-4 py-2 rounded-lg transition-all flex items-center gap-1.5"
+          >
+            <span>Enviar</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </button>
+        </form>
+
+      </section>
+
+      <!-- ==========================================
+          RIGHT PANEL: MAP & INFORMATION (50%)
+          ========================================== -->
+      <section class="w-1/2 h-full flex flex-col relative">
+        
+        <!-- Leaflet Map Area -->
+        <div class="flex-1 relative border-b border-geodark-border overflow-hidden">
+          <div id="map" class="w-full h-full bg-[#070a13]"></div>
+          
+          <!-- Map floating legend -->
+          <div class="absolute bottom-3 left-3 bg-geodark-card/90 border border-geodark-border/80 backdrop-blur-md rounded-lg p-2.5 text-[11px] text-slate-300 z-[1000] shadow-xl pointer-events-auto">
+            <h5 class="font-bold text-slate-200 mb-1.5 flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+              </svg>
+              Simbología de Minerales
+            </h5>
+            <div class="space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 border border-white inline-block"></span>
+                <span>Wolframio / Estaño (W, Sn)</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-blue-500 border border-white inline-block"></span>
+                <span>Litio / Tierras Raras (Li, REE)</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-white inline-block"></span>
+                <span>Cobre / Zinc polimetálicos (Cu, Zn)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Technical Information panel (Ficha Técnica) -->
+        <div id="ficha-container" class="h-[235px] bg-[#090d15] p-3.5 overflow-y-auto shrink-0 flex flex-col border-t border-geodark-border shadow-inner">
+          <!-- Injected dynamically -->
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- ==========================================
+        PANEL INFERIOR: SOLR ENGINE INSPECTOR (La parte académica)
+        ========================================== -->
+    <div id="bottom-panel" class="border-t border-geodark-border transition-all duration-300 relative bg-[#070a12] flex flex-col shrink-0 h-[250px]">
+      
+      <!-- Selector / Header bar -->
+      <div 
+        onclick="toggleBottomPanel()"
+        class="h-9 bg-[#0b0e1b] px-4 flex items-center justify-between cursor-pointer border-b border-geodark-border hover:bg-slate-900/80 transition-all select-none"
+      >
+        <div class="flex items-center gap-2 text-xs">
+          <!-- Ping simulator -->
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+          </span>
+          <span class="font-bold text-slate-200 flex items-center gap-2">
+            Solr Engine Inspector 
+            <span class="text-[10px] font-normal text-slate-500 font-mono">
+              (Modo Académico - Auditoría de Pipeline de Tesis)
+            </span>
+          </span>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <!-- Tabs -->
+          <div id="inspector-tabs" class="flex bg-slate-950 p-0.5 rounded border border-slate-800" onclick="event.stopPropagation()">
+            <button 
+              type="button"
+              id="tab-query"
+              onclick="switchInspectorTab('query')"
+              class="px-3 py-1 rounded text-[10px] font-semibold transition-all bg-slate-800 text-emerald-400"
+            >
+              Solr Query DSL
+            </button>
+            <button 
+              type="button"
+              id="tab-facets"
+              onclick="switchInspectorTab('facets')"
+              class="px-3 py-1 rounded text-[10px] font-semibold transition-all text-slate-500 hover:text-slate-300"
+            >
+              Solr Facets
+            </button>
+            <button 
+              type="button"
+              id="tab-ner"
+              onclick="switchInspectorTab('ner')"
+              class="px-3 py-1 rounded text-[10px] font-semibold transition-all text-slate-500 hover:text-slate-300"
+            >
+              NER Entities (OpenNLP)
+            </button>
+            <button 
+              type="button"
+              id="tab-lineage"
+              onclick="switchInspectorTab('lineage')"
+              class="px-3 py-1 rounded text-[10px] font-semibold transition-all text-slate-500 hover:text-slate-300"
+            >
+              Flujo de Datos (Auditoría)
+            </button>
+          </div>
+
+          <!-- Height resize controls -->
+          <div class="flex items-center gap-1 border-l border-slate-800 pl-2.5" onclick="event.stopPropagation()">
+            <button type="button" onclick="setBottomPanelHeight('min')" title="Minimizar panel" class="px-2 py-0.5 rounded text-[10px] bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 transition-all font-mono">─</button>
+            <button type="button" onclick="setBottomPanelHeight('normal')" title="Tamaño estándar (250px)" class="px-2 py-0.5 rounded text-[10px] bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 transition-all font-mono">🗖</button>
+            <button type="button" onclick="setBottomPanelHeight('max')" title="Maximizar panel (480px)" class="px-2 py-0.5 rounded text-[10px] bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 transition-all font-mono">▲</button>
+          </div>
+
+          <!-- Collapse Arrow icon -->
+          <svg 
+            id="bottom-panel-arrow"
+            xmlns="http://www.w3.org/2000/svg" 
+            class="h-4 w-4 text-slate-400 transform transition-transform rotate-180" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Panel content (Formatted code or Lineage) -->
+      <div id="bottom-panel-content" class="flex-1 overflow-hidden p-3 flex flex-col font-mono text-[10.5px]">
+        <div class="flex-1 bg-slate-950/80 border border-slate-900 rounded p-3 overflow-auto">
+          <pre id="inspector-json-pre"><code id="inspector-code-block" class="text-slate-300"></code></pre>
+          <div id="inspector-lineage-block" class="hidden text-slate-300 w-full"></div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==========================================
+      JAVASCRIPT LOGIC (PURE VANILLA)
+      ========================================== -->
+  <script>
+    // ==========================================
+    // MOCK DATA: Mining waste facilities in Spain
+    // ==========================================
+    const MINING_SITES = [
+      {
+        id: "site_penouta",
+        site_name: "Mina de Penouta (Balsas A y B)",
+        company: "Strategic Minerals Spain",
+        region: "Galicia",
+        province: "Ourense",
+        municipality: "Viana do Bolo",
+        lat: 42.1285,
+        lon: -7.0782,
+        commodities: ["tungsten", "tin", "tantalum", "niobium", "lithium", "rare earth elements"],
+        commodities_label: "Wolframio, Estaño, Tántalo, Niobio, Litio, REE",
+        facility_type: "Tailings Storage Facility (Balsa de relaves finos)",
+        material_type: "Arenas pegmatíticas y lodos de decantación",
+        project_status: "active",
+        status_label: "Activo (Operación de reprocesamiento)",
+        status_color: "#10b981",
+        area_m2: "185.000 m²",
+        description: "Complejo minero enfocado en la recuperación de metales críticos (estaño, tantalita y columbita) a partir del retratamiento de antiguas balsas de decantación y escombreras de granito caolinizado. Es la única mina activa de coltán en Europa.",
+        environmental_flags: ["Monitoreo de estabilidad física", "Revegetación parcial activa"],
+        unfc_code: "E1 - F1 - G1 (Recursos viables comercialmente)",
+        color_theme: "gold"
+      },
+      {
+        id: "site_barruecopardo",
+        site_name: "Proyecto Barruecopardo (Escombrera Norte)",
+        company: "Saloro SLU (Almonty Industries)",
+        region: "Castilla y León",
+        province: "Salamanca",
+        municipality: "Barruecopardo",
+        lat: 41.0734,
+        lon: -6.6571,
+        commodities: ["tungsten"],
+        commodities_label: "Wolframio (Scheelita)",
+        facility_type: "Waste Dump (Escombrera de roca estéril)",
+        material_type: "Granito alterado con mineralización difusa",
+        project_status: "active",
+        status_label: "Activo (Corta abierta de Wolframio)",
+        status_color: "#10b981",
+        area_m2: "240.000 m²",
+        description: "Yacimiento de wolframio a cielo abierto. Las escombreras de roca estéril de granito están sujetas a estudios de trituración y clasificación por sensores para su valorización como áridos secundarios inertes y recuperación de scheelita residual.",
+        environmental_flags: ["Control de escorrentía", "Lixiviados neutros supervisados"],
+        unfc_code: "E1 - F2 - G1 (Proyecto activo en fase de ampliación)",
+        color_theme: "gold"
+      },
+      {
+        id: "site_san_finx",
+        site_name: "Mina de San Finx (Balsa de Decantación)",
+        company: "Tungsten San Finx (Valoriza Minería)",
+        region: "Galicia",
+        province: "A Coruña",
+        municipality: "Lousame",
+        lat: 42.7508,
+        lon: -8.8412,
+        commodities: ["tungsten", "tin"],
+        commodities_label: "Wolframio, Estaño",
+        facility_type: "Pond / Tailings Dam (Balsa de estériles)",
+        material_type: "Lodos finos de flotación y arenas cuarcíticas",
+        project_status: "inactive",
+        status_label: "Cuidado y Mantenimiento (Inactivo)",
+        status_color: "#f59e0b",
+        area_m2: "45.000 m²",
+        description: "Histórico depósito de relaves mineros de la mina subterránea de San Finx. Las balsas acumulan lodos finos ricos en estaño y wolframio, pero requieren un estricto control de aguas y neutralización de acidez debido al alto contenido de sulfuros.",
+        environmental_flags: ["Riesgo potencial de Drenaje Ácido (AMD)", "Plan de depuración de aguas en curso"],
+        unfc_code: "E3 - F2 - G2 (Recursos condicionados ambientalmente)",
+        color_theme: "gold"
+      },
+      {
+        id: "site_los_santos",
+        site_name: "Mina Los Santos-Tala (Escombrera Sur)",
+        company: "Almonty Industries",
+        region: "Castilla y León",
+        province: "Salamanca",
+        municipality: "Los Santos",
+        lat: 40.5489,
+        lon: -5.7924,
+        commodities: ["tungsten"],
+        commodities_label: "Wolframio (Scheelita)",
+        facility_type: "Waste Dump (Escombrera y balsas secas)",
+        material_type: "Skarn calcáreo triturado",
+        project_status: "inactive",
+        status_label: "Cuidado y Mantenimiento",
+        status_color: "#f59e0b",
+        area_m2: "120.000 m²",
+        description: "Explotación de wolframio tipo skarn. Las actividades cesaron temporalmente en 2020. Actualmente se evalúa el reprocesamiento completo de la fracción arenosa de la balsa para recuperar wolframio fino utilizando espirales gravimétricas de última generación.",
+        environmental_flags: ["Rehabilitación física avanzada", "Bermas revegetadas estables"],
+        unfc_code: "E2 - F2 - G2 (Potencialmente viable en evaluación)",
+        color_theme: "gold"
+      },
+      {
+        id: "site_valdeflorez",
+        site_name: "San José Valdeflórez (Proyecto de Depósito)",
+        company: "Infinity Lithium",
+        region: "Extremadura",
+        province: "Cáceres",
+        municipality: "Cáceres",
+        lat: 39.4621,
+        lon: -6.3582,
+        commodities: ["lithium", "tin"],
+        commodities_label: "Litio (Lepidolita), Estaño",
+        facility_type: "Tailings (Depósito en Pasta Subterráneo)",
+        material_type: "Residuos de lixiviación y silicoaluminatos",
+        project_status: "development",
+        status_label: "En Desarrollo (Estudios de Viabilidad)",
+        status_color: "#3b82f6",
+        area_m2: "95.000 m² (Planificado)",
+        description: "Proyecto industrial para la extracción y refinado de litio grado batería. El diseño ambiental contempla almacenar los estériles de planta en estado seco/pasta como relleno cementado (backfilling) en las galerías subterráneas para eliminar el impacto visual.",
+        environmental_flags: ["Oposición social local", "Evaluación de Impacto Ambiental en trámite"],
+        unfc_code: "E2 - F1 - G2 (Recurso medido con viabilidad económica)",
+        color_theme: "blue"
+      },
+      {
+        id: "site_las_cruces",
+        site_name: "Cobre Las Cruces (Complejo de Relaves)",
+        company: "First Quantum Minerals",
+        region: "Andalucía",
+        province: "Sevilla",
+        municipality: "Gerena",
+        lat: 37.5255,
+        lon: -6.0831,
+        commodities: ["copper", "cobalt", "zinc", "silver"],
+        commodities_label: "Cobre, Cobalto, Zinc, Plata",
+        facility_type: "Tailings Dry Stack (Estériles secos filtrados)",
+        material_type: "Tortas de filtración de sulfuros y carbonatos",
+        project_status: "development",
+        status_label: "Transición a Proyecto Polimetálico Subterráneo",
+        status_color: "#3b82f6",
+        area_m2: "320.000 m²",
+        description: "Mina de cobre que ha finalizado su explotación a cielo abierto. El nuevo proyecto PMR (Polimetálico) contempla la minería subterránea y el procesamiento de estériles y sulfuros secundarios complejos para refinar cobre, zinc, plomo y cobalto.",
+        environmental_flags: ["Gestión del acuífero Niebla-Posadas", "Monitoreo continuo de agua subterránea"],
+        unfc_code: "E2 - F2 - G1 (Recursos para proyecto de reconversión)",
+        color_theme: "emerald"
+      }
+    ];
+
+    const PROMPT_TEMPLATE = `You are extracting structured search filters for a mining and anthropogenic-resources data space.
+
+Return ONLY valid JSON.
+Do not wrap the JSON in markdown.
+Do not add explanations outside the JSON.
+
+The user may ask in Spanish or English.
+Your job is to classify the request and extract only the filters that are explicit or strongly implied.
+
+Use this schema exactly:
+{
+  "intent": "filter_search" | "generic_qa" | "hybrid",
+  "answer_mode": "structured_filters" | "rag_answer" | "structured_filters_and_rag",
+  "rewritten_query": "short normalized rewrite in the same language as the user",
+  "filters": {
+    "countries": ["..."],
+    "regions": ["..."],
+    "commodities": ["..."],
+    "material_types": ["..."],
+    "storage_facility_types": ["..."],
+    "project_status": ["..."],
+    "companies": ["..."],
+    "site_names": ["..."],
+    "unfc_e": ["..."],
+    "unfc_f": ["..."],
+    "unfc_g": ["..."],
+    "environmental_flags": ["..."],
+    "free_text_constraints": ["..."],
+    "activity_types": ["..."],
+    "mine_types": ["..."],
+    "admin_statuses": ["..."],
+    "mine_statuses": ["..."],
+    "morphologies": ["..."],
+    "restored": true | false | null,
+    "restoration_types": ["..."],
+    "site_contexts": ["..."]
+  },
+  "ambiguities": ["..."],
+  "needs_report_context": true,
+  "needs_database_filtering": true
+}
+
+Normalization rules:
+- Countries and regions must be lowercase English canonical names when possible.
+- Commodities must use singular English forms when possible, for example: nickel, copper, lithium, cobalt, tungsten, rare earth elements, coal.
+- Material types should capture what is being searched for inside the storage body, for example: tailings, slag, waste rock, mine waste, sludge.
+- Storage facility types should capture the physical asset, for example: tailings storage facility, waste dump, stockpile, pond.
+- UNFC axes must use labels like E1, F2, G3.
+- If the user is asking for a document-level question that requires reading a report, set needs_report_context=true.
+- If the user is clearly asking to search structured records, set needs_database_filtering=true.
+- If a field is absent, return an empty array or null (for restored).
+
+Examples:
+
+Example 1 (Conversational greeting / off-topic):
+User: "hola buenas tardes, ¿quién eres y qué puedes hacer?"
+JSON:
+{
+  "intent": "generic_qa",
+  "answer_mode": "rag_answer",
+  "rewritten_query": "hola, quien eres y que puedes hacer",
+  "filters": {
+    "countries": [],
+    "regions": [],
+    "commodities": [],
+    "material_types": [],
+    "storage_facility_types": [],
+    "project_status": [],
+    "companies": [],
+    "site_names": [],
+    "unfc_e": [],
+    "unfc_f": [],
+    "unfc_g": [],
+    "environmental_flags": [],
+    "free_text_constraints": [],
+    "activity_types": [],
+    "mine_types": [],
+    "admin_statuses": [],
+    "mine_statuses": [],
+    "morphologies": [],
+    "restored": null,
+    "restoration_types": [],
+    "site_contexts": []
+  },
+  "ambiguities": [],
+  "needs_report_context": false,
+  "needs_database_filtering": false
+}
+
+Example 2 (Complex spatial and multi-mineral search):
+User: "Busca balsas de decantación con wolframio y estaño en Galicia cerca de San Finx"
+JSON:
+{
+  "intent": "filter_search",
+  "answer_mode": "structured_filters",
+  "rewritten_query": "balsas de decantacion con tungsten y tin en galicia cerca de san finx",
+  "filters": {
+    "countries": ["spain"],
+    "regions": ["galicia"],
+    "commodities": ["tungsten", "tin"],
+    "material_types": ["tailings", "sludge"],
+    "storage_facility_types": ["pond", "tailings storage facility"],
+    "project_status": [],
+    "companies": [],
+    "site_names": ["San Finx"],
+    "unfc_e": [],
+    "unfc_f": [],
+    "unfc_g": [],
+    "environmental_flags": [],
+    "free_text_constraints": ["cerca de san finx"],
+    "activity_types": [],
+    "mine_types": [],
+    "admin_statuses": [],
+    "mine_statuses": [],
+    "morphologies": [],
+    "restored": null,
+    "restoration_types": [],
+    "site_contexts": []
+  },
+  "ambiguities": ["'balsas de decantación' maps to pond and tailings storage facility"],
+  "needs_report_context": false,
+  "needs_database_filtering": true
+}
+
+Example 3 (Company name and active status filter):
+User: "Proyectos activos de cobalto o cobre gestionados por Atalaya Mining"
+JSON:
+{
+  "intent": "filter_search",
+  "answer_mode": "structured_filters",
+  "rewritten_query": "proyectos activos de cobalt o copper de atalaya mining",
+  "filters": {
+    "countries": ["spain"],
+    "regions": [],
+    "commodities": ["cobalt", "copper"],
+    "material_types": [],
+    "storage_facility_types": [],
+    "project_status": ["active"],
+    "companies": ["atalaya mining"],
+    "site_names": [],
+    "unfc_e": [],
+    "unfc_f": [],
+    "unfc_g": [],
+    "environmental_flags": [],
+    "free_text_constraints": [],
+    "activity_types": [],
+    "mine_types": [],
+    "admin_statuses": [],
+    "mine_statuses": [],
+    "morphologies": [],
+    "restored": null,
+    "restoration_types": [],
+    "site_contexts": []
+  },
+  "ambiguities": [],
+  "needs_report_context": false,
+  "needs_database_filtering": true
+}
+
+Example 4 (Document-level report analysis / Hybrid):
+User: "¿Qué dice el informe técnico de Penouta sobre la estabilidad física de la balsa B?"
+JSON:
+{
+  "intent": "hybrid",
+  "answer_mode": "structured_filters_and_rag",
+  "rewritten_query": "estabilidad fisica de la balsa b en informe tecnico de penouta",
+  "filters": {
+    "countries": ["spain"],
+    "regions": ["galicia"],
+    "commodities": [],
+    "material_types": [],
+    "storage_facility_types": ["pond", "tailings storage facility"],
+    "project_status": [],
+    "companies": [],
+    "site_names": ["Mina de Penouta"],
+    "unfc_e": [],
+    "unfc_f": [],
+    "unfc_g": [],
+    "environmental_flags": ["stability"],
+    "free_text_constraints": ["estabilidad balsa b"],
+    "activity_types": [],
+    "mine_types": [],
+    "admin_statuses": [],
+    "mine_statuses": [],
+    "morphologies": [],
+    "restored": null,
+    "restoration_types": [],
+    "site_contexts": []
+  },
+  "ambiguities": ["stability is mapped to environmental_flags"],
+  "needs_report_context": true,
+  "needs_database_filtering": true
+}
+
+User query:
+{query}`;
+
+    // ==========================================
+    // PREDEFINED QUERIES & SIMULATED RAG RESPONSE
+    // ==========================================
+    const PREDEFINED_QUERIES = {
+      query_1: {
+        id: "query_1",
+        question: "Buscar escombreras con potencial de wolframio en Galicia cerca de explotaciones activas.",
+        narrative: "Se han localizado **2 depósitos de residuos mineros** con potencial de valorización de **Wolframio (W)** en Galicia. Los análisis de Solr revelan una correlación espacial estrecha con explotaciones mineras en las provincias de Ourense y A Coruña.<br/><br/>El depósito más relevante es la balsa de la **Mina de Penouta** (Ourense), que contiene contenidos anómalos de wolframio, estaño y tántalo en sus relaves finos de decantación. Adicionalmente, se identifica el depósito de **San Finx** (A Coruña) como una estructura inactiva con recursos estimados de 0.08% de WO3, condicionada por controles de drenaje ácido de mina. Se recomienda priorizar el reprocesamiento en Penouta dado su estado activo y la infraestructura de beneficio disponible.",
+        primary_site_id: "site_penouta",
+        evidences: [
+          {
+            title: "Proyecto_Penouta_Valorizacion_Residuos_2023.pdf",
+            page: 14,
+            score: 0.94,
+            entities: ["Mineral: Wolframio", "Mineral: Tántalo", "Provincia: Ourense", "Compañía: Strategic Minerals"],
+            snippet: "El análisis mineralógico de las balsas de lodos finos A y B de Penouta confirma una ley media residual de 95 ppm de WO3, siendo técnica y económicamente viable su reprocesamiento en la planta gravimétrica existente en el sitio...",
+            site_id: "site_penouta"
+          },
+          {
+            title: "Informe_Tecnico_Presas_Decantacion_San_Finx_2022.pdf",
+            page: 8,
+            score: 0.87,
+            entities: ["Mineral: Wolframio", "Mineral: Estaño", "Provincia: A Coruña", "Estado: Inactivo"],
+            snippet: "Los residuos arenosos acumulados en la balsa de San Finx estiman un recurso de wolframio remanente del 0.08% WO3, aunque su explotación está condicionada a estrictos controles de pH de aguas y drenajes ácidos...",
+            site_id: "site_san_finx"
+          },
+          {
+            title: "Plan_Estrategico_Materias_Primas_Criticas_Galicia_2024.pdf",
+            page: 45,
+            score: 0.79,
+            entities: ["Mineral: Wolframio", "Comunidad: Galicia", "Estrategia: Economía Circular"],
+            snippet: "La distribución espacial de residuos mineros gallegos muestra que la cuenca geológica de Ourense concentra más del 60% del wolframio remanente en escombreras secundarias de granito pegmatítico...",
+            site_id: "site_penouta"
+          }
+        ],
+        solr_query: {
+          "q": "residuo_tipo:escombrera OR balsa_tipo:balsa",
+          "fq": [
+            "region:galicia",
+            "minerales_estimulados:wolframio",
+            "{!geofilt sfield=location pt=42.5,-8.0 d=100}"
+          ],
+          "defType": "edismax",
+          "qf": "site_name^2.0 description^1.5 linked_facilities",
+          "rq": "{!knn f=vector_embedding topK=10}[0.12, -0.05, 0.43, 0.28, -0.19, 0.07, 0.51, -0.32, 0.18, 0.04]",
+          "fl": "id,site_name,commodities,score,location",
+          "rows": 10
+        },
+        solr_facets: {
+          "facet_counts": {
+            "facet_queries": {},
+            "facet_fields": {
+              "region": [
+                "galicia", 2,
+                "castilla y leon", 0,
+                "extremadura", 0
+              ],
+              "commodities": [
+                "tungsten", 2,
+                "tin", 2,
+                "tantalum", 1,
+                "niobium", 1
+              ],
+              "project_status": [
+                "active", 1,
+                "inactive", 1,
+                "development", 0
+              ]
+            }
+          }
+        },
+        ner_entities: {
+          "ner_extraction": {
+            "text": "Buscar escombreras con potencial de wolframio en Galicia cerca de explotaciones activas.",
+            "entities": [
+              { "text": "wolframio", "label": "MINERAL", "confidence": 0.99, "standard": "tungsten" },
+              { "text": "Galicia", "label": "REGION", "confidence": 0.98, "standard": "galicia" },
+              { "text": "explotaciones activas", "label": "STATUS_FILTER", "confidence": 0.91, "standard": "active" }
+            ],
+            "spatial_anchor": {
+              "centroid": [42.575, -8.133],
+              "radius_km": 100
+            }
+          }
+        }
+      },
+      query_2: {
+        id: "query_2",
+        question: "Normativa ambiental aplicable a la valorización de estériles de mina en Castilla y León.",
+        narrative: "La valorización de estériles mineros en Castilla y León está regulada principalmente por el **Real Decreto 975/2009** de gestión de los residuos de las industrias extractivas y de protección y rehabilitación del espacio afectado por actividades mineras, el cual trasciende la Directiva Europea 2006/21/CE.<br/><br/>Para activos específicos en Salamanca como **Barruecopardo** o **Los Santos**, la normativa obliga a la aprobación de un Plan de Gestión de Residuos Mineros por parte de la Junta de Castilla y León, que demuestre la estabilidad física y química a largo plazo de las estructuras y prevea medidas contra el drenaje ácido de mina (AMD). La valorización de estériles de roca para áridos secundarios requiere la exención de la condición de residuo (estatuto de subproducto) bajo el Art. 4 de la Ley 7/2022 de Residuos y Suelos Contaminados para una Economía Circular.",
+        primary_site_id: "site_barruecopardo",
+        evidences: [
+          {
+            title: "Guia_Restauracion_Espacio_Minero_Castilla_Leon_2020.pdf",
+            page: 28,
+            score: 0.91,
+            entities: ["Normativa: RD 975/2009", "Provincia: Salamanca", "Región: Castilla y León"],
+            snippet: "El capítulo IV especifica las condiciones de estabilidad geoquímica obligatorias para la reutilización de roca estéril de wolframio y skarn en la submeseta norte, regulando la exención de residuos...",
+            site_id: "site_barruecopardo"
+          },
+          {
+            title: "RD_975_2009_Gestion_Residuos_Industrias_Extractivas.pdf",
+            page: 8,
+            score: 0.85,
+            entities: ["Normativa: Directiva 2006/21/CE", "Ámbito: Nacional", "Concepto: Caracterización de residuos"],
+            snippet: "Se requerirá una caracterización geoquímica completa (incluyendo tests estáticos y dinámicos) antes de autorizar cualquier plan de valorización de residuos mineros en depósitos de Categoría A...",
+            site_id: "site_los_santos"
+          },
+          {
+            title: "Estudio_Impacto_Ambiental_Barruecopardo_Anexo_Residuos.pdf",
+            page: 112,
+            score: 0.82,
+            entities: ["Compañía: Saloro", "Normativa: Plan de Gestión", "Provincia: Salamanca"],
+            snippet: "Los estériles de granito de la corta norte de Barruecopardo han sido catalogados como inertes según el anexo II, facilitando su uso directo en la restauración física y geomorfología del hueco minero...",
+            site_id: "site_barruecopardo"
+          }
+        ],
+        solr_query: {
+          "q": "valorizacion OR reutilizacion AND esteriles AND normativa",
+          "fq": [
+            "region:\"castilla y leon\"",
+            "admin_status:Activa"
+          ],
+          "defType": "edismax",
+          "qf": "laws_referenced^2.0 text_content^1.0 location_context^1.2",
+          "rq": "{!knn f=vector_embedding topK=10}[-0.08, 0.22, 0.15, -0.41, 0.11, 0.33, -0.05, 0.12, 0.44, 0.08]",
+          "fl": "id,title,score,region,laws_referenced",
+          "rows": 10
+        },
+        solr_facets: {
+          "facet_counts": {
+            "facet_queries": {},
+            "facet_fields": {
+              "region": [
+                "castilla y leon", 2,
+                "asturias", 0,
+                "galicia", 0
+              ],
+              "laws_referenced": [
+                "rd 975/2009", 3,
+                "ley 7/2022", 1,
+                "directiva 2006/21/ce", 2
+              ],
+              "project_status": [
+                "active", 1,
+                "inactive", 1,
+                "development", 0
+              ]
+            }
+          }
+        },
+        ner_entities: {
+          "ner_extraction": {
+            "text": "Normativa ambiental aplicable a la valorización de estériles de mina en Castilla y León.",
+            "entities": [
+              { "text": "Normativa ambiental", "label": "TOPIC", "confidence": 0.95, "standard": "environmental regulation" },
+              { "text": "valorización de estériles", "label": "PROCESS", "confidence": 0.98, "standard": "reprocessing/valorization" },
+              { "text": "Castilla y León", "label": "REGION", "confidence": 0.99, "standard": "castilla y leon" }
+            ],
+            "spatial_anchor": {
+              "centroid": [41.652, -4.724],
+              "radius_km": 180
+            }
+          }
+        }
+      },
+      query_3: {
+        id: "query_3",
+        question: "Localizar balsas de residuos con presencia de cobalto o tierras raras.",
+        narrative: "Se han identificado **2 instalaciones de residuos mineros** con potencial anómalo de **Cobalto (Co)** y **Tierras Raras (REE)** en la base de datos de Solr.<br/><br/>1. **Mina de Penouta** (Ourense): Los residuos arenosos finos en las balsas acumulan tierras raras ligeras asociadas a pegmatitas complejas (principalmente monacita y xenotima), con concentraciones que representan un potencial subproducto de alto valor durante el reprocesamiento de estaño y coltán.<br/><br/>2. **Cobre Las Cruces** (Sevilla): Aunque es históricamente una mina de cobre, los estériles secos filtrados y las colas de flotación de la planta hidrometalúrgica contienen trazas recuperables de cobalto en la fracción pirítica. Adicionalmente, el proyecto de **San José Valdeflórez** (Cáceres) presenta enriquecimiento de tierras raras ligeras en sus silicoaluminatos (micas).",
+        primary_site_id: "site_las_cruces",
+        evidences: [
+          {
+            title: "Caracterizacion_Residuos_Penouta_REE_2023.pdf",
+            page: 7,
+            score: 0.92,
+            entities: ["Mineral: Tierras Raras", "Mineral: Niobio", "Provincia: Ourense"],
+            snippet: "Las arenas de fracción fina de la balsa B de Penouta muestran concentraciones recuperables de tierras raras (La, Ce, Nd) asociadas a fases minerales accesorias de monacita de hasta 410 ppm...",
+            site_id: "site_penouta"
+          },
+          {
+            title: "Estudio_Recuperacion_Subproductos_Las_Cruces_2022.pdf",
+            page: 34,
+            score: 0.89,
+            entities: ["Mineral: Cobalto", "Provincia: Sevilla", "Compañía: First Quantum"],
+            snippet: "El balance metalúrgico preliminar indica una presencia de cobalto de hasta 180 g/t en la fracción pirítica fina de las colas de flotación acumuladas en el depósito de estériles secos...",
+            site_id: "site_las_cruces"
+          },
+          {
+            title: "Analisis_Facies_Micas_Valdeflorez_2021.pdf",
+            page: 56,
+            score: 0.81,
+            entities: ["Mineral: Litio", "Mineral: Tierras Raras", "Provincia: Cáceres"],
+            snippet: "Las micas del tipo lepidolita del proyecto Valdeflórez muestran un enriquecimiento secundario de Tierras Raras de hasta 320 ppm de REE totales en los estériles de planta...",
+            site_id: "site_valdeflorez"
+          }
+        ],
+        solr_query: {
+          "q": "balsas_residuos AND (cobalto OR \"tierras raras\" OR REE)",
+          "fq": [
+            "material_type:(tailings OR relaves OR lodos)",
+            "country:spain"
+          ],
+          "defType": "edismax",
+          "qf": "commodities^3.0 description^1.0 raw_exploited_substances",
+          "rq": "{!knn f=vector_embedding topK=10}[0.45, 0.08, -0.12, 0.67, 0.02, -0.21, 0.13, 0.09, -0.05, 0.54]",
+          "fl": "id,site_name,commodities,storage_facility_type,score,location",
+          "rows": 10
+        },
+        solr_facets: {
+          "facet_counts": {
+            "facet_queries": {},
+            "facet_fields": {
+              "region": [
+                "andalucia", 1,
+                "galicia", 1,
+                "extremadura", 1
+              ],
+              "commodities": [
+                "cobalt", 1,
+                "rare earth elements", 2,
+                "lithium", 1,
+                "tungsten", 1
+              ],
+              "storage_facility_type": [
+                "tailings storage facility", 2,
+                "pond", 1
+              ]
+            }
+          }
+        },
+        ner_entities: {
+          "ner_extraction": {
+            "text": "Localizar balsas de residuos con presencia de cobalto o tierras raras.",
+            "entities": [
+              { "text": "balsas de residuos", "label": "FACILITY_TYPE", "confidence": 0.97, "standard": "tailings storage facility" },
+              { "text": "cobalto", "label": "MINERAL", "confidence": 0.99, "standard": "cobalt" },
+              { "text": "tierras raras", "label": "MINERAL_GROUP", "confidence": 0.99, "standard": "rare earth elements" }
+            ],
+            "spatial_anchor": null
+          }
+        }
+      }
+    };
+
+    // ==========================================
+    // APPLICATION STATE
+    // ==========================================
+    let mapInstance = null;
+    let markersMap = {};
+    let selectedSite = null;
+    let activeQueryId = "query_1"; // Default inspector query
+    let solrInspectorTab = "query";
+    let bottomPanelExpanded = true;
+    let isTyping = false;
+
+    // ==========================================
+    // INITIALIZATION
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Initialize Map
+      initMap();
+      
+      // 2. Render Markers
+      renderMarkers();
+      
+      // 3. Select default site (Penouta) to populate the initial Ficha
+      selectSite("site_penouta");
+      
+      // 4. Inject welcome message
+      addWelcomeMessage();
+      
+      // 5. Update Solr Inspector initial values
+      updateInspectorDisplay();
+    });
+
+    // ==========================================
+    // MAP FUNCTIONS
+    // ==========================================
+    function initMap() {
+      mapInstance = L.map('map', {
+        center: [40.2, -4.5], // Center of Spain
+        zoom: 6,
+        zoomControl: false,
+        attributionControl: false
+      });
+
+      // CartoDB Dark Matter tile layer
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 20
+      }).addTo(mapInstance);
+
+      // Custom attribution to clean up the UI but maintain credits
+      L.control.attribution({
+        position: 'bottomright',
+        prefix: 'OSM | CartoDB'
+      }).addTo(mapInstance);
+
+      // Add Zoom control to top right
+      L.control.zoom({
+        position: 'topright'
+      }).addTo(mapInstance);
+    }
+
+    function renderMarkers(sitesToHighlight = null) {
+      // Clear old markers if any
+      Object.values(markersMap).forEach(m => m.remove());
+      markersMap = {};
+
+      MINING_SITES.forEach(site => {
+        const isMatched = !sitesToHighlight || sitesToHighlight.some(s => s.id === site.id);
+        const opacity = isMatched ? 1.0 : 0.25;
+
+        // Decide marker color based on theme
+        let color = '#10b981'; // emerald
+        let pulseClass = isMatched ? 'marker-pulse-emerald' : '';
+        if (site.color_theme === 'gold') {
+          color = '#fbbf24'; // Gold
+          if (isMatched) pulseClass = 'marker-pulse-gold';
+        } else if (site.color_theme === 'blue') {
+          color = '#3b82f6'; // Blue
+          if (isMatched) pulseClass = 'marker-pulse-blue';
+        }
+
+        const size = (selectedSite && selectedSite.id === site.id) ? 16 : (isMatched ? 12 : 9);
+        const borderSize = (selectedSite && selectedSite.id === site.id) ? 3 : 2;
+
+        const html = `
+          <div class="relative flex items-center justify-center" style="width: 24px; height: 24px; opacity: ${opacity}; transition: opacity 0.3s ease;">
+            <div class="absolute rounded-full border-white" style="
+              width: ${size}px; 
+              height: ${size}px; 
+              background-color: ${color}; 
+              border-width: ${borderSize}px; 
+              box-shadow: 0 0 8px ${color}; 
+              z-index: 10;
+            "></div>
+            ${isMatched ? `<div class="absolute rounded-full ${pulseClass}" style="
+              width: ${size + 10}px; 
+              height: ${size + 10}px; 
+              background-color: ${color}40; 
+              z-index: 5;
+            "></div>` : ''}
+          </div>
+        `;
+
+        const customIcon = L.divIcon({
+          html: html,
+          className: 'custom-map-icon',
+          iconSize: [24, 24],
+          iconAnchor: [12, 12]
+        });
+
+        const marker = L.marker([site.lat, site.lon], { icon: customIcon })
+          .addTo(mapInstance)
+          .on('click', () => {
+            selectSite(site.id);
+          });
+
+        const popupContent = `
+          <div class="text-slate-100 font-sans p-1" style="min-width: 200px;">
+            <div class="flex items-center gap-1.5 mb-1">
+              <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${color}"></span>
+              <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">${site.province}</span>
+            </div>
+            <h4 class="font-bold text-xs text-slate-100 leading-tight mb-1">${site.site_name}</h4>
+            <p class="text-[10px] text-slate-400 mb-2">${site.company}</p>
+            <div class="border-t border-slate-800 pt-1.5 space-y-1 text-[10px]">
+              <div><span class="text-slate-500">Minerales:</span> <span class="text-slate-300 font-medium">${site.commodities_label}</span></div>
+              <div><span class="text-slate-500">Instalación:</span> <span class="text-slate-300">${site.facility_type}</span></div>
+              <div><span class="text-slate-500">Estado:</span> <span style="color: ${site.status_color}" class="font-semibold">${site.status_label}</span></div>
+            </div>
+          </div>
+        `;
+        
+        marker.bindPopup(popupContent, {
+          closeButton: false,
+          offset: [0, -5]
+        });
+
+        markersMap[site.id] = marker;
+      });
+    }
+
+    // ==========================================
+    // SELECTION & INTERACTION HANDLERS
+    // ==========================================
+    function selectSite(siteId, triggerZoom = true) {
+      const site = MINING_SITES.find(s => s.id === siteId);
+      if (!site) return;
+
+      selectedSite = site;
+      
+      // Update markers appearance
+      renderMarkers();
+      
+      // Pan map if requested
+      if (triggerZoom && mapInstance) {
+        mapInstance.flyTo([site.lat, site.lon], 9, {
+          duration: 1.2
+        });
+        
+        setTimeout(() => {
+          const marker = markersMap[siteId];
+          if (marker) {
+            marker.openPopup();
+          }
+        }, 1250);
+      }
+
+      // Update Ficha Técnica UI
+      updateFichaUI(site);
+    }
+
+    function updateFichaUI(site) {
+      const container = document.getElementById('ficha-container');
+      if (!container) return;
+
+      let color = '#10b981';
+      if (site.color_theme === 'gold') color = '#fbbf24';
+      else if (site.color_theme === 'blue') color = '#3b82f6';
+
+      let alertsHtml = site.environmental_flags.map(flag => `
+        <span class="bg-red-950/30 text-red-400 border border-red-900/40 font-medium px-2 py-0.5 rounded text-[9.5px]">${flag}</span>
+      `).join('');
+
+      container.innerHTML = `
+        <div class="h-full flex flex-col justify-between">
+          <div>
+            <!-- Title and Badge -->
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${color}"></span>
+                <h3 class="font-bold text-xs text-slate-100 tracking-wide">${site.site_name}</h3>
+              </div>
+              
+              <span 
+                class="text-[9px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider"
+                style="border-color: ${site.status_color}40; color: ${site.status_color}; bg-color: ${site.status_color}15"
+              >
+                ${site.status_label}
+              </span>
+            </div>
+
+            <!-- 2 Column Details -->
+            <div class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px] mb-2 border-b border-slate-900 pb-2">
+              <div>
+                <span class="text-slate-500 block">Titular del Activo:</span>
+                <span class="text-slate-200 font-medium">${site.company}</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Tipo de Depósito:</span>
+                <span class="text-slate-200 font-medium">${site.facility_type}</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Localización:</span>
+                <span class="text-slate-200">${site.municipality} (${site.province}, ${site.region})</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Material e Hidrología:</span>
+                <span class="text-slate-200">${site.material_type}</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Sustancias Críticas:</span>
+                <span class="text-amber-400 font-semibold">${site.commodities_label}</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Coordenadas y Área:</span>
+                <span class="text-slate-300 font-mono text-[10px]">${site.lat.toFixed(4)}, ${site.lon.toFixed(4)} | ${site.area_m2}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description and Alert Flags -->
+          <div class="space-y-2">
+            <p class="text-[10px] text-slate-400 leading-relaxed italic bg-slate-950/40 p-2 rounded border border-slate-900/60">
+              "${site.description}"
+            </p>
+
+            <div class="flex items-center justify-between text-[10px] gap-2 pt-1 border-t border-slate-900">
+              <div class="flex items-center gap-1">
+                <span class="text-slate-500 font-mono">UNFC-1997:</span>
+                <span class="text-emerald-400 font-bold font-mono bg-emerald-950/20 border border-emerald-900/40 px-1 rounded text-[9px]">${site.unfc_code}</span>
+              </div>
+              
+              <div class="flex flex-wrap gap-1 items-center justify-end">
+                <span class="text-slate-500 mr-1 text-[9px] uppercase tracking-wider font-semibold">Alertas:</span>
+                ${alertsHtml}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // CHAT & SIMULATION FUNCTIONS
+    // ==========================================
+    function addWelcomeMessage() {
+      const feed = document.getElementById('chat-feed');
+      if (!feed) return;
+
+      const welcomeDiv = document.createElement('div');
+      welcomeDiv.className = 'flex flex-col items-start';
+      welcomeDiv.innerHTML = `
+        <span class="text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1 px-1 flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          Geo-RAG AI Agent
+        </span>
+        <div class="max-w-[90%] rounded-xl p-3.5 text-xs shadow-md leading-relaxed bg-geodark-card border border-geodark-border/80 text-slate-200 rounded-tl-none">
+          <strong>¡Bienvenido al Geo-RAG Explorer del Espacio de Datos de Materias Primas Críticas!</strong><br/><br/>
+          Esta plataforma de demostración científica simula una arquitectura de Recuperación Aumentada por Generación (RAG) espacial sobre un clúster de **Apache Solr** integrado con **Gemini 3 Pro**.<br/><br/>
+          Seleccione uno de los escenarios académicos prediseñados en la barra superior o escriba su propia consulta técnica sobre los activos mineros de la península ibérica.
+        </div>
+      `;
+      feed.appendChild(welcomeDiv);
+    }
+
+    // JSON syntax highlighting utility for Solr Engine Inspector
+    function syntaxHighlightJSON(json) {
+      if (typeof json !== 'string') {
+        json = JSON.stringify(json, undefined, 2);
+      }
+      json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g, function (match) {
+        let cls = 'json-value';
+        if (/^"/.test(match)) {
+          if (/:$/.test(match)) {
+            cls = 'json-key';
+            return `<span class="${cls}">${match.replace(/:$/, '')}</span>:`;
+          } else {
+            cls = 'json-string';
+          }
+        } else if (/true|false/.test(match)) {
+          cls = 'json-boolean';
+        } else if (/null/.test(match)) {
+          cls = 'json-value';
+        } else {
+          cls = 'json-number';
+        }
+        return `<span class="${cls}">${match}</span>`;
+      });
+    }
+
+    function appendMessage(sender, text, evidences = []) {
+      const feed = document.getElementById('chat-feed');
+      if (!feed) return;
+
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `flex flex-col ${sender === 'user' ? 'items-end' : 'items-start'}`;
+
+      const nameLabel = sender === 'user' ? 'Usuario / Investigador' : 'Geo-RAG AI Agent';
+      const indicatorColor = sender === 'user' ? 'bg-blue-500' : 'bg-emerald-500';
+      const bubbleClass = sender === 'user' 
+        ? 'bg-emerald-600/90 text-white font-medium rounded-tr-none border border-emerald-500/20'
+        : 'bg-geodark-card border border-geodark-border text-slate-200 rounded-tl-none';
+
+      let bubbleContent = `
+        <span class="text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1 px-1 flex items-center gap-1">
+          ${sender === 'user' ? '' : '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>'}
+          ${nameLabel}
+          ${sender === 'user' ? '<span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>' : ''}
+        </span>
+        <div class="max-w-[90%] rounded-xl p-3.5 text-xs shadow-md leading-relaxed ${bubbleClass}">
+          ${text}
+        </div>
+      `;
+
+      msgDiv.innerHTML = bubbleContent;
+      feed.appendChild(msgDiv);
+
+      // Inject Evidences if Bot sent them
+      if (evidences && evidences.length > 0) {
+        const evidencesDiv = document.createElement('div');
+        evidencesDiv.className = 'mt-3.5 w-full pl-2 border-l-2 border-emerald-500/50 space-y-2.5';
+        
+        let cardsHtml = evidences.map(ev => {
+          let tagsHtml = ev.entities.map(tag => {
+            let badgeColor = "bg-slate-900 text-slate-400 border-slate-800";
+            if (tag.startsWith("Mineral")) {
+              badgeColor = "bg-amber-950/30 text-amber-400 border-amber-900/40";
+            } else if (tag.startsWith("Provincia") || tag.startsWith("Región")) {
+              badgeColor = "bg-emerald-950/30 text-emerald-400 border-emerald-900/40";
+            } else if (tag.startsWith("Normativa")) {
+              badgeColor = "bg-blue-950/30 text-blue-400 border-blue-900/40";
+            }
+            return `<span class="text-[9px] font-semibold px-2 py-0.5 rounded-full border ${badgeColor}">${tag}</span>`;
+          }).join('');
+
+          return `
+            <div class="bg-[#121929] border border-geodark-border hover:border-slate-600/80 transition-all rounded-lg p-3 text-slate-300 hover:shadow-lg shadow-sm">
+              <div class="flex items-start justify-between gap-2 mb-1.5">
+                <div class="flex items-center gap-1.5">
+                  <span class="p-1 rounded bg-slate-900 border border-slate-800 text-amber-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h5 class="font-bold text-[11px] text-slate-100 hover:underline cursor-pointer tracking-wide">${ev.title}</h5>
+                    <p class="text-[10px] text-slate-500">Página ${ev.page} | Score: <span class="text-emerald-400 font-bold font-mono">${(ev.score * 100).toFixed(0)}%</span></p>
+                  </div>
+                </div>
+                
+                <button 
+                  type="button"
+                  onclick="selectSite('${ev.site_id}', true)"
+                  class="bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-800 text-emerald-400 text-[10px] px-2 py-1 rounded-md transition-all flex items-center gap-1"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Ver en mapa
+                </button>
+              </div>
+              
+              <p class="text-[10px] text-slate-400 italic bg-slate-950/30 p-2 rounded border border-slate-900/60 mb-2 leading-relaxed">
+                "${ev.snippet}"
+              </p>
+              
+              <div class="flex flex-wrap gap-1">
+                ${tagsHtml}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        evidencesDiv.innerHTML = `
+          <h4 class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Evidencias extraídas por Apache Solr (${evidences.length})
+          </h4>
+          <div class="space-y-2">
+            ${cardsHtml}
+          </div>
+        `;
+        msgDiv.appendChild(evidencesDiv);
+      }
+
+      feed.appendChild(msgDiv);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    async function queryAPI(question, queryIdForSolrData) {
+      isTyping = true;
+      const feed = document.getElementById('chat-feed');
+      if (!feed) return;
+
+      // 1. Create typing / pipeline status card
+      const typingCard = document.createElement('div');
+      typingCard.id = "typing-card";
+      typingCard.className = 'flex flex-col items-start bg-slate-900/40 border border-slate-800 rounded-xl p-3.5 w-[90%] space-y-2.5';
+      typingCard.innerHTML = `
+        <div class="flex items-center gap-2">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span class="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">Procesando Geo-RAG Pipeline</span>
+        </div>
+        <div class="space-y-1.5 w-full" id="pipeline-steps">
+          <!-- Steps will be injected dynamically -->
+        </div>
+      `;
+      feed.appendChild(typingCard);
+      feed.scrollTop = feed.scrollHeight;
+
+      const steps = [
+        "Solr NLP: Extrayendo entidades geográficas y mineralógicas (OpenNLP)",
+        "Solr Vector Search: Ejecutando kNN sobre dense_vector (1024-dim)",
+        "Solr Spatial Filter: Restringiendo búsqueda mediante fq {!geofilt}",
+        "Gemini 3 Pro: Sintetizando respuesta con evidencias del Espacio de Datos"
+      ];
+
+      function renderSteps(activeIndex, isComplete = false) {
+        const stepsContainer = document.getElementById('pipeline-steps');
+        if (!stepsContainer) return;
+
+        stepsContainer.innerHTML = steps.map((label, idx) => {
+          let statusLabel = "En cola";
+          let statusClass = "text-slate-600";
+          let iconHtml = `<span class="w-3.5 h-3.5 rounded-full border border-slate-700 flex items-center justify-center text-[8px] font-sans text-slate-600">${idx+1}</span>`;
+
+          if (idx < activeIndex || isComplete) {
+            statusLabel = "OK";
+            statusClass = "text-slate-400 line-through";
+            iconHtml = `
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-500 inline-block" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+            `;
+          } else if (idx === activeIndex) {
+            statusLabel = "Procesando";
+            statusClass = "bg-emerald-950/40 text-emerald-300 border border-emerald-800/40";
+            iconHtml = `
+              <svg class="animate-spin h-3 w-3 text-emerald-400 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            `;
+          }
+
+          return `
+            <div class="text-[10.5px] font-mono flex items-center justify-between p-1.5 rounded border border-transparent transition-all ${statusClass}">
+              <span class="flex items-center gap-1.5">
+                ${iconHtml}
+                <span>${label}</span>
+              </span>
+              <span class="text-[9px] uppercase tracking-wider font-bold">${statusLabel}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Step animation timers
+      renderSteps(0);
+      setTimeout(() => renderSteps(1), 300);
+      setTimeout(() => renderSteps(2), 600);
+      setTimeout(() => renderSteps(3), 900);
+
+      // Call API
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ question: question })
+        });
+        
+        if (!response.ok) {
+          throw new Error('API Error');
+        }
+
+        const data = await response.json();
+        
+        setTimeout(() => {
+          const card = document.getElementById('typing-card');
+          if (card) card.remove();
+          
+          isTyping = false;
+          appendMessage("bot", data.narrative, data.evidences);
+          
+          // Overwrite local query data with API returned data
+          PREDEFINED_QUERIES[queryIdForSolrData] = {
+            id: queryIdForSolrData,
+            question: data.question,
+            narrative: data.narrative,
+            evidences: data.evidences,
+            solr_query: data.solr_query,
+            solr_facets: data.solr_facets,
+            ner_entities: data.ner_entities,
+            primary_site_id: data.primary_site_id,
+            llm1_prompt: data.llm1_prompt
+          };
+          
+          activeQueryId = queryIdForSolrData;
+          selectSite(data.primary_site_id, true);
+          updateInspectorDisplay();
+        }, 1300);
+
+      } catch (error) {
+        console.warn('API connection failed, running offline simulation fallback:', error);
+        
+        // Offline Fallback simulation
+        setTimeout(() => {
+          const card = document.getElementById('typing-card');
+          if (card) card.remove();
+          
+          isTyping = false;
+          
+          let localData = null;
+          if (queryIdForSolrData && !question) {
+            localData = PREDEFINED_QUERIES[queryIdForSolrData];
+          } else {
+            localData = resolveQueryLocally(question);
+          }
+
+          appendMessage("bot", localData.narrative, localData.evidences);
+          
+          activeQueryId = localData.id || "query_1";
+          
+          // Save dynamic local query response so the inspector tabs can display it in real time
+          PREDEFINED_QUERIES[activeQueryId] = {
+            id: activeQueryId,
+            question: localData.question || question,
+            narrative: localData.narrative,
+            evidences: localData.evidences,
+            solr_query: localData.solr_query,
+            solr_facets: localData.solr_facets,
+            ner_entities: localData.ner_entities,
+            primary_site_id: localData.primary_site_id,
+            llm1_prompt: localData.llm1_prompt || "No disponible (ejecución sin LLM)"
+          };
+
+          selectSite(localData.primary_site_id, true);
+          updateInspectorDisplay();
+        }, 1300);
+      }
+    }
+
+    function runScenario(queryId) {
+      if (isTyping) return;
+      const qData = PREDEFINED_QUERIES[queryId];
+      if (!qData) return;
+
+      activeQueryId = queryId;
+
+      // Highlight button
+      document.querySelectorAll('[id^="btn-scenario-"]').forEach(btn => {
+        btn.className = "text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-geodark-card border-geodark-border hover:border-slate-600 text-slate-300";
+      });
+      const activeBtn = document.getElementById(`btn-scenario-${queryId.split('_')[1]}`);
+      if (activeBtn) {
+        activeBtn.className = "text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-emerald-950/40 border-emerald-500 shadow-md shadow-emerald-500/10 text-white";
+      }
+
+      appendMessage("user", qData.question);
+      queryAPI(qData.question, queryId);
+    }
+
+    function handleCustomSubmit(e) {
+      e.preventDefault();
+      if (isTyping) return;
+
+      const input = document.getElementById('custom-input');
+      if (!input || !input.value.trim()) return;
+
+      const rawText = input.value;
+      input.value = "";
+
+      appendMessage("user", rawText);
+      
+      // We will match a fallback query id based on content keywords
+      const textLower = rawText.toLowerCase();
+      let solrDataId = "query_1";
+      if (textLower.includes("litio") || textLower.includes("cáceres") || textLower.includes("valdeflórez")) {
+        solrDataId = "query_3";
+      } else if (textLower.includes("cobre") || textLower.includes("matsa") || textLower.includes("cruces")) {
+        solrDataId = "query_3";
+      } else if (textLower.includes("normativa") || textLower.includes("ley")) {
+        solrDataId = "query_2";
+      }
+
+      queryAPI(rawText, solrDataId);
+    }
+
+    function resolveQueryLocally(question) {
+      const textLower = question.toLowerCase();
+      const cleanedQ = textLower.trim().replace(/[?¿!¡.]/g, "");
+      
+      const greetings = ["hola", "buenos dias", "buenas tardes", "buenas noches", "ey", "hello", "hi", "que tal", "quien eres", "como estas", "adios", "chao", "saludos"];
+      if (greetings.includes(cleanedQ) || greetings.some(g => cleanedQ.startsWith(g + " "))) {
+        return {
+          id: "query_1",
+          question: question,
+          narrative: "<strong>[Respuesta del LLM - Conversacional]</strong> ¡Hola! Soy el asistente virtual del Espacio de Datos de Materias Primas Críticas (CRMs Data Space).<br/><br/>¿En qué puedo ayudarte hoy? Puedes hacerme preguntas técnicas sobre los depósitos de residuos mineros en España catalogados en esta demo, por ejemplo:<br/>- <em>\"¿Qué escombreras de wolframio hay en Galicia?\"</em><br/>- <em>\"Dime la normativa ambiental de Castilla y León\"</em><br/>- <em>\"¿Qué balsas tienen cobalto o tierras raras?\"</em><br/>- <em>\"Háblame del litio en Cáceres\"</em>",
+          evidences: [],
+          primary_site_id: "",
+          solr_query: {
+            "q": "*:*",
+            "fq": [],
+            "defType": "edismax",
+            "fl": "id,site_name,commodities,score",
+            "rows": 0,
+            "info": "Consulta conversacional pura: se omite la búsqueda física en el índice de documentos técnicos para ahorrar cómputo."
+          },
+          solr_facets: {
+            "facet_counts": { "facet_fields": { "region": [], "commodities": [], "project_status": [] } }
+          },
+          ner_entities: {
+            "ner_extraction": { "text": question, "entities": [], "spatial_anchor": null }
+          }
+        };
+      }
+
+      // Check if it's a general CRM query
+      const crmKeywords = ["materias criticas", "materias críticas", "critical raw materials", "crm", "unión europea", "union europea", "lista de materias", "qué son", "cuales son", "cuáles son"];
+      if (crmKeywords.some(kw => textLower.includes(kw))) {
+        return {
+          id: "query_1",
+          question: question,
+          narrative: "<strong>[Respuesta del LLM - Búsqueda Documental CRM]</strong> La Unión Europea actualiza periódicamente su listado de **Materias Primas Críticas (CRMs)** basándose en su importancia económica y el riesgo de suministro. Según la última versión del *Critical Raw Materials Act (2024)*, las más importantes y estratégicas incluyen:<br/><br/>" +
+                     "1. **Litio (Li), Cobalto (Co) y Níquel (Ni):** Cruciales para la fabricación de baterías de vehículos eléctricos y almacenamiento de energía.<br/>" +
+                     "2. **Tierras Raras (REE):** Elementos como el Neodimio y Disprosio, esenciales para imanes permanentes de turbinas eólicas y motores eléctricos.<br/>" +
+                     "3. **Wolframio / Tungsteno (W):** Utilizado en herramientas industriales de corte y aplicaciones de defensa debido a su extrema dureza.<br/>" +
+                     "4. **Magnesio, Silicio metálico y Titanio:** Vitales para aleaciones ligeras en la industria aeroespacial y automotriz.<br/><br/>" +
+                     "El Espacio de Datos (CRMs Data Space) permite localizar depósitos de residuos mineros en España que contienen varias de estas materias críticas (especialmente Wolframio en Galicia y Salamanca, Litio en Cáceres, y Cobalto en Sevilla) para fomentar el reciclaje secundario.",
+          primary_site_id: "",
+          evidences: [
+            {
+              title: "EU_Critical_Raw_Materials_Act_2024.pdf",
+              page: 3,
+              score: 0.95,
+              entities: ["Ámbito: Unión Europea", "Concepto: Riesgo de Suministro", "Categoría: Críticas y Estratégicas"],
+              snippet: "El Reglamento de Materias Primas Críticas establece que al menos el 10% del consumo de CRMs de la UE debe provenir de extracción propia, el 40% de procesamiento y el 25% de reciclaje de residuos para el año 2030...",
+              site_id: ""
+            }
+          ],
+          solr_query: {
+            "q": "critical_raw_materials OR materias_primas_criticas",
+            "fq": ["doc_type:policy_regulation"],
+            "defType": "edismax",
+            "fl": "id,title,score,doc_type",
+            "rows": 5
+          },
+          solr_facets: {
+            "facet_counts": {
+              "facet_fields": {
+                "doc_type": ["policy_regulation", 1],
+                "origin": ["European Commission", 1]
+              }
+            }
+          },
+          ner_entities: {
+            "ner_extraction": {
+              "text": question,
+              "entities": [
+                { "text": "materias criticas", "label": "CONCEPT", "confidence": 0.99, "standard": "critical raw materials" },
+                { "text": "union europea", "label": "ORGANIZATION", "confidence": 0.98, "standard": "european union" }
+              ],
+              "spatial_anchor": null
+            }
+          }
+        };
+      }
+
+      // Check if it's an unsupported region
+      const unsupportedRegions = ["aragon", "aragón", "cataluña", "catalunya", "madrid", "pais vasco", "país vasco", "valencia", "murcia", "la rioja", "navarra", "baleares", "canarias", "cantabria", "asturias"];
+      for (const reg of unsupportedRegions) {
+        if (textLower.includes(reg)) {
+          const minerals = ["wolframio", "estaño", "litio", "cobre", "cobalto", "tierras raras", "oro", "plata", "zinc"];
+          let foundMineral = null;
+          for (const m of minerals) {
+            if (textLower.includes(m)) {
+              foundMineral = m;
+              break;
+            }
+          }
+          
+          const regTitle = reg.charAt(0).toUpperCase() + reg.slice(1);
+          const mineralLabel = foundMineral ? ` con potencial de valorización de ${foundMineral}` : "";
+          const entities = [{ "text": reg, "label": "REGION", "confidence": 0.99, "standard": reg }];
+          if (foundMineral) {
+            entities.push({ "text": foundMineral, "label": "MINERAL", "confidence": 0.99, "standard": foundMineral });
+          }
+
+          return {
+            id: "query_1",
+            question: question,
+            narrative: `<strong>[Respuesta de Simulación]</strong> Búsqueda ejecutada en Solr sin resultados.<br/><br/>No se han localizado depósitos de residuos mineros${mineralLabel} en <strong>${regTitle}</strong> dentro de la base de datos actual del Espacio de Datos.<br/><br/>Los depósitos principales de materias primas críticas registrados en este prototipo se concentran en Galicia (Penouta, San Finx), Castilla y León (Barruecopardo, Los Santos), Extremadura (Valdeflórez) y Andalucía (Cobre Las Cruces).`,
+            evidences: [],
+            primary_site_id: "",
+            solr_query: {
+              "q": foundMineral ? `commodities:${foundMineral}` : "residuo_tipo:escombrera OR balsa_tipo:balsa",
+              "fq": [`region:${reg}`],
+              "defType": "edismax",
+              "fl": "id,site_name,commodities,score,location",
+              "rows": 10
+            },
+            solr_facets: {
+              "facet_counts": {
+                "facet_fields": {
+                  "region": [reg, 0],
+                  "commodities": foundMineral ? [foundMineral, 0] : [],
+                  "project_status": []
+                }
+              }
+            },
+            ner_entities: {
+              "ner_extraction": {
+                "text": question,
+                "entities": entities,
+                "spatial_anchor": null
+              }
+            }
+          };
+        }
+      }
+
+      function levenshteinDistance(s1, s2) {
+        if (s1.length < s2.length) return levenshteinDistance(s2, s1);
+        if (s2.length === 0) return s1.length;
+        
+        let previousRow = Array.from({ length: s2.length + 1 }, (_, i) => i);
+        for (let i = 0; i < s1.length; i++) {
+          let currentRow = [i + 1];
+          for (let j = 0; j < s2.length; j++) {
+            let insertions = previousRow[j + 1] + 1;
+            let deletions = currentRow[j] + 1;
+            let substitutions = previousRow[j] + (s1[i] !== s2[j] ? 1 : 0);
+            currentRow.push(Math.min(insertions, deletions, substitutions));
+          }
+          previousRow = currentRow;
+        }
+        return previousRow[previousRow.length - 1];
+      }
+
+      function isFuzzyMatch(word, keyword) {
+        const wLen = word.length;
+        const kLen = keyword.length;
+        if (wLen <= 3 || kLen <= 3) {
+          return word.toLowerCase() === keyword.toLowerCase();
+        }
+        const maxDist = kLen <= 6 ? 1 : 2;
+        if (Math.abs(wLen - kLen) > maxDist) return false;
+        return levenshteinDistance(word.toLowerCase(), keyword.toLowerCase()) <= maxDist;
+      }
+
+      // Stop words that should NEVER be matched fuzzily
+      const STOP_WORDS = new Set(["sobre", "como", "esta", "está", "este", "esto", "para", "pero", "donde", "dónde", "quien", "quién", "entre", "desde", "hasta", "hacia", "del", "con", "los", "las", "una", "uno"]);
+
+      // Clean query and extract words
+      const qClean = textLower.trim().replace(/[?¿!¡.]/g, "").replace(/[^a-zA-Z0-9áéíóúüñÁÉÍÓÚÜÑ]/g, " ");
+      const words = qClean.split(/\s+/).filter(w => w.length > 0);
+
+      // Check for foreign countries
+      const foreignCountries = ["alemania", "francia", "portugal", "italia", "reino unido", "inglaterra", "belgica", "bélgica", "suecia", "noruega", "finlandia", "polonia", "austria"];
+      let matchedCountry = null;
+      for (const word of words) {
+        for (const country of foreignCountries) {
+          if (STOP_WORDS.has(word)) {
+            if (word === country) matchedCountry = country;
+          } else {
+            if (isFuzzyMatch(word, country)) matchedCountry = country;
+          }
+        }
+      }
+
+      if (matchedCountry) {
+        return {
+          id: "query_1",
+          question: question,
+          narrative: `<strong>[Respuesta del LLM - Ámbito de Búsqueda]</strong> Se ha detectado una consulta geográfica fuera del ámbito del Espacio de Datos: <strong>${matchedCountry.charAt(0).toUpperCase() + matchedCountry.slice(1)}</strong>.<br/><br/>El prototipo actual del <em>CRMs Data Space</em> está restringido exclusivamente a depósitos de residuos mineros y normativa ambiental del territorio de **España**.<br/><br/>No disponemos de datos estructurados ni documentos técnicos indexados para depósitos en otros países europeos en esta fase de la investigación doctoral.`,
+          primary_site_id: "",
+          evidences: [],
+          solr_query: {
+            "q": question,
+            "fq": [`country:${matchedCountry}`],
+            "defType": "edismax",
+            "fl": "id,site_name,score",
+            "rows": 0,
+            "info": `Búsqueda geográficamente fuera de ámbito: ${matchedCountry.toUpperCase()}`
+          },
+          solr_facets: {
+            "facet_counts": { "facet_fields": { "region": [], "commodities": [], "project_status": [] } }
+          },
+          ner_entities: {
+            "ner_extraction": {
+              "text": question,
+              "entities": [
+                { "text": matchedCountry, "label": "COUNTRY", "confidence": 0.99, "standard": matchedCountry }
+              ],
+              "spatial_anchor": null
+            }
+          }
+        };
+      }
+
+      // Check if it's one of the exact Case queries to return the exact gold standards
+      if (textLower.includes("cerca de explotaciones activas")) {
+        return {
+          id: "query_1",
+          question: question,
+          narrative: PREDEFINED_QUERIES.query_1.narrative,
+          evidences: PREDEFINED_QUERIES.query_1.evidences,
+          primary_site_id: PREDEFINED_QUERIES.query_1.primary_site_id,
+          solr_query: PREDEFINED_QUERIES.query_1.solr_query,
+          solr_facets: PREDEFINED_QUERIES.query_1.solr_facets,
+          ner_entities: PREDEFINED_QUERIES.query_1.ner_entities
+        };
+      } else if (textLower.includes("normativa ambiental aplicable") || (textLower.includes("normativa") && textLower.includes("castilla"))) {
+        return {
+          id: "query_2",
+          question: question,
+          narrative: PREDEFINED_QUERIES.query_2.narrative,
+          evidences: PREDEFINED_QUERIES.query_2.evidences,
+          primary_site_id: PREDEFINED_QUERIES.query_2.primary_site_id,
+          solr_query: PREDEFINED_QUERIES.query_2.solr_query,
+          solr_facets: PREDEFINED_QUERIES.query_2.solr_facets,
+          ner_entities: PREDEFINED_QUERIES.query_2.ner_entities
+        };
+      } else if (textLower.includes("cobalto o tierras raras")) {
+        return {
+          id: "query_3",
+          question: question,
+          narrative: PREDEFINED_QUERIES.query_3.narrative,
+          evidences: PREDEFINED_QUERIES.query_3.evidences,
+          primary_site_id: PREDEFINED_QUERIES.query_3.primary_site_id,
+          solr_query: PREDEFINED_QUERIES.query_3.solr_query,
+          solr_facets: PREDEFINED_QUERIES.query_3.solr_facets,
+          ner_entities: PREDEFINED_QUERIES.query_3.ner_entities
+        };
+      }
+
+      // Dynamic search matching the backend
+      const extractedRegions = [];
+      const regionMap = {
+        "galicia": ["galicia", "ourense", "coruña", "lousame", "viana do bolo"],
+        "castilla y leon": ["castilla", "leon", "león", "salamanca", "barruecopardo", "los santos"],
+        "extremadura": ["extremadura", "caceres", "cáceres", "valdeflorez", "valdeflórez"],
+        "andalucia": ["andalucia", "andalucía", "sevilla", "gerena", "las cruces"]
+      };
+
+      const extractedCommodities = [];
+      const commodityMap = {
+        "tungsten": ["wolframio", "tungsteno", "tungsten", "scheelita"],
+        "tin": ["estaño", "estano", "tin"],
+        "tantalum": ["tántalo", "tantalo", "tantalum"],
+        "niobium": ["niobio", "niobium"],
+        "lithium": ["litio", "lithium"],
+        "copper": ["cobre", "copper"],
+        "cobalt": ["cobalto", "cobalt"],
+        "zinc": ["zinc", "cinc"],
+        "silver": ["plata", "silver"],
+        "platinum": ["platino", "platinum"]
+      };
+
+      const extractedStatuses = [];
+      const statusMap = {
+        "active": ["activo", "activa", "active"],
+        "inactive": ["inactivo", "inactiva", "inactive", "mantenimiento"],
+        "development": ["desarrollo", "development", "proyecto"]
+      };
+
+      for (const word of words) {
+        // Regions
+        for (const [reg, keywords] of Object.entries(regionMap)) {
+          for (const kw of keywords) {
+            const kwWords = kw.split(" ");
+            if (kwWords.length === 1) {
+              if (STOP_WORDS.has(word)) {
+                if (word === kwWords[0] && !extractedRegions.includes(reg)) extractedRegions.push(reg);
+              } else {
+                if (isFuzzyMatch(word, kwWords[0]) && !extractedRegions.includes(reg)) extractedRegions.push(reg);
+              }
+            } else {
+              if (qClean.includes(kw) && !extractedRegions.includes(reg)) extractedRegions.push(reg);
+            }
+          }
+        }
+        
+        // Commodities
+        for (const [comm, keywords] of Object.entries(commodityMap)) {
+          for (const kw of keywords) {
+            const kwWords = kw.split(" ");
+            if (kwWords.length === 1) {
+              if (STOP_WORDS.has(word)) {
+                if (word === kwWords[0] && !extractedCommodities.includes(comm)) extractedCommodities.push(comm);
+              } else {
+                if (isFuzzyMatch(word, kwWords[0]) && !extractedCommodities.includes(comm)) extractedCommodities.push(comm);
+              }
+            } else {
+              if (qClean.includes(kw) && !extractedCommodities.includes(comm)) extractedCommodities.push(comm);
+            }
+          }
+        }
+
+        // Statuses
+        for (const [status, keywords] of Object.entries(statusMap)) {
+          for (const kw of keywords) {
+            const kwWords = kw.split(" ");
+            if (kwWords.length === 1) {
+              if (STOP_WORDS.has(word)) {
+                if (word === kwWords[0] && !extractedStatuses.includes(status)) extractedStatuses.push(status);
+              } else {
+                if (isFuzzyMatch(word, kwWords[0]) && !extractedStatuses.includes(status)) extractedStatuses.push(status);
+              }
+            } else {
+              if (qClean.includes(kw) && !extractedStatuses.includes(status)) extractedStatuses.push(status);
+            }
+          }
+        }
+      }
+
+      // If no criteria were extracted at all, avoid returning all sites
+      if (extractedRegions.length === 0 && extractedCommodities.length === 0 && extractedStatuses.length === 0) {
+        return {
+          id: "query_1",
+          question: question,
+          narrative: `<strong>[Respuesta del LLM - Filtros no reconocidos]</strong> No he podido extraer entidades geográficas o mineralógicas específicas de tu consulta: <em>"${question}"</em>.<br/><br/>Para realizar una búsqueda estructurada en el Espacio de Datos, por favor especifica:<br/>- Un <strong>mineral crítico</strong> (ej. <em>wolframio, litio, cobalto, tierras raras</em>).<br/>- Una <strong>región</strong> (ej. <em>Galicia, Castilla y León, Extremadura, Andalucía</em>).<br/><br/>Si tienes dudas sobre las políticas generales, prueba preguntando: <em>\"¿Cuáles son las materias críticas de la Unión Europea?\"</em>.`,
+          evidences: [],
+          primary_site_id: "",
+          solr_query: {
+            "q": question,
+            "fq": [],
+            "defType": "edismax",
+            "fl": "id,site_name,commodities,score",
+            "rows": 0,
+            "info": "Consulta no estructurada: no se detectaron criterios de filtrado para el Espacio de Datos."
+          },
+          solr_facets: {
+            "facet_counts": { "facet_fields": { "region": [], "commodities": [], "project_status": [] } }
+          },
+          ner_entities: {
+            "ner_extraction": { "text": question, "entities": [], "spatial_anchor": null }
+          }
+        };
+      }
+
+      // Filter sites
+      const matchingSites = MINING_SITES.filter(site => {
+        let match = true;
+        if (extractedRegions.length > 0 && !extractedRegions.includes(site.region.toLowerCase())) {
+          match = false;
+        }
+        if (extractedCommodities.length > 0 && !site.commodities.some(c => extractedCommodities.includes(c))) {
+          match = false;
+        }
+        if (extractedStatuses.length > 0 && !extractedStatuses.includes(site.project_status)) {
+          match = false;
+        }
+        return match;
+      });
+
+      if (matchingSites.length === 0) {
+        const regLabel = extractedRegions[0] || null;
+        const minLabel = extractedCommodities[0] || null;
+        
+        const regTitle = regLabel ? regLabel.charAt(0).toUpperCase() + regLabel.slice(1) : "la región especificada";
+        const mineralLabel = minLabel ? ` con potencial de valorización de ${minLabel}` : "";
+        const entities = [];
+        if (regLabel) entities.push({ "text": regLabel, "label": "REGION", "confidence": 0.99, "standard": regLabel });
+        if (minLabel) entities.push({ "text": minLabel, "label": "MINERAL", "confidence": 0.99, "standard": minLabel });
+
+        return {
+          id: "query_1",
+          question: question,
+          narrative: `<strong>[Respuesta de Simulación]</strong> Búsqueda ejecutada en Solr sin resultados.<br/><br/>No se han localizado depósitos de residuos mineros${mineralLabel} en <strong>${regTitle}</strong> dentro de la base de datos actual del Espacio de Datos.<br/><br/>Los depósitos principales de materias primas críticas registrados en este prototipo se concentran en Galicia (Penouta, San Finx), Castilla y León (Barruecopardo, Los Santos), Extremadura (Valdeflórez) y Andalucía (Cobre Las Cruces).`,
+          evidences: [],
+          primary_site_id: "",
+          solr_query: {
+            "q": minLabel ? `commodities:${minLabel}` : "residuo_tipo:escombrera OR balsa_tipo:balsa",
+            "fq": regLabel ? [`region:${regLabel}`] : [],
+            "defType": "edismax",
+            "fl": "id,site_name,commodities,score,location",
+            "rows": 10
+          },
+          solr_facets: {
+            "facet_counts": {
+              "region": regLabel ? [regLabel, 0] : [],
+              "commodities": minLabel ? [minLabel, 0] : [],
+              "project_status": []
+            }
+          },
+          ner_entities: {
+            "ner_extraction": {
+              "text": question,
+              "entities": entities,
+              "spatial_anchor": null
+            }
+          }
+        };
+      }
+
+      // Gather evidences from matching sites
+      const evidences = [];
+      const primarySiteId = matchingSites[0].id;
+      
+      matchingSites.forEach(s => {
+        let found = false;
+        Object.values(PREDEFINED_QUERIES).forEach(q => {
+          q.evidences.forEach(ev => {
+            if (ev.site_id === s.id && !evidences.some(x => x.title === ev.title)) {
+              evidences.push(ev);
+              found = true;
+            }
+          });
+        });
+        if (!found) {
+          evidences.push({
+            title: `Informe_Tecnico_${s.id.toUpperCase()}_2023.pdf`,
+            page: 12,
+            score: 0.90,
+            entities: [`Mineral: ${s.commodities_label}`, `Región: ${s.region}`],
+            snippet: `El estudio de caracterización del depósito ${s.site_name} confirma la viabilidad del reprocesamiento metalúrgico para la recuperación de materias primas críticas secundarias...`,
+            site_id: s.id
+          });
+        }
+      });
+
+      // Construct NER Tags
+      const nerEntities = [];
+      extractedRegions.forEach(r => nerEntities.push({ "text": r, "label": "REGION", "confidence": 0.99, "standard": r }));
+      extractedCommodities.forEach(c => nerEntities.push({ "text": c, "label": "MINERAL", "confidence": 0.99, "standard": c }));
+
+      // Narrative synthesis (LLM 2 NLG simulation)
+      const siteDescs = matchingSites.map(s => `el depósito de <strong>${s.site_name}</strong> en ${s.province} (${s.company}), con potencial de ${s.commodities_label}`);
+      const siteListStr = siteDescs.length > 1 ? siteDescs.slice(0, -1).join(", ") + " y " + siteDescs[siteDescs.length - 1] : siteDescs[0];
+
+      let narrative = `<strong>[Respuesta del LLM - Síntesis NLG]</strong> He procesado tu consulta técnica a través del pipeline híbrido de Solr y he extraído <strong>${matchingSites.length} depósito(s) de residuos mineros</strong> en el Espacio de Datos:<br/><br/>`;
+      narrative += `Se han detectado: ${siteListStr}.<br/><br/>`;
+      if (matchingSites.length === 1) {
+        const s = matchingSites[0];
+        narrative += `Se recomienda priorizar el análisis de viabilidad en <strong>${s.site_name}</strong> dado su estado de '${s.project_status}' y su descripción: <em>"${s.description}"</em>.`;
+      } else {
+        narrative += `Se han identificado múltiples activos que cumplen tus criterios de búsqueda. Se destaca especialmente la balsa de <strong>${matchingSites[0].site_name}</strong> por volumen de estériles procesables para materias primas críticas.`;
+      }
+
+      return {
+        id: "query_1",
+        question: question,
+        narrative: narrative,
+        evidences: evidences,
+        primary_site_id: primarySiteId,
+        solr_query: {
+          "q": extractedCommodities.length === 0 ? "residuo_tipo:escombrera OR balsa_tipo:balsa" : extractedCommodities.map(c => `commodities:${c}`).join(" OR "),
+          "fq": extractedRegions.map(r => `region:${r}`),
+          "defType": "edismax",
+          "fl": "id,site_name,commodities,score,location",
+          "rows": 10
+        },
+        solr_facets: {
+          "facet_counts": {
+            "facet_fields": {
+              "region": (() => {
+                const c = {};
+                matchingSites.forEach(s => { c[s.region.toLowerCase()] = (c[s.region.toLowerCase()] || 0) + 1; });
+                const r = [];
+                for (const [k, v] of Object.entries(c)) r.push(k, v);
+                return r;
+              })(),
+              "commodities": (() => {
+                const c = {};
+                matchingSites.forEach(s => { s.commodities.forEach(co => { c[co] = (c[co] || 0) + 1; }); });
+                const r = [];
+                for (const [k, v] of Object.entries(c)) r.push(k, v);
+                return r;
+              })(),
+              "project_status": (() => {
+                const c = {};
+                matchingSites.forEach(s => { c[s.project_status] = (c[s.project_status] || 0) + 1; });
+                const r = [];
+                for (const [k, v] of Object.entries(c)) r.push(k, v);
+                return r;
+              })()
+            }
+          }
+        },
+        ner_entities: {
+          "ner_extraction": {
+            "text": question,
+            "entities": nerEntities,
+            "spatial_anchor": null
+          }
+        }
+      };
+    }
+
+    // ==========================================
+    // INSPECTOR PANEL & TAB SWITCHING
+    // ==========================================
+    function toggleBottomPanel() {
+      const panel = document.getElementById('bottom-panel');
+      const arrow = document.getElementById('bottom-panel-arrow');
+      if (!panel || !arrow) return;
+
+      bottomPanelExpanded = !bottomPanelExpanded;
+      if (bottomPanelExpanded) {
+        panel.className = "border-t border-geodark-border transition-all duration-300 relative bg-[#070a12] flex flex-col shrink-0 h-[250px]";
+        arrow.className = "h-4 w-4 text-slate-400 transform transition-transform rotate-180";
+      } else {
+        panel.className = "border-t border-geodark-border transition-all duration-300 relative bg-[#070a12] flex flex-col shrink-0 h-9";
+        arrow.className = "h-4 w-4 text-slate-400 transform transition-transform";
+      }
+    }
+
+    function switchInspectorTab(tabId) {
+      solrInspectorTab = tabId;
+      
+      // Update UI active class
+      document.querySelectorAll('#inspector-tabs button').forEach(btn => {
+        btn.className = "px-3 py-1 rounded text-[10px] font-semibold transition-all text-slate-500 hover:text-slate-300";
+      });
+      document.getElementById(`tab-${tabId}`).className = "px-3 py-1 rounded text-[10px] font-semibold transition-all bg-slate-800 text-emerald-400";
+
+      updateInspectorDisplay();
+    }
+
+    function updateInspectorDisplay() {
+      const codeBlock = document.getElementById('inspector-code-block');
+      const preElement = document.getElementById('inspector-json-pre');
+      const lineageBlock = document.getElementById('inspector-lineage-block');
+      if (!codeBlock || !preElement || !lineageBlock) return;
+
+      const activeQuery = PREDEFINED_QUERIES[activeQueryId || "query_1"];
+      let data = {};
+
+      if (solrInspectorTab === "query") {
+        preElement.classList.remove('hidden');
+        lineageBlock.classList.add('hidden');
+        data = activeQuery.solr_query;
+        codeBlock.innerHTML = syntaxHighlightJSON(data);
+      } else if (solrInspectorTab === "facets") {
+        preElement.classList.remove('hidden');
+        lineageBlock.classList.add('hidden');
+        data = activeQuery.solr_facets;
+        codeBlock.innerHTML = syntaxHighlightJSON(data);
+      } else if (solrInspectorTab === "ner") {
+        preElement.classList.remove('hidden');
+        lineageBlock.classList.add('hidden');
+        data = activeQuery.ner_entities;
+        codeBlock.innerHTML = syntaxHighlightJSON(data);
+      } else if (solrInspectorTab === "lineage") {
+        preElement.classList.add('hidden');
+        lineageBlock.classList.remove('hidden');
+        
+        const q = PREDEFINED_QUERIES[activeQueryId || "query_1"];
+        
+        const nluJson = JSON.stringify(q.ner_entities || {}, null, 2);
+        const solrJson = JSON.stringify(q.solr_query || {}, null, 2);
+        
+        // Construct Solr Output Response JSON
+        const solrResponse = {
+          "response": {
+            "numFound": q.evidences ? q.evidences.length : 0,
+            "docs": (q.evidences || []).map(ev => ({
+              "id": ev.site_id,
+              "document_name": ev.title,
+              "page": ev.page,
+              "search_score": ev.score,
+              "text_snippet": ev.snippet
+            }))
+          },
+          "facet_counts": q.solr_facets ? q.solr_facets.facet_counts : {}
+        };
+        const solrResponseJson = JSON.stringify(solrResponse, null, 2);
+
+        // Construct NLG LLM Input Context JSON
+        const nlgInput = {
+          "system_instructions": "Eres el asistente inteligente del CRMs Data Space. Sintetiza una respuesta técnica basada exclusivamente en el contexto provisto sin inventar datos.",
+          "user_query": q.question,
+          "context_documents": (q.evidences || []).map(ev => ({
+            "source_document": ev.title,
+            "page": ev.page,
+            "text_snippet": ev.snippet
+          })),
+          "gis_metadata": {
+            "focus_site_id": q.primary_site_id,
+            "coordinates_anchor": q.solr_query ? q.solr_query.fq : []
+          }
+        };
+        const nlgInputJson = JSON.stringify(nlgInput, null, 2);
+        
+        let htmlContent = `
+<div class="text-xs text-slate-300 font-sans space-y-3.5 w-full">
+  <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
+    <h4 class="text-emerald-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5 font-sans">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+      </svg>
+      Auditoría de Flujo de Datos (Tripas del Pipeline Geo-RAG)
+    </h4>
+    <span class="text-[9px] px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-800/40 text-emerald-400 font-mono">
+      Consulta Actual: "${q.question}"
+    </span>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+    <!-- Columna Izquierda: Entradas y Solr Query -->
+    <div class="space-y-3.5">
+      <!-- Step 1: User Input -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded p-2.5">
+        <div class="flex items-center gap-1.5 text-slate-200 font-bold mb-1 font-sans">
+          <span class="w-4 h-4 rounded-full bg-emerald-900 border border-emerald-500 text-emerald-300 flex items-center justify-center text-[9px]">1</span>
+          <span>1. Entrada: Pregunta del Usuario (Lenguaje Natural)</span>
+        </div>
+        <div class="bg-slate-950 p-2 rounded text-slate-400 italic text-[11px]">
+          "${q.question}"
+        </div>
+      </div>
+
+      <!-- Step 2: Prompt LLM 1 (NLU Context + Query) -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded p-2.5">
+        <div class="flex items-center justify-between mb-1.5 font-sans">
+          <div class="flex items-center gap-1.5 text-slate-200 font-bold">
+            <span class="w-4 h-4 rounded-full bg-emerald-900 border border-emerald-500 text-emerald-300 flex items-center justify-center text-[9px]">2</span>
+            <span>2. Entrada LLM 1 (NLU): Prompt con Contexto e Instrucciones</span>
+          </div>
+          <span class="text-[9px] text-slate-500 font-mono">LLM 1 Input Prompt</span>
+        </div>
+        <pre class="bg-slate-950 p-2 rounded text-[10.5px] text-slate-400 max-h-[140px] overflow-auto font-mono whitespace-pre-wrap text-left"><code>${q.llm1_prompt || (typeof PROMPT_TEMPLATE !== 'undefined' ? PROMPT_TEMPLATE.replace("{query}", q.question) : "No disponible (ejecución sin LLM)")}</code></pre>
+      </div>
+
+      <!-- Step 3: NLU Extraction -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded p-2.5">
+        <div class="flex items-center justify-between mb-1.5 font-sans">
+          <div class="flex items-center gap-1.5 text-slate-200 font-bold">
+            <span class="w-4 h-4 rounded-full bg-emerald-900 border border-emerald-500 text-emerald-300 flex items-center justify-center text-[9px]">3</span>
+            <span>3. Salida LLM 1 (NLU): JSON Semántico Extraído</span>
+          </div>
+          <span class="text-[9px] text-slate-500 font-mono">NLU Output</span>
+        </div>
+        <pre class="bg-slate-950 p-2 rounded text-[10px] text-emerald-300 max-h-[100px] overflow-auto font-mono"><code>${nluJson}</code></pre>
+      </div>
+
+      <!-- Step 4: Solr Request Input -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded p-2.5">
+        <div class="flex items-center justify-between mb-1.5 font-sans">
+          <div class="flex items-center gap-1.5 text-slate-200 font-bold">
+            <span class="w-4 h-4 rounded-full bg-emerald-900 border border-emerald-500 text-emerald-300 flex items-center justify-center text-[9px]">4</span>
+            <span>4. Entrada Solr: Consulta Estructurada (Query DSL)</span>
+          </div>
+          <span class="text-[9px] text-slate-500 font-mono">Solr Input (DSL)</span>
+        </div>
+        <pre class="bg-slate-950 p-2 rounded text-[10px] text-emerald-300 max-h-[110px] overflow-auto font-mono"><code>${solrJson}</code></pre>
+      </div>
+    </div>
+
+    <!-- Columna Derecha: Solr Output, NLG Input y NLG Output -->
+    <div class="space-y-3.5">
+      <!-- Step 5: Solr Output -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded p-2.5">
+        <div class="flex items-center justify-between mb-1.5 font-sans">
+          <div class="flex items-center gap-1.5 text-slate-200 font-bold">
+            <span class="w-4 h-4 rounded-full bg-emerald-900 border border-emerald-500 text-emerald-300 flex items-center justify-center text-[9px]">5</span>
+            <span>5. Salida Solr: Evidencias y Facetas Recuperadas</span>
+          </div>
+          <span class="text-[9px] text-slate-500 font-mono">Solr Output (JSON)</span>
+        </div>
+        <pre class="bg-slate-950 p-2 rounded text-[10px] text-emerald-300 max-h-[110px] overflow-auto font-mono"><code>${solrResponseJson}</code></pre>
+      </div>
+
+      <!-- Step 6: NLG Input Payload -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded p-2.5">
+        <div class="flex items-center justify-between mb-1.5 font-sans">
+          <div class="flex items-center gap-1.5 text-slate-200 font-bold">
+            <span class="w-4 h-4 rounded-full bg-emerald-900 border border-emerald-500 text-emerald-300 flex items-center justify-center text-[9px]">6</span>
+            <span>6. Entrada LLM 2 (NLG): Contexto Envasado para Redacción</span>
+          </div>
+          <span class="text-[9px] text-slate-500 font-mono">NLG Input (JSON)</span>
+        </div>
+        <pre class="bg-slate-950 p-2 rounded text-[10px] text-emerald-300 max-h-[110px] overflow-auto font-mono"><code>${nlgInputJson}</code></pre>
+      </div>
+
+      <!-- Step 7: NLG Output Narrative -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded p-2.5">
+        <div class="flex items-center gap-1.5 text-slate-200 font-bold mb-1 font-sans">
+          <span class="w-4 h-4 rounded-full bg-emerald-900 border border-emerald-500 text-emerald-300 flex items-center justify-center text-[9px]">7</span>
+          <span>7. Salida LLM 2 (NLG): Respuesta Final Sintetizada</span>
+        </div>
+        <div class="bg-slate-950 p-2 rounded text-slate-300 text-[10.5px] max-h-[105px] overflow-auto leading-relaxed">
+          ${q.narrative}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        `;
+        lineageBlock.innerHTML = htmlContent;
+      }
+    }
+
+    // ==========================================
+    // MANUAL FILTERS & PROVIDER HELPER FUNCTIONS
+    // ==========================================
+    let currentLLMProvider = "rules";
+
+    function toggleProviderConfig() {
+      const box = document.getElementById('provider-config-box');
+      if (!box) return;
+      if (box.classList.contains('hidden')) {
+        box.classList.remove('hidden');
+        box.classList.add('flex');
+      } else {
+        box.classList.add('hidden');
+        box.classList.remove('flex');
+      }
+    }
+
+    function changeLLMProvider(val) {
+      currentLLMProvider = val;
+      const badge = document.getElementById('provider-status-badge');
+      const dot = document.getElementById('provider-dot');
+      const pulse = document.getElementById('provider-pulse');
+
+      if (val === 'gemini') {
+        if (badge) { badge.innerText = "Google Gemini 1.5 Active"; badge.className = "text-amber-400 font-bold text-[10px] uppercase"; }
+        if (dot) dot.className = "relative inline-flex rounded-full h-2 w-2 bg-amber-500";
+        if (pulse) pulse.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75";
+      } else if (val === 'openai') {
+        if (badge) { badge.innerText = "OpenAI GPT-4o Active"; badge.className = "text-cyan-400 font-bold text-[10px] uppercase"; }
+        if (dot) dot.className = "relative inline-flex rounded-full h-2 w-2 bg-cyan-500";
+        if (pulse) pulse.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75";
+      } else {
+        if (badge) { badge.innerText = "Standalone Mock (Zero Setup)"; badge.className = "text-emerald-400 font-bold text-[10px] uppercase"; }
+        if (dot) dot.className = "relative inline-flex rounded-full h-2 w-2 bg-emerald-500";
+        if (pulse) pulse.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75";
+      }
+    }
+
+    function saveAPIKey() {
+      const input = document.getElementById('api-key-input');
+      if (input && input.value.trim()) {
+        localStorage.setItem('crm_api_key', input.value.trim());
+        alert("¡API Key guardada correctamente en su navegador!");
+      }
+    }
+
+    function applyManualFilters() {
+      const comm = document.getElementById('manual-filter-commodity') ? document.getElementById('manual-filter-commodity').value : "";
+      const reg = document.getElementById('manual-filter-region') ? document.getElementById('manual-filter-region').value : "";
+      const st = document.getElementById('manual-filter-status') ? document.getElementById('manual-filter-status').value : "";
+      const fac = document.getElementById('manual-filter-facility') ? document.getElementById('manual-filter-facility').value : "";
+
+      const matching = MINING_SITES.filter(site => {
+        let match = true;
+        if (comm && !site.commodities.includes(comm)) match = false;
+        if (reg && site.region.toLowerCase() !== reg.toLowerCase()) match = false;
+        if (st && site.project_status !== st) match = false;
+        if (fac && !site.facility_type.toLowerCase().includes(fac.toLowerCase())) match = false;
+        return match;
+      });
+
+      renderMarkers(matching);
+
+      if (matching.length > 0) {
+        selectSite(matching[0].id, true);
+      }
+
+      // Update Solr Query DSL display for manual filter
+      const fqList = [];
+      if (reg) fqList.push(`region:"${reg}"`);
+      if (comm) fqList.push(`commodities:"${comm}"`);
+      if (st) fqList.push(`project_status:"${st}"`);
+      if (fac) fqList.push(`facility_type:"${fac}"`);
+
+      const solrDsl = {
+        "q": comm ? `commodities:${comm}` : "*:*",
+        "fq": fqList,
+        "defType": "edismax",
+        "info": "Filtro manual seleccionado directamente por el usuario desde la UI"
+      };
+
+      const manualQueryObj = {
+        id: "manual_filter",
+        question: `Filtro manual: ${[comm, reg, st, fac].filter(Boolean).join(', ') || 'Todas las instalaciones'}`,
+        narrative: `<strong>[Filtro Manual UI]</strong> Se han filtrado <strong>${matching.length} de ${MINING_SITES.length} instalaciones</strong> en el mapa.<br/><br/>${matching.map(s => `• <strong>${s.site_name}</strong> (${s.province}): ${s.commodities_label}`).join('<br/>')}`,
+        evidences: matching.map(s => ({
+          title: `Documento_${s.id.toUpperCase()}.pdf`,
+          page: 1,
+          score: 1.0,
+          entities: [`Mineral: ${s.commodities_label}`, `Región: ${s.region}`],
+          snippet: s.description,
+          site_id: s.id
+        })),
+        primary_site_id: matching.length > 0 ? matching[0].id : "",
+        solr_query: solrDsl,
+        solr_facets: {
+          "facet_counts": { "facet_fields": { "commodities": comm ? [comm, matching.length] : [], "region": reg ? [reg, matching.length] : [] } }
+        },
+        ner_entities: { "ner_extraction": { "text": "Filtro Manual Directo", "entities": [] } }
+      };
+
+      PREDEFINED_QUERIES["manual_filter"] = manualQueryObj;
+      activeQueryId = "manual_filter";
+      updateInspectorDisplay();
+    }
+
+    function resetManualFilters() {
+      if (document.getElementById('manual-filter-commodity')) document.getElementById('manual-filter-commodity').value = "";
+      if (document.getElementById('manual-filter-region')) document.getElementById('manual-filter-region').value = "";
+      if (document.getElementById('manual-filter-status')) document.getElementById('manual-filter-status').value = "";
+      if (document.getElementById('manual-filter-facility')) document.getElementById('manual-filter-facility').value = "";
+      renderMarkers(MINING_SITES);
+      selectSite("site_penouta", true);
+      activeQueryId = "query_1";
+      updateInspectorDisplay();
+    }
+
+    function setBottomPanelHeight(mode) {
+      const panel = document.getElementById('bottom-panel');
+      if (!panel) return;
+      if (mode === 'min') {
+        panel.style.height = '36px';
+        bottomPanelExpanded = false;
+      } else if (mode === 'max') {
+        panel.style.height = '480px';
+        bottomPanelExpanded = true;
+      } else {
+        panel.style.height = '250px';
+        bottomPanelExpanded = true;
+      }
+    }
+  </script>
+</body>
+</html>
