@@ -49,8 +49,10 @@ class SoftwareXHandler(SimpleHTTPRequestHandler):
             
             try:
                 payload = json.loads(post_data)
-                query = payload.get("query", "")
+                query = payload.get("question", payload.get("query", ""))
                 provider = payload.get("provider", "mock")
+                if provider == "rules":
+                    provider = "mock"
                 api_key = payload.get("api_key", "")
                 
                 if api_key:
@@ -58,12 +60,43 @@ class SoftwareXHandler(SimpleHTTPRequestHandler):
 
                 result = process_chat_message(query, provider=provider)
                 
+                # Format evidences from matched docs for frontend visualization
+                docs = result.get("docs", [])
+                evidences = []
+                primary_site_id = docs[0]["id"] if docs else ""
+                
+                for doc in docs:
+                    evidences.append({
+                        "title": f"Informe_Tecnico_{doc.get('id', 'site').upper()}.pdf",
+                        "page": 1,
+                        "score": 0.95,
+                        "entities": [f"Mineral: {doc.get('commodities_label', doc.get('commodities', ['CRM'])[0])}", f"País: {doc.get('country_name', doc.get('country', 'Europe'))}"],
+                        "snippet": doc.get("description", "Descripción del depósito en la base de datos de SoftwareX."),
+                        "site_id": doc.get("id")
+                    })
+                
+                formatted_response = {
+                    "question": query,
+                    "query": query,
+                    "narrative": result.get("response_text", ""),
+                    "response_text": result.get("response_text", ""),
+                    "primary_site_id": primary_site_id,
+                    "evidences": evidences,
+                    "solr_query": result.get("solr_query", {}),
+                    "solr_facets": {"facet_counts": {"facet_fields": result.get("facets", {})}},
+                    "ner_entities": {"ner_extraction": {"text": query, "entities": result.get("active_map_filters", [])}},
+                    "matched_ids": result.get("matched_ids", []),
+                    "docs": docs,
+                    "llm1_prompt": f"Executing process_chat_message(query='{query}', provider='{provider}')"
+                }
+                
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
                 self.send_header("Access-Control-Allow-Origin", "*")
                 self.end_headers()
-                self.wfile.write(json.dumps(result, ensure_ascii=False).encode("utf-8"))
+                self.wfile.write(json.dumps(formatted_response, ensure_ascii=False).encode("utf-8"))
             except Exception as e:
+                print(f"[API ERROR] Fallo al procesar /api/chat: {e}")
                 self.send_response(500)
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
