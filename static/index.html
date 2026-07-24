@@ -288,7 +288,22 @@
               Limpiar Filtros
             </button>
           </div>
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-1.5 text-[10.5px]">
+          <div class="grid grid-cols-2 lg:grid-cols-5 gap-1.5 text-[10.5px]">
+            <select id="manual-filter-country" onchange="applyManualFilters()" class="bg-slate-950 border border-emerald-800/80 rounded px-2 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none">
+              <option value="">País: Toda Europa</option>
+              <option value="spain">España</option>
+              <option value="germany">Alemania</option>
+              <option value="sweden">Suecia</option>
+              <option value="finland">Finlandia</option>
+              <option value="france">Francia</option>
+              <option value="portugal">Portugal</option>
+              <option value="austria">Austria</option>
+              <option value="poland">Polonia</option>
+              <option value="italy">Italia</option>
+              <option value="greece">Grecia</option>
+              <option value="ireland">Irlanda</option>
+              <option value="czechia">República Checa</option>
+            </select>
             <select id="manual-filter-commodity" onchange="applyManualFilters()" class="bg-slate-950 border border-geodark-border rounded px-2 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none">
               <option value="">Mineral: Todos</option>
               <option value="lithium">Litio (Li)</option>
@@ -304,12 +319,15 @@
               <option value="castilla y leon">Castilla y León</option>
               <option value="extremadura">Extremadura</option>
               <option value="andalucia">Andalucía</option>
+              <option value="styria">Styria (AT)</option>
+              <option value="norrbotten">Norrbotten (SE)</option>
+              <option value="saxony">Sajonia (DE)</option>
             </select>
             <select id="manual-filter-status" onchange="applyManualFilters()" class="bg-slate-950 border border-geodark-border rounded px-2 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none">
               <option value="">Estado: Todos</option>
               <option value="active">Activos</option>
               <option value="inactive">Inactivos</option>
-              <option value="development">En Desarrollo</option>
+              <option value="care and maintenance">Mantenimiento</option>
             </select>
             <select id="manual-filter-facility" onchange="applyManualFilters()" class="bg-slate-950 border border-geodark-border rounded px-2 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none">
               <option value="">Instalación: Todas</option>
@@ -1109,43 +1127,85 @@ User query:
     // ==========================================
     // INITIALIZATION
     // ==========================================
-    window.addEventListener('DOMContentLoaded', () => {
-      // 1. Initialize Map
+    window.addEventListener('DOMContentLoaded', async () => {
+      // 1. Initialize Map centered on Europe
       initMap();
       
-      // 2. Render Markers
+      // 2. Fetch European CRM sites from /api/sites backend
+      try {
+        const resp = await fetch('/api/sites');
+        if (resp.ok) {
+          const loadedSites = await resp.json();
+          if (Array.isArray(loadedSites) && loadedSites.length > 0) {
+            MINING_SITES = loadedSites.map(s => {
+              const lat = s.latitude || (s.location ? parseFloat(s.location.split(',')[0]) : 40.0);
+              const lon = s.longitude || (s.location ? parseFloat(s.location.split(',')[1]) : 0.0);
+              return {
+                id: s.id,
+                site_name: s.site_name,
+                company: s.company || 'EU Extractive Operator',
+                country: s.country || 'europe',
+                country_name: s.country_name || (s.country ? s.country.toUpperCase() : 'Europa'),
+                region: s.region_name || s.region || 'Región UE',
+                province: s.region_name || s.country_name || 'EU',
+                municipality: s.site_name,
+                lat: lat,
+                lon: lon,
+                commodities: s.commodities || [],
+                commodities_label: s.commodities_label || (s.commodities ? s.commodities.join(', ') : 'CRM'),
+                facility_type: s.storage_facility_label || s.storage_facility_type || 'Facility',
+                material_type: s.material_type || 'Estériles y relaves',
+                project_status: s.project_status || 'active',
+                status_label: s.project_status ? s.project_status.toUpperCase() : 'Activo',
+                status_color: s.project_status === 'active' ? '#10b981' : '#f59e0b',
+                area_m2: `${s.tonnage_mt || 10} MT de residuos`,
+                description: s.description || 'Yacimiento de materias primas críticas registrado en el espacio de datos europeo.',
+                environmental_flags: s.environmental_flags || [],
+                unfc_code: s.unfc_code || 'UNFC E1-F2-G1',
+                color_theme: s.commodities && (s.commodities.includes('lithium') || s.commodities.includes('cobalt')) ? 'emerald' : 'gold'
+              };
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('Carga dinámica desde /api/sites omitida, usando dataset local:', err);
+      }
+
+      // 3. Render Markers
       renderMarkers();
       
-      // 3. Select default site (Penouta) to populate the initial Ficha
-      selectSite("site_penouta");
+      // 4. Select default site
+      if (MINING_SITES.length > 0) {
+        selectSite(MINING_SITES[0].id);
+      }
       
-      // 4. Inject welcome message
+      // 5. Inject welcome message
       addWelcomeMessage();
       
-      // 5. Update Solr Inspector initial values
+      // 6. Update Solr Inspector initial values
       updateInspectorDisplay();
     });
 
     // ==========================================
-    // MAP FUNCTIONS
+    // MAP FUNCTIONS (Leaflet.js Engine)
     // ==========================================
     function initMap() {
       mapInstance = L.map('map', {
-        center: [40.2, -4.5], // Center of Spain
-        zoom: 6,
+        center: [50.5, 12.5], // Center of Europe
+        zoom: 4,
         zoomControl: false,
         attributionControl: false
       });
 
-      // CartoDB Dark Matter tile layer
+      // CartoDB Dark Matter tile layer via Leaflet.js
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         maxZoom: 20
       }).addTo(mapInstance);
 
-      // Custom attribution to clean up the UI but maintain credits
+      // Explicit Leaflet.js attribution
       L.control.attribution({
         position: 'bottomright',
-        prefix: 'OSM | CartoDB'
+        prefix: 'Leaflet.js Engine | CartoDB Dark (OpenStreetMap)'
       }).addTo(mapInstance);
 
       // Add Zoom control to top right
@@ -2453,6 +2513,7 @@ User query:
     }
 
     function applyManualFilters() {
+      const country = document.getElementById('manual-filter-country') ? document.getElementById('manual-filter-country').value : "";
       const comm = document.getElementById('manual-filter-commodity') ? document.getElementById('manual-filter-commodity').value : "";
       const reg = document.getElementById('manual-filter-region') ? document.getElementById('manual-filter-region').value : "";
       const st = document.getElementById('manual-filter-status') ? document.getElementById('manual-filter-status').value : "";
@@ -2460,6 +2521,7 @@ User query:
 
       const matching = MINING_SITES.filter(site => {
         let match = true;
+        if (country && site.country && site.country.toLowerCase() !== country.toLowerCase()) match = false;
         if (comm && !site.commodities.includes(comm)) match = false;
         if (reg && site.region.toLowerCase() !== reg.toLowerCase()) match = false;
         if (st && site.project_status !== st) match = false;
@@ -2475,6 +2537,7 @@ User query:
 
       // Update Solr Query DSL display for manual filter
       const fqList = [];
+      if (country) fqList.push(`country:"${country}"`);
       if (reg) fqList.push(`region:"${reg}"`);
       if (comm) fqList.push(`commodities:"${comm}"`);
       if (st) fqList.push(`project_status:"${st}"`);
@@ -2489,20 +2552,20 @@ User query:
 
       const manualQueryObj = {
         id: "manual_filter",
-        question: `Filtro manual: ${[comm, reg, st, fac].filter(Boolean).join(', ') || 'Todas las instalaciones'}`,
-        narrative: `<strong>[Filtro Manual UI]</strong> Se han filtrado <strong>${matching.length} de ${MINING_SITES.length} instalaciones</strong> en el mapa.<br/><br/>${matching.map(s => `• <strong>${s.site_name}</strong> (${s.province}): ${s.commodities_label}`).join('<br/>')}`,
-        evidences: matching.map(s => ({
+        question: `Filtro manual: ${[country, comm, reg, st, fac].filter(Boolean).join(', ') || 'Todas las instalaciones en Europa'}`,
+        narrative: `<strong>[Filtro Manual UI]</strong> Se han filtrado <strong>${matching.length} de ${MINING_SITES.length} instalaciones europeas</strong> en el mapa.<br/><br/>${matching.slice(0, 10).map(s => `• <strong>${s.site_name}</strong> (${s.country_name || s.province}): ${s.commodities_label}`).join('<br/>')}${matching.length > 10 ? `<br/><em>...y ${matching.length - 10} instalaciones adicionales en el mapa.</em>` : ''}`,
+        evidences: matching.slice(0, 10).map(s => ({
           title: `Documento_${s.id.toUpperCase()}.pdf`,
           page: 1,
           score: 1.0,
-          entities: [`Mineral: ${s.commodities_label}`, `Región: ${s.region}`],
+          entities: [`Mineral: ${s.commodities_label}`, `Ubicación: ${s.country_name || s.region}`],
           snippet: s.description,
           site_id: s.id
         })),
         primary_site_id: matching.length > 0 ? matching[0].id : "",
         solr_query: solrDsl,
         solr_facets: {
-          "facet_counts": { "facet_fields": { "commodities": comm ? [comm, matching.length] : [], "region": reg ? [reg, matching.length] : [] } }
+          "facet_counts": { "facet_fields": { "country": country ? [country, matching.length] : [], "commodities": comm ? [comm, matching.length] : [] } }
         },
         ner_entities: { "ner_extraction": { "text": "Filtro Manual Directo", "entities": [] } }
       };
@@ -2513,12 +2576,13 @@ User query:
     }
 
     function resetManualFilters() {
+      if (document.getElementById('manual-filter-country')) document.getElementById('manual-filter-country').value = "";
       if (document.getElementById('manual-filter-commodity')) document.getElementById('manual-filter-commodity').value = "";
       if (document.getElementById('manual-filter-region')) document.getElementById('manual-filter-region').value = "";
       if (document.getElementById('manual-filter-status')) document.getElementById('manual-filter-status').value = "";
       if (document.getElementById('manual-filter-facility')) document.getElementById('manual-filter-facility').value = "";
       renderMarkers(MINING_SITES);
-      selectSite("site_penouta", true);
+      if (MINING_SITES.length > 0) selectSite(MINING_SITES[0].id, true);
       activeQueryId = "query_1";
       updateInspectorDisplay();
     }
