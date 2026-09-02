@@ -22,7 +22,10 @@ def generate_natural_response(query: str, validated_nlu: Dict[str, Any], solr_re
     docs = solr_results.get("docs", [])
     
     if num_found == 0:
-        return f"No synthetic European tailings or mining sites were found matching your criteria ({json.dumps(validated_nlu.get('filters', {}))}). Try broadening the country or commodity filters."
+        is_spanish = any(w in query.lower() for w in ["dime", "muestra", "en ", "escombrera", "balsa", "donde", "hola", "que ", "de ", "los ", "las "])
+        if is_spanish:
+            return "No se han encontrado instalaciones mineras o depósitos en el espacio de datos europeo que coincidan con estos criterios de búsqueda. Prueba a ampliar los filtros de país o materias primas."
+        return "No European tailings or mining facilities were found matching your criteria in the data space. Try broadening the country or commodity filters."
 
     # Sample top 3 sites for summary
     top_sites = docs[:3]

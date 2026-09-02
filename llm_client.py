@@ -57,7 +57,6 @@ def call_llm(
         try:
             import google.generativeai as genai
             genai.configure(api_key=gemini_key)
-            
             generation_config = {"temperature": 0.0}
             if json_mode:
                 generation_config["response_mime_type"] = "application/json"
@@ -73,7 +72,32 @@ def call_llm(
             response = model.generate_content(user_prompt)
             return response.text
         except Exception as e:
-            print(f"[LLM Client Warning] Gemini call failed: {e}. Using intelligent mock parser.")
+            try:
+                import urllib.request
+                model_id = "gemini-1.5-pro" if "pro" in provider else "gemini-1.5-flash"
+                api_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={gemini_key}"
+                body = {
+                    "contents": [{"parts": [{"text": user_prompt}]}],
+                    "systemInstruction": {"parts": [{"text": system_prompt}]},
+                    "generationConfig": {"temperature": 0.0}
+                }
+                if json_mode:
+                    body["generationConfig"]["responseMimeType"] = "application/json"
+                req = urllib.request.Request(
+                    api_url,
+                    data=json.dumps(body).encode("utf-8"),
+                    headers={"Content-Type": "application/json"},
+                    method="POST"
+                )
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    res_json = json.loads(resp.read().decode("utf-8"))
+                    candidates = res_json.get("candidates", [])
+                    if candidates:
+                        parts = candidates[0].get("content", {}).get("parts", [])
+                        if parts:
+                            return parts[0].get("text", "")
+            except Exception as rest_err:
+                print(f"[LLM Client Warning] Gemini call failed: {rest_err}. Using intelligent mock parser.")
             
     elif provider == "openai" and openai_key:
         try:
@@ -83,13 +107,40 @@ def call_llm(
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ]
-            kwargs = {"model": "gpt-4o-mini", "messages": messages}
+            kwargs = {"model": "gpt-4o-mini", "messages": messages, "temperature": 0.0}
             if json_mode:
                 kwargs["response_format"] = {"type": "json_object"}
             resp = client.chat.completions.create(**kwargs)
             return resp.choices[0].message.content
         except Exception as e:
-            print(f"[LLM Client Warning] OpenAI call failed: {e}. Using intelligent mock parser.")
+            try:
+                import urllib.request
+                api_url = "https://api.openai.com/v1/chat/completions"
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {openai_key}"
+                }
+                body = {
+                    "model": "gpt-4o-mini",
+                    "messages": [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt}
+                    ],
+                    "temperature": 0.0
+                }
+                if json_mode:
+                    body["response_format"] = {"type": "json_object"}
+                req = urllib.request.Request(
+                    api_url,
+                    data=json.dumps(body).encode("utf-8"),
+                    headers=headers,
+                    method="POST"
+                )
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    res_json = json.loads(resp.read().decode("utf-8"))
+                    return res_json["choices"][0]["message"]["content"]
+            except Exception as rest_err:
+                print(f"[LLM Client Warning] OpenAI call failed: {rest_err}. Using intelligent mock parser.")
             
     # Intelligent, highly accurate NLU parser for standalone reviewer execution
     return mock_nlu_parse(user_prompt)

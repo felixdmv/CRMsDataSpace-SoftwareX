@@ -56,7 +56,10 @@ class SoftwareXHandler(SimpleHTTPRequestHandler):
                 api_key = payload.get("api_key", "")
                 
                 if api_key:
-                    os.environ["GEMINI_API_KEY"] = api_key
+                    if provider == "openai":
+                        os.environ["OPENAI_API_KEY"] = api_key
+                    else:
+                        os.environ["GEMINI_API_KEY"] = api_key
 
                 result = process_chat_message(query, provider=provider)
                 
