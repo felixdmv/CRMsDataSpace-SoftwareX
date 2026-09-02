@@ -150,9 +150,13 @@ def mock_nlu_parse(user_prompt: str) -> str:
     # 3. Storage Facility Types
     if any(k in prompt_lower for k in ["tailing", "tailings", "relave", "relaves", "balsa", "balsas", "pond", "ponds", "decantación", "decantacion"]):
         facility_types.extend(["tailings storage facility", "pond"])
-    if any(k in prompt_lower for k in ["escombrera", "escombreras", "dump", "dumps", "waste dump", "waste dumps"]):
+    if any(k in prompt_lower for k in ["dump", "dumps", "waste dump", "waste dumps", "vertedero", "vertederos"]):
         if "waste dump" not in facility_types:
             facility_types.append("waste dump")
+    if "escombrera" in prompt_lower or "escombreras" in prompt_lower:
+        if not any(k in prompt_lower for k in ["dime", "abandonadas", "inactivas", "diferencia", " y ", " and "]):
+            if "waste dump" not in facility_types:
+                facility_types.append("waste dump")
     if any(k in prompt_lower for k in ["stockpile", "stockpiles", "acopio", "acopios"]):
         if "stockpile" not in facility_types:
             facility_types.append("stockpile")

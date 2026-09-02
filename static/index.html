@@ -244,62 +244,173 @@
           <div id="map" class="w-full h-full bg-[#070a13]"></div>
           
           <!-- Floating Manual Filters Widget on Map Right Side -->
-          <div class="absolute top-3 right-3 z-[1000] bg-slate-900/90 border border-slate-800/90 backdrop-blur-md rounded-xl p-3 shadow-2xl w-64 pointer-events-auto">
+          <div id="manual-filter-widget" class="absolute top-3 right-3 z-[1000] bg-slate-900/95 border border-slate-800 backdrop-blur-md rounded-xl p-3 shadow-2xl w-72 pointer-events-auto">
             <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-800">
               <span class="text-[10.5px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                 🎛️ Spatial & Attribute Filters
               </span>
               <button type="button" onclick="resetManualFilters()" class="text-[9.5px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-2 py-0.5 rounded transition-all">
-                Reset
+                Reset All
               </button>
             </div>
-            <div class="space-y-2 text-[10.5px]">
-              <div>
-                <label class="text-[9.5px] text-slate-400 font-semibold block mb-0.5">Country (Europe):</label>
-                <select id="manual-filter-country" onchange="applyManualFilters()" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none">
-                  <option value="">All European Countries</option>
-                  <option value="spain">Spain</option>
-                  <option value="germany">Germany</option>
-                  <option value="sweden">Sweden</option>
-                  <option value="finland">Finland</option>
-                  <option value="france">France</option>
-                  <option value="portugal">Portugal</option>
-                  <option value="austria">Austria</option>
-                  <option value="poland">Poland</option>
-                  <option value="italy">Italy</option>
-                  <option value="greece">Greece</option>
-                  <option value="ireland">Ireland</option>
-                  <option value="czechia">Czechia</option>
-                </select>
+            
+            <div class="space-y-2.5 text-[10.5px]">
+              <!-- Country Multi-Select -->
+              <div class="relative">
+                <div class="flex items-center justify-between mb-0.5">
+                  <label class="text-[9.5px] text-slate-400 font-semibold">Country (Europe):</label>
+                  <span id="count-selected-countries" class="text-[9px] text-emerald-400 font-mono">All</span>
+                </div>
+                <button type="button" onclick="toggleFilterMenu('country')" class="w-full bg-slate-950 border border-slate-800 hover:border-slate-700 rounded px-2.5 py-1.5 text-left text-slate-200 flex items-center justify-between text-[11px] focus:outline-none">
+                  <span id="label-selected-countries" class="truncate">All European Countries</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div id="pills-selected-countries" class="flex flex-wrap gap-1 mt-1 empty:hidden"></div>
+                <div id="dropdown-menu-country" class="hidden absolute left-0 right-0 z-50 mt-1 bg-slate-950 border border-slate-700 rounded-lg p-2 max-h-40 overflow-y-auto space-y-1 shadow-2xl">
+                  <div class="grid grid-cols-2 gap-1 text-[10px]">
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="spain" onchange="toggleManualCheckbox('countries', 'spain')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Spain</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="portugal" onchange="toggleManualCheckbox('countries', 'portugal')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Portugal</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="germany" onchange="toggleManualCheckbox('countries', 'germany')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Germany</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="france" onchange="toggleManualCheckbox('countries', 'france')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>France</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="sweden" onchange="toggleManualCheckbox('countries', 'sweden')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Sweden</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="finland" onchange="toggleManualCheckbox('countries', 'finland')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Finland</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="poland" onchange="toggleManualCheckbox('countries', 'poland')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Poland</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="italy" onchange="toggleManualCheckbox('countries', 'italy')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Italy</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="austria" onchange="toggleManualCheckbox('countries', 'austria')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Austria</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="greece" onchange="toggleManualCheckbox('countries', 'greece')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Greece</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="ireland" onchange="toggleManualCheckbox('countries', 'ireland')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Ireland</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="czechia" onchange="toggleManualCheckbox('countries', 'czechia')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Czechia</span>
+                    </label>
+                  </div>
+                </div>
               </div>
-              <div>
-                <label class="text-[9.5px] text-slate-400 font-semibold block mb-0.5">CRM Metal / Commodity:</label>
-                <select id="manual-filter-commodity" onchange="applyManualFilters()" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none">
-                  <option value="">All Critical Raw Materials</option>
-                  <option value="lithium">Lithium (Li)</option>
-                  <option value="tungsten">Tungsten / Wolfram (W)</option>
-                  <option value="copper">Copper (Cu)</option>
-                  <option value="cobalt">Cobalt (Co)</option>
-                  <option value="rare earth elements">Rare Earth Elements (REE)</option>
-                  <option value="tin">Tin (Sn)</option>
-                  <option value="nickel">Nickel (Ni)</option>
-                  <option value="graphite">Natural Graphite</option>
-                  <option value="titanium">Titanium (Ti)</option>
-                </select>
+
+              <!-- Commodity Multi-Select -->
+              <div class="relative">
+                <div class="flex items-center justify-between mb-0.5">
+                  <label class="text-[9.5px] text-slate-400 font-semibold">CRM Metal / Commodity:</label>
+                  <span id="count-selected-commodities" class="text-[9px] text-amber-400 font-mono">All</span>
+                </div>
+                <button type="button" onclick="toggleFilterMenu('commodity')" class="w-full bg-slate-950 border border-slate-800 hover:border-slate-700 rounded px-2.5 py-1.5 text-left text-slate-200 flex items-center justify-between text-[11px] focus:outline-none">
+                  <span id="label-selected-commodities" class="truncate">All Critical Raw Materials</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div id="pills-selected-commodities" class="flex flex-wrap gap-1 mt-1 empty:hidden"></div>
+                <div id="dropdown-menu-commodity" class="hidden absolute left-0 right-0 z-50 mt-1 bg-slate-950 border border-slate-700 rounded-lg p-2 max-h-40 overflow-y-auto space-y-1 shadow-2xl">
+                  <div class="grid grid-cols-2 gap-1 text-[10px]">
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="tungsten" onchange="toggleManualCheckbox('commodities', 'tungsten')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Tungsten (W)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="lithium" onchange="toggleManualCheckbox('commodities', 'lithium')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Lithium (Li)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="cobalt" onchange="toggleManualCheckbox('commodities', 'cobalt')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Cobalt (Co)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="copper" onchange="toggleManualCheckbox('commodities', 'copper')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Copper (Cu)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="rare earth elements" onchange="toggleManualCheckbox('commodities', 'rare earth elements')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Rare Earth (REE)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="nickel" onchange="toggleManualCheckbox('commodities', 'nickel')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Nickel (Ni)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="tin" onchange="toggleManualCheckbox('commodities', 'tin')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Tin (Sn)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="tantalum" onchange="toggleManualCheckbox('commodities', 'tantalum')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Tantalum (Ta)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="graphite" onchange="toggleManualCheckbox('commodities', 'graphite')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Graphite</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="titanium" onchange="toggleManualCheckbox('commodities', 'titanium')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Titanium (Ti)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="pge" onchange="toggleManualCheckbox('commodities', 'pge')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>PGE (Pt)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="manganese" onchange="toggleManualCheckbox('commodities', 'manganese')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Manganese (Mn)</span>
+                    </label>
+                  </div>
+                </div>
               </div>
+
+              <!-- Storage Facility Type -->
               <div>
-                <label class="text-[9.5px] text-slate-400 font-semibold block mb-0.5">Storage Facility Type:</label>
-                <select id="manual-filter-facility" onchange="applyManualFilters()" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none">
+                <div class="flex items-center justify-between mb-0.5">
+                  <label class="text-[9.5px] text-slate-400 font-semibold">Storage Facility Type:</label>
+                  <span id="count-selected-facilities" class="text-[9px] text-slate-400 font-mono">All</span>
+                </div>
+                <select id="manual-filter-facility" onchange="handleSelectFacility(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none text-[11px]">
                   <option value="">All Facility Types</option>
-                  <option value="dump">Waste Dump</option>
-                  <option value="tailings">Tailings Storage Facility (TSF)</option>
+                  <option value="waste dump">Waste Dump</option>
+                  <option value="tailings storage facility">Tailings Storage Facility (TSF)</option>
                   <option value="stockpile">Mineral Stockpile</option>
                   <option value="pond">Settling Pond</option>
                 </select>
               </div>
+
+              <!-- Operational Status -->
               <div>
-                <label class="text-[9.5px] text-slate-400 font-semibold block mb-0.5">Operational Status:</label>
-                <select id="manual-filter-status" onchange="applyManualFilters()" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none">
+                <div class="flex items-center justify-between mb-0.5">
+                  <label class="text-[9.5px] text-slate-400 font-semibold">Operational Status:</label>
+                  <span id="count-selected-statuses" class="text-[9px] text-slate-400 font-mono">All</span>
+                </div>
+                <select id="manual-filter-status" onchange="handleSelectStatus(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none text-[11px]">
                   <option value="">All Statuses</option>
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
@@ -3273,39 +3384,191 @@
     let currentProvider = "mock";
 
     // ==========================================
-    // MANUAL FILTERS ON MAP RIGHT SIDE
+    // MULTI-SELECTION FILTERS & BIDIRECTIONAL SYNC
     // ==========================================
-    function applyManualFilters() {
-      const country = document.getElementById('manual-filter-country')?.value.toLowerCase() || '';
-      const commodity = document.getElementById('manual-filter-commodity')?.value.toLowerCase() || '';
-      const status = document.getElementById('manual-filter-status')?.value.toLowerCase() || '';
-      const facility = document.getElementById('manual-filter-facility')?.value.toLowerCase() || '';
+    let filterState = {
+      countries: [],
+      commodities: [],
+      facility: '',
+      status: ''
+    };
 
-      const activeFilters = [];
-      if (country) activeFilters.push({ label: 'Country', values: [country] });
-      if (commodity) activeFilters.push({ label: 'Commodity', values: [commodity] });
-      if (status) activeFilters.push({ label: 'Status', values: [status] });
-      if (facility) activeFilters.push({ label: 'Facility', values: [facility] });
+    function toggleFilterMenu(type) {
+      const menu = document.getElementById(`dropdown-menu-${type}`);
+      if (!menu) return;
+      const isHidden = menu.classList.contains('hidden');
+      document.querySelectorAll('[id^="dropdown-menu-"]').forEach(el => el.classList.add('hidden'));
+      if (isHidden) {
+        menu.classList.remove('hidden');
+      }
+    }
+
+    // Close menus when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#manual-filter-widget')) {
+        document.querySelectorAll('[id^="dropdown-menu-"]').forEach(el => el.classList.add('hidden'));
+      }
+    });
+
+    function toggleManualCheckbox(category, val) {
+      val = val.toLowerCase().trim();
+      const idx = filterState[category].indexOf(val);
+      if (idx >= 0) {
+        filterState[category].splice(idx, 1);
+      } else {
+        filterState[category].push(val);
+      }
+      updateFilterUI();
+      applyManualFilters();
+    }
+
+    function removeFilterItem(category, val) {
+      val = val.toLowerCase().trim();
+      const idx = filterState[category].indexOf(val);
+      if (idx >= 0) {
+        filterState[category].splice(idx, 1);
+      }
+      updateFilterUI();
+      applyManualFilters();
+    }
+
+    function handleSelectFacility(val) {
+      filterState.facility = val.toLowerCase().trim();
+      updateFilterUI();
+      applyManualFilters();
+    }
+
+    function handleSelectStatus(val) {
+      filterState.status = val.toLowerCase().trim();
+      updateFilterUI();
+      applyManualFilters();
+    }
+
+    function updateFilterUI() {
+      // 1. Country checkboxes & pills
+      const countryCheckboxes = document.querySelectorAll('.checkbox-country');
+      countryCheckboxes.forEach(cb => {
+        cb.checked = filterState.countries.includes(cb.value.toLowerCase());
+      });
+      const countryLabel = document.getElementById('label-selected-countries');
+      const countryCount = document.getElementById('count-selected-countries');
+      const countryPills = document.getElementById('pills-selected-countries');
+      if (filterState.countries.length === 0) {
+        if (countryLabel) countryLabel.textContent = 'All European Countries';
+        if (countryCount) countryCount.textContent = 'All';
+        if (countryPills) countryPills.innerHTML = '';
+      } else {
+        const formatted = filterState.countries.map(c => c.charAt(0).toUpperCase() + c.slice(1));
+        if (countryLabel) countryLabel.textContent = formatted.join(', ') + ` (${formatted.length})`;
+        if (countryCount) countryCount.textContent = `${formatted.length} active`;
+        if (countryPills) {
+          countryPills.innerHTML = formatted.map(c => `
+            <span class="inline-flex items-center gap-1 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-[9.5px] px-2 py-0.5 rounded font-mono">
+              ${c}
+              <button type="button" onclick="removeFilterItem('countries', '${c.toLowerCase()}')" class="hover:text-white font-bold ml-0.5">✕</button>
+            </span>
+          `).join('');
+        }
+      }
+
+      // 2. Commodity checkboxes & pills
+      const commCheckboxes = document.querySelectorAll('.checkbox-commodity');
+      commCheckboxes.forEach(cb => {
+        cb.checked = filterState.commodities.includes(cb.value.toLowerCase());
+      });
+      const commLabel = document.getElementById('label-selected-commodities');
+      const commCount = document.getElementById('count-selected-commodities');
+      const commPills = document.getElementById('pills-selected-commodities');
+      if (filterState.commodities.length === 0) {
+        if (commLabel) commLabel.textContent = 'All Critical Raw Materials';
+        if (commCount) commCount.textContent = 'All';
+        if (commPills) commPills.innerHTML = '';
+      } else {
+        const formatted = filterState.commodities.map(c => c.charAt(0).toUpperCase() + c.slice(1));
+        if (commLabel) commLabel.textContent = formatted.join(', ') + ` (${formatted.length})`;
+        if (commCount) commCount.textContent = `${formatted.length} active`;
+        if (commPills) {
+          commPills.innerHTML = formatted.map(c => `
+            <span class="inline-flex items-center gap-1 bg-amber-950/80 border border-amber-800 text-amber-300 text-[9.5px] px-2 py-0.5 rounded font-mono">
+              ${c}
+              <button type="button" onclick="removeFilterItem('commodities', '${c.toLowerCase()}')" class="hover:text-white font-bold ml-0.5">✕</button>
+            </span>
+          `).join('');
+        }
+      }
+
+      // 3. Facility Select & count
+      const facSelect = document.getElementById('manual-filter-facility');
+      const facCount = document.getElementById('count-selected-facilities');
+      if (facSelect) facSelect.value = filterState.facility;
+      if (facCount) facCount.textContent = filterState.facility ? '1 active' : 'All';
+
+      // 4. Status Select & count
+      const statSelect = document.getElementById('manual-filter-status');
+      const statCount = document.getElementById('count-selected-statuses');
+      if (statSelect) statSelect.value = filterState.status;
+      if (statCount) statCount.textContent = filterState.status ? '1 active' : 'All';
+    }
+
+    function applyManualFilters() {
+      const activeBadges = [];
+      if (filterState.countries.length > 0) {
+        activeBadges.push({ label: 'Country', values: filterState.countries.map(c => c.charAt(0).toUpperCase() + c.slice(1)) });
+      }
+      if (filterState.commodities.length > 0) {
+        activeBadges.push({ label: 'Commodity', values: filterState.commodities.map(c => c.charAt(0).toUpperCase() + c.slice(1)) });
+      }
+      if (filterState.facility) {
+        activeBadges.push({ label: 'Facility', values: [filterState.facility] });
+      }
+      if (filterState.status) {
+        activeBadges.push({ label: 'Status', values: [filterState.status] });
+      }
 
       const matching = MINING_SITES.filter(s => {
-        if (country && (s.country || '').toLowerCase() !== country) return false;
-        if (commodity && !(s.commodities || []).some(c => c.toLowerCase().includes(commodity))) return false;
-        if (status && (s.project_status || '').toLowerCase() !== status) return false;
-        if (facility && !(s.facility_type || '').toLowerCase().includes(facility)) return false;
+        const siteCountry = (s.country || '').toLowerCase();
+        const siteComms = (s.commodities || []).map(c => c.toLowerCase());
+        const siteFacility = (s.storage_facility_type || s.facility_type || '').toLowerCase();
+        const siteStatus = (s.project_status || '').toLowerCase();
+
+        if (filterState.countries.length > 0 && !filterState.countries.includes(siteCountry)) return false;
+        if (filterState.commodities.length > 0 && !filterState.commodities.some(c => siteComms.some(sc => sc.includes(c)))) return false;
+        if (filterState.facility && !siteFacility.includes(filterState.facility)) return false;
+        if (filterState.status && siteStatus !== filterState.status) return false;
         return true;
       });
 
       renderMarkers(matching);
-      updateActiveFilterBadges(activeFilters, matching.length);
+      updateActiveFilterBadges(activeBadges, matching.length);
     }
 
     function resetManualFilters() {
-      ['country', 'commodity', 'status', 'facility'].forEach(id => {
-        const el = document.getElementById(`manual-filter-${id}`);
-        if (el) el.value = '';
-      });
+      filterState = {
+        countries: [],
+        commodities: [],
+        facility: '',
+        status: ''
+      };
+      updateFilterUI();
       renderMarkers(MINING_SITES);
       updateActiveFilterBadges([], MINING_SITES.length);
+    }
+
+    function syncManualFiltersFromNLU(nluFilters, activeMapFilters = []) {
+      if (!nluFilters || typeof nluFilters !== 'object') {
+        nluFilters = {};
+      }
+
+      filterState.countries = (nluFilters.countries || []).map(c => c.toLowerCase().trim());
+      filterState.commodities = (nluFilters.commodities || []).map(c => c.toLowerCase().trim());
+      
+      const facs = (nluFilters.storage_facility_types || []);
+      filterState.facility = facs.length > 0 ? facs[0].toLowerCase().trim() : '';
+      
+      const stats = (nluFilters.project_status || []);
+      filterState.status = stats.length > 0 ? stats[0].toLowerCase().trim() : '';
+
+      updateFilterUI();
     }
 
     // ==========================================
@@ -3380,6 +3643,7 @@
 
       // 3. Render Initial Markers across Europe
       renderMarkers();
+      updateFilterUI();
       if (MINING_SITES.length > 0) {
         selectSite(MINING_SITES[0].id);
       }
@@ -3680,7 +3944,11 @@
         // 6. Update Active Map Filter Badges over Map Header
         updateActiveFilterBadges(data.active_map_filters || [], matchedIds.length);
 
-        // 7. Update Solr Engine Inspector Panel
+        // 7. Synchronize Manual Filters Widget on Map Right Side
+        const nluFilters = data.filters || (data.extracted_json && data.extracted_json.filters) || {};
+        syncManualFiltersFromNLU(nluFilters, data.active_map_filters || []);
+
+        // 8. Update Solr Engine Inspector Panel
         updateInspectorDisplay(data);
 
       } catch (err) {

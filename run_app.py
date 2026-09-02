@@ -85,6 +85,9 @@ class SoftwareXHandler(SimpleHTTPRequestHandler):
                     "solr_query": result.get("solr_query", {}),
                     "solr_facets": {"facet_counts": {"facet_fields": result.get("facets", {})}},
                     "ner_entities": {"ner_extraction": {"text": query, "entities": result.get("active_map_filters", [])}},
+                    "active_map_filters": result.get("active_map_filters", []),
+                    "filters": result.get("extracted_json", {}).get("filters", {}),
+                    "extracted_json": result.get("extracted_json", {}),
                     "matched_ids": result.get("matched_ids", []),
                     "docs": docs,
                     "llm1_prompt": f"Executing process_chat_message(query='{query}', provider='{provider}')"
