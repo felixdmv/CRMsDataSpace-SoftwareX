@@ -1,0 +1,188 @@
+{
+  "provider": "rules",
+  "timestamp": 1780401794.3427649,
+  "total_test_cases": 7,
+  "passed_test_cases": 7,
+  "success_rate": 1.0,
+  "average_score": 0.9814,
+  "average_time_seconds": 0.0,
+  "results": [
+    {
+      "id": "TC_001",
+      "query": "Dime escombreras de carbón en Asturias",
+      "response_text": "He encontrado 3 instalación(es) en el Espacio de Datos que coincide(n) con tu búsqueda:\n\n* **Arroyo de la Nicolasa**: Se trata de una escombrera (Principado de Asturias), en la región de Asturias, gestionada por la empresa Hunosa. Contiene carbón / hulla. Actualmente no está restaurada y se han registrado surgencias de agua. Existe registro de surgencias de agua asociadas a la escombrera.\n* **Aguilar - Pumardongo**: Se trata de una escombrera (Principado de Asturias), en la región de Asturias, gestionada por la empresa Hunosa. Contiene carbón / hulla. Actualmente no está restaurada y se han registrado surgencias de agua. La escombrera se emplaza en un terreno de monte bajo. Existe registro de surgencias de agua asociadas a la escombrera. Escombrera en proceso de relleno.\n* **La Casona**: Se trata de una escombrera (Principado de Asturias), en la región de Asturias, gestionada por la empresa Hunosa. Contiene carbón / hulla. Actualmente no está restaurada y se han registrado surgencias de agua. La escombrera se emplaza en un terreno de monte bajo. Existe registro de surgencias de agua asociadas a la escombrera. Los datos indican actividad reciente en la escombrera, sin poder determinar el tiempo desde su último depósito.",
+      "api_results_count": 3,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo",
+          "La Casona"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "carbón",
+          "asturias",
+          "hunosa"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.0
+    },
+    {
+      "id": "TC_002",
+      "query": "Qué escombreras tiene HUNOSA?",
+      "response_text": "He encontrado 3 instalación(es) en el Espacio de Datos que coincide(n) con tu búsqueda:\n\n* **Arroyo de la Nicolasa**: Se trata de una escombrera (Principado de Asturias), en la región de Asturias, gestionada por la empresa Hunosa. Contiene carbón / hulla. Actualmente no está restaurada y se han registrado surgencias de agua. Existe registro de surgencias de agua asociadas a la escombrera.\n* **Aguilar - Pumardongo**: Se trata de una escombrera (Principado de Asturias), en la región de Asturias, gestionada por la empresa Hunosa. Contiene carbón / hulla. Actualmente no está restaurada y se han registrado surgencias de agua. La escombrera se emplaza en un terreno de monte bajo. Existe registro de surgencias de agua asociadas a la escombrera. Escombrera en proceso de relleno.\n* **La Casona**: Se trata de una escombrera (Principado de Asturias), en la región de Asturias, gestionada por la empresa Hunosa. Contiene carbón / hulla. Actualmente no está restaurada y se han registrado surgencias de agua. La escombrera se emplaza en un terreno de monte bajo. Existe registro de surgencias de agua asociadas a la escombrera. Los datos indican actividad reciente en la escombrera, sin poder determinar el tiempo desde su último depósito.",
+      "api_results_count": 3,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo",
+          "La Casona"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "hunosa"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.0
+    },
+    {
+      "id": "TC_003",
+      "query": "Busca el proyecto San Nicolás",
+      "response_text": "He encontrado 1 instalación(es) en el Espacio de Datos que coincide(n) con tu búsqueda:\n\n* **Arroyo de la Nicolasa**: Se trata de una escombrera (Principado de Asturias), en la región de Asturias, gestionada por la empresa Hunosa. Contiene carbón / hulla. Actualmente no está restaurada y se han registrado surgencias de agua. Existe registro de surgencias de agua asociadas a la escombrera.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "nicolás"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.0
+    },
+    {
+      "id": "TC_004",
+      "query": "Hay escombreras sin restaurar con surgencias de agua?",
+      "response_text": "He encontrado 3 instalación(es) en el Espacio de Datos que coincide(n) con tu búsqueda:\n\n* **Arroyo de la Nicolasa**: Se trata de una escombrera (Principado de Asturias), en la región de Asturias, gestionada por la empresa Hunosa. Contiene carbón / hulla. Actualmente no está restaurada y se han registrado surgencias de agua. Existe registro de surgencias de agua asociadas a la escombrera.\n* **Aguilar - Pumardongo**: Se trata de una escombrera (Principado de Asturias), en la región de Asturias, gestionada por la empresa Hunosa. Contiene carbón / hulla. Actualmente no está restaurada y se han registrado surgencias de agua. La escombrera se emplaza en un terreno de monte bajo. Existe registro de surgencias de agua asociadas a la escombrera. Escombrera en proceso de relleno.\n* **La Casona**: Se trata de una escombrera (Principado de Asturias), en la región de Asturias, gestionada por la empresa Hunosa. Contiene carbón / hulla. Actualmente no está restaurada y se han registrado surgencias de agua. La escombrera se emplaza en un terreno de monte bajo. Existe registro de surgencias de agua asociadas a la escombrera. Los datos indican actividad reciente en la escombrera, sin poder determinar el tiempo desde su último depósito.",
+      "api_results_count": 3,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo",
+          "La Casona"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 0.6666666666666666,
+        "matched_keywords": [
+          "agua",
+          "surgencia"
+        ],
+        "missing_keywords": [
+          "restaurar"
+        ],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 0.87,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.0
+    },
+    {
+      "id": "TC_005",
+      "query": "Dime escombreras de cobre en Andalucía",
+      "response_text": "He encontrado 1 instalación(es) en el Espacio de Datos que coincide(n) con tu búsqueda:\n\n* **Riotinto Project**: Se trata de una balsa de estériles, en la región de Andalucia, gestionada por la empresa Atalaya Mining. Contiene cobre, plata, oro. Mina activa de cobre. Las balsas de estériles contienen trazas de metales preciosos.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Riotinto Project"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "cobre",
+          "andalucía",
+          "atalaya"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.0
+    },
+    {
+      "id": "TC_006",
+      "query": "Busca escombreras de wolframio en Castilla y León",
+      "response_text": "He encontrado 1 instalación(es) en el Espacio de Datos que coincide(n) con tu búsqueda:\n\n* **Los Santos**: Se trata de una escombrera, en la región de Castilla Y Leon, gestionada por la empresa Almonty Industries. Contiene wolframio / tungsteno. Mina de wolframio (tungsteno) en Salamanca. Actualmente en mantenimiento, estudiando re-procesamiento de estériles.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Los Santos"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "wolframio",
+          "tungsteno",
+          "salamanca"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.0
+    },
+    {
+      "id": "TC_007",
+      "query": "Hay proyectos de litio en Extremadura?",
+      "response_text": "He encontrado 1 instalación(es) en el Espacio de Datos que coincide(n) con tu búsqueda:\n\n* **San José Valdeflórez**: Se trata de una balsa de estériles, en la región de Extremadura, gestionada por la empresa Infinity Lithium. Contiene litio. Gran proyecto de litio cerca de Cáceres. En fase de desarrollo, diseñado con almacenamiento subterráneo de relaves.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "San José Valdeflórez"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "litio",
+          "cáceres"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.0
+    }
+  ]
+}

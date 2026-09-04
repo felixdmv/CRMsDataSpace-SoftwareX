@@ -1,0 +1,242 @@
+%% SoftwareX software-update article template version 6 (March 2026)
+%__________________________________________________
+% IMPORTANT: 
+% Before you complete this template, a few important points to note:
+% •	This template is for an update to an existing SoftwareX article. If you are submitting an Original Software Publication (OSP), please use the SoftwareX submission template in Word or LaTeX. 
+% •	We will only consider software article updates submitted using this template.
+% •	It is mandatory to publicly share the code/software referred to in your software article. You’ll find information on our software sharing criteria in the SoftwareX Guide for Authors.  https://www.elsevier.com/journals/softwarex/2352-7110/guide-for-authors
+% •	It is important to consult the Guide for Authors when preparing your manuscript; it highlights mandatory requirements and is packed with useful advice.
+
+% Still got questions? Email our editorial team at softwarex@elsevier.com.
+
+% Now you are ready to fill in the template below. As you complete each section, please carefully read the associated instructions. All sections are mandatory, unless market optional.
+
+%_____________________________________________________
+
+%% Copyright 2007, 2008, 2009 Elsevier Ltd
+%% 
+%% This file is part of the 'Elsarticle Bundle'.
+%% ---------------------------------------------
+%% 
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%% 
+
+%% Template article for Elsevier's document class `elsarticle'
+%% with numbered style bibliographic references
+%% SP 2008/03/01
+
+\documentclass[preprint,12pt, a4paper]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% For including figures, graphicx.sty has been loaded in
+%% elsarticle.cls. If you prefer to use the old commands
+%% please give \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers.
+\usepackage{lineno}
+%% the hyperref package is used to introduce urls (useful for the metadata table
+\usepackage{hyperref}
+% the ulem package is used to format the underlined text in the template, it can be removed once the authors have removed all underlined text 
+\usepackage{ulem}
+
+\usepackage{float}
+\restylefloat{table}
+
+\journal{SoftwareX}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\noindent
+\textbf{SoftwareX software-update article template version 6 (March 2026)}
+\\
+\\
+ IMPORTANT: 
+ Before you complete this template, a few important points to note:
+ \begin{itemize}
+ \item This template is for an update to an existing SoftwareX article. If you are submitting an Original Software Publication (OSP), please use the SoftwareX submission template in Word or LaTeX. 
+\item The format of a software article is very different to a traditional research article. To help you write yours, we have created this template. We will only consider software articles submitted using this template. Any submission that deviates widely will likely face desk rejection.
+\item It is mandatory to publicly share the code/software referred to in your software article. You’ll find information on our software sharing criteria in the SoftwareX Guide for Authors.  \url{https://www.elsevier.com/journals/softwarex/2352-7110/guide-for-authors}
+\item It’s important to consult the Guide for Authors when preparing your manuscript; it highlights mandatory requirements and is packed with useful advice. Here are some key ones (please read):
+	\begin{itemize}
+    \item We only accept GitHub repositories within Metadata Tables. This is required for forking to our SoftwareX repository if your paper is published. We are unable to accept other repositories.
+	\item GitHub repositories must have a well-documented README.md file, and a Licence.txt file. Your paper will be returned if these are missing.
+	\item We require the main templated sections outlined below. Your paper will be returned if these are missing.
+    \end{itemize}
+
+
+\end{itemize}
+
+\noindent
+Still have questions? Email our editorial team at softwarex@elsevier.com.
+\\
+\\
+\noindent
+Now you are ready to fill in the template below. As you complete each section, please carefully read the associated instructions. All sections are mandatory, unless market optional.
+\\
+\\
+\textbf{Once you have completed the template, delete this line and everything above it before submitting your article. In addition, please delete the instructions in the template (any underlined text below, i.e. using \textbackslash $uline$ and the related \textbackslash$usepackage\{ulem\}$ package)).}
+
+
+
+\newpage
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for theassociated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for theassociated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+\title{Version \uline{$[$number$]$- $[$title of your first SoftwareX publication$]$}}
+% You must use the format “Version [number] - [title of your first SoftwareX publication]”
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{}
+%% \address[label1]{}
+%% \address[label2]{}
+
+\author[label1]{\uline{Name}\corref{cor1}}
+\ead{email@address.com}
+\cortext[cor1]{corresponding author}
+\address[label1]{\uline{Affiliation, address}}
+
+\begin{abstract}
+\uline{Text of abstract Ca. 100 words}
+
+\end{abstract}
+
+
+\begin{keyword}
+%keywords here, maximum 6, in the form: keyword \sep keyword
+% example: 
+\uline{keyword 1 \sep keyword 2 \sep keyword 3}
+
+%% PACS codes here, in the form: \PACS code \sep code
+
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+
+\end{keyword}
+
+
+\end{frontmatter}
+
+\section*{Refers to}
+\uline{Please provide the citation of your first SoftwareX publication, including the DOI, so that we can link your software-update to your first publication. The DOI can be found below the list of authors and above the abstract in your article, as per the screenshot below:}
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{SOFTX_SD}
+\end{figure}
+
+
+\section*{Metadata}
+\label{metadata}
+\uline{ This ancillary data table is required for the sub-version of the codebase. Please replace the text in the right column with the correct information about your current code and leave the left column untouched. }
+
+\begin{table}[H]
+\begin{tabular}{|l|p{6.5cm}|p{6.5cm}|}
+\hline
+\uline{Nr.} & \uline{Code metadata description} & \uline{Please fill in this column} \\
+
+\hline
+C1 & Current code version & \uline{For example v42} \\
+\hline
+C2 & Permanent link to code/repository used for this code version & \uline{For example:} \url{https://github.com/mozart/mozart2} \\
+\hline
+C3 & Legal Code License   & \uline{All software and code must be released under one of the pre-approved licenses listed in the Guide for Authors, such as Apache License, GNU General Public License (GPL) or MIT License. Write the name of the license you’ve chosen here.} \\
+\hline
+C4 & Code versioning system used & \uline{For example svn, git, mercurial, etc. put none if none }\\
+\hline
+C5 & Software code languages, tools, and services used & \uline{For example C++, python, r, MPI, OpenCL, etc.} \\
+\hline
+C6 & Compilation requirements, operating environments \& dependencies & \\
+\hline
+C7 & If available Link to developer documentation/manual & \uline{For example:} \url{http://mozart.github.io/documentation/} \\
+\hline
+C8 & Support email for questions & \\
+\hline
+\end{tabular}
+
+ 
+\end{table}
+
+
+\linenumbers
+
+%% main text
+
+
+%_______________
+\section{Description of the software-update}
+\label{Description of the software-update}
+
+\uline{You are welcome to write up to two pages of text that describes your software-update. } 
+
+
+%_________________
+\section*{Acknowledgements}
+\label{acknowledgements}
+\uline{Optional. You can use this section to acknowledge colleagues who don’t qualify as a co-author but helped you in some way.}  
+
+%_________________
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+%% \section{}
+%% \label{}
+
+%_________________
+%% References:
+%% If you have bibdatabase file and want bibtex to generate the
+%% bibitems, please use
+%%  \bibliographystyle{elsarticle-num} 
+%%  \bibliography{<your bibdatabase>}
+%% else use the following coding to input the bibitems directly in the TeX file.
+
+\begin{thebibliography}{00}
+%% \bibitem{}
+%% Text of bibliographic item
+% Example:
+\bibitem{}
+\uline{Example: Référence 1.\\ If the software repository you used supplied a DOI or another Persistent IDentifier (PID), please add a reference for your software here. For more guidance on software citation, please see our guide for authors or this article on the essentials of software citation by FORCE 11, of which Elsevier is a member: \url{https://f1000research.com/articles/9-1257/v2.}}
+
+\end{thebibliography}
+%__________________
+
+\end{document}
+\endinput
+%%
+%% End of file `SoftwareX_article_template.tex'.
+

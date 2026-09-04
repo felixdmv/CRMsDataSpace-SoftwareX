@@ -1,0 +1,707 @@
+=== RUN START 2026-04-06T12:19:48.266688 ===
+
+--- QUESTION 1 ---
+What materials are present in the waste facility?
+
+Question: What materials are present in the waste facility?
+
+Retrieved chunks:
+1. pdfs\2023LUGTechnicalReport.pdf page 264 chunk 1 score=0.8491
+   ffice/Dry building  • Main office building  • Electrical room and control room  • Workshop  • Canteen  • First aid station and fire station  • Laboratory  • Warehouse and laydown area  • Short term concentrate container storage  • Permanent camp  • Greenhouse  • Communications systems  • Security ac...
+
+2. pdfs\2023LUGTechnicalReport.pdf page 240 chunk 2 score=0.8438
+   years.  20.4.6 Other Waste Materials Reporting to the TSF  The only other waste material to be placed in the TSF is sludge from the water treatment plant, and this  has been included in the storage volume estimates. Further testing on sludge samples should be completed  by Aurelian to confirm the se...
+
+3. pdfs\2023LUGTechnicalReport.pdf page 23 chunk 4 score=0.8430
+   ............... 20-10  20.4.6 Other Waste Materials Reporting to the TSF ................................................ 20-11  20.4.7 Stage Construction and TSF Current Condition ........................................... 20-11  20.4.8 Instrumentation and Monitoring .................................
+
+4. pdfs\2023LUGTechnicalReport.pdf page 232 chunk 3 score=0.8337
+   rmal operation, biologists assist to rescue species  that interact with the mine operation, and they are relocated in the surrounding forest.   Waste Management takes place in all the infrastructures of the mine operation. A waste management  center was built to temporary store the generated classif...
+
+5. pdfs\2023LUGTechnicalReport.pdf page 23 chunk 2 score=0.8316
+   ............................................................................... 20-4  20.4 Tailings Storage Facility ................................................................................. 20-4  20.4.1 Introduction ..............................................................................
+
+6. pdfs\2023LUGTechnicalReport.pdf page 23 chunk 3 score=0.8301
+   ......................................... 20-5  20.4.3 Tailings Characteristics ................................................................................... 20-8  20.4.4 Design ............................................................................................................. 20-9  ...
+
+[INFO] Loading model google/flan-t5-base on CPU (device_map='cpu', torch_dtype='auto')
+[WARN] AutoModelForCausalLM load failed: Unrecognized configuration class <class 'transformers.models.t5.configuration_t5.T5Config'> for this kind of AutoModel: AutoModelForCausalLM.
+Model type should be one of AfmoeConfig, ApertusConfig, ArceeConfig, AriaTextConfig, BambaConfig, BartConfig, BertConfig, BertGenerationConfig, BigBirdConfig, BigBirdPegasusConfig, BioGptConfig, BitNetConfig, BlenderbotConfig, BlenderbotSmallConfig, BloomConfig, BltConfig, CamembertConfig, LlamaConfig, CodeGenConfig, CohereConfig, Cohere2Config, CpmAntConfig, CTRLConfig, CwmConfig, Data2VecTextConfig, DbrxConfig, DeepseekV2Config, DeepseekV3Config, DiffLlamaConfig, DogeConfig, Dots1Config, ElectraConfig, Emu3Config, ErnieConfig, Ernie4_5Config, Ernie4_5_MoeConfig, Exaone4Config, ExaoneMoeConfig, FalconConfig, FalconH1Config, FalconMambaConfig, FlexOlmoConfig, FuyuConfig, GemmaConfig, Gemma2Config, Gemma3Config, Gemma3TextConfig, Gemma3nConfig, Gemma3nTextConfig, Gemma4Config, Gemma4TextConfig, GitConfig, GlmConfig, Glm4Config, Glm4MoeConfig, Glm4MoeLiteConfig, GlmMoeDsaConfig, GotOcr2Config, GPT2Config, GPT2Config, GPTBigCodeConfig, GPTNeoConfig, GPTNeoXConfig, GPTNeoXJapaneseConfig, GptOssConfig, GPTJConfig, GraniteConfig, GraniteMoeConfig, GraniteMoeHybridConfig, GraniteMoeSharedConfig, HeliumConfig, HunYuanDenseV1Config, HunYuanMoEV1Config, Jais2Config, JambaConfig, JetMoeConfig, Lfm2Config, Lfm2MoeConfig, LlamaConfig, Llama4Config, Llama4TextConfig, LongcatFlashConfig, MambaConfig, Mamba2Config, MarianConfig, MBartConfig, MegatronBertConfig, MiniMaxConfig, MiniMaxM2Config, MinistralConfig, Ministral3Config, MistralConfig, MixtralConfig, MllamaConfig, ModernBertDecoderConfig, MoshiConfig, MptConfig, MusicgenConfig, MusicgenMelodyConfig, MvpConfig, NanoChatConfig, NemotronConfig, NemotronHConfig, OlmoConfig, Olmo2Config, Olmo3Config, OlmoHybridConfig, OlmoeConfig, OpenAIGPTConfig, OPTConfig, PegasusConfig, PersimmonConfig, PhiConfig, Phi3Config, Phi4MultimodalConfig, PhimoeConfig, PLBartConfig, ProphetNetConfig, Qwen2Config, Qwen2MoeConfig, Qwen3Config, Qwen3_5Config, Qwen3_5MoeConfig, Qwen3_5MoeTextConfig, Qwen3_5TextConfig, Qwen3MoeConfig, Qwen3NextConfig, RecurrentGemmaConfig, ReformerConfig, RemBertConfig, RobertaConfig, RobertaPreLayerNormConfig, RoCBertConfig, RoFormerConfig, RwkvConfig, SeedOssConfig, SmolLM3Config, SolarOpenConfig, StableLmConfig, Starcoder2Config, TrOCRConfig, VaultGemmaConfig, WhisperConfig, XGLMConfig, XLMConfig, XLMRobertaConfig, XLMRobertaXLConfig, XLNetConfig, xLSTMConfig, XmodConfig, YoutuConfig, ZambaConfig, Zamba2Config.. Trying Seq2Seq model class.
+[INFO] Loaded as Seq2Seq LM: google/flan-t5-base
+[DEBUG] generate returned type: <class 'torch.Tensor'>
+Answer:
+Waste storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage
+facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities
+Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste
+storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities
+Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste
+storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities
+Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste
+storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities
+Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste
+storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities
+Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste
+storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities
+Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste
+storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities
+Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste
+storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities
+Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste
+storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities
+Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste
+storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities
+Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste
+storage facilities Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities
+Stockpiles TSF Waste storage facilities Stockpiles TSF Waste storage facilities Stockpiles T
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 264 chunk 1 (score=0.8491)
+ffice/Dry building 
+• Main office building 
+• Electrical room and control room 
+• Workshop 
+• Canteen 
+• First aid station and fire station 
+• Laboratory 
+• Warehouse and laydown area 
+• Short term concentrate container storage 
+• Permanent camp 
+• Greenhouse 
+• Communications systems 
+• Security access control at the main gate along the access road and at the process plant. Only 
+authorized personnel are permitted on site. 
+• Waste storage facilities 
+• Stockpiles 
+• TSF
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 240 chunk 2 (score=0.8438)
+years. 
+20.4.6 Other Waste Materials Reporting to the TSF 
+The only other waste material to be placed in the TSF is sludge from the water treatment plant, and this 
+has been included in the storage volume estimates. Further testing on sludge samples should be completed 
+by Aurelian to confirm the settling and geochemical characteristics of this materi al and its impact on the 
+tailings behaviour and storage, although the total volume is small compared to the tailings volume.  
+Site sediment mate
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 4 (score=0.8430)
+............... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ................................................ 20-11 
+20.4.7 Stage Construction and TSF Current Condition ........................................... 20-11 
+20.4.8 Instrumentation and Monitoring .................................................................... 20-11 
+20.4.9 Operating Philosophy .................................................................................... 20-12 
+20.4.10 Design Basis .............
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 232 chunk 3 (score=0.8337)
+rmal operation, biologists assist to rescue species 
+that interact with the mine operation, and they are relocated in the surrounding forest.  
+Waste Management takes place in all the infrastructures of the mine operation. A waste management 
+center was built to temporary store the generated classified waste. Hazardous waste is managed through 
+a certified company that transports, treats, and provides final disposal . Non-hazardous waste that is non-
+recyclable is sent to the Yantzaza Municipali
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 2 (score=0.8316)
+............................................................................... 20-4 
+20.4 Tailings Storage Facility ................................................................................. 20-4 
+20.4.1 Introduction ..................................................................................................... 20-4 
+20.4.2 Site Conditions and Investigations .................................................................. 20-5 
+20.4.3 Tailings Characteristics ....................
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 3 (score=0.8301)
+......................................... 20-5 
+20.4.3 Tailings Characteristics ................................................................................... 20-8 
+20.4.4 Design ............................................................................................................. 20-9 
+20.4.5 Storage Capacity ........................................................................................... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ...........................
+------------------------------------------------------------
+
+[stderr]
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 199/199 [00:00<00:00, 6180.97it/s]
+[1mBertModel LOAD REPORT[0m from: BAAI/bge-small-en
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Loading weights:   0%|          | 0/282 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 282/282 [00:00<00:00, 5639.90it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+Token indices sequence length is longer than the specified maximum sequence length for this model (861 > 512). Running this sequence through the model will result in indexing errors
+The following generation flags are not valid and may be ignored: ['temperature']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+
+------------------------------------------------------------
+--- QUESTION 2 ---
+List all waste materials placed into the TSF and short descriptions.
+
+Question: List all waste materials placed into the TSF and short descriptions.
+
+Retrieved chunks:
+1. pdfs\2023LUGTechnicalReport.pdf page 240 chunk 2 score=0.8775
+   years.  20.4.6 Other Waste Materials Reporting to the TSF  The only other waste material to be placed in the TSF is sludge from the water treatment plant, and this  has been included in the storage volume estimates. Further testing on sludge samples should be completed  by Aurelian to confirm the se...
+
+2. pdfs\2023LUGTechnicalReport.pdf page 23 chunk 4 score=0.8545
+   ............... 20-10  20.4.6 Other Waste Materials Reporting to the TSF ................................................ 20-11  20.4.7 Stage Construction and TSF Current Condition ........................................... 20-11  20.4.8 Instrumentation and Monitoring .................................
+
+3. pdfs\2023LUGTechnicalReport.pdf page 240 chunk 1 score=0.8410
+   er 2022). Based on updated storage curve, the TSF impoundment allows a total storage of about  11.75 mm3 to El.  1,490 m. The impoundment capacity assessment considered mainly updated tailings  production, operating pond, IDF storage and the minimum required freeboard above the IDF level. A small  a...
+
+4. pdfs\2023LUGTechnicalReport.pdf page 27 chunk 10 score=0.8346
+   ................................ 13-5  Table 13.6: Summary Metallurgical Programs ......................................................................................... 13-9  Table 14.1: Summary of Mineral Resource – December 31, 2022 .......................................................... 14-...
+
+5. pdfs\2023LUGTechnicalReport.pdf page 23 chunk 3 score=0.8338
+   ......................................... 20-5  20.4.3 Tailings Characteristics ................................................................................... 20-8  20.4.4 Design ............................................................................................................. 20-9  ...
+
+6. pdfs\2023LUGTechnicalReport.pdf page 245 chunk 3 score=0.8317
+   o 2017).  4.0 Other Materials to be Deposited into the TSF  4.1 General  Sludge from the Water Treatment Plant (WTP) will be deposited  into the TSF during the mine life through the same tailings  pipeline.   All foundation stripping spoils will be disposed in a new waste  dump.  4.2 Sludge Producti...
+
+[INFO] Loading model google/flan-t5-base on CPU (device_map='cpu', torch_dtype='auto')
+[WARN] AutoModelForCausalLM load failed: Unrecognized configuration class <class 'transformers.models.t5.configuration_t5.T5Config'> for this kind of AutoModel: AutoModelForCausalLM.
+Model type should be one of AfmoeConfig, ApertusConfig, ArceeConfig, AriaTextConfig, BambaConfig, BartConfig, BertConfig, BertGenerationConfig, BigBirdConfig, BigBirdPegasusConfig, BioGptConfig, BitNetConfig, BlenderbotConfig, BlenderbotSmallConfig, BloomConfig, BltConfig, CamembertConfig, LlamaConfig, CodeGenConfig, CohereConfig, Cohere2Config, CpmAntConfig, CTRLConfig, CwmConfig, Data2VecTextConfig, DbrxConfig, DeepseekV2Config, DeepseekV3Config, DiffLlamaConfig, DogeConfig, Dots1Config, ElectraConfig, Emu3Config, ErnieConfig, Ernie4_5Config, Ernie4_5_MoeConfig, Exaone4Config, ExaoneMoeConfig, FalconConfig, FalconH1Config, FalconMambaConfig, FlexOlmoConfig, FuyuConfig, GemmaConfig, Gemma2Config, Gemma3Config, Gemma3TextConfig, Gemma3nConfig, Gemma3nTextConfig, Gemma4Config, Gemma4TextConfig, GitConfig, GlmConfig, Glm4Config, Glm4MoeConfig, Glm4MoeLiteConfig, GlmMoeDsaConfig, GotOcr2Config, GPT2Config, GPT2Config, GPTBigCodeConfig, GPTNeoConfig, GPTNeoXConfig, GPTNeoXJapaneseConfig, GptOssConfig, GPTJConfig, GraniteConfig, GraniteMoeConfig, GraniteMoeHybridConfig, GraniteMoeSharedConfig, HeliumConfig, HunYuanDenseV1Config, HunYuanMoEV1Config, Jais2Config, JambaConfig, JetMoeConfig, Lfm2Config, Lfm2MoeConfig, LlamaConfig, Llama4Config, Llama4TextConfig, LongcatFlashConfig, MambaConfig, Mamba2Config, MarianConfig, MBartConfig, MegatronBertConfig, MiniMaxConfig, MiniMaxM2Config, MinistralConfig, Ministral3Config, MistralConfig, MixtralConfig, MllamaConfig, ModernBertDecoderConfig, MoshiConfig, MptConfig, MusicgenConfig, MusicgenMelodyConfig, MvpConfig, NanoChatConfig, NemotronConfig, NemotronHConfig, OlmoConfig, Olmo2Config, Olmo3Config, OlmoHybridConfig, OlmoeConfig, OpenAIGPTConfig, OPTConfig, PegasusConfig, PersimmonConfig, PhiConfig, Phi3Config, Phi4MultimodalConfig, PhimoeConfig, PLBartConfig, ProphetNetConfig, Qwen2Config, Qwen2MoeConfig, Qwen3Config, Qwen3_5Config, Qwen3_5MoeConfig, Qwen3_5MoeTextConfig, Qwen3_5TextConfig, Qwen3MoeConfig, Qwen3NextConfig, RecurrentGemmaConfig, ReformerConfig, RemBertConfig, RobertaConfig, RobertaPreLayerNormConfig, RoCBertConfig, RoFormerConfig, RwkvConfig, SeedOssConfig, SmolLM3Config, SolarOpenConfig, StableLmConfig, Starcoder2Config, TrOCRConfig, VaultGemmaConfig, WhisperConfig, XGLMConfig, XLMConfig, XLMRobertaConfig, XLMRobertaXLConfig, XLNetConfig, xLSTMConfig, XmodConfig, YoutuConfig, ZambaConfig, Zamba2Config.. Trying Seq2Seq model class.
+[INFO] Loaded as Seq2Seq LM: google/flan-t5-base
+[DEBUG] generate returned type: <class 'torch.Tensor'>
+Answer:
+Waste materials placed in the TSF:
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 240 chunk 2 (score=0.8775)
+years. 
+20.4.6 Other Waste Materials Reporting to the TSF 
+The only other waste material to be placed in the TSF is sludge from the water treatment plant, and this 
+has been included in the storage volume estimates. Further testing on sludge samples should be completed 
+by Aurelian to confirm the settling and geochemical characteristics of this materi al and its impact on the 
+tailings behaviour and storage, although the total volume is small compared to the tailings volume.  
+Site sediment mate
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 4 (score=0.8545)
+............... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ................................................ 20-11 
+20.4.7 Stage Construction and TSF Current Condition ........................................... 20-11 
+20.4.8 Instrumentation and Monitoring .................................................................... 20-11 
+20.4.9 Operating Philosophy .................................................................................... 20-12 
+20.4.10 Design Basis .............
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 240 chunk 1 (score=0.8410)
+er 2022). Based on updated storage curve, the TSF impoundment allows a total storage of about 
+11.75 mm3 to El.  1,490 m. The impoundment capacity assessment considered mainly updated tailings 
+production, operating pond, IDF storage and the minimum required freeboard above the IDF level. A small 
+amount of sludge from the water treatment plant will also be stored in the TSF (0.2 mm3) over the 16 years. 
+20.4.6 Other Waste Materials Reporting to the TSF 
+The only other waste material to be place
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 27 chunk 10 (score=0.8346)
+................................ 13-5 
+Table 13.6: Summary Metallurgical Programs ......................................................................................... 13-9 
+Table 14.1: Summary of Mineral Resource – December 31, 2022 .......................................................... 14-1 
+Table 14.2: Descriptive Statistics of Resource Assay Values - Au .......................................................... 14-8 
+Table 14.3: Descriptive Statistics of Resource Assay Values - Ag ..
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 3 (score=0.8338)
+......................................... 20-5 
+20.4.3 Tailings Characteristics ................................................................................... 20-8 
+20.4.4 Design ............................................................................................................. 20-9 
+20.4.5 Storage Capacity ........................................................................................... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ...........................
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 245 chunk 3 (score=0.8317)
+o 2017). 
+4.0 Other Materials to be Deposited into the TSF 
+4.1 General 
+Sludge from the Water Treatment Plant (WTP) will be deposited 
+into the TSF during the mine life through the same tailings 
+pipeline.  
+All foundation stripping spoils will be disposed in a new waste 
+dump. 
+4.2 Sludge Production at WTP 
+and into the TSF 
+Sludge production and properties: 
+• Production rate: 1.4 m3/h. 
+• Sludge to be delivered to TSF at solids content of 5%. 
+• Poor settling behavior: 100% of the sludge (so
+------------------------------------------------------------
+
+[stderr]
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 199/199 [00:00<00:00, 7956.10it/s]
+[1mBertModel LOAD REPORT[0m from: BAAI/bge-small-en
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Loading weights:   0%|          | 0/282 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 282/282 [00:00<00:00, 7621.63it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+Token indices sequence length is longer than the specified maximum sequence length for this model (960 > 512). Running this sequence through the model will result in indexing errors
+The following generation flags are not valid and may be ignored: ['temperature']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+
+------------------------------------------------------------
+--- QUESTION 3 ---
+Describe how sludge from the water treatment plant is managed and its potential impacts.
+
+Question: Describe how sludge from the water treatment plant is managed and its potential impacts.
+
+Retrieved chunks:
+1. pdfs\2023LUGTechnicalReport.pdf page 227 chunk 3 score=0.8469
+   There are three human use treatment plants to provide water used in the camps and offices. Potable water  is produced on site only for the kitchen food preparation and dispenser using a reverse osmosis system.  All other drinking water is bottled and supplied by a local supplier.  Four water managem...
+
+2. pdfs\2023LUGTechnicalReport.pdf page 231 chunk 3 score=0.8460
+   s carried out quarterly at a total of twenty-five points along the the Machinaza  River (this River receives all the discharges from the operation) and along creeks close to the operational   areas. A total of fifty-seven parameters are analyzed for each point including heavy metals, anions, cations...
+
+3. pdfs\2023LUGTechnicalReport.pdf page 224 chunk 3 score=0.8442
+   the water treatment plant is primarily utilized in the ADR, ILR and refinery circuits, used  as gland seal water and for reagent dilution. Treated water is used for the grinding mill cooling systems and  in the mine.  The domestic water tank supplies the camp, mine and process plant. Domestic water ...
+
+4. pdfs\2023LUGTechnicalReport.pdf page 231 chunk 4 score=0.8441
+   or compliance with  the maximum permissible limits. No contacted water is discharged to the environment without prior  treatment. A total of three points of discharge, two for sewage water and one for industrial water, are  monitored on a monthly basis.  FDN internal laboratory analyzes some of the ...
+
+5. pdfs\2023LUGTechnicalReport.pdf page 232 chunk 3 score=0.8437
+   rmal operation, biologists assist to rescue species  that interact with the mine operation, and they are relocated in the surrounding forest.   Waste Management takes place in all the infrastructures of the mine operation. A waste management  center was built to temporary store the generated classif...
+
+6. pdfs\2023LUGTechnicalReport.pdf page 245 chunk 3 score=0.8419
+   o 2017).  4.0 Other Materials to be Deposited into the TSF  4.1 General  Sludge from the Water Treatment Plant (WTP) will be deposited  into the TSF during the mine life through the same tailings  pipeline.   All foundation stripping spoils will be disposed in a new waste  dump.  4.2 Sludge Producti...
+
+[INFO] Loading model google/flan-t5-base on CPU (device_map='cpu', torch_dtype='auto')
+[WARN] AutoModelForCausalLM load failed: Unrecognized configuration class <class 'transformers.models.t5.configuration_t5.T5Config'> for this kind of AutoModel: AutoModelForCausalLM.
+Model type should be one of AfmoeConfig, ApertusConfig, ArceeConfig, AriaTextConfig, BambaConfig, BartConfig, BertConfig, BertGenerationConfig, BigBirdConfig, BigBirdPegasusConfig, BioGptConfig, BitNetConfig, BlenderbotConfig, BlenderbotSmallConfig, BloomConfig, BltConfig, CamembertConfig, LlamaConfig, CodeGenConfig, CohereConfig, Cohere2Config, CpmAntConfig, CTRLConfig, CwmConfig, Data2VecTextConfig, DbrxConfig, DeepseekV2Config, DeepseekV3Config, DiffLlamaConfig, DogeConfig, Dots1Config, ElectraConfig, Emu3Config, ErnieConfig, Ernie4_5Config, Ernie4_5_MoeConfig, Exaone4Config, ExaoneMoeConfig, FalconConfig, FalconH1Config, FalconMambaConfig, FlexOlmoConfig, FuyuConfig, GemmaConfig, Gemma2Config, Gemma3Config, Gemma3TextConfig, Gemma3nConfig, Gemma3nTextConfig, Gemma4Config, Gemma4TextConfig, GitConfig, GlmConfig, Glm4Config, Glm4MoeConfig, Glm4MoeLiteConfig, GlmMoeDsaConfig, GotOcr2Config, GPT2Config, GPT2Config, GPTBigCodeConfig, GPTNeoConfig, GPTNeoXConfig, GPTNeoXJapaneseConfig, GptOssConfig, GPTJConfig, GraniteConfig, GraniteMoeConfig, GraniteMoeHybridConfig, GraniteMoeSharedConfig, HeliumConfig, HunYuanDenseV1Config, HunYuanMoEV1Config, Jais2Config, JambaConfig, JetMoeConfig, Lfm2Config, Lfm2MoeConfig, LlamaConfig, Llama4Config, Llama4TextConfig, LongcatFlashConfig, MambaConfig, Mamba2Config, MarianConfig, MBartConfig, MegatronBertConfig, MiniMaxConfig, MiniMaxM2Config, MinistralConfig, Ministral3Config, MistralConfig, MixtralConfig, MllamaConfig, ModernBertDecoderConfig, MoshiConfig, MptConfig, MusicgenConfig, MusicgenMelodyConfig, MvpConfig, NanoChatConfig, NemotronConfig, NemotronHConfig, OlmoConfig, Olmo2Config, Olmo3Config, OlmoHybridConfig, OlmoeConfig, OpenAIGPTConfig, OPTConfig, PegasusConfig, PersimmonConfig, PhiConfig, Phi3Config, Phi4MultimodalConfig, PhimoeConfig, PLBartConfig, ProphetNetConfig, Qwen2Config, Qwen2MoeConfig, Qwen3Config, Qwen3_5Config, Qwen3_5MoeConfig, Qwen3_5MoeTextConfig, Qwen3_5TextConfig, Qwen3MoeConfig, Qwen3NextConfig, RecurrentGemmaConfig, ReformerConfig, RemBertConfig, RobertaConfig, RobertaPreLayerNormConfig, RoCBertConfig, RoFormerConfig, RwkvConfig, SeedOssConfig, SmolLM3Config, SolarOpenConfig, StableLmConfig, Starcoder2Config, TrOCRConfig, VaultGemmaConfig, WhisperConfig, XGLMConfig, XLMConfig, XLMRobertaConfig, XLMRobertaXLConfig, XLNetConfig, xLSTMConfig, XmodConfig, YoutuConfig, ZambaConfig, Zamba2Config.. Trying Seq2Seq model class.
+[INFO] Loaded as Seq2Seq LM: google/flan-t5-base
+[DEBUG] generate returned type: <class 'torch.Tensor'>
+Answer:
+Sludge from the water treatment plant will be deposited into the TSF during the mine life through
+the same tailings pipeline. All foundation stripping spoils will be disposed in a new waste dump.
+4.1 General Sludge from the Water Treatment Plant (WTP) will be deposited into the TSF during the
+mine life through the same tailings pipeline. All foundation stripping spoils will be disposed in a
+new waste dump. 4.2 Sludge Production at WTP and into the TSF Sludge production and properties: •
+Production rate: 1.4 m3/h. • Sludge to be delivered to TSF at solids content of 5%. • Poor settling
+behavior: 100% of the sludge (so QUESTION: Describe how sludge from the water treatment plant is
+managed and its potential impacts.
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 227 chunk 3 (score=0.8469)
+There are three human use treatment plants to provide water used in the camps and offices. Potable water 
+is produced on site only for the kitchen food preparation and dispenser using a reverse osmosis system. 
+All other drinking water is bottled and supplied by a local supplier. 
+Four water management ponds that were used for industrial water supply during construction serve as 
+industrial water supply back-up for the operation; three of them receive affected waters during operations. 
+To max
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 231 chunk 3 (score=0.8460)
+s carried out quarterly at a total of twenty-five points along the the Machinaza 
+River (this River receives all the discharges from the operation) and along creeks close to the operational  
+areas. A total of fifty-seven parameters are analyzed for each point including heavy metals, anions, cations, 
+among others. 
+Industrial and sewage treated water d ischarges are monitored at the end of pipe for compliance with 
+the maximum permissible limits. No contacted water is discharged to the environm
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 224 chunk 3 (score=0.8442)
+the water treatment plant is primarily utilized in the ADR, ILR and refinery circuits, used 
+as gland seal water and for reagent dilution. Treated water is used for the grinding mill cooling systems and 
+in the mine. 
+The domestic water tank supplies the camp, mine and process plant. Domestic water requirements in the 
+plant include the plant safety showers and bathroo ms. Domestic water is not drinkable (potable); drinking 
+water is supplied as bottled water.
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 231 chunk 4 (score=0.8441)
+or compliance with 
+the maximum permissible limits. No contacted water is discharged to the environment without prior 
+treatment. A total of three points of discharge, two for sewage water and one for industrial water, are 
+monitored on a monthly basis. 
+FDN internal laboratory analyzes some of the water quality and discharges monitoring points on a daily 
+basis to ensure good performance for the operation.
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 232 chunk 3 (score=0.8437)
+rmal operation, biologists assist to rescue species 
+that interact with the mine operation, and they are relocated in the surrounding forest.  
+Waste Management takes place in all the infrastructures of the mine operation. A waste management 
+center was built to temporary store the generated classified waste. Hazardous waste is managed through 
+a certified company that transports, treats, and provides final disposal . Non-hazardous waste that is non-
+recyclable is sent to the Yantzaza Municipali
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 245 chunk 3 (score=0.8419)
+o 2017). 
+4.0 Other Materials to be Deposited into the TSF 
+4.1 General 
+Sludge from the Water Treatment Plant (WTP) will be deposited 
+into the TSF during the mine life through the same tailings 
+pipeline.  
+All foundation stripping spoils will be disposed in a new waste 
+dump. 
+4.2 Sludge Production at WTP 
+and into the TSF 
+Sludge production and properties: 
+• Production rate: 1.4 m3/h. 
+• Sludge to be delivered to TSF at solids content of 5%. 
+• Poor settling behavior: 100% of the sludge (so
+------------------------------------------------------------
+
+[stderr]
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 199/199 [00:00<00:00, 8827.69it/s]
+[1mBertModel LOAD REPORT[0m from: BAAI/bge-small-en
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Loading weights:   0%|          | 0/282 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 282/282 [00:00<00:00, 9474.40it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+Token indices sequence length is longer than the specified maximum sequence length for this model (982 > 512). Running this sequence through the model will result in indexing errors
+The following generation flags are not valid and may be ignored: ['temperature']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+
+------------------------------------------------------------
+--- QUESTION 4 ---
+Which documents define reporting standards for mineral resources and reserves?
+
+Question: Which documents define reporting standards for mineral resources and reserves?
+
+Retrieved chunks:
+1. pdfs\PERC, CRIRSCO, and UNFC.pdf page 2 chunk 4 score=0.9079
+   There are two distinct types of public  reporting of mineral resources and reserves: •	 Disclosure for companies quoted on  stock exchanges. Objectives: reliable,  transparent information for inves- tors and potential investors. This is  the role of the CRIRSCO family of  standards •	 Governmental, ...
+
+2. pdfs\CIM Definition Standards. (2014).pdf page 3 chunk 0 score=0.9067
+   2      May 10, 2014 CIM Definition Standards for Mineral Resources & Mineral Reserves  Foreword    The CIM Definition Standards on Mineral Resources and Reserves (CIM Definition Standards) establish  definitions and guidance on the definitions for Mineral Resources, Mineral Reserves, and mining stud...
+
+3. pdfs\20240104_NI_43-101_TR_Pan_American_Horizon_Lithium.pdf page 106 chunk 1 score=0.9066
+   of Mining, Metallurgy and Petroleum , 2014. CIM Definition Standards for Mineral  Resources and Reserves, prepared by the CIM Standing Committee on Reserve Definitions,  Westmount, QC.  Canadian Securities Administrators, 2016. Unofficial Consolidation of All Amendments to National  Instrument (NI) ...
+
+4. pdfs\CIM Definition Standards. (2014).pdf page 9 chunk 4 score=0.9018
+   a non-permanent nature,  transport strike etc.      Guidance for Reporting Mineral Resource and Mineral Reserve Information    Qualified Persons preparing public Mineral Resource and Mineral Reserve reports in Canada must follow the  requirements in form 43-101f1 of National Instrument 43-101, avail...
+
+5. pdfs\CIM Definition Standards. (2014).pdf page 10 chunk 1 score=0.9014
+   rves.    Reporting of Coal Reserves    For consistency in public reporting of Mineral Resources and Mineral Reserves for coal, it is recommended  that all issuers use the Mineral Resource and Mineral Reserve categories set out in the CIM Definition  Standards. Qualified Person(s) should be guided by...
+
+6. pdfs\CIM Definition Standards. (2014).pdf page 3 chunk 2 score=0.9008
+   lations.    CIM Definition Standards    The CIM Definition Standards presented herein provide definitions and guidance on those definitions for  Mineral Resource and Mineral Reserve and their confidence categories. The category to which a Mineral  Resource or Mineral Reserve estimate is assigned dep...
+
+[INFO] Loading model google/flan-t5-base on CPU (device_map='cpu', torch_dtype='auto')
+[WARN] AutoModelForCausalLM load failed: Unrecognized configuration class <class 'transformers.models.t5.configuration_t5.T5Config'> for this kind of AutoModel: AutoModelForCausalLM.
+Model type should be one of AfmoeConfig, ApertusConfig, ArceeConfig, AriaTextConfig, BambaConfig, BartConfig, BertConfig, BertGenerationConfig, BigBirdConfig, BigBirdPegasusConfig, BioGptConfig, BitNetConfig, BlenderbotConfig, BlenderbotSmallConfig, BloomConfig, BltConfig, CamembertConfig, LlamaConfig, CodeGenConfig, CohereConfig, Cohere2Config, CpmAntConfig, CTRLConfig, CwmConfig, Data2VecTextConfig, DbrxConfig, DeepseekV2Config, DeepseekV3Config, DiffLlamaConfig, DogeConfig, Dots1Config, ElectraConfig, Emu3Config, ErnieConfig, Ernie4_5Config, Ernie4_5_MoeConfig, Exaone4Config, ExaoneMoeConfig, FalconConfig, FalconH1Config, FalconMambaConfig, FlexOlmoConfig, FuyuConfig, GemmaConfig, Gemma2Config, Gemma3Config, Gemma3TextConfig, Gemma3nConfig, Gemma3nTextConfig, Gemma4Config, Gemma4TextConfig, GitConfig, GlmConfig, Glm4Config, Glm4MoeConfig, Glm4MoeLiteConfig, GlmMoeDsaConfig, GotOcr2Config, GPT2Config, GPT2Config, GPTBigCodeConfig, GPTNeoConfig, GPTNeoXConfig, GPTNeoXJapaneseConfig, GptOssConfig, GPTJConfig, GraniteConfig, GraniteMoeConfig, GraniteMoeHybridConfig, GraniteMoeSharedConfig, HeliumConfig, HunYuanDenseV1Config, HunYuanMoEV1Config, Jais2Config, JambaConfig, JetMoeConfig, Lfm2Config, Lfm2MoeConfig, LlamaConfig, Llama4Config, Llama4TextConfig, LongcatFlashConfig, MambaConfig, Mamba2Config, MarianConfig, MBartConfig, MegatronBertConfig, MiniMaxConfig, MiniMaxM2Config, MinistralConfig, Ministral3Config, MistralConfig, MixtralConfig, MllamaConfig, ModernBertDecoderConfig, MoshiConfig, MptConfig, MusicgenConfig, MusicgenMelodyConfig, MvpConfig, NanoChatConfig, NemotronConfig, NemotronHConfig, OlmoConfig, Olmo2Config, Olmo3Config, OlmoHybridConfig, OlmoeConfig, OpenAIGPTConfig, OPTConfig, PegasusConfig, PersimmonConfig, PhiConfig, Phi3Config, Phi4MultimodalConfig, PhimoeConfig, PLBartConfig, ProphetNetConfig, Qwen2Config, Qwen2MoeConfig, Qwen3Config, Qwen3_5Config, Qwen3_5MoeConfig, Qwen3_5MoeTextConfig, Qwen3_5TextConfig, Qwen3MoeConfig, Qwen3NextConfig, RecurrentGemmaConfig, ReformerConfig, RemBertConfig, RobertaConfig, RobertaPreLayerNormConfig, RoCBertConfig, RoFormerConfig, RwkvConfig, SeedOssConfig, SmolLM3Config, SolarOpenConfig, StableLmConfig, Starcoder2Config, TrOCRConfig, VaultGemmaConfig, WhisperConfig, XGLMConfig, XLMConfig, XLMRobertaConfig, XLMRobertaXLConfig, XLNetConfig, xLSTMConfig, XmodConfig, YoutuConfig, ZambaConfig, Zamba2Config.. Trying Seq2Seq model class.
+[INFO] Loaded as Seq2Seq LM: google/flan-t5-base
+[DEBUG] generate returned type: <class 'torch.Tensor'>
+Answer:
+CIM Definition Standards for Mineral Resources and Mineral Reserves, prepared by the CIM Standing
+Committee on Reserve Definitions, Westmount, QC. Canadian Securities Administrators, 2016.
+Unofficial Consolidation of All Amendments to National Instrument 43-101 Standards of Disclosure for
+Mineral Projects, prepared by the Securities Division, Regina, SK. Climate-data.org, 2022. “Tonopah
+Climate,” accessed December 29, 2022, from https://en.climat
+
+Sources used:
+[SOURCE 1] pdfs\PERC, CRIRSCO, and UNFC.pdf page 2 chunk 4 (score=0.9079)
+There are two distinct types of public 
+reporting of mineral resources and reserves:
+•	 Disclosure for companies quoted on 
+stock exchanges. Objectives: reliable, 
+transparent information for inves-
+tors and potential investors. This is 
+the role of the CRIRSCO family of 
+standards
+•	 Governmental, inter-governmen-
+tal, or NGO reporting of mineral 
+resource estimates and forecasts. 
+Objectives: a reliable mineral inven-
+tory to underpin minerals policies 
+(especially cross border, e.g. Europe),
+------------------------------------------------------------
+[SOURCE 2] pdfs\CIM Definition Standards. (2014).pdf page 3 chunk 0 (score=0.9067)
+2 
+ 
+ 
+May 10, 2014 CIM Definition Standards for Mineral Resources & Mineral Reserves 
+Foreword 
+ 
+The CIM Definition Standards on Mineral Resources and Reserves (CIM Definition Standards) establish 
+definitions and guidance on the definitions for Mineral Resources, Mineral Reserves, and mining studies used 
+in Canada. The Mineral Resource, Mineral Reserve, and mining study definitions are incorporated, by 
+reference, into National Instrument 43-101 – Standards of Disclosure for Mineral Projects
+------------------------------------------------------------
+[SOURCE 3] pdfs\20240104_NI_43-101_TR_Pan_American_Horizon_Lithium.pdf page 106 chunk 1 (score=0.9066)
+of Mining, Metallurgy and Petroleum , 2014. CIM Definition Standards for Mineral 
+Resources and Reserves, prepared by the CIM Standing Committee on Reserve Definitions, 
+Westmount, QC. 
+Canadian Securities Administrators, 2016. Unofficial Consolidation of All Amendments to National 
+Instrument (NI) 43-101 Standards of Disclosure for Mineral Projects, prepared by the Securities 
+Division, Regina, SK. 
+ 
+Climate-data.org, 2022. “Tonopah Climate,” accessed December 29, 2022, from https://en.climat
+------------------------------------------------------------
+[SOURCE 4] pdfs\CIM Definition Standards. (2014).pdf page 9 chunk 4 (score=0.9018)
+a non-permanent nature, 
+transport strike etc. 
+ 
+ 
+Guidance for Reporting Mineral Resource and Mineral Reserve Information 
+ 
+Qualified Persons preparing public Mineral Resource and Mineral Reserve reports in Canada must follow the 
+requirements in form 43-101f1 of National Instrument 43-101, available on the following websites: 
+www.osc.gov.ca; www.bcsc.bc.ca; www.albertasecurities.com and www.cvmq.com. 
+ 
+The following discussion is included for additional guidance when preparing a technical
+------------------------------------------------------------
+[SOURCE 5] pdfs\CIM Definition Standards. (2014).pdf page 10 chunk 1 (score=0.9014)
+rves. 
+ 
+Reporting of Coal Reserves 
+ 
+For consistency in public reporting of Mineral Resources and Mineral Reserves for coal, it is recommended 
+that all issuers use the Mineral Resource and Mineral Reserve categories set out in the CIM Definition 
+Standards. Qualified Person(s) should be guided by the estimation of Mineral Resources and Mineral Reserve 
+best practices guidelines for coal and by GSC Paper 88- 21: a standardized coal resource/reserve reporting 
+system for Canada. It is acceptabl
+------------------------------------------------------------
+[SOURCE 6] pdfs\CIM Definition Standards. (2014).pdf page 3 chunk 2 (score=0.9008)
+lations. 
+ 
+CIM Definition Standards 
+ 
+The CIM Definition Standards presented herein provide definitions and guidance on those definitions for 
+Mineral Resource and Mineral Reserve and their confidence categories. The category to which a Mineral 
+Resource or Mineral Reserve estimate is assigned depends on the level of confidence in the geological 
+information available on the mineral deposit; the quality and quantity  of data available on the deposit; the 
+level of detail of the technical and e
+------------------------------------------------------------
+
+[stderr]
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 199/199 [00:00<00:00, 7993.05it/s]
+[1mBertModel LOAD REPORT[0m from: BAAI/bge-small-en
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Loading weights:   0%|          | 0/282 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 282/282 [00:00<00:00, 8783.36it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+Token indices sequence length is longer than the specified maximum sequence length for this model (986 > 512). Running this sequence through the model will result in indexing errors
+The following generation flags are not valid and may be ignored: ['temperature']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+
+------------------------------------------------------------
+--- QUESTION 5 ---
+According to 2023LUGTechnicalReport.pdf, what is the operating philosophy for the TSF?
+
+Question: According to 2023LUGTechnicalReport.pdf, what is the operating philosophy for the TSF?
+
+Retrieved chunks:
+1. pdfs\2023LUGTechnicalReport.pdf page 23 chunk 4 score=0.8541
+   ............... 20-10  20.4.6 Other Waste Materials Reporting to the TSF ................................................ 20-11  20.4.7 Stage Construction and TSF Current Condition ........................................... 20-11  20.4.8 Instrumentation and Monitoring .................................
+
+2. pdfs\2023LUGTechnicalReport.pdf page 255 chunk 1 score=0.8297
+   and electrical.   TSF capital costs relate to TSF raises and maintenance of the TSF.  Process plant capital costs are mainly related to regular process and equipment reliability improvements .  Studies and engineering will commence in 2023 to debottleneck the process plant to reliably achieve  4,400...
+
+3. pdfs\2023LUGTechnicalReport.pdf page 28 chunk 9 score=0.8259
+   Table 17.1: Process Plant Performance Summary (2020-2022) ............................................................. 17-1  Table 20.1: Summary of Peak Ground Accelerations .............................................................................. 20-7  Table 20.2: TSF Key Design Basis ..........
+
+4. pdfs\2023LUGTechnicalReport.pdf page 241 chunk 4 score=0.8244
+   ion issued by Aurelian). TSF  began operation on September 28, 2019  1.6 Metallurgical Process Gravity, Flotation and Leach (GFL). Treated with cyanide  destruction process prior to discharge to 1 ppm.  1.7 Tailings Technology Conventional un-thickened tailings (e.g., slurry)...
+
+5. pdfs\2023LUGTechnicalReport.pdf page 13 chunk 6 score=0.8233
+   aste plant and TSF.  8) As of the effective date of the Technical Report, to the best of my knowledge, information and belief, the  sections and sub -sections of the Technical Report listed in item 6 above contain all scientific and technical  information that is required to be disclosed to make the...
+
+6. pdfs\2023LUGTechnicalReport.pdf page 246 chunk 0 score=0.8226
+   NI 43-101 Technical Report     Fruta del Norte Mine, Ecuador    Section 20 March 2023 Page 20-17  Item Design Basic  5.2 Storage Requirements  The TSF is a “Zero Discharge” system during operation and is  designed for next storage requirements:  • Tailings (see Attachment I, Table I-1)  • Sludge (se...
+
+[INFO] Loading model google/flan-t5-base on CPU (device_map='cpu', torch_dtype='auto')
+[WARN] AutoModelForCausalLM load failed: Unrecognized configuration class <class 'transformers.models.t5.configuration_t5.T5Config'> for this kind of AutoModel: AutoModelForCausalLM.
+Model type should be one of AfmoeConfig, ApertusConfig, ArceeConfig, AriaTextConfig, BambaConfig, BartConfig, BertConfig, BertGenerationConfig, BigBirdConfig, BigBirdPegasusConfig, BioGptConfig, BitNetConfig, BlenderbotConfig, BlenderbotSmallConfig, BloomConfig, BltConfig, CamembertConfig, LlamaConfig, CodeGenConfig, CohereConfig, Cohere2Config, CpmAntConfig, CTRLConfig, CwmConfig, Data2VecTextConfig, DbrxConfig, DeepseekV2Config, DeepseekV3Config, DiffLlamaConfig, DogeConfig, Dots1Config, ElectraConfig, Emu3Config, ErnieConfig, Ernie4_5Config, Ernie4_5_MoeConfig, Exaone4Config, ExaoneMoeConfig, FalconConfig, FalconH1Config, FalconMambaConfig, FlexOlmoConfig, FuyuConfig, GemmaConfig, Gemma2Config, Gemma3Config, Gemma3TextConfig, Gemma3nConfig, Gemma3nTextConfig, Gemma4Config, Gemma4TextConfig, GitConfig, GlmConfig, Glm4Config, Glm4MoeConfig, Glm4MoeLiteConfig, GlmMoeDsaConfig, GotOcr2Config, GPT2Config, GPT2Config, GPTBigCodeConfig, GPTNeoConfig, GPTNeoXConfig, GPTNeoXJapaneseConfig, GptOssConfig, GPTJConfig, GraniteConfig, GraniteMoeConfig, GraniteMoeHybridConfig, GraniteMoeSharedConfig, HeliumConfig, HunYuanDenseV1Config, HunYuanMoEV1Config, Jais2Config, JambaConfig, JetMoeConfig, Lfm2Config, Lfm2MoeConfig, LlamaConfig, Llama4Config, Llama4TextConfig, LongcatFlashConfig, MambaConfig, Mamba2Config, MarianConfig, MBartConfig, MegatronBertConfig, MiniMaxConfig, MiniMaxM2Config, MinistralConfig, Ministral3Config, MistralConfig, MixtralConfig, MllamaConfig, ModernBertDecoderConfig, MoshiConfig, MptConfig, MusicgenConfig, MusicgenMelodyConfig, MvpConfig, NanoChatConfig, NemotronConfig, NemotronHConfig, OlmoConfig, Olmo2Config, Olmo3Config, OlmoHybridConfig, OlmoeConfig, OpenAIGPTConfig, OPTConfig, PegasusConfig, PersimmonConfig, PhiConfig, Phi3Config, Phi4MultimodalConfig, PhimoeConfig, PLBartConfig, ProphetNetConfig, Qwen2Config, Qwen2MoeConfig, Qwen3Config, Qwen3_5Config, Qwen3_5MoeConfig, Qwen3_5MoeTextConfig, Qwen3_5TextConfig, Qwen3MoeConfig, Qwen3NextConfig, RecurrentGemmaConfig, ReformerConfig, RemBertConfig, RobertaConfig, RobertaPreLayerNormConfig, RoCBertConfig, RoFormerConfig, RwkvConfig, SeedOssConfig, SmolLM3Config, SolarOpenConfig, StableLmConfig, Starcoder2Config, TrOCRConfig, VaultGemmaConfig, WhisperConfig, XGLMConfig, XLMConfig, XLMRobertaConfig, XLMRobertaXLConfig, XLNetConfig, xLSTMConfig, XmodConfig, YoutuConfig, ZambaConfig, Zamba2Config.. Trying Seq2Seq model class.
+[INFO] Loaded as Seq2Seq LM: google/flan-t5-base
+[DEBUG] generate returned type: <class 'torch.Tensor'>
+Answer:
+Zero Discharge.
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 4 (score=0.8541)
+............... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ................................................ 20-11 
+20.4.7 Stage Construction and TSF Current Condition ........................................... 20-11 
+20.4.8 Instrumentation and Monitoring .................................................................... 20-11 
+20.4.9 Operating Philosophy .................................................................................... 20-12 
+20.4.10 Design Basis .............
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 255 chunk 1 (score=0.8297)
+and electrical.  
+TSF capital costs relate to TSF raises and maintenance of the TSF. 
+Process plant capital costs are mainly related to regular process and equipment reliability improvements . 
+Studies and engineering will commence in 2023 to debottleneck the process plant to reliably achieve 
+4,400 tpd. No flowsheet changes nor significant process plant upgrades are expected due to the treatment 
+of ore from the south zone of the mine. 
+Site and warehouse capital costs include general costs for
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 28 chunk 9 (score=0.8259)
+Table 17.1: Process Plant Performance Summary (2020-2022) ............................................................. 17-1 
+Table 20.1: Summary of Peak Ground Accelerations .............................................................................. 20-7 
+Table 20.2: TSF Key Design Basis ........................................................................................................ 20-12 
+Table 21.1: Summary of Life of Mine Capital Costs (USD M) Excluding Taxes  ..................
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 241 chunk 4 (score=0.8244)
+ion issued by Aurelian). TSF 
+began operation on September 28, 2019 
+1.6 Metallurgical Process Gravity, Flotation and Leach (GFL). Treated with cyanide 
+destruction process prior to discharge to 1 ppm. 
+1.7 Tailings Technology Conventional un-thickened tailings (e.g., slurry)
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 13 chunk 6 (score=0.8233)
+aste plant and TSF. 
+8) As of the effective date of the Technical Report, to the best of my knowledge, information and belief, the 
+sections and sub -sections of the Technical Report listed in item 6 above contain all scientific and technical 
+information that is required to be disclosed to make these sections and sub-sections of the Technical Report 
+not misleading. 
+9) I have read NI 43-101 and believe that the sections and sub-sections of the Technical Report listed in item 6 
+above have been
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 246 chunk 0 (score=0.8226)
+NI 43-101 Technical Report  
+  Fruta del Norte Mine, Ecuador 
+ 
+Section 20 March 2023 Page 20-17 
+Item Design Basic 
+5.2 Storage Requirements 
+The TSF is a “Zero Discharge” system during operation and is 
+designed for next storage requirements: 
+• Tailings (see Attachment I, Table I-1) 
+• Sludge (see Item 4.2) 
+• Operating decant pond of 250,000 m3. Minimum 2 m depth 
+based on draught requirements of the reclaim barge. 
+Volume to be confirmed in deposition model for Stage 3 
+and Stage 4 Dam R
+------------------------------------------------------------
+
+[stderr]
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 199/199 [00:00<00:00, 8120.51it/s]
+[1mBertModel LOAD REPORT[0m from: BAAI/bge-small-en
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Loading weights:   0%|          | 0/282 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 282/282 [00:00<00:00, 10846.04it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+Token indices sequence length is longer than the specified maximum sequence length for this model (948 > 512). Running this sequence through the model will result in indexing errors
+The following generation flags are not valid and may be ignored: ['temperature']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+
+------------------------------------------------------------
+--- QUESTION 6 ---
+Summarize the monitoring instrumentation used for the TSF.
+
+Question: Summarize the monitoring instrumentation used for the TSF.
+
+Retrieved chunks:
+1. pdfs\2023LUGTechnicalReport.pdf page 232 chunk 6 score=0.8740
+   hemical monitoring has been defined  for the TSF. Geotechnical controls include piezometers,  settlement plates, inclinometers, and topographic  landmarks. Geochemical controls include flow measurements, groundwater monitoring, as well as surface  water monitoring and analysis to determine potential...
+
+2. pdfs\2023LUGTechnicalReport.pdf page 250 chunk 5 score=0.8549
+   in Attachment  I  (Table I-4 to Table I-8)  • Instrumentation monitoring frequency to be updated based  on construction/operating conditions and observed  behavior of each instrument....
+
+3. pdfs\2023LUGTechnicalReport.pdf page 240 chunk 5 score=0.8531
+   and Monitoring  Routine dam safety inspections to monitor dam performance during operations and construction are carried  out.  Installed instrumentation includes vibrating wire piezometers (VWP); inclinomet ers; settlement plates;  accelerograph; surface survey monuments and survey rods and seepage...
+
+4. pdfs\2023LUGTechnicalReport.pdf page 234 chunk 3 score=0.8445
+   e  water management st ructures including a temporary diversion ditch, six cofferdams and an underdrain  system below the liner to help manage surface water, groundwater and seepage during construction.   Based on construction observations, CQC/CQA records, survey records and observed performance du...
+
+5. pdfs\2023LUGTechnicalReport.pdf page 250 chunk 3 score=0.8443
+   vel  • Tailings beach surveying and pond monthly bathymetry.  • Daily pond levels recording, tailings volume tracking and  comparison with the stage storage curve.  • Flow rates monitoring  • Seepage mapping and recording of flow rates (weirs),  turbidity, and locations.  • Instrumentation installed...
+
+6. pdfs\2023LUGTechnicalReport.pdf page 236 chunk 4 score=0.8440
+   at the TSF. From 2009 to 2015  the investigations focused on evaluating deeper foundation conditions within th e dam footprint and the  surficial soil distribution within the basin. In 2016-2017, the investigations were focused along the upstream  cut-off trench alignment and to obtain preliminary h...
+
+[INFO] Loading model google/flan-t5-base on CPU (device_map='cpu', torch_dtype='auto')
+[WARN] AutoModelForCausalLM load failed: Unrecognized configuration class <class 'transformers.models.t5.configuration_t5.T5Config'> for this kind of AutoModel: AutoModelForCausalLM.
+Model type should be one of AfmoeConfig, ApertusConfig, ArceeConfig, AriaTextConfig, BambaConfig, BartConfig, BertConfig, BertGenerationConfig, BigBirdConfig, BigBirdPegasusConfig, BioGptConfig, BitNetConfig, BlenderbotConfig, BlenderbotSmallConfig, BloomConfig, BltConfig, CamembertConfig, LlamaConfig, CodeGenConfig, CohereConfig, Cohere2Config, CpmAntConfig, CTRLConfig, CwmConfig, Data2VecTextConfig, DbrxConfig, DeepseekV2Config, DeepseekV3Config, DiffLlamaConfig, DogeConfig, Dots1Config, ElectraConfig, Emu3Config, ErnieConfig, Ernie4_5Config, Ernie4_5_MoeConfig, Exaone4Config, ExaoneMoeConfig, FalconConfig, FalconH1Config, FalconMambaConfig, FlexOlmoConfig, FuyuConfig, GemmaConfig, Gemma2Config, Gemma3Config, Gemma3TextConfig, Gemma3nConfig, Gemma3nTextConfig, Gemma4Config, Gemma4TextConfig, GitConfig, GlmConfig, Glm4Config, Glm4MoeConfig, Glm4MoeLiteConfig, GlmMoeDsaConfig, GotOcr2Config, GPT2Config, GPT2Config, GPTBigCodeConfig, GPTNeoConfig, GPTNeoXConfig, GPTNeoXJapaneseConfig, GptOssConfig, GPTJConfig, GraniteConfig, GraniteMoeConfig, GraniteMoeHybridConfig, GraniteMoeSharedConfig, HeliumConfig, HunYuanDenseV1Config, HunYuanMoEV1Config, Jais2Config, JambaConfig, JetMoeConfig, Lfm2Config, Lfm2MoeConfig, LlamaConfig, Llama4Config, Llama4TextConfig, LongcatFlashConfig, MambaConfig, Mamba2Config, MarianConfig, MBartConfig, MegatronBertConfig, MiniMaxConfig, MiniMaxM2Config, MinistralConfig, Ministral3Config, MistralConfig, MixtralConfig, MllamaConfig, ModernBertDecoderConfig, MoshiConfig, MptConfig, MusicgenConfig, MusicgenMelodyConfig, MvpConfig, NanoChatConfig, NemotronConfig, NemotronHConfig, OlmoConfig, Olmo2Config, Olmo3Config, OlmoHybridConfig, OlmoeConfig, OpenAIGPTConfig, OPTConfig, PegasusConfig, PersimmonConfig, PhiConfig, Phi3Config, Phi4MultimodalConfig, PhimoeConfig, PLBartConfig, ProphetNetConfig, Qwen2Config, Qwen2MoeConfig, Qwen3Config, Qwen3_5Config, Qwen3_5MoeConfig, Qwen3_5MoeTextConfig, Qwen3_5TextConfig, Qwen3MoeConfig, Qwen3NextConfig, RecurrentGemmaConfig, ReformerConfig, RemBertConfig, RobertaConfig, RobertaPreLayerNormConfig, RoCBertConfig, RoFormerConfig, RwkvConfig, SeedOssConfig, SmolLM3Config, SolarOpenConfig, StableLmConfig, Starcoder2Config, TrOCRConfig, VaultGemmaConfig, WhisperConfig, XGLMConfig, XLMConfig, XLMRobertaConfig, XLMRobertaXLConfig, XLNetConfig, xLSTMConfig, XmodConfig, YoutuConfig, ZambaConfig, Zamba2Config.. Trying Seq2Seq model class.
+[INFO] Loaded as Seq2Seq LM: google/flan-t5-base
+[DEBUG] generate returned type: <class 'torch.Tensor'>
+Answer:
+TSF hemical monitoring equipment.
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 232 chunk 6 (score=0.8740)
+hemical monitoring has been defined 
+for the TSF. Geotechnical controls include piezometers,  settlement plates, inclinometers, and topographic 
+landmarks. Geochemical controls include flow measurements, groundwater monitoring, as well as surface 
+water monitoring and analysis to determine potential acid rock drainage.
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 250 chunk 5 (score=0.8549)
+in Attachment  I 
+(Table I-4 to Table I-8) 
+• Instrumentation monitoring frequency to be updated based 
+on construction/operating conditions and observed 
+behavior of each instrument.
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 240 chunk 5 (score=0.8531)
+and Monitoring 
+Routine dam safety inspections to monitor dam performance during operations and construction are carried 
+out. 
+Installed instrumentation includes vibrating wire piezometers (VWP); inclinomet ers; settlement plates; 
+accelerograph; surface survey monuments and survey rods and seepage weirs.  
+The purpose of the instrumentation and monitoring program is to measure and record key performance 
+indicators including displacements, pore pressures, and se epage flows during: (a) constr
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 234 chunk 3 (score=0.8445)
+e 
+water management st ructures including a temporary diversion ditch, six cofferdams and an underdrain 
+system below the liner to help manage surface water, groundwater and seepage during construction.  
+Based on construction observations, CQC/CQA records, survey records and observed performance during 
+dam raises construction, it is KCB’s opinion that the TSF in its current condition meets the design intent for 
+the facility and the structure is stable.  
+Based on tailings production estimates
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 250 chunk 3 (score=0.8443)
+vel 
+• Tailings beach surveying and pond monthly bathymetry. 
+• Daily pond levels recording, tailings volume tracking and 
+comparison with the stage storage curve. 
+• Flow rates monitoring 
+• Seepage mapping and recording of flow rates (weirs), 
+turbidity, and locations. 
+• Instrumentation installed 
+• Standpipe piezometer and piezometers within the dam and 
+foundation. 
+• Vibrating Wire Piezometers 
+• Settlement Plates 
+• Two in- place Inclinometers with settlement gauges to 
+evaluate foundatio
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 236 chunk 4 (score=0.8440)
+at the TSF. From 2009 to 2015 
+the investigations focused on evaluating deeper foundation conditions within th e dam footprint and the 
+surficial soil distribution within the basin. In 2016-2017, the investigations were focused along the upstream 
+cut-off trench alignment and to obtain preliminary hydrogeological information from the impoundment basin. 
+The 2018 site investigation focused on surficial geological mapping, sample collection for advance testing 
+to characterize the foundation, inf
+------------------------------------------------------------
+
+[stderr]
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 199/199 [00:00<00:00, 10446.13it/s]
+[1mBertModel LOAD REPORT[0m from: BAAI/bge-small-en
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Loading weights:   0%|          | 0/282 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 282/282 [00:00<00:00, 7352.80it/s]
+The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+Token indices sequence length is longer than the specified maximum sequence length for this model (873 > 512). Running this sequence through the model will result in indexing errors
+The following generation flags are not valid and may be ignored: ['temperature']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+
+------------------------------------------------------------
+
+=== RUN END 2026-04-06T12:22:13.891753 ===

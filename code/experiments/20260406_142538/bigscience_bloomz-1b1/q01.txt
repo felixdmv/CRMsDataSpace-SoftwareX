@@ -1,0 +1,59 @@
+Question: What materials are present in the waste facility?
+
+Answer:
+I don't know
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 4 (score=0.8430)
+............... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ................................................ 20-11 
+20.4.7 Stage Construction and TSF Current Condition ........................................... 20-11 
+20.4.8 Instrumentation and Monitoring .................................................................... 20-11 
+20.4.9 Operating Philosophy .................................................................................... 20-12 
+20.4.10 Design Basis .............
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 2 (score=0.8316)
+............................................................................... 20-4 
+20.4 Tailings Storage Facility ................................................................................. 20-4 
+20.4.1 Introduction ..................................................................................................... 20-4 
+20.4.2 Site Conditions and Investigations .................................................................. 20-5 
+20.4.3 Tailings Characteristics ....................
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 3 (score=0.8301)
+......................................... 20-5 
+20.4.3 Tailings Characteristics ................................................................................... 20-8 
+20.4.4 Design ............................................................................................................. 20-9 
+20.4.5 Storage Capacity ........................................................................................... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ...........................
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 27 chunk 10 (score=0.8259)
+................................ 13-5 
+Table 13.6: Summary Metallurgical Programs ......................................................................................... 13-9 
+Table 14.1: Summary of Mineral Resource – December 31, 2022 .......................................................... 14-1 
+Table 14.2: Descriptive Statistics of Resource Assay Values - Au .......................................................... 14-8 
+Table 14.3: Descriptive Statistics of Resource Assay Values - Ag ..
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 42 chunk 1 (score=0.8259)
+rical workshops 
+• Laboratory 
+• Warehouse and laydown area 
+• Short term concentrate container storage 
+• Permanent camp and kitchen facilities 
+• Greenhouse 
+• Communications and IT systems 
+• Security access control at the main gate along the access road and at the process plant. Only 
+authorized personnel are permitted on site. 
+• Waste storage facilities 
+• Quarry 
+• Stockpiles 
+• TSF 
+1.15 Markets and Contracts 
+The principal commodities produced at FDN are gold and silver in the form of d
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 22 chunk 6 (score=0.8228)
+....................................................................................... 17-6 
+17.3 Energy, Water, and Process Materials Requirements .................................... 17-6 
+17.3.1 Reagents ......................................................................................................... 17-6 
+17.3.2 Power .............................................................................................................. 17-7 
+17.3.3 Air .......................................
+------------------------------------------------------------

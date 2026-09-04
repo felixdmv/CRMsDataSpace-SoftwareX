@@ -1,0 +1,386 @@
+{
+  "v1_intent_classification": [
+    {
+      "query_id": "Q1: Saludo",
+      "query": "Hola, buenos días, ¿cómo estás y en qué puedes ayudarme?",
+      "intent": "generic_qa",
+      "filters": {},
+      "num_db_results": 5,
+      "has_evidences": "no",
+      "response": "He encontrado 5 instalación(es) en el Espacio de Datos que coincide(n) con tu búsqueda:\n\n* **Riotinto Project**: Se trata de una balsa de estériles, en la región de Andalucia, gestionada por la empresa Atalaya Mining. Contiene cobre, plata, oro. Mina activa de cobre. Las balsas de estériles contienen trazas de metales preciosos.\n* **El Valle-Boinás**: Se trata de una escombrera, en la región de Asturias, gestionada por la empresa Orvana Minerals. Contiene oro, cobre. Mina de oro y cobre en el cinturón aurífero de Río Narcea. Escombreras con potencial de re-procesamiento.\n* **Los Santos**: Se trata de una escombrera, en la región de Castilla Y Leon, gestionada por la empresa Almonty Industries. Contiene wolframio / tungsteno. Mina de wolframio (tungsteno) en Salamanca. Actualmente en mantenimiento, estudiando re-procesamiento de estériles.\n* **San Finx**: Se trata de una balsa, en la región de Galicia, gestionada por la empresa Valoriza Mineria. Contiene wolframio / tungsteno, estaño. Antigua mina de wolframio y estaño. Hay balsas con potencial de re-procesamiento pero con retos ambientales.\n* **San José Valdeflórez**: Se trata de una balsa de estériles, en la región de Extremadura, gestionada por la empresa Infinity Lithium. Contiene litio. Gran proyecto de litio cerca de Cáceres. En fase de desarrollo, diseñado con almacenamiento subterráneo de relaves."
+    },
+    {
+      "query_id": "Q2: Búsqueda estructurada",
+      "query": "Dime escombreras de wolframio activas en Galicia",
+      "intent": "search",
+      "filters": {
+        "regions": [
+          "galicia"
+        ],
+        "commodities": [
+          "tungsten"
+        ],
+        "storage_facility_types": [
+          "waste dump"
+        ],
+        "project_status": [
+          "active"
+        ],
+        "countries": [
+          "spain"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "No he encontrado ninguna escombrera con wolframio / tungsteno en la región de Galicia en estado activo en el Espacio de Datos (WARM) que coincida con tu búsqueda."
+    },
+    {
+      "query_id": "Q3: Consulta técnica / RAG",
+      "query": "¿Qué dice el informe técnico de Penouta sobre la estabilidad física de la balsa B?",
+      "intent": "hybrid",
+      "filters": {
+        "storage_facility_types": [
+          "pond"
+        ],
+        "site_names": [
+          "Mina de Penouta"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "No he encontrado ninguna balsa en el Espacio de Datos (WARM) que coincida con tu búsqueda."
+    },
+    {
+      "query_id": "Q4: Filtros con negación",
+      "query": "Busca balsas de litio en Extremadura pero que no estén en Cáceres",
+      "intent": "search",
+      "filters": {
+        "regions": [
+          "extremadura"
+        ],
+        "commodities": [
+          "lithium"
+        ],
+        "storage_facility_types": [
+          "pond"
+        ],
+        "countries": [
+          "spain"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "No he encontrado ninguna balsa con litio en la región de Extremadura en el Espacio de Datos (WARM) que coincida con tu búsqueda."
+    },
+    {
+      "query_id": "Q5: Sin resultados / Grounding",
+      "query": "Dime balsas de cobalto en Asturias",
+      "intent": "search",
+      "filters": {
+        "regions": [
+          "asturias"
+        ],
+        "commodities": [
+          "cobalt"
+        ],
+        "storage_facility_types": [
+          "pond"
+        ],
+        "countries": [
+          "spain"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "No he encontrado ninguna balsa con cobalto en la región de Asturias en el Espacio de Datos (WARM) que coincida con tu búsqueda."
+    }
+  ],
+  "v2_hybrid_search_rerank": [
+    {
+      "query_id": "Q1: Saludo",
+      "query": "Hola, buenos días, ¿cómo estás y en qué puedes ayudarme?",
+      "intent": "generic_qa",
+      "filters": {},
+      "num_db_results": 5,
+      "has_evidences": "no",
+      "response": "He encontrado 5 instalación(es) en el Espacio de Datos que coincide(n) con tu búsqueda:\n\n* **Riotinto Project**: Se trata de una balsa de estériles, en la región de Andalucia, gestionada por la empresa Atalaya Mining. Contiene cobre, plata, oro. Mina activa de cobre. Las balsas de estériles contienen trazas de metales preciosos.\n* **El Valle-Boinás**: Se trata de una escombrera, en la región de Asturias, gestionada por la empresa Orvana Minerals. Contiene oro, cobre. Mina de oro y cobre en el cinturón aurífero de Río Narcea. Escombreras con potencial de re-procesamiento.\n* **Los Santos**: Se trata de una escombrera, en la región de Castilla Y Leon, gestionada por la empresa Almonty Industries. Contiene wolframio / tungsteno. Mina de wolframio (tungsteno) en Salamanca. Actualmente en mantenimiento, estudiando re-procesamiento de estériles.\n* **San Finx**: Se trata de una balsa, en la región de Galicia, gestionada por la empresa Valoriza Mineria. Contiene wolframio / tungsteno, estaño. Antigua mina de wolframio y estaño. Hay balsas con potencial de re-procesamiento pero con retos ambientales.\n* **San José Valdeflórez**: Se trata de una balsa de estériles, en la región de Extremadura, gestionada por la empresa Infinity Lithium. Contiene litio. Gran proyecto de litio cerca de Cáceres. En fase de desarrollo, diseñado con almacenamiento subterráneo de relaves."
+    },
+    {
+      "query_id": "Q2: Búsqueda estructurada",
+      "query": "Dime escombreras de wolframio activas en Galicia",
+      "intent": "search",
+      "filters": {
+        "regions": [
+          "galicia"
+        ],
+        "commodities": [
+          "tungsten"
+        ],
+        "storage_facility_types": [
+          "waste dump"
+        ],
+        "project_status": [
+          "active"
+        ],
+        "countries": [
+          "spain"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "No he encontrado ninguna escombrera con wolframio / tungsteno en la región de Galicia en estado activo en el Espacio de Datos (WARM) que coincida con tu búsqueda."
+    },
+    {
+      "query_id": "Q3: Consulta técnica / RAG",
+      "query": "¿Qué dice el informe técnico de Penouta sobre la estabilidad física de la balsa B?",
+      "intent": "hybrid",
+      "filters": {
+        "storage_facility_types": [
+          "pond"
+        ],
+        "site_names": [
+          "Mina de Penouta"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "No he encontrado ninguna balsa en el Espacio de Datos (WARM) que coincida con tu búsqueda."
+    },
+    {
+      "query_id": "Q4: Filtros con negación",
+      "query": "Busca balsas de litio en Extremadura pero que no estén en Cáceres",
+      "intent": "search",
+      "filters": {
+        "regions": [
+          "extremadura"
+        ],
+        "commodities": [
+          "lithium"
+        ],
+        "storage_facility_types": [
+          "pond"
+        ],
+        "countries": [
+          "spain"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "No he encontrado ninguna balsa con litio en la región de Extremadura en el Espacio de Datos (WARM) que coincida con tu búsqueda."
+    },
+    {
+      "query_id": "Q5: Sin resultados / Grounding",
+      "query": "Dime balsas de cobalto en Asturias",
+      "intent": "search",
+      "filters": {
+        "regions": [
+          "asturias"
+        ],
+        "commodities": [
+          "cobalt"
+        ],
+        "storage_facility_types": [
+          "pond"
+        ],
+        "countries": [
+          "spain"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "No he encontrado ninguna balsa con cobalto en la región de Asturias en el Espacio de Datos (WARM) que coincida con tu búsqueda."
+    }
+  ],
+  "v3_json_schema": [
+    {
+      "query_id": "Q1: Saludo",
+      "query": "Hola, buenos días, ¿cómo estás y en qué puedes ayudarme?",
+      "intent": "generic_qa",
+      "filters": {},
+      "num_db_results": 5,
+      "has_evidences": "no",
+      "response": "He encontrado 5 instalación(es) en el Espacio de Datos que coincide(n) con tu búsqueda:\n\n* **Riotinto Project**: Se trata de una balsa de estériles, en la región de Andalucia, gestionada por la empresa Atalaya Mining. Contiene cobre, plata, oro. Mina activa de cobre. Las balsas de estériles contienen trazas de metales preciosos.\n* **El Valle-Boinás**: Se trata de una escombrera, en la región de Asturias, gestionada por la empresa Orvana Minerals. Contiene oro, cobre. Mina de oro y cobre en el cinturón aurífero de Río Narcea. Escombreras con potencial de re-procesamiento.\n* **Los Santos**: Se trata de una escombrera, en la región de Castilla Y Leon, gestionada por la empresa Almonty Industries. Contiene wolframio / tungsteno. Mina de wolframio (tungsteno) en Salamanca. Actualmente en mantenimiento, estudiando re-procesamiento de estériles.\n* **San Finx**: Se trata de una balsa, en la región de Galicia, gestionada por la empresa Valoriza Mineria. Contiene wolframio / tungsteno, estaño. Antigua mina de wolframio y estaño. Hay balsas con potencial de re-procesamiento pero con retos ambientales.\n* **San José Valdeflórez**: Se trata de una balsa de estériles, en la región de Extremadura, gestionada por la empresa Infinity Lithium. Contiene litio. Gran proyecto de litio cerca de Cáceres. En fase de desarrollo, diseñado con almacenamiento subterráneo de relaves."
+    },
+    {
+      "query_id": "Q2: Búsqueda estructurada",
+      "query": "Dime escombreras de wolframio activas en Galicia",
+      "intent": "search",
+      "filters": {
+        "regions": [
+          "galicia"
+        ],
+        "commodities": [
+          "tungsten"
+        ],
+        "storage_facility_types": [
+          "waste dump"
+        ],
+        "project_status": [
+          "active"
+        ],
+        "countries": [
+          "spain"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "No he encontrado ninguna escombrera con wolframio / tungsteno en la región de Galicia en estado activo en el Espacio de Datos (WARM) que coincida con tu búsqueda."
+    },
+    {
+      "query_id": "Q3: Consulta técnica / RAG",
+      "query": "¿Qué dice el informe técnico de Penouta sobre la estabilidad física de la balsa B?",
+      "intent": "hybrid",
+      "filters": {
+        "storage_facility_types": [
+          "pond"
+        ],
+        "site_names": [
+          "Mina de Penouta"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "No he encontrado ninguna balsa en el Espacio de Datos (WARM) que coincida con tu búsqueda."
+    },
+    {
+      "query_id": "Q4: Filtros con negación",
+      "query": "Busca balsas de litio en Extremadura pero que no estén en Cáceres",
+      "intent": "search",
+      "filters": {
+        "regions": [
+          "extremadura"
+        ],
+        "commodities": [
+          "lithium"
+        ],
+        "storage_facility_types": [
+          "pond"
+        ],
+        "countries": [
+          "spain"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "No he encontrado ninguna balsa con litio en la región de Extremadura en el Espacio de Datos (WARM) que coincida con tu búsqueda."
+    },
+    {
+      "query_id": "Q5: Sin resultados / Grounding",
+      "query": "Dime balsas de cobalto en Asturias",
+      "intent": "search",
+      "filters": {
+        "regions": [
+          "asturias"
+        ],
+        "commodities": [
+          "cobalt"
+        ],
+        "storage_facility_types": [
+          "pond"
+        ],
+        "countries": [
+          "spain"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "No he encontrado ninguna balsa con cobalto en la región de Asturias en el Espacio de Datos (WARM) que coincida con tu búsqueda."
+    }
+  ],
+  "v4_strict_grounding_citations": [
+    {
+      "query_id": "Q1: Saludo",
+      "query": "Hola, buenos días, ¿cómo estás y en qué puedes ayudarme?",
+      "intent": "generic_qa",
+      "filters": {},
+      "num_db_results": 5,
+      "has_evidences": "no",
+      "response": "He encontrado 5 instalación(es) en el Espacio de Datos que coincide(n) con tu búsqueda:\n\n* **Riotinto Project**: Se trata de una balsa de estériles, en la región de Andalucia, gestionada por la empresa Atalaya Mining. Contiene cobre, plata, oro. Mina activa de cobre. Las balsas de estériles contienen trazas de metales preciosos.\n* **El Valle-Boinás**: Se trata de una escombrera, en la región de Asturias, gestionada por la empresa Orvana Minerals. Contiene oro, cobre. Mina de oro y cobre en el cinturón aurífero de Río Narcea. Escombreras con potencial de re-procesamiento.\n* **Los Santos**: Se trata de una escombrera, en la región de Castilla Y Leon, gestionada por la empresa Almonty Industries. Contiene wolframio / tungsteno. Mina de wolframio (tungsteno) en Salamanca. Actualmente en mantenimiento, estudiando re-procesamiento de estériles.\n* **San Finx**: Se trata de una balsa, en la región de Galicia, gestionada por la empresa Valoriza Mineria. Contiene wolframio / tungsteno, estaño. Antigua mina de wolframio y estaño. Hay balsas con potencial de re-procesamiento pero con retos ambientales.\n* **San José Valdeflórez**: Se trata de una balsa de estériles, en la región de Extremadura, gestionada por la empresa Infinity Lithium. Contiene litio. Gran proyecto de litio cerca de Cáceres. En fase de desarrollo, diseñado con almacenamiento subterráneo de relaves."
+    },
+    {
+      "query_id": "Q2: Búsqueda estructurada",
+      "query": "Dime escombreras de wolframio activas en Galicia",
+      "intent": "search",
+      "filters": {
+        "regions": [
+          "galicia"
+        ],
+        "commodities": [
+          "tungsten"
+        ],
+        "storage_facility_types": [
+          "waste dump"
+        ],
+        "project_status": [
+          "active"
+        ],
+        "countries": [
+          "spain"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "Información no disponible en el espacio de datos"
+    },
+    {
+      "query_id": "Q3: Consulta técnica / RAG",
+      "query": "¿Qué dice el informe técnico de Penouta sobre la estabilidad física de la balsa B?",
+      "intent": "hybrid",
+      "filters": {
+        "storage_facility_types": [
+          "pond"
+        ],
+        "site_names": [
+          "Mina de Penouta"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "Información no disponible en el espacio de datos"
+    },
+    {
+      "query_id": "Q4: Filtros con negación",
+      "query": "Busca balsas de litio en Extremadura pero que no estén en Cáceres",
+      "intent": "search",
+      "filters": {
+        "regions": [
+          "extremadura"
+        ],
+        "commodities": [
+          "lithium"
+        ],
+        "storage_facility_types": [
+          "pond"
+        ],
+        "countries": [
+          "spain"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "Información no disponible en el espacio de datos"
+    },
+    {
+      "query_id": "Q5: Sin resultados / Grounding",
+      "query": "Dime balsas de cobalto en Asturias",
+      "intent": "search",
+      "filters": {
+        "regions": [
+          "asturias"
+        ],
+        "commodities": [
+          "cobalt"
+        ],
+        "storage_facility_types": [
+          "pond"
+        ],
+        "countries": [
+          "spain"
+        ]
+      },
+      "num_db_results": 0,
+      "has_evidences": "no",
+      "response": "Información no disponible en el espacio de datos"
+    }
+  ]
+}

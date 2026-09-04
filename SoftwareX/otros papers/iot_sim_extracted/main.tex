@@ -1,0 +1,185 @@
+%% 
+%% Copyright 2007, 2008, 2009 Elsevier Ltd
+%% 
+%% This file is part of the 'Elsarticle Bundle'.
+%% ---------------------------------------------
+%% 
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%% 
+
+%% Template article for Elsevier's document class `elsarticle'
+%% with numbered style bibliographic references
+%% SP 2008/03/01
+
+\documentclass[preprint,12pt, a4paper]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% For including figures, graphicx.sty has been loaded in
+%% elsarticle.cls. If you prefer to use the old commands
+%% please give \usepackage{epsfig}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{subcaption} 
+\usepackage{soul}
+\usepackage{xcolor}
+\graphicspath{{figures/}}
+
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+\usepackage{hyperref}
+\setlength{\parindent}{0pt}
+
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers.
+%\usepackage{lineno}
+
+\usepackage{orcidlink}
+
+\journal{SoftwareX}
+
+\begin{document}
+\renewcommand{\labelenumii}{\arabic{enumi}.\arabic{enumii}}
+
+\begin{frontmatter}
+%% Title
+\title{IoT-Sim: An Interactive Platform for Designing and Securing Smart Device Networks}
+
+%% Authors
+\author[1]{Alejandro Diez Bermejo\corref{cor1}\orcidlink{0009-0003-2118-3977}}
+\ead{adbermejo@ubu.es}
+\author[1]{Branly Martinez Gonzalez\orcidlink{0009-0002-3224-7131}}
+\ead{bamgonzalez@ubu.es}
+\author[1]{Beatriz Gil-Arroyo\orcidlink{0009-0009-8499-093X}}
+\ead{bgarroyo@ubu.es}
+\author[1]{Jaime Rincón Arango\orcidlink{0000-0003-1153-0616}}
+\ead{jarincon@ubu.es}
+\author[1]{Daniel Urda Muñoz\orcidlink{0000-0003-2662-798X}}
+\ead{durda@ubu.es}
+
+\cortext[cor1]{Corresponding author}
+\address[1]{Grupo de Inteligencia Computacional Aplicada (GICAP), Departamento de Digitalización, Escuela Politécnica Superior. Universidad de Burgos. Av. Cantabria s/n. 09006 Burgos (Spain).}
+
+%% Abstract 
+\begin{abstract}
+The IoT-Sim is a lightweight and modular tool designed to create, configure, and test models that detect attacks in Internet of Things (IoT) networks. It provides an interactive environment for simulating communication among connected devices and evaluating intrusion detection models. This framework allows researchers to design network topologies, inject different types of attacks, and benchmark detection algorithms under controlled conditions. By combining usability and flexibility in an open-source design, the simulator is a valuable resource for the education, research, and rapid prototyping of IoT security solutions.
+\end{abstract}
+
+%% Graphical abstract
+\begin{graphicalabstract}
+\centering
+\includegraphics[height=0.8\textheight, keepaspectratio]{graphical_abstract.png}
+\end{graphicalabstract}
+
+%% Research highlights
+\begin{highlights}
+    \item Developed a lightweight, modular, and open-source tool designed to create, configure, and test attack detection models for Internet of Things (IoT) networks.
+    \item It functions as a client-side web application developed in Angular, running entirely in the user's browser without needing a dedicated backend server.
+    \item It was developed to address the lack of flexible simulation environments that allow researchers to replicate IoT scenarios and assess machine learning models in controlled, realistic conditions.
+    \item Key functionalities include visually designing network topologies, simulating network traffic, injecting controlled attacks (such as Denial of Service (DoS)), and integrating trained AI models to analyze traffic and detect intrusions in real-time.
+    \item The tool is designed for researchers and students, offering an accessible platform for benchmarking detection algorithms and facilitating reproducible experiments without the need for expensive or specialized hardware.
+\end{highlights}
+
+%% Keywords
+\begin{keyword}
+IoT Networks \sep Simulation Framework \sep Intrusion Detection \sep Attack Detection Models \sep Experimental Testbed \sep Machine Learning for Security \sep Models Benchmarking
+\end{keyword}
+\end{frontmatter}
+
+
+% \linenumbers
+
+%% Metadata
+\section*{Metadata}
+% \begin{table}[!h]
+% \begin{tabular}{|l|p{6.5cm}|p{6.5cm}|}
+% \hline
+% \textbf{Nr.} & \textbf{Code metadata description} & \textbf{Metadata} \\
+% \hline
+% C1 & Current code version & v1.0.3 \\
+% \hline
+% C2 & Permanent link to code/repository used for this code version & \url{https://github.com/AlejaDiez/iot_attack_detection} \\
+% \hline
+% C3  & Permanent link to Reproducible Capsule & none \\
+% \hline
+% C4 & Legal Code License & MIT License \\
+% \hline
+% C5 & Code versioning system used & git \\
+% \hline
+% C6 & Software code languages, tools, and services used & TypeScript, HTML, CSS, Angular, TensorFlow \\
+% \hline
+% C7 & Compilation requirements, operating environments \& dependencies & Node >= 18.19.1, Python >= 3.9 < 3.12, TensorFlow >= 2.16.1, tensorflowjs == 4.22.0 \\
+% \hline
+% C8 & If available Link to developer documentation/manual & none \\
+% \hline
+% C9 & Support email for questions & \url{adbermejo@ubu.es} \\
+% \hline
+% \end{tabular}
+% \caption{Code metadata}
+% \label{codeMetadata} 
+% \end{table}
+\captionsetup[longtable]{position=bottom}
+\begin{longtable}{|l|p{6.5cm}|p{6.5cm}|}
+\hline
+\textbf{Nr.} & \textbf{Code metadata description} & \textbf{Metadata} \\
+\hline
+C1 & Current code version & v1.0.5 \\
+\hline
+C2 & Permanent link to code/repository used for this code version & \url{https://github.com/gicap-ubu/iot-sim} \\
+\hline
+C3 & Permanent link to Reproducible Capsule & \url{https://gicap-ubu.github.io/iot-sim/} \\
+\hline
+C4 & Legal Code License & MIT License \\
+\hline
+C5 & Code versioning system used & git \\
+\hline
+C6 & Software code languages, tools, and services used & TypeScript, HTML, CSS, Angular, TensorFlow \\
+\hline
+C7 & Compilation requirements, operating environments \& dependencies & Node (>= 20.19.0), Angular CLI (>= v21.0.0), Python (>= 3.10 < 3.12), TensorFlow (>= 2.15.0), tensorflowjs, Google Chrome (>= 113) | MS Edge (>= 113) | Safari (>= 16.4) | Mozilla Firefox (>= 113) \\
+\hline
+C8 & If available Link to developer documentation/manual & \url{https://github.com/gicap-ubu/iot-sim/wiki} \\
+\hline
+C9 & Support email for questions & \url{adbermejo@ubu.es} \\
+\hline
+\caption{Code metadata}
+\label{table:codeMetadata} 
+\end{longtable}
+
+% \textit{Your main body of text (sections 1-5 below) should be a maximum 6 pages in total (excluding metadata, tables, figures, references) with a 3000-word limit (we ask that more priority is placed on the word limit versus the page count). Though we strictly insist on the author following the template, in exceptional circumstances, we can be flexible with the page numbers and word limit. In such cases, it should be discussed with the managing editor or publisher prior to submission. All queries regarding the same can be reached at softwarex@elsevier.com.}
+
+%% Sections
+\input{sections/motivation_significance} 
+\input{sections/software_description} 
+\input{sections/illustrative_examples} 
+\input{sections/impact} 
+\input{sections/conclusions}
+\input{sections/others}
+
+%% Appendices
+\appendix
+\section{Supplementary data}
+\label{app:SupplementaryData}
+Supplementary material related to this article can be found online at \url{https://gicap-ubu.github.io/iot-sim/resources/}.
+
+%% References
+\bibliographystyle{elsarticle-num} 
+\bibliography{bibliography}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

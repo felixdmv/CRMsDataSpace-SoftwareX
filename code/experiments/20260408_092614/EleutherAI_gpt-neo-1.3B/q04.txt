@@ -1,0 +1,79 @@
+Question: Which documents define reporting standards for mineral resources and reserves?
+
+Answer:
+I don't know
+
+Sources used:
+[SOURCE 1] pdfs\PERC, CRIRSCO, and UNFC.pdf page 2 chunk 4 (score=0.9079)
+There are two distinct types of public 
+reporting of mineral resources and reserves:
+•	 Disclosure for companies quoted on 
+stock exchanges. Objectives: reliable, 
+transparent information for inves-
+tors and potential investors. This is 
+the role of the CRIRSCO family of 
+standards
+•	 Governmental, inter-governmen-
+tal, or NGO reporting of mineral 
+resource estimates and forecasts. 
+Objectives: a reliable mineral inven-
+tory to underpin minerals policies 
+(especially cross border, e.g. Europe),
+------------------------------------------------------------
+[SOURCE 2] pdfs\CIM Definition Standards. (2014).pdf page 3 chunk 0 (score=0.9067)
+2 
+ 
+ 
+May 10, 2014 CIM Definition Standards for Mineral Resources & Mineral Reserves 
+Foreword 
+ 
+The CIM Definition Standards on Mineral Resources and Reserves (CIM Definition Standards) establish 
+definitions and guidance on the definitions for Mineral Resources, Mineral Reserves, and mining studies used 
+in Canada. The Mineral Resource, Mineral Reserve, and mining study definitions are incorporated, by 
+reference, into National Instrument 43-101 – Standards of Disclosure for Mineral Projects
+------------------------------------------------------------
+[SOURCE 3] pdfs\20240104_NI_43-101_TR_Pan_American_Horizon_Lithium.pdf page 106 chunk 1 (score=0.9066)
+of Mining, Metallurgy and Petroleum , 2014. CIM Definition Standards for Mineral 
+Resources and Reserves, prepared by the CIM Standing Committee on Reserve Definitions, 
+Westmount, QC. 
+Canadian Securities Administrators, 2016. Unofficial Consolidation of All Amendments to National 
+Instrument (NI) 43-101 Standards of Disclosure for Mineral Projects, prepared by the Securities 
+Division, Regina, SK. 
+ 
+Climate-data.org, 2022. “Tonopah Climate,” accessed December 29, 2022, from https://en.climat
+------------------------------------------------------------
+[SOURCE 4] pdfs\CIM Definition Standards. (2014).pdf page 9 chunk 4 (score=0.9018)
+a non-permanent nature, 
+transport strike etc. 
+ 
+ 
+Guidance for Reporting Mineral Resource and Mineral Reserve Information 
+ 
+Qualified Persons preparing public Mineral Resource and Mineral Reserve reports in Canada must follow the 
+requirements in form 43-101f1 of National Instrument 43-101, available on the following websites: 
+www.osc.gov.ca; www.bcsc.bc.ca; www.albertasecurities.com and www.cvmq.com. 
+ 
+The following discussion is included for additional guidance when preparing a technical
+------------------------------------------------------------
+[SOURCE 5] pdfs\CIM Definition Standards. (2014).pdf page 10 chunk 1 (score=0.9014)
+rves. 
+ 
+Reporting of Coal Reserves 
+ 
+For consistency in public reporting of Mineral Resources and Mineral Reserves for coal, it is recommended 
+that all issuers use the Mineral Resource and Mineral Reserve categories set out in the CIM Definition 
+Standards. Qualified Person(s) should be guided by the estimation of Mineral Resources and Mineral Reserve 
+best practices guidelines for coal and by GSC Paper 88- 21: a standardized coal resource/reserve reporting 
+system for Canada. It is acceptabl
+------------------------------------------------------------
+[SOURCE 6] pdfs\CIM Definition Standards. (2014).pdf page 3 chunk 2 (score=0.9008)
+lations. 
+ 
+CIM Definition Standards 
+ 
+The CIM Definition Standards presented herein provide definitions and guidance on those definitions for 
+Mineral Resource and Mineral Reserve and their confidence categories. The category to which a Mineral 
+Resource or Mineral Reserve estimate is assigned depends on the level of confidence in the geological 
+information available on the mineral deposit; the quality and quantity  of data available on the deposit; the 
+level of detail of the technical and e
+------------------------------------------------------------

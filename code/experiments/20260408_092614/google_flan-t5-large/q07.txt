@@ -1,0 +1,94 @@
+Question: What is the sludge production rate and solids content specified for the WTP?
+
+Answer:
+Sludge to be delivered to TSF at solids content of 5%. • Poor settling behavior: 100% of the sludge (so [2] pdfsLithium mining. Accelerating the transition to sustainable energy.pdf | page 6 | chunk 13 | score 0.8500
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 245 chunk 3 (score=0.8908)
+o 2017). 
+4.0 Other Materials to be Deposited into the TSF 
+4.1 General 
+Sludge from the Water Treatment Plant (WTP) will be deposited 
+into the TSF during the mine life through the same tailings 
+pipeline.  
+All foundation stripping spoils will be disposed in a new waste 
+dump. 
+4.2 Sludge Production at WTP 
+and into the TSF 
+Sludge production and properties: 
+• Production rate: 1.4 m3/h. 
+• Sludge to be delivered to TSF at solids content of 5%. 
+• Poor settling behavior: 100% of the sludge (so
+------------------------------------------------------------
+[SOURCE 2] pdfs\Lithium mining. Accelerating the transition to sustainable energy.pdf page 6 chunk 13 (score=0.8500)
+e 11
+Cauchari-Olaroz salars project operating expenses (Lithium Americas, 2017).
+ITEM $/m3 of brine $/t of brine
+Reagents 2.45 2.02
+Maintenance 0.52 0.43
+Pond harvesting 0.85 0.70
+Product transport 0.33 0.27
+Others 2.01 1.65
+TOTAL 6.16 5.07
+J. Sterba, et al. Resources Policy 62 (2019) 416–426
+421
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 250 chunk 1 (score=0.8482)
+s transport water will be 
+reclaimed to the process plant. Excess will be delivered to the 
+WTP for treatment and then delivered to the environment. 
+9.0 Instrumentation and Monitoring 
+9.1 Strategy 
+Instrumentation and monitoring results during construction and 
+operations must be used to confirm agreement between actual 
+and expected behavior (Observational Approach, Peck 1969). 
+Design section should be refined and/or optimized based on 
+actual behavior. 
+Instrumentation installed during 2019
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 245 chunk 4 (score=0.8462)
+ge to be delivered to TSF at solids content of 5%. 
+• Poor settling behavior: 100% of the sludge (solids and 
+water) to be stored. 
+• Deposited dry density: 1.1 t/m3 provided by Aurelian 
+• Total sludge production to TSF: 0.2 mm3 over 16 years. 
+5.0 Tailing Storage Facility Design and Engineering 
+5.1 General  
+The TSF impoundment is contained by a cross-valley compacted 
+rockfill dam with an inclined compacted upstream saprolite-
+cement core and a liner system for seepage control.
+------------------------------------------------------------
+[SOURCE 5] pdfs\20240104_NI_43-101_TR_Pan_American_Horizon_Lithium.pdf page 61 chunk 3 (score=0.8448)
+e Dates Used 
+Samples Warning 
+Limit High Low Start End 
+SiBlank.21.01 Pulp 17 4.07 1.90 3.50 0.80 February 24, 2023 April 6, 2023 
+CaBlank.17.13 Pulp 19 43.98 40.72 43.20 38.80 April 21, 2023 June 27, 2023 
+MEG.PRPBLK.19.12 Coarse  13 45.24 41.40 44.00 39.7 June 27, 2023 July 29, 2023 
+ 
+MEG.PRPBLK.19.12 coarse blanks were intentionally introduced to assess Actlabs’ preparation circuit, 
+which includes crushing, splitting, and pulverization of materials before four-acid digestions with an 
+ICP-
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 53 chunk 1 (score=0.8418)
+ter (47.6 mm) 
+Ø Diameter 
+OK Ordinary Kriging Methodology 
+OPEX Operating Expenditures 
+oz Troy Ounce (31.10348 grams) 
+OCR Off-Channel Reservoir 
+PEA Preliminary Economic Assessment 
+PFS Pre-feasibility Study 
+Pb Lead 
+PLC Programmable Logic Controller 
+ppb Parts per Billion 
+ppm Parts per Million 
+psi Pounds per Square Inch 
+PV Present Value 
+RC Reverse Circulation 
+RoM Run-of-mine 
+rpm Revolutions per Minute 
+S Sulphur 
+Sec Second (time) 
+STP Sewage Treatment Plant
+------------------------------------------------------------

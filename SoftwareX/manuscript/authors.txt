@@ -1,0 +1,7 @@
+\author[1]{F{\'e}lix de Miguel \orcidlink{0009-0000-9607-110X}}
+\ead{fdemiguel@ubu.es}
+
+\author[1]{Daniel Urda \orcidlink{0000-0003-2662-798X}}
+\author[1]{Nuño Basurto \orcidlink{0000-0001-7289-4689}}
+
+\address[1]{Grupo de Inteligencia Computacional Aplicada (GICAP), Departamento de Digitalización, Escuela Politécnica Superior, Universidad de Burgos, Av. Cantabria s/n, 09006 Burgos, Spain}

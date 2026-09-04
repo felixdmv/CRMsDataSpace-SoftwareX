@@ -1,0 +1,71 @@
+Question: What is the monitoring frequency for tailings beach surveying and pond bathymetry?
+
+Answer:
+I don't know
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 25 chunk 5 (score=0.8553)
+and Pyrite .. 7-18 
+Figure 9.1: Surface Sampling, 2011–2016 ................................................................................................ 9-5 
+Figure 9.2: Geophysical Surveys ............................................................................................................... 9-9 
+Figure 9.3: FDN Exploration Targets ....................................................................................................... 9-13 
+Figure 10.1: Histogram of Metres Drilled by
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 21 chunk 5 (score=0.8487)
+oundwater Conditions ................................................................................. 16-6 
+16.3.2 Dewatering and Mine Drainage ...................................................................... 16-6 
+16.4 South Zone Mining Method Selection ............................................................. 16-7 
+16.5 Design Assumptions and Design Criteria ....................................................... 16-7 
+16.5.1 Stope Design Criteria ...................................
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 36 chunk 1 (score=0.8443)
+ls (CRMs ) Programs typically included 
+submission of blank samples, CRMs, field and reject duplicates and pulp check assaying. Ongoing 
+monitoring of the program was performed by the operators, with spurious results being investigated and 
+changes implemented when required. 
+The quantity and quality of the lithological, geotechnical, collar and downhole survey data collected in the 
+exploration and conversion drill programs conducted by Aurelian–Kinross and Lundin Gold are sufficient to 
+suppor
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 80 chunk 2 (score=0.8383)
+(20 grab samples). 
+2003–2005 
+Outcrop examination, gridding, geological mapping, regional geochemical 
+stream sediment sampling, rock chip, channel and grab sampling of outcrop, 
+artisanal workings and trenches, a magnetometer and IP geophysical survey, 
+and core drilling of prospects that either were known previously through 
+Climax’s work before 1999 or were discovered by artisanal miners in the period 
+1999 to 2002. 
+2003 14 holes (1,161 m approx.) at Aguas Mesas Sur and Norte prospects* 
+2
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 54 chunk 0 (score=0.8379)
+NI 43-101 Technical Report  
+  Fruta del Norte Mine, Ecuador 
+ 
+Section 2 March 2023 Page 2-7 
+Abbreviations Full Description 
+t Tonnes (1,000 kg) (metric ton) 
+t/y or tpy Tonnes per year 
+t/d or tpd Tonnes per day 
+t/h or tph Tonnes per hour 
+t/m3 Tonnes per cubic metre 
+TRS Tailings Reclaim Sump 
+TSF Tailings Storage Facility 
+TTP Thickened Tailings Plant 
+TWSP Treated Water Storage Pond 
+USD United States Dollar 
+V Volt 
+VAT Value Added Tax 
+wk Week 
+XRF X-ray Fluorescence 
+y Year
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 43 chunk 2 (score=0.8369)
+dards. Lundin Gold 
+monitors the environmental aspects with the support of external labs certified by the national authority.  
+Reports to the authority are submitted on a quarterly basis. The aspects monitored and managed include 
+air quality, environmental noise, vibration, water quality, industrial and sewage treated water discharges, 
+underground water quality, sediments, biodiversity, waste and archeology. In addition to this environmental 
+monitoring, geotechnical and geochemical monitorin
+------------------------------------------------------------

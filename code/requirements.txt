@@ -1,0 +1,25 @@
+# Minimal requirements for the local RAG prototype
+
+# Core PDF processing
+pypdf
+pdf2image
+pytesseract
+Pillow
+
+# Embeddings + index
+sentence-transformers
+faiss-cpu
+
+# Transformers + accelerate for local LLM inference
+transformers
+accelerate
+torch
+
+# Utilities
+huggingface-hub
+tqdm
+numpy
+gradio
+pandas
+openpyxl
+folium

@@ -1,0 +1,7 @@
+sheet_or_section,what_it_is,what_to_fill,start_from_row
+report_register,One row per PDF.,Fill report and asset metadata. EXAMPLE rows are already completed. Start on the EXPERTS row.,row 22
+unfc_evaluation,"One row per mine, dump, deposit, or asset.",Fill one single UNFC classification for the asset as a whole.,row 21
+axis_evidence,"One row per variable used to justify E, F, or G.",Add as many variables as the expert needs to justify the final classification.,row 55
+qa_pairs,Gold questions and answers.,Write questions in English and gold answers in English.,row 18
+key_rule,Do not separate UNFC by commodity.,Classification applies to the asset and material set as a whole.,
+purpose,Ask the minimum useful information to compare experts and models.,Examples are invented and only show the intended format.,

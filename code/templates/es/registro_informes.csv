@@ -1,0 +1,22 @@
+campo,formato,opciones_o_ejemplo,notas
+tipo_fila,texto,EJEMPLO|EXPERTOS,Marca filas de ejemplo y la primera fila a completar por expertos.
+nombre_pdf,texto,070912ElValleTechnicalReport.pdf,Clave principal para cruzar hojas.
+titulo_informe,texto,Titulo completo del informe,Copiar el titulo visible en portada o metadatos.
+empresa,texto,Nombre de la empresa o titular,"Si no aplica, indicar desconocido."
+pais,texto,España|Portugal|Finlandia|otro,Usar el pais principal del activo o del informe.
+region,texto,Andalucia|Asturias|Extremadura|otra,Region administrativa o geografica relevante.
+tipo_fuente,texto,escombrera|balsa de lodos|instalacion de relaves|deposito minero|mina|acopio|residuo metalurgico|escorial|otro,Usar una de estas opciones siempre que sea posible.
+nombre_fuente,texto,"Nombre de mina, escombrera o deposito",Debe coincidir en todas las hojas.
+material_fuente,texto,relaves de flotacion|sulfuros|estériles|mineral oxidado|otro,Describir el tipo general de material del activo.
+elementos_observados,texto,niquel|cobre|oro,Separar con barra vertical |.
+nivel_estudio_reportado,texto,sin_estudio|scoping|PEA|PFS|FS|operacion|solo_informe_tecnico|otro,Copiar el nivel de estudio visible en el informe.
+fecha_efectiva_o_ano,texto,2024|2007|2024-02-15,Año o fecha efectiva si aparece.
+nombre_experto,texto,Nombre y apellido,Persona que rellena o revisa la fila.
+estado_revision,texto,pendiente|en_progreso|completado,Seguimiento mínimo del estado de revisión.
+(notas),texto opcional,Observaciones libres,Opcional.
+""
+tipo_fila,nombre_pdf,titulo_informe,empresa,pais,region,tipo_fuente,nombre_fuente,material_fuente,elementos_observados,nivel_estudio_reportado,fecha_efectiva_o_ano,nombre_experto,estado_revision,(notas)
+EJEMPLO,1._Cobre_Las_Cruces_Technical_Report_Feb_2024_FINAL.pdf,Cobre Las Cruces: proyecto de sulfuros primarios polimetálicos,First Quantum Minerals Ltd,España,Andalucía,mina,Cobre Las Cruces PMS / PMR,sulfuros primarios polimetálicos,cobre|zinc|plomo|plata,solo_informe_tecnico,2024,Ejemplo de plantilla,completado,Ejemplo inventado completo para mostrar el formato.
+EJEMPLO,DMET_-_240523_Aguablanca_Technical_Report_PFS_Final.pdf,Informe técnico y estudio de prefactibilidad preliminar del depósito de níquel-cobre de Aguablanca,Denarius Metals Corp.,España,Extremadura,mina,Aguablanca,depósito mineral de níquel-cobre,níquel|cobre,PFS,2024,Ejemplo de plantilla,completado,Ejemplo inventado completo para mostrar el formato.
+EJEMPLO,070912ElValleTechnicalReport.pdf,"Informe técnico de los depósitos auríferos El Valle, Carlés, La Brueva y Godán",Buffalo Gold Ltd.,España,Asturias,mina,El Valle / Carlés / La Brueva / Godán,depósitos de oro,oro,solo_informe_tecnico,2007,Ejemplo de plantilla,completado,Ejemplo inventado completo para mostrar el formato.
+EXPERTOS,NOMBRE_PDF_AQUI,TITULO_INFORME_AQUI,EMPRESA_AQUI,PAIS_AQUI,REGION_AQUI,TIPO_FUENTE_AQUI,NOMBRE_FUENTE_AQUI,MATERIAL_FUENTE_AQUI,ELEMENTOS_OBSERVADOS_AQUI,NIVEL_ESTUDIO_AQUI,ANO_O_FECHA_AQUI,NOMBRE_EXPERTO_AQUI,pendiente,ESCRIBIR_NOTAS_AQUI

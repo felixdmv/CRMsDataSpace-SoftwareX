@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1250 550" width="100%" height="100%">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.08"/>
+    </filter>
+    <pattern id="dotGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#CBD5E1" />
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#dotGrid)" />
+  <text x="30" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#0F172A">VARIANTE 2: HYBRID SEARCH & CONTEXT CURATION</text>
+  <!-- Node: 1. User Query -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="220" width="180" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#475569" stroke-width="2" />
+    <path d="M 60 220 L 220 220 A 10 10 0 0 1 230 230 L 230 252 L 50 252 L 50 230 A 10 10 0 0 1 60 220 Z" fill="#64748B" />
+    <text x="62" y="241" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">1. User Query</text>
+    <rect x="154.2" y="226" width="67.80000000000001" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="160.2" y="238" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">NL String</text>
+    <text x="62" y="274" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">NL Query Input</text>
+    <text x="62" y="292" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• e.g. '¿Qué dice el informe de'</text>
+    <text x="62" y="307" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Penouta sobre la estabilidad?'</text>
+  </g>
+  <!-- Node: 2. NLU Parser -->
+  <g filter="url(#shadow)">
+    <rect x="270" y="220" width="200" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#3730A3" stroke-width="2" />
+    <path d="M 280 220 L 460 220 A 10 10 0 0 1 470 230 L 470 252 L 270 252 L 270 230 A 10 10 0 0 1 280 220 Z" fill="#4F46E5" />
+    <text x="282" y="241" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">2. NLU Parser</text>
+    <rect x="388.0" y="226" width="74.0" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="394.0" y="238" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">LLM Parser</text>
+    <text x="282" y="274" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Intent & Filter Extraction</text>
+    <text x="282" y="292" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Procesa y clasifica intencion</text>
+    <text x="282" y="307" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Detecta si requiere RAG (needs_rag)</text>
+    <text x="282" y="322" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• O activa por palabras clave de PDF</text>
+  </g>
+  <!-- Node: 3A. Solr DB Query -->
+  <g filter="url(#shadow)">
+    <rect x="510" y="100" width="200" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#065F46" stroke-width="2" />
+    <path d="M 520 100 L 700 100 A 10 10 0 0 1 710 110 L 710 132 L 510 132 L 510 110 A 10 10 0 0 1 520 100 Z" fill="#059669" />
+    <text x="522" y="121" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">3A. Solr DB Query</text>
+    <rect x="621.8" y="106" width="80.2" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="627.8" y="118" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">Apache Solr</text>
+    <text x="522" y="154" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Structured Search</text>
+    <text x="522" y="172" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Busca metadatos de sitios</text>
+    <text x="522" y="187" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Filtra por region/mineral/etc</text>
+    <text x="522" y="202" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Retorna registros WARM</text>
+  </g>
+  <!-- Node: 3B. FAISS Vector Search -->
+  <g filter="url(#shadow)">
+    <rect x="510" y="340" width="200" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#155E75" stroke-width="2" />
+    <path d="M 520 340 L 700 340 A 10 10 0 0 1 710 350 L 710 372 L 510 372 L 510 350 A 10 10 0 0 1 520 340 Z" fill="#0891B2" />
+    <text x="522" y="361" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">3B. FAISS Vector Search</text>
+    <rect x="621.8" y="346" width="80.2" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="627.8" y="358" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">FAISS Index</text>
+    <text x="522" y="394" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Semantic Search on PDFs</text>
+    <text x="522" y="412" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Embedding de query local</text>
+    <text x="522" y="427" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Busca en indices de textos PDF</text>
+    <text x="522" y="442" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Retorna K=10 fragmentos crudos</text>
+  </g>
+  <!-- Node: 4. Reranker & Curator -->
+  <g filter="url(#shadow)">
+    <rect x="750" y="340" width="200" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#92400E" stroke-width="2" />
+    <path d="M 760 340 L 940 340 A 10 10 0 0 1 950 350 L 950 372 L 750 372 L 750 350 A 10 10 0 0 1 760 340 Z" fill="#D97706" />
+    <text x="762" y="361" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">4. Reranker & Curator</text>
+    <rect x="855.6" y="346" width="86.4" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="861.6" y="358" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">Python Logic</text>
+    <text x="762" y="394" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Context Density Filter</text>
+    <text x="762" y="412" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Filtra por similitud (score &gt;= 0.15)</text>
+    <text x="762" y="427" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Ordena por relevancia desc</text>
+    <text x="762" y="442" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Elige Top 3 parrafos de alta densidad</text>
+  </g>
+  <!-- Node: 5. Hybrid NLG Synthesizer -->
+  <g filter="url(#shadow)">
+    <rect x="750" y="100" width="200" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#3730A3" stroke-width="2" />
+    <path d="M 760 100 L 940 100 A 10 10 0 0 1 950 110 L 950 132 L 750 132 L 750 110 A 10 10 0 0 1 760 100 Z" fill="#4F46E5" />
+    <text x="762" y="121" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">5. Hybrid NLG Synthesizer</text>
+    <rect x="812.2" y="106" width="129.8" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="818.2" y="118" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">LLM (OpenAI/Gemini)</text>
+    <text x="762" y="154" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Narrative Fusion</text>
+    <text x="762" y="172" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Fusiona registros DB + PDFs curados</text>
+    <text x="762" y="187" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Evita alucinaciones y ruido</text>
+    <text x="762" y="202" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Localiza sintesis en castellano</text>
+  </g>
+  <!-- Node: 6. Final Output -->
+  <g filter="url(#shadow)">
+    <rect x="990" y="220" width="210" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#475569" stroke-width="2" />
+    <path d="M 1000 220 L 1190 220 A 10 10 0 0 1 1200 230 L 1200 252 L 990 252 L 990 230 A 10 10 0 0 1 1000 220 Z" fill="#64748B" />
+    <text x="1002" y="241" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">6. Final Output</text>
+    <rect x="1099.4" y="226" width="92.60000000000001" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="1105.4" y="238" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">Chat / Gradio</text>
+    <text x="1002" y="274" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Structured UI Display</text>
+    <text x="1002" y="292" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Pinta respuesta con citas</text>
+    <text x="1002" y="307" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Mapea fragmentos como 'evidencias'</text>
+    <text x="1002" y="322" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Muestra paginas/scores de origen</text>
+  </g>
+  <line x1="230" y1="275" x2="270" y2="275" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 270 275 L 261.33974596215563 280.0 L 261.33974596215563 270.0 Z" fill="#94A3B8" />
+  <text x="250.0" y="270.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">Raw Text</text>
+  <line x1="470" y1="230" x2="510" y2="155" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 510 155 L 510.3363510410144 164.994341798098 L 501.5128216292497 160.2884594451568 Z" fill="#94A3B8" />
+  <text x="490.0" y="187.5" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">Filters JSON</text>
+  <line x1="470" y1="320" x2="510" y2="395" stroke="#06B6D4" stroke-width="2" />
+  <path d="M 510 395 L 501.5128216292497 389.71154055484317 L 510.3363510410144 385.005658201902 Z" fill="#06B6D4" />
+  <text x="490.0" y="352.5" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">Text + needs_rag=True</text>
+  <line x1="710" y1="395" x2="750" y2="395" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 750 395 L 741.3397459621556 400.0 L 741.3397459621556 390.0 Z" fill="#94A3B8" />
+  <text x="730.0" y="390.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">10 Raw Chunks</text>
+  <line x1="850" y1="340" x2="850" y2="210" stroke="#D97706" stroke-width="2" />
+  <path d="M 850 210 L 855.0 218.6602540378444 L 845.0 218.6602540378444 Z" fill="#D97706" />
+  <text x="850.0" y="270.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">Top 3 Curated Chunks</text>
+  <line x1="710" y1="155" x2="750" y2="155" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 750 155 L 741.3397459621556 160.0 L 741.3397459621556 150.0 Z" fill="#94A3B8" />
+  <text x="730.0" y="150.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">WARM Sites JSON</text>
+  <line x1="950" y1="155" x2="990" y2="230" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 990 230 L 981.5128216292497 224.7115405548432 L 990.3363510410144 220.005658201902 Z" fill="#94A3B8" />
+  <text x="970.0" y="187.5" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">Response Context</text>
+  <path d="M 950 395 Q 1022.5 312.5 1095 330" fill="none" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 1095 330 L 1085.5063279776828 333.14168609709327 L 1087.5323840180422 323.34908190202225 Z" fill="#94A3B8" />
+  <text x="1022.5" y="332.5" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">Source Evidence Metadata</text>
+</svg>

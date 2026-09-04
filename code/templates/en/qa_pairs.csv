@@ -1,0 +1,18 @@
+field,format,allowed_values_or_example,notes
+row_type,text,EXAMPLE|EXPERTS,Marks sample rows and the first row to complete.
+pdf_name,text,Same value as in report_register,Use exactly the same name.
+source_name,text,Same value as in report_register,Use exactly the same name.
+question_type,text,technical|economic|environmental|regulatory|social|UNFC|classification,Use the most specific category possible.
+question,text,Always in English,We assume English questions for model evaluation.
+gold_answer_short,text,Short answer,Should be the minimal correct answer.
+gold_answer_long,text,Expanded answer,May include additional expert-validated context.
+must_mention_terms,text,term1|term2|term3,Terms that must appear in a correct answer.
+(acceptable_alternatives),optional text,synonyms or abbreviations,Optional.
+source_pages,text,12|13|14-16,Pages supporting the gold answer.
+(reviewer_notes),optional text,Free observations,Optional.
+""
+row_type,pdf_name,source_name,question_type,question,gold_answer_short,gold_answer_long,must_mention_terms,(acceptable_alternatives),source_pages,(reviewer_notes)
+EXAMPLE,1._Cobre_Las_Cruces_Technical_Report_Feb_2024_FINAL.pdf,Cobre Las Cruces PMS / PMR,regulatory,Which metals are permitted in the concession modification?,"Copper, zinc, lead, and silver.","The report summary states that copper, zinc, lead, and silver are included.",copper|zinc|lead|silver,cu|zn|pb|ag,17,Invented example.
+EXAMPLE,DMET_-_240523_Aguablanca_Technical_Report_PFS_Final.pdf,Aguablanca,UNFC,What study level is shown on the title page?,Preliminary Feasibility Study (PFS).,The title page identifies a Preliminary Feasibility Study.,preliminary feasibility study|pfs,pre-feasibility study,1,Invented example.
+EXAMPLE,070912ElValleTechnicalReport.pdf,El Valle / Carlés / La Brueva / Godán,technical,What is the main commodity in the report title?,Gold.,The title identifies the deposits as gold deposits.,gold,au,1,Invented example.
+EXPERTS,PDF_NAME_HERE,SOURCE_NAME_HERE,QUESTION_TYPE_HERE,WRITE_QUESTION_IN_ENGLISH,SHORT_GOLD_ANSWER_HERE,LONG_GOLD_ANSWER_HERE,MUST_MENTION_TERMS_HERE,ACCEPTABLE_ALTERNATIVES_HERE,SOURCE_PAGES_HERE,NOTES_HERE

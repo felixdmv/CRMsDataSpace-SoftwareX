@@ -1,0 +1,61 @@
+Question: Describe how sludge from the water treatment plant is managed and its potential impacts.
+
+Answer:
+I don't know
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 43 chunk 2 (score=0.8393)
+dards. Lundin Gold 
+monitors the environmental aspects with the support of external labs certified by the national authority.  
+Reports to the authority are submitted on a quarterly basis. The aspects monitored and managed include 
+air quality, environmental noise, vibration, water quality, industrial and sewage treated water discharges, 
+underground water quality, sediments, biodiversity, waste and archeology. In addition to this environmental 
+monitoring, geotechnical and geochemical monitorin
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 21 chunk 5 (score=0.8336)
+oundwater Conditions ................................................................................. 16-6 
+16.3.2 Dewatering and Mine Drainage ...................................................................... 16-6 
+16.4 South Zone Mining Method Selection ............................................................. 16-7 
+16.5 Design Assumptions and Design Criteria ....................................................... 16-7 
+16.5.1 Stope Design Criteria ...................................
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 22 chunk 0 (score=0.8302)
+NI 43-101 Technical Report  
+  Fruta del Norte Mine, Ecuador 
+ 
+Table of Contents March 2023 Page vii 
+16.8.5 Dewatering .................................................................................................... 16-17 
+16.8.6 Process Water ............................................................................................... 16-18 
+16.8.7 Power ............................................................................................................ 16-18 
+16.9 Blasting a
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 47 chunk 3 (score=0.8298)
+e estimates 
+include changes to: Mineral Resources input parameters, constraining stope designs, cut -off 
+grade assumptions, geotechnical and hydrogeological factors, metallurgical  and mining 
+recovery assumptions, and the ability to control unplanned dilution.  
+1.19.5 Mineral Processing 
+• The FDN process plant currently treats ore via a conventional flotation-cyanidation process and 
+has been in commercial production since 2020. 
+• The process plant has consistently processed ore and curren
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 41 chunk 3 (score=0.8282)
+pected due to t he treatment of ore from 
+the south zone of the mine. 
+The process plant consists of the following unit operations: 
+• Primary crushing and associated material handling equipment 
+• Crushed ore stockpile and associated feed and reclaim systems 
+• Grinding circuit consisting of a SAG mill, ball mill, cyclone classification and associated pumping 
+and material handling systems 
+• Gravity circuit with intensive leach reactor 
+• Rougher and cleaner flotation circuits to produce a gol
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 38 chunk 3 (score=0.8277)
+pretations of mineralization 
+geometry and continuity of mineralization zones, density and domain assignments, changes to design 
+parameter assumptions that pertain to stope designs, changes to geotechnical, mining and metallurgical 
+recovery assumptions, assumptions as to the continued ability to access the site, retain mineral and surface 
+rights titles, obtain environmental and other regulatory permits, and obtain the social licence to operate.  
+1.11 Mineral Reserves  
+The Mineral Reserves f
+------------------------------------------------------------

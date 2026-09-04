@@ -1,0 +1,86 @@
+\section{Software description}
+\label{sec:SoftwareDescription}
+
+The IoT-Sim is a web application developed to simulate IoT networks and evaluate intrusion detection models in a controlled environment. It was conceived as a research-oriented platform to enable the testing of cybersecurity algorithms without requiring costly or large-scale IoT infrastructure.
+
+The development followed an incremental methodology based on Scrum~\cite{scrum} and applied object-oriented programming principles~\cite{oop}, separation of concerns, and established design patterns such as Singleton, Observer, and component-based architectures~\cite{patterns}.
+
+The simulator enables users to design and configure network topologies, simulate data flows, execute controlled attacks, and analyze traffic using AI-based detection models. Its functionality includes the main areas of network design, flow simulation, attack execution, and intelligent attack detection.
+
+The target users are researchers and students. The design prioritizes usability and accessibility through a clear interface, minimal interaction steps, immediate visual feedback, and compatibility with modern operating systems.
+
+All functionalities are documented in detail and presented within an interactive environment, enabling safe experimentation, validation of detection models, and extension of the simulator to custom attacks or models.
+
+%% Architecture
+\subsection{Software architecture}
+\label{subsec:SoftwareArchitecture}
+The IoT-Sim was designed as a client-side application that was developed entirely in Angular~\cite{angular}. Its architecture follows a layered and modular design that promotes the separation of concerns, maintainability, and extensibility. All processes, from network simulation to attack generation and visualization, are executed locally in the browser, without the need for a dedicated backend server (see Fig.~\ref{fig:architecture}).
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{architecture.png}
+    \caption{General architecture of the IoT-Sim.}
+    \label{fig:architecture}
+\end{figure}
+
+The system is organized into three main layers:
+\begin{itemize}
+    \item \textbf{Presentation Layer:} This layer manages user interaction through a graphical interface. It allows users to design IoT network topologies, configure nodes and connections, launch attacks, and visualize traffic and detection results. The interface was built using Angular components and styled with Tailwind CSS~\cite{tailwind} and Spartan UI~\cite{spartan} to ensure responsiveness and usability.
+    \item \textbf{Application Logic Layer:} This layer contains the simulation engine, responsible for modeling network behavior based on the OSI model~\cite{osi}. It defines nodes, routers, packets, and connections as part of a network abstraction implemented through an object-oriented design, coordinating how data flow between entities. It also manages the execution of external scripts, allowing users to import custom attacks, commands, and interception modules. Furthermore, this layer executes AI-based detection models: it receives network flow data, applies trained models in real time to detect malicious activity or anomalies, and forwards the results for visualization and analysis.
+    \newline
+    \item \textbf{Data Management Layer:} This layer manages configuration files, simulation states, and records of network flows. It is also responsible for storing and loading trained AI models and related artifacts. In addition, it processes the command and attack libraries, handling ingestion, validation, and normalization of those modules, and enables the dynamic loading of new commands/attacks for use in simulations and model evaluation. Data are stored and exchanged using lightweight formats, allowing users to save and easily load network configurations, analysis results, and models.
+\end{itemize}
+
+The proposed client-side architecture inherently enhances execution safety by reducing the risks linked to running external scripts. Operating entirely within the browser's sandbox, the simulation runtime ensures that custom scripts remain isolated from the host's operating system and file system. Additionally, the lack of a backend server removes potential server-side injection points or cross-user contamination. To avoid runtime errors or instability caused by malformed inputs, the Data Management Layer enforces structural validation and normalization on all imported modules before they are instantiated in the Application Logic Layer.
+
+%% Functionalities
+\subsection{Software functionalities}
+\label{subsec:SoftwareFunctionalities}
+The IoT-Sim was designed as an experimental environment for testing and evaluating attack detection models in IoT networks. Its functionalities focus on providing realistic network behavior, controlled attack execution, and integration of AI-based detection models. The main functionalities are summarized as follows:
+
+\subsubsection{Network Design}
+\label{subsubsec:NetworkDesign}
+Users can create and configure IoT network topologies by adding, editing, connecting, or removing nodes. The simulator allows saving and importing network configurations to facilitate experimentation and reuse~\footnote{Examples of predefined schemas are provided in~\ref{app:SupplementaryData}}.
+
+\subsubsection{Configurable Network Conditions}
+\label{subsubsec:ConfigurableNetworkConditions}
+The simulator supports the introduction of network variability such as latency or bandwidth limitations, allowing the evaluation of detection models under realistic network conditions.
+
+\subsubsection{Flow Simulation and Attack Generation}
+\label{subsubsec:FlowSimulationAttackGeneration}
+The system enables the simulation of network traffic between nodes and the execution of controlled attacks through a modular packet generation engine. Unlike simple traffic generators, this engine operates by programmatically constructs discrete packet objects that conform to standard Transport and Application layer protocol specifications~\cite{protocols}. In particular, the system implements granular control over protocol headers defined in the TCP/IP stack, allowing for the precise manipulation of fields such as TCP flags, sequence numbers, and ICMP type codes. By instantiating these packet models with customizable payloads and timing attributes, the simulator can faithfully reproduce complex network interactions, including the TCP three-way handshake, as well as generate protocol-specific anomalies required for security testing. In addition, users can import external scripts containing new implementations of commands or attack types, thereby extending the simulator’s functionality~\footnote{Examples of external scripts are provided in~\ref{app:SupplementaryData}}. This feature allows the generation of data that represent both normal and malicious behavior, which is essential for evaluating and testing attack-detection models.
+
+\subsubsection{Attack Detection Analysis}
+\label{subsubsec:AttackDetectionAnalysis}
+One of the main functionalities is the analysis of traffic flows using imported AI models. Users can load their own trained detection models developed with TensorFlow\footnote{TensorFlow models must be converted via the tensorflowjs~\cite{tensorflowjs} tool and require a JavaScript script to execute the model. Examples are provided in~\ref{app:SupplementaryData}, and the process is detailed in the documentation.}~\cite{tensorflow}, assign them to specific network connections, and visualize the real-time predictions of possible intrusions. This feature provides a practical method to compare and validate different models under identical network conditions.
+
+%% Scalability and Performance
+\subsection{Scalability and performance analysis}
+\label{subsec:ScalabilityPerformance}
+While the client-side architecture of IoT-Sim facilitates accessibility and zero-configuration deployment, it inherently binds simulation performance to the host system's resources. In contrast to server-side simulators capable of horizontal scaling across clusters, IoT-Sim operates within the strict boundaries of the browser sandbox. To quantify these constraints, we evaluated the system on a standard consumer workstation (Chromium v.144). The empirical results are summarized in Table \ref{tab:performance}.
+
+This architecture introduces specific constraints and optimization strategies:
+
+\begin{itemize}
+    \item \textbf{Memory Usage and Scalability Limits:} The simulation state is maintained in the browser's memory heap, causing resource usage to grow linearly with the number of nodes and active packet flows. As shown in Table \ref{tab:performance}, the system maintains stable performance with negligible latency for small topologies (10-20 nodes). However, approaching 50 nodes, the memory footprint increases significantly ($\sim$2.6 GB) due to the overhead of DOM rendering and the simultaneous execution of AI models, introducing noticeable UI latency.
+
+    \item \textbf{Computational Overhead and AI Optimization:} The execution of AI detection models is the most computationally intensive task, evidenced by the CPU usage spike at 50 nodes ($\sim$180\%, utilizing multiple cores). To address this, IoT-Sim implements WebGL acceleration via TensorFlow.js, offloading heavy matrix computations to the GPU. This strategy prevents the main thread from blocking completely, keeping the application responsive even under high load.
+
+    \item \textbf{Future Optimization Strategies:} To further mitigate browser resource constraints in large-scale scenarios, the modular design allows for future integration of Web Workers (to offload packet generation from the UI thread) and WebAssembly modules (to execute core simulation loops at near-native speed).
+\end{itemize}
+
+Consequently, the current architecture prioritizes functional scalability over massive quantitative scale. The framework efficiently addresses the computational demands of protocol logic and AI execution within limited-scale topologies. Consequently, it operates not as a substitute, but as a flexible auxiliary to rigorous distributed emulators, specifically targeting the requirements of academic prototyping and educational scenarios.
+
+\begin{table}[h]
+    \centering
+    \caption{System performance metrics across varying node counts with concurrent AI inference and continuous network flows (Chromium v.144).}
+    \label{tab:performance}
+    \small
+    \begin{tabular}{lcccc}
+        \hline
+        \textbf{Nodes} & \textbf{CPU Usage} & \textbf{RAM Usage} & \textbf{UI Latency} & \textbf{Status} \\ \hline
+        10 & $\sim$ 32\% & $\sim$ 387 MB & Negligible & Stable \\
+        20 & $\sim$ 40\% & $\sim$ 510 MB & Low & Stable \\
+        50 & $\sim$ 180\% & $\sim$ 2.6 GB & Medium & Laggy \\ \hline
+    \end{tabular}
+\end{table}

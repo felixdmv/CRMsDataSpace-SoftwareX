@@ -1,0 +1,70 @@
+Question: Which documents define reporting standards for mineral resources and reserves?
+
+Answer:
+I don't know
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 48 chunk 2 (score=0.8777)
+ined in National Instrument 43- 101, Standards of Disclosure for 
+Mineral Projects, and in compliance with Form 43-101F1, are provided in Table 2.1. 
+Table 2.1: FDN Technical Report Qualified Persons and Areas of Responsibility 
+Name Professional 
+Designation Title Responsible for 
+Sections 
+Ron Hochstein P.Eng. President & CEO 
+Lundin Gold 
+all Sections of the 
+Report, excluding 1.8, 
+1.12, 7 to 17, 20.4, and 
+27. 
+Dorota El-Rassi P.Eng. Senior Geologist 
+SLR Consulting Limited 7-12, 14 
+Jason
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 37 chunk 5 (score=0.8720)
+estimate 
+has an effective date of December 31, 2022.  
+Mineral Resources are reported inclusive of Mineral Reserves at a block cut -off grade of 3.4 g/t Au, 
+assuming underground mining methods. 
+Mineral Resources summarized in Table  1.1, are inclusive of Mineral Reserves, depleted by the mining 
+activities to December  31, 2022, and have been classified in accordance with the 2014 CIM Definition 
+Standards.
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 47 chunk 1 (score=0.8718)
+erience. Mineral Reserves have been estimated using standard practices for the industry, and 
+conform to the 2014 CIM Definition Standards. 
+• Reconciliation to production indicates that Mineral Reserve parameters and estimates are working 
+well, and providing a good model of production results. 
+• The South Zone is lower grade and less continuous than the currently mined North & Central Zone. 
+Considerable quantities of marginal mineralization are pres ent, and further conversion to Mineral 
+Re
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 46 chunk 0 (score=0.8712)
+NI 43-101 Technical Report  
+  Fruta del Norte Mine, Ecuador 
+ 
+Section 1 March 2023 Page 1-18 
+• No material issues have been identified by SLR during the extensively conducted data 
+verification program. 
+• The lithological and mineralization models have been diligently constructed and have b een 
+prepared using industry-standard practices. 
+• Data collected have been sufficiently verified that they can support Mineral Resource and 
+Mineral Reserve estimation and be used for mine planning p
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 38 chunk 3 (score=0.8711)
+pretations of mineralization 
+geometry and continuity of mineralization zones, density and domain assignments, changes to design 
+parameter assumptions that pertain to stope designs, changes to geotechnical, mining and metallurgical 
+recovery assumptions, assumptions as to the continued ability to access the site, retain mineral and surface 
+rights titles, obtain environmental and other regulatory permits, and obtain the social licence to operate.  
+1.11 Mineral Reserves  
+The Mineral Reserves f
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 9 (score=0.8703)
+....................................................... 25-1 
+25.1 Mineral Tenure, Surface Rights, Royalties and Agreements ........................... 25-1 
+25.2 Geology and Mineralization ............................................................................ 25-1 
+25.3 Introduction .................................................................................................... 25-1 
+25.4 Exploration, Drilling and Analytical Data Collection in Support of Mineral 
+Resource Estimation .
+------------------------------------------------------------

@@ -1,0 +1,21 @@
+campo,formato,opciones_o_ejemplo,notas
+tipo_fila,texto,EJEMPLO|EXPERTOS,Marca filas de ejemplo y la primera fila a completar.
+nombre_pdf,texto,Mismo valor que en registro_informes,Usar exactamente el mismo nombre.
+nombre_fuente,texto,Mismo valor que en registro_informes,Usar exactamente el mismo nombre.
+codigo_unfc_final,texto,E1;F2;G3,Código final del activo como conjunto.
+categoria_e_final,texto,E1|E2|E3|E4|unknown,Categoría final del eje E.
+categoria_f_final,texto,F1|F2|F3|F4|unknown,Categoría final del eje F.
+categoria_g_final,texto,G1|G2|G3|G4|unknown,Categoría final del eje G.
+codigo_base_cantidad,código numérico,1=metal contenido o sustancia util contenida|2=producto vendible o recuperable|3=tonelaje bruto del material|4=otra base definida por el experto,Indica qué representan las cantidades.
+cantidad_medida,numero,15700,Cantidad medida en la base indicada por el código.
+cantidad_indicada,numero,25500,Cantidad indicada en la base indicada por el código.
+cantidad_inferida,numero,16000,Cantidad inferida en la base indicada por el código.
+unidad,texto,t|kt|Mt|oz|kg,Usar una única unidad por fila.
+paginas_clave,texto,"1-3,45-60",Paginas que soportan la clasificacion.
+justificacion_experto,texto,Explicacion breve,Resumen de por qué la clasificacion final es la elegida.
+""
+tipo_fila,nombre_pdf,nombre_fuente,codigo_unfc_final,categoria_e_final,categoria_f_final,categoria_g_final,codigo_base_cantidad,cantidad_medida,cantidad_indicada,cantidad_inferida,unidad,paginas_clave,justificacion_experto
+EJEMPLO,DMET_-_240523_Aguablanca_Technical_Report_PFS_Final.pdf,Aguablanca,E1;F2;G2,E1,F2,G2,1,15700,25500,16000,t,"1-3,45-60",Clasificación inventada completa del conjunto del proyecto.
+EJEMPLO,1._Cobre_Las_Cruces_Technical_Report_Feb_2024_FINAL.pdf,Cobre Las Cruces PMS / PMR,E1;F1;G2,E1,F1,G2,2,35000,42000,14000,t,"15-17,80-110",Clasificación inventada completa del conjunto de materiales.
+EJEMPLO,070912ElValleTechnicalReport.pdf,El Valle / Carlés / La Brueva / Godán,E1;F2;G1,E1,F2,G1,1,520000,340000,110000,oz,"1-2,56-90",Clasificación inventada completa del conjunto del activo.
+EXPERTOS,NOMBRE_PDF_AQUI,NOMBRE_FUENTE_AQUI,E1;F2;G3,E1,F2,G3,1,CANTIDAD_MEDIDA_AQUI,CANTIDAD_INDICADA_AQUI,CANTIDAD_INFERIDA_AQUI,UNIDAD_AQUI,PAGINAS_AQUI,JUSTIFICACION_AQUI

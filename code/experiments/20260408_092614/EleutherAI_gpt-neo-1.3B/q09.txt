@@ -1,0 +1,63 @@
+Question: What is the recommended minimum depth of the operating decant pond?
+
+Answer:
+I don't know
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 238 chunk 5 (score=0.8629)
+lings. KCB have assumed that cyanide will 
+report to the TSF at approximately 1 ppm, and natural degradation from sunlight is predicted to reduce this 
+level to 0.4  ppm. With rainfall and other inflows, the cyanide level in the decant water is expected to be 
+below the discharge limit of 0.1 ppm. Additional modelling and data will be required to confirm that the 
+discharge criteria will be met. Testing to date at seepage compliance points have all been within discharge 
+limits. 
+20.4.4 Design
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 246 chunk 0 (score=0.8588)
+NI 43-101 Technical Report  
+  Fruta del Norte Mine, Ecuador 
+ 
+Section 20 March 2023 Page 20-17 
+Item Design Basic 
+5.2 Storage Requirements 
+The TSF is a “Zero Discharge” system during operation and is 
+designed for next storage requirements: 
+• Tailings (see Attachment I, Table I-1) 
+• Sludge (see Item 4.2) 
+• Operating decant pond of 250,000 m3. Minimum 2 m depth 
+based on draught requirements of the reclaim barge. 
+Volume to be confirmed in deposition model for Stage 3 
+and Stage 4 Dam R
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 238 chunk 1 (score=0.8520)
+etric surveys and water 
+balances are required to assess performance. 
+Tailings Beach 
+Since the start of operation of the TSF, in mid- 2019, the tailings and the water decant pond have been 
+developed and modified according to the physical properties of the tailings, and the disposal, climate and 
+operating conditions. 
+Sub-aerial slopes, shows an initially steep slope near the discharge points of 0.8% to 0.5%, after which the 
+slope becomes shallower at about 0.3% to 0.2% (still above water).
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 246 chunk 6 (score=0.8509)
+r interim dam raises. Minimum 
+width shall provide room for tailings distribution pipeline 
+requirements (tailings distribution, sludge and sediment
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 238 chunk 3 (score=0.8486)
+veloping. 
+Medium slopes of 0.8% to 0.45% occur where the main beach transitions to the middle or deep pond areas. 
+Finally, tailings slopes are flatter from 0.3% to 0.1% i n the deep pond. The underwater slopes thus vary 
+based on distance from discharge point, and the initial original ground surface. Bathymetry provides a 
+typical section that reflects these three underwater conditions. Therefore, for beach development and 
+deposition modeling, an average of 0.7% for sub-aqueous slopes has bee
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 274 chunk 3 (score=0.8451)
+c, R.A., Ramirez, F.A., Rodas, J.A., and Bonilla, G., 1995, Reservoir 
+characterization of the Hollin and Napo Formations, Wester n Oriente Basin, Ecuador: 
+American Association of Petroleum Geologists Memoir 62, p. 573–596. 
+World Meteorological Organization, 2009:  Manual on Estimation of Probable Maximum 
+Precipitation (PMP). WMO - No. 1045. 
+Zamora, G., and Gil, W., 2018, The Marañon  Basin: Tectonic evolution and paleogeography: 
+American Association of Petroleum Geologists Memoir 117, p. 1
+------------------------------------------------------------

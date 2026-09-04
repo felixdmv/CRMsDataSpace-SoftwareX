@@ -1,0 +1,58 @@
+Question: What is the recommended minimum depth of the operating decant pond?
+
+Answer:
+I don't know
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 22 chunk 0 (score=0.8254)
+NI 43-101 Technical Report  
+  Fruta del Norte Mine, Ecuador 
+ 
+Table of Contents March 2023 Page vii 
+16.8.5 Dewatering .................................................................................................... 16-17 
+16.8.6 Process Water ............................................................................................... 16-18 
+16.8.7 Power ............................................................................................................ 16-18 
+16.9 Blasting a
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 37 chunk 2 (score=0.8236)
+mains representing hydrothermal events were defined in Leapfrog, while 
+sub-block model estimates were completed within Leapfrog Edge, using two meters capped composites 
+and an ordinary kriging (OK) interpolation approach. The block model was constrained by three dimensional 
+(3D) wireframes encompassing the zones of mineralization. The block parent size is 4 m x 10 m x 10 m, 
+with sub-block minimum sizes of 1 m x 2.5 m x 2.5 m. Blocks were classified considering local dril l hole 
+spacing, geo
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 37 chunk 3 (score=0.8198)
+mum sizes of 1 m x 2.5 m x 2.5 m. Blocks were classified considering local dril l hole 
+spacing, geological continuity, geostatistical spatial continuity and proximity to existing development. Class 
+groupings were based on criteria developed using continuity models (variograms) and modified to reflect 
+geological understanding and to ensure cohesive classification shapes. Wireframe and block model 
+validation procedures were completed including but not limited to statistical comparisons with co
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 50 chunk 2 (score=0.8192)
+uritch, E., Gowans, R., and Leary, S., 2008:  A Mineral Resource Estimate for the 
+Fruta del Norte Deposit, Cordillera del Cóndor Project, Zamora- Chinchipe Province, Ecuador: 
+technical report prepared by Micon International Ltd. for Aurelian Resources Inc., effective date 
+November 15, 2007. 
+• Hennessey, B.T. and Stewart, P.W., 2007: A Review of the Geology of, and Exploration and Quality 
+Control Prot ocols Used at the Fruta del Norte Deposit, Cordillera del Cóndor Project, Zamora-
+Chinchipe
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 18 chunk 0 (score=0.8184)
+NI 43-101 Technical Report  
+  Fruta del Norte Mine, Ecuador 
+ 
+Table of Contents March 2023 Page iii 
+7.3.1.2 Suárez Formation .............................................................................. 7-7 
+7.3.1.3 Sinter and Mud Pool Facies .............................................................. 7-7 
+7.3.1.4 Santiago Formation ........................................................................... 7-8 
+7.3.1.5 Footwall Feldspar Porphyry .......................................
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 40 chunk 4 (score=0.8162)
+t is a batch-type backfill plant. When paste fill is scheduled for underground, approximately 
+half of the tailings stream is pumped 3.4 km to the paste plant for further dewatering. Excess process water 
+is pumped back from the paste plant to the process plant using a second pipeline. When no paste fill is 
+required underground, the entire tailings stream is pumped to the TSF.  
+Mine ventilation at FDN utilizes a north to south sweeping action with fresh air entering both ramps, passing 
+onto l
+------------------------------------------------------------

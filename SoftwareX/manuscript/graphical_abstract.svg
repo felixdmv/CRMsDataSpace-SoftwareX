@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 950" width="1800" height="950">
+  <rect width="100%" height="100%" fill="#FFFFFF" />
+  <defs>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0F172A" flood-opacity="0.06" />
+    </filter>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1800" height="60" fill="url(#headerGrad)" />
+  <text x="30" y="38" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">CRMsDataSpace: Conversational Spatial Discovery for European Critical Raw Materials</text>
+  <text x="943" y="38" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#94A3B8">|  Graphical Abstract — SoftwareX Submission</text>
+  <!-- Node: Natural Language Free-Text Prompt -->
+  <g filter="url(#softShadow)">
+    <rect x="60" y="140" width="470" height="160" rx="10" ry="10" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2" />
+    <path d="M 70 140 L 520 140 A 10 10 0 0 1 530 150 L 530 176 L 60 176 L 60 150 A 10 10 0 0 1 70 140 Z" fill="#3B82F6" />
+    <text x="72" y="163" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">💬  Natural Language Free-Text Prompt</text>
+    <rect x="443.0" y="147" width="79.0" height="20" rx="5" ry="5" fill="#0F172A" />
+    <text x="450.0" y="161" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">User Input</text>
+    <text x="72" y="198" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Multilingual Conversational Queries (ES / EN)</text>
+    <text x="72" y="216" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• e.g. 'Muestra escombreras de litio y cobalto en España y Finlandia'</text>
+    <text x="72" y="231" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• e.g. 'Balsas de wolframio sin restaurar en Alemania'</text>
+    <text x="72" y="246" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Domain-specific terminology handling without manual SQL/Solr coding</text>
+  </g>
+  <!-- Node: Reviewer Presets & Quick Testing -->
+  <g filter="url(#softShadow)">
+    <rect x="60" y="320" width="470" height="150" rx="10" ry="10" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2" />
+    <path d="M 70 320 L 520 320 A 10 10 0 0 1 530 330 L 530 356 L 60 356 L 60 330 A 10 10 0 0 1 70 320 Z" fill="#3B82F6" />
+    <text x="72" y="343" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">⚡  Reviewer Presets & Quick Testing</text>
+    <rect x="397.5" y="327" width="124.5" height="20" rx="5" ry="5" fill="#0F172A" />
+    <text x="404.5" y="341" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">Reviewer Friendly</text>
+    <text x="72" y="378" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Zero-Setup Interactive Evaluation</text>
+    <text x="72" y="396" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Preset 1: Geo-kNN Wolframio (Tungsten dumps in Galicia)</text>
+    <text x="72" y="411" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Preset 2: Multilingual Lithium &amp; Cobalt tailings in Spain &amp; Finland</text>
+    <text x="72" y="426" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Preset 3: Strategic Rare Earth Elements (REE) in Sweden &amp; France</text>
+    <text x="72" y="441" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Instant execution in Standalone Mock Mode without API key</text>
+  </g>
+  <!-- Node: CRMsDataSpace Case Study Dataset -->
+  <g filter="url(#softShadow)">
+    <rect x="60" y="490" width="470" height="350" rx="10" ry="10" fill="#FFFFFF" stroke="#047857" stroke-width="2" />
+    <path d="M 70 490 L 520 490 A 10 10 0 0 1 530 500 L 530 526 L 60 526 L 60 500 A 10 10 0 0 1 70 490 Z" fill="#059669" />
+    <text x="72" y="513" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">🇪🇺  CRMsDataSpace Case Study Dataset</text>
+    <rect x="430.0" y="497" width="92.0" height="20" rx="5" ry="5" fill="#0F172A" />
+    <text x="437.0" y="511" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">100 Sites DB</text>
+    <text x="72" y="548" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">100 Synthetic European Extractive Waste Facilities</text>
+    <text x="72" y="566" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Dataset Scope: 12 European Countries (ES, PT, DE, FR, SE, FI, PL, IT, etc.)</text>
+    <text x="72" y="581" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• 12 Critical Raw Materials (Lithium, Cobalt, Tungsten, REE, Nickel, Copper, etc.)</text>
+    <text x="72" y="596" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Storage Types: Tailings Ponds, Waste Dumps, Slime Lagoons, Stockpiles</text>
+    <text x="72" y="611" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Project Status: Active, Inactive, Abandoned, Reprocessing</text>
+    <text x="72" y="626" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Environmental Parameters: Acid Mine Drainage (AMD), Restoration Status</text>
+    <text x="72" y="641" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Complies with EU Critical Raw Materials Act framework guidelines</text>
+    <text x="72" y="656" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Provides full reproducibility for scientific software benchmark</text>
+  </g>
+  <!-- Node: Dual-Variant NLU Engine (v1 Few-Shot + v3 OpenAPI Schema) -->
+  <g filter="url(#softShadow)">
+    <rect x="610" y="140" width="580" height="190" rx="10" ry="10" fill="#FFFFFF" stroke="#4338CA" stroke-width="2" />
+    <path d="M 620 140 L 1180 140 A 10 10 0 0 1 1190 150 L 1190 176 L 610 176 L 610 150 A 10 10 0 0 1 620 140 Z" fill="#6366F1" />
+    <text x="622" y="163" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">🧠  Dual-Variant NLU Engine (v1 Few-Shot + v3 OpenAPI Schema)</text>
+    <rect x="1044.5" y="147" width="137.5" height="20" rx="5" ry="5" fill="#0F172A" />
+    <text x="1051.5" y="161" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">LLM Parser + Schema</text>
+    <text x="622" y="198" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Hallucination-Free Semantic Intent & Filter Extraction</text>
+    <text x="622" y="216" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Variant 1 (Few-Shot Parsing): 5 domain examples mapping prompts to canonical filters</text>
+    <text x="622" y="231" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Variant 3 (OpenAPI Schema): Enforces Gemini responseSchema for 100% structured JSON</text>
+    <text x="622" y="246" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Temperature T=0.0 greedy decoding guarantees deterministic output across pipeline nodes</text>
+    <text x="622" y="261" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Eliminates LLM schema hallucinations and invalid field extractions</text>
+  </g>
+  <!-- Node: Multilingual Normalizer, Validator & Solr QueryBuilder -->
+  <g filter="url(#softShadow)">
+    <rect x="610" y="350" width="580" height="170" rx="10" ry="10" fill="#FFFFFF" stroke="#B45309" stroke-width="2" />
+    <path d="M 620 350 L 1180 350 A 10 10 0 0 1 1190 360 L 1190 386 L 610 386 L 610 360 A 10 10 0 0 1 620 350 Z" fill="#D97706" />
+    <text x="622" y="373" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">⚙️  Multilingual Normalizer, Validator & Solr QueryBuilder</text>
+    <rect x="1070.5" y="357" width="111.5" height="20" rx="5" ry="5" fill="#0F172A" />
+    <text x="1077.5" y="371" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">Python Pipeline</text>
+    <text x="622" y="408" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Standardization & Structured Query Syntax Translation</text>
+    <text x="622" y="426" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Normalizer: Maps regional slang ('wolframio' -&gt; 'tungsten') &amp; chemical symbols</text>
+    <text x="622" y="441" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Validator: Enforces canonical WARM schema constraints and default fallback values</text>
+    <text x="622" y="456" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• QueryBuilder: Constructs Apache Solr filter queries: fq=['country:(...)', 'commodities:(...)']</text>
+    <text x="622" y="471" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Calculates disjunctions and spatial bounding box queries for engine execution</text>
+  </g>
+  <!-- Node: Apache Solr Spatial Engine & Facet Aggregator -->
+  <g filter="url(#softShadow)">
+    <rect x="610" y="540" width="580" height="300" rx="10" ry="10" fill="#FFFFFF" stroke="#047857" stroke-width="2" />
+    <path d="M 620 540 L 1180 540 A 10 10 0 0 1 1190 550 L 1190 576 L 610 576 L 610 550 A 10 10 0 0 1 620 540 Z" fill="#059669" />
+    <text x="622" y="563" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">🔍  Apache Solr Spatial Engine & Facet Aggregator</text>
+    <rect x="1044.5" y="547" width="137.5" height="20" rx="5" ry="5" fill="#0F172A" />
+    <text x="1051.5" y="561" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">Apache Solr + FAISS</text>
+    <text x="622" y="598" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Sub-Second Geospatial Search & Categorical Breakdown</text>
+    <text x="622" y="616" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Filters 100 European CRM facilities using spatial bounding boxes &amp; disjunctions</text>
+    <text x="622" y="631" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Computes live categorical facets: country breakdown, commodities, project status</text>
+    <text x="622" y="646" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Generates geo-coordinate pairs for interactive web map rendering</text>
+    <text x="622" y="661" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Returns structured JSON site records for downstream narrative synthesis</text>
+    <text x="622" y="676" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Includes optional FAISS vector search over technical PDF report evidence chunks</text>
+  </g>
+  <!-- Node: Dynamic GIS Leaflet Map -->
+  <g filter="url(#softShadow)">
+    <rect x="1280" y="140" width="470" height="250" rx="10" ry="10" fill="#FFFFFF" stroke="#6D28D9" stroke-width="2" />
+    <path d="M 1290 140 L 1740 140 A 10 10 0 0 1 1750 150 L 1750 176 L 1280 176 L 1280 150 A 10 10 0 0 1 1290 140 Z" fill="#8B5CF6" />
+    <text x="1292" y="163" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">🗺️  Dynamic GIS Leaflet Map</text>
+    <rect x="1637.0" y="147" width="105.0" height="20" rx="5" ry="5" fill="#0F172A" />
+    <text x="1644.0" y="161" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">Leaflet.js GIS</text>
+    <text x="1292" y="198" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Visual Synchronization & Pulse Markers</text>
+    <text x="1292" y="216" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Active visual filter badges over Leaflet map header</text>
+    <text x="1292" y="231" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Matching facilities highlight with glowing pulse rings</text>
+    <text x="1292" y="246" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Non-matching sites automatically dimmed for visual clarity</text>
+    <text x="1292" y="261" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Dynamic site counter indicator ('Showing N / 100 European Sites')</text>
+    <text x="1292" y="276" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Interactive markers with detailed popup metadata cards</text>
+  </g>
+  <!-- Node: Solr Engine Inspector Drawer -->
+  <g filter="url(#softShadow)">
+    <rect x="1280" y="410" width="470" height="200" rx="10" ry="10" fill="#FFFFFF" stroke="#6D28D9" stroke-width="2" />
+    <path d="M 1290 410 L 1740 410 A 10 10 0 0 1 1750 420 L 1750 446 L 1280 446 L 1280 420 A 10 10 0 0 1 1290 410 Z" fill="#8B5CF6" />
+    <text x="1292" y="433" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">🔍  Solr Engine Inspector Drawer</text>
+    <rect x="1611.0" y="417" width="131.0" height="20" rx="5" ry="5" fill="#0F172A" />
+    <text x="1618.0" y="431" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">Pipeline Inspector</text>
+    <text x="1292" y="468" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Developer & Auditor Transparency Panel</text>
+    <text x="1292" y="486" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Side-by-side inspection of raw extracted NLU JSON</text>
+    <text x="1292" y="501" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Real-time display of Solr query parameters (q, fq, defType)</text>
+    <text x="1292" y="516" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Live facet count distribution tables</text>
+    <text x="1292" y="531" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Enables complete technical pipeline audit for reviewers</text>
+  </g>
+  <!-- Node: Grounded Narrative Summary -->
+  <g filter="url(#softShadow)">
+    <rect x="1280" y="630" width="470" height="210" rx="10" ry="10" fill="#FFFFFF" stroke="#047857" stroke-width="2" />
+    <path d="M 1290 630 L 1740 630 A 10 10 0 0 1 1750 640 L 1750 666 L 1280 666 L 1280 640 A 10 10 0 0 1 1290 630 Z" fill="#10B981" />
+    <text x="1292" y="653" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">💬  Grounded Narrative Summary</text>
+    <rect x="1624.0" y="637" width="118.0" height="20" rx="5" ry="5" fill="#0F172A" />
+    <text x="1631.0" y="651" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">NLG Synthesis UI</text>
+    <text x="1292" y="688" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Evidence-Based Chat Response UI</text>
+    <text x="1292" y="706" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Concise, scientific response summary in Spanish or English</text>
+    <text x="1292" y="721" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Strict context grounding: zero external knowledge usage</text>
+    <text x="1292" y="736" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• PDF evidence cards with page numbers &amp; relevance scores</text>
+    <text x="1292" y="751" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Seamless integration between Chat and Map dashboard</text>
+  </g>
+  <line x1="530" y1="220" x2="610" y2="220" stroke="#64748B" stroke-width="2" />
+  <path d="M 610 220 L 601.3397459621556 225.0 L 601.3397459621556 215.0 Z" fill="#64748B" />
+  <rect x="523.0" y="205.0" width="94" height="16" rx="4" fill="#FFFFFF" stroke="#64748B" stroke-width="1" />
+  <text x="570.0" y="217.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#0F172A" text-anchor="middle">NL Prompt Text</text>
+  <line x1="1190" y1="220" x2="1280" y2="220" stroke="#059669" stroke-width="2" />
+  <path d="M 1280 220 L 1271.3397459621556 225.0 L 1271.3397459621556 215.0 Z" fill="#059669" />
+  <rect x="1161.0" y="205.0" width="148" height="16" rx="4" fill="#FFFFFF" stroke="#059669" stroke-width="1" />
+  <text x="1235.0" y="217.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#0F172A" text-anchor="middle">Filter Badges & GeoJSON</text>
+  <line x1="1190" y1="500" x2="1280" y2="500" stroke="#D97706" stroke-width="2" />
+  <path d="M 1280 500 L 1271.3397459621556 505.0 L 1271.3397459621556 495.0 Z" fill="#D97706" />
+  <rect x="1170.0" y="485.0" width="130" height="16" rx="4" fill="#FFFFFF" stroke="#D97706" stroke-width="1" />
+  <text x="1235.0" y="497.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#0F172A" text-anchor="middle">Solr Params & Facets</text>
+  <line x1="1190" y1="730" x2="1280" y2="730" stroke="#10B981" stroke-width="2" />
+  <path d="M 1280 730 L 1271.3397459621556 735.0 L 1271.3397459621556 725.0 Z" fill="#10B981" />
+  <rect x="1158.0" y="715.0" width="154" height="16" rx="4" fill="#FFFFFF" stroke="#10B981" stroke-width="1" />
+  <text x="1235.0" y="727.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#0F172A" text-anchor="middle">Site Records & Evidences</text>
+</svg>

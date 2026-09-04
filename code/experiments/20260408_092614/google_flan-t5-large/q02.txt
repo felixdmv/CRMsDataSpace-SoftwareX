@@ -1,0 +1,61 @@
+Question: List all waste materials placed into the TSF and short descriptions.
+
+Answer:
+The only other waste material to be placed in the TSF is sludge from the water treatment plant, and this has been included in the storage volume estimates. Further testing on sulfide samples should be completed by Aurelian to confirm the settling and geochemical characteristics of this materi al and its impact on the tailings behaviour and storage, although the total volume is small compared to
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 240 chunk 2 (score=0.8775)
+years. 
+20.4.6 Other Waste Materials Reporting to the TSF 
+The only other waste material to be placed in the TSF is sludge from the water treatment plant, and this 
+has been included in the storage volume estimates. Further testing on sludge samples should be completed 
+by Aurelian to confirm the settling and geochemical characteristics of this materi al and its impact on the 
+tailings behaviour and storage, although the total volume is small compared to the tailings volume.  
+Site sediment mate
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 4 (score=0.8545)
+............... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ................................................ 20-11 
+20.4.7 Stage Construction and TSF Current Condition ........................................... 20-11 
+20.4.8 Instrumentation and Monitoring .................................................................... 20-11 
+20.4.9 Operating Philosophy .................................................................................... 20-12 
+20.4.10 Design Basis .............
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 240 chunk 1 (score=0.8410)
+er 2022). Based on updated storage curve, the TSF impoundment allows a total storage of about 
+11.75 mm3 to El.  1,490 m. The impoundment capacity assessment considered mainly updated tailings 
+production, operating pond, IDF storage and the minimum required freeboard above the IDF level. A small 
+amount of sludge from the water treatment plant will also be stored in the TSF (0.2 mm3) over the 16 years. 
+20.4.6 Other Waste Materials Reporting to the TSF 
+The only other waste material to be place
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 27 chunk 10 (score=0.8346)
+................................ 13-5 
+Table 13.6: Summary Metallurgical Programs ......................................................................................... 13-9 
+Table 14.1: Summary of Mineral Resource – December 31, 2022 .......................................................... 14-1 
+Table 14.2: Descriptive Statistics of Resource Assay Values - Au .......................................................... 14-8 
+Table 14.3: Descriptive Statistics of Resource Assay Values - Ag ..
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 3 (score=0.8338)
+......................................... 20-5 
+20.4.3 Tailings Characteristics ................................................................................... 20-8 
+20.4.4 Design ............................................................................................................. 20-9 
+20.4.5 Storage Capacity ........................................................................................... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ...........................
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 245 chunk 3 (score=0.8317)
+o 2017). 
+4.0 Other Materials to be Deposited into the TSF 
+4.1 General 
+Sludge from the Water Treatment Plant (WTP) will be deposited 
+into the TSF during the mine life through the same tailings 
+pipeline.  
+All foundation stripping spoils will be disposed in a new waste 
+dump. 
+4.2 Sludge Production at WTP 
+and into the TSF 
+Sludge production and properties: 
+• Production rate: 1.4 m3/h. 
+• Sludge to be delivered to TSF at solids content of 5%. 
+• Poor settling behavior: 100% of the sludge (so
+------------------------------------------------------------

@@ -1,0 +1,22 @@
+field,format,allowed_values_or_example,notes
+row_type,text,EXAMPLE|EXPERTS,Marks sample rows and the first row to be filled by experts.
+pdf_name,text,070912ElValleTechnicalReport.pdf,Primary key across sheets.
+report_title,text,Full report title,Copy the title visible on the cover or metadata.
+company,text,Company or title holder name,"If unknown, write unknown."
+country,text,Spain|Portugal|Finland|other,Use the main country of the asset or report.
+region,text,Andalusia|Asturias|Extremadura|other,Relevant administrative or geographic region.
+source_type,text,waste dump|sludge pond|tailings storage facility|mineral deposit|mine|stockpile|ore stockpile|metallurgical residue|slag heap|other,Use one of these options whenever possible.
+source_name,text,"Name of the mine, dump, or deposit",Must match across sheets.
+source_material,text,flotation tailings|sulphides|waste rock|oxide ore|other,General material type of the asset.
+commodities_observed,text,nickel|copper|gold,Separate values with |.
+study_level_reported,text,none|scoping|PEA|PFS|FS|operating|technical_report_only|other,Copy the study level visible in the report.
+effective_date_or_year,text,2024|2007|2024-02-15,Year or effective date if shown.
+expert_name,text,Name and surname,Person filling or reviewing the row.
+review_status,text,pending|in_progress|completed,Minimal review tracking.
+(notes),optional text,Free observations,Optional.
+""
+row_type,pdf_name,report_title,company,country,region,source_type,source_name,source_material,commodities_observed,study_level_reported,effective_date_or_year,expert_name,review_status,(notes)
+EXAMPLE,1._Cobre_Las_Cruces_Technical_Report_Feb_2024_FINAL.pdf,Cobre Las Cruces: Polymetallic Primary Sulphide Project,First Quantum Minerals Ltd,Spain,Andalusia,mine,Cobre Las Cruces PMS / PMR,polymetallic primary sulphides,copper|zinc|lead|silver,technical_report_only,2024,Template example,completed,Complete invented example to show the format.
+EXAMPLE,DMET_-_240523_Aguablanca_Technical_Report_PFS_Final.pdf,Technical Report and Preliminary Feasibility Study for the Aguablanca Nickel-Copper Mineral Deposit,Denarius Metals Corp.,Spain,Extremadura,mine,Aguablanca,nickel-copper mineral deposit,nickel|copper,PFS,2024,Template example,completed,Complete invented example to show the format.
+EXAMPLE,070912ElValleTechnicalReport.pdf,"Technical Report for the El Valle, Carlés, La Brueva, and Godán Gold Deposits",Buffalo Gold Ltd.,Spain,Asturias,mine,El Valle / Carlés / La Brueva / Godán,gold deposits,gold,technical_report_only,2007,Template example,completed,Complete invented example to show the format.
+EXPERTS,PDF_NAME_HERE,REPORT_TITLE_HERE,COMPANY_HERE,COUNTRY_HERE,REGION_HERE,SOURCE_TYPE_HERE,SOURCE_NAME_HERE,SOURCE_MATERIAL_HERE,COMMODITIES_OBSERVED_HERE,STUDY_LEVEL_HERE,YEAR_OR_DATE_HERE,EXPERT_NAME_HERE,pending,WRITE_NOTES_HERE

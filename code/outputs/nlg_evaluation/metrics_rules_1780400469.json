@@ -1,0 +1,187 @@
+{
+  "provider": "rules",
+  "timestamp": 1780400469.3402178,
+  "total_test_cases": 7,
+  "passed_test_cases": 7,
+  "success_rate": 1.0,
+  "average_score": 1.0,
+  "average_time_seconds": 0.0,
+  "results": [
+    {
+      "id": "TC_001",
+      "query": "Dime escombreras de carbón en Asturias",
+      "response_text": "He encontrado 3 registro(s) en la base WARM de prueba:\n- Arroyo de la Nicolasa (ES-W-ES120-0001), Mieres, asturias. Tipo: waste dump. Sustancias: carbón / hulla. Empresa: Hunosa. Estado ambiental: surgencias de agua, sin restaurar. Info: Existe registro de surgencias de agua asociadas a la escombrera.\n- Aguilar - Pumardongo (ES-W-ES120-0002), Mieres, asturias. Tipo: waste dump. Sustancias: carbón / hulla. Empresa: Hunosa. Estado ambiental: surgencias de agua, sin restaurar. Info: La escombrera se emplaza en un terreno de monte bajo. Existe registro de surgencias de agua asociadas a la escombrera. Escombrera en proceso de relleno.\n- La Casona (ES-W-ES120-0003), Mieres, asturias. Tipo: waste dump. Sustancias: carbón / hulla. Empresa: Hunosa. Estado ambiental: surgencias de agua, sin restaurar. Info: La escombrera se emplaza en un terreno de monte bajo. Existe registro de surgencias de agua asociadas a la escombrera. Los datos indican actividad reciente en la escombrera, sin poder determinar el tiempo desde su último depósito.",
+      "api_results_count": 3,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo",
+          "La Casona"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "carbón",
+          "asturias",
+          "hunosa"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.0
+    },
+    {
+      "id": "TC_002",
+      "query": "Qué escombreras tiene HUNOSA?",
+      "response_text": "He encontrado 3 registro(s) en la base WARM de prueba:\n- Arroyo de la Nicolasa (ES-W-ES120-0001), Mieres, asturias. Tipo: waste dump. Sustancias: carbón / hulla. Empresa: Hunosa. Estado ambiental: surgencias de agua, sin restaurar. Info: Existe registro de surgencias de agua asociadas a la escombrera.\n- Aguilar - Pumardongo (ES-W-ES120-0002), Mieres, asturias. Tipo: waste dump. Sustancias: carbón / hulla. Empresa: Hunosa. Estado ambiental: surgencias de agua, sin restaurar. Info: La escombrera se emplaza en un terreno de monte bajo. Existe registro de surgencias de agua asociadas a la escombrera. Escombrera en proceso de relleno.\n- La Casona (ES-W-ES120-0003), Mieres, asturias. Tipo: waste dump. Sustancias: carbón / hulla. Empresa: Hunosa. Estado ambiental: surgencias de agua, sin restaurar. Info: La escombrera se emplaza en un terreno de monte bajo. Existe registro de surgencias de agua asociadas a la escombrera. Los datos indican actividad reciente en la escombrera, sin poder determinar el tiempo desde su último depósito.",
+      "api_results_count": 3,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo",
+          "La Casona"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "hunosa"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.0
+    },
+    {
+      "id": "TC_003",
+      "query": "Busca el proyecto San Nicolás",
+      "response_text": "He encontrado 1 registro(s) en la base WARM de prueba:\n- Arroyo de la Nicolasa (ES-W-ES120-0001), Mieres, asturias. Tipo: waste dump. Sustancias: carbón / hulla. Empresa: Hunosa. Estado ambiental: surgencias de agua, sin restaurar. Info: Existe registro de surgencias de agua asociadas a la escombrera.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "nicolás"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.0
+    },
+    {
+      "id": "TC_004",
+      "query": "Hay escombreras sin restaurar con surgencias de agua?",
+      "response_text": "He encontrado 3 registro(s) en la base WARM de prueba:\n- Arroyo de la Nicolasa (ES-W-ES120-0001), Mieres, asturias. Tipo: waste dump. Sustancias: carbón / hulla. Empresa: Hunosa. Estado ambiental: surgencias de agua, sin restaurar. Info: Existe registro de surgencias de agua asociadas a la escombrera.\n- Aguilar - Pumardongo (ES-W-ES120-0002), Mieres, asturias. Tipo: waste dump. Sustancias: carbón / hulla. Empresa: Hunosa. Estado ambiental: surgencias de agua, sin restaurar. Info: La escombrera se emplaza en un terreno de monte bajo. Existe registro de surgencias de agua asociadas a la escombrera. Escombrera en proceso de relleno.\n- La Casona (ES-W-ES120-0003), Mieres, asturias. Tipo: waste dump. Sustancias: carbón / hulla. Empresa: Hunosa. Estado ambiental: surgencias de agua, sin restaurar. Info: La escombrera se emplaza en un terreno de monte bajo. Existe registro de surgencias de agua asociadas a la escombrera. Los datos indican actividad reciente en la escombrera, sin poder determinar el tiempo desde su último depósito.",
+      "api_results_count": 3,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo",
+          "La Casona"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "agua",
+          "surgencia",
+          "restaurar"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.0
+    },
+    {
+      "id": "TC_005",
+      "query": "Dime escombreras de cobre en Andalucía",
+      "response_text": "He encontrado 1 registro(s) en la base WARM de prueba:\n- Riotinto Project (site_001), municipio no indicado, andalucia. Tipo: tailings storage facility. Sustancias: cobre, plata, oro. Empresa: Atalaya Mining. Info: Mina activa de cobre. Las balsas de estériles contienen trazas de metales preciosos.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Riotinto Project"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "cobre",
+          "andalucía",
+          "atalaya"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.0
+    },
+    {
+      "id": "TC_006",
+      "query": "Busca escombreras de wolframio en Castilla y León",
+      "response_text": "He encontrado 1 registro(s) en la base WARM de prueba:\n- Los Santos (site_003), municipio no indicado, castilla y leon. Tipo: waste dump. Sustancias: wolframio / tungsteno. Empresa: Almonty Industries. Info: Mina de wolframio (tungsteno) en Salamanca. Actualmente en mantenimiento, estudiando re-procesamiento de estériles.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Los Santos"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "wolframio",
+          "tungsteno",
+          "salamanca"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.0
+    },
+    {
+      "id": "TC_007",
+      "query": "Hay proyectos de litio en Extremadura?",
+      "response_text": "He encontrado 1 registro(s) en la base WARM de prueba:\n- San José Valdeflórez (site_005), municipio no indicado, extremadura. Tipo: tailings storage facility. Sustancias: litio. Empresa: Infinity Lithium. Estado ambiental: social opposition. Info: Gran proyecto de litio cerca de Cáceres. En fase de desarrollo, diseñado con almacenamiento subterráneo de relaves.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "San José Valdeflórez"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "litio",
+          "cáceres"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.0
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+Question: What is the total storage capacity of the TSF reported in the technical report?
+
+Answer:
+Total storage capacity is the sum of the storage capacities of the tailings storage facility and tailings reclaim sump. The storage capacity for tailings reclaimed sump is not included in the total capacity because it is not a tailings facility. The total capacity of tailings reclamation sump can be calculated as follows:
+
+Total storage capacity = (Storage capacity of TSF + Storage capacity of TWSP)
+
+20-4
+
+Source: 2023 LUG Technical Report, pdfs/2023-LUG-Technical-Report-2023.pdf, page 27, chunk 11, score 1.0000
+
+A. Total Storage Capacity
+
+B. Storage Capacity of Tailings Recycled Sump
+
+C. Storage Capacities of the Two Tailings Facilities
+
+D. Total Capacity of the Tailings Facility
+
+ANSWER: Total capacity is 100,000,000 m3. Storage capacities of both tailings facilities are listed in Table 20.3.
+
+
+
+TABLE 20-3: Storage Capacity (m3) of Tailing Facilities at 2023-2024
+
+Tailings Reclaimed Sump Storage Capacity Storage Capacity TSF Storage Capacity TWSP Storage Capacity 2023 2024 2025 2026 2027 2028 2029 2030 2031 2032 2033 2034 2035 2036 2037 2038 2039 2040 2041 2042 2043 2044 2045 2046 2047 2048 2049 2050 2051 2052 2053 2054 2055 2056 2057 2058 2059 2060 2061 2062 2063 2064 2065 2066 2067 2068 2069 2070 2071 2072 2073 2074 2075 2076 2077 2078 2079 2080 2081 2082 2083 2084 2085 2086 2087 2088 2089 2090 2091 2092 2093 2094 2095 2096 2097 2098 2099 2100 2101 2102 2103 2104 2105 2106 2107 2108 2109 2110 2111 2112 2113 2114 2115 2116 2117 2118 2119 2120 2121 2122 2123 2124 2125 2126 2127 2128 2129 2130 2131 2132 2133 2134 2135 2136 2137 2138 2139 2140 2141 2142 2143 2144 2145 2146 2147 2148 2149 2150 2151 2152 2153 2154
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 4 (score=0.8500)
+............... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ................................................ 20-11 
+20.4.7 Stage Construction and TSF Current Condition ........................................... 20-11 
+20.4.8 Instrumentation and Monitoring .................................................................... 20-11 
+20.4.9 Operating Philosophy .................................................................................... 20-12 
+20.4.10 Design Basis .............
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 28 chunk 9 (score=0.8439)
+Table 17.1: Process Plant Performance Summary (2020-2022) ............................................................. 17-1 
+Table 20.1: Summary of Peak Ground Accelerations .............................................................................. 20-7 
+Table 20.2: TSF Key Design Basis ........................................................................................................ 20-12 
+Table 21.1: Summary of Life of Mine Capital Costs (USD M) Excluding Taxes  ..................
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 3 (score=0.8399)
+......................................... 20-5 
+20.4.3 Tailings Characteristics ................................................................................... 20-8 
+20.4.4 Design ............................................................................................................. 20-9 
+20.4.5 Storage Capacity ........................................................................................... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ...........................
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 54 chunk 0 (score=0.8373)
+NI 43-101 Technical Report  
+  Fruta del Norte Mine, Ecuador 
+ 
+Section 2 March 2023 Page 2-7 
+Abbreviations Full Description 
+t Tonnes (1,000 kg) (metric ton) 
+t/y or tpy Tonnes per year 
+t/d or tpd Tonnes per day 
+t/h or tph Tonnes per hour 
+t/m3 Tonnes per cubic metre 
+TRS Tailings Reclaim Sump 
+TSF Tailings Storage Facility 
+TTP Thickened Tailings Plant 
+TWSP Treated Water Storage Pond 
+USD United States Dollar 
+V Volt 
+VAT Value Added Tax 
+wk Week 
+XRF X-ray Fluorescence 
+y Year
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 27 chunk 11 (score=0.8353)
+.......................... 14-8 
+Table 14.3: Descriptive Statistics of Resource Assay Values - Ag .......................................................... 14-8 
+Table 14.4: Summary of Capping Levels in the Resource Domains ....................................................... 14-9
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 2 (score=0.8344)
+............................................................................... 20-4 
+20.4 Tailings Storage Facility ................................................................................. 20-4 
+20.4.1 Introduction ..................................................................................................... 20-4 
+20.4.2 Site Conditions and Investigations .................................................................. 20-5 
+20.4.3 Tailings Characteristics ....................
+------------------------------------------------------------

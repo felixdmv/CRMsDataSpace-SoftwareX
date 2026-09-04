@@ -1,0 +1,64 @@
+Question: What materials are present in the waste facility?
+
+Answer:
+Waste Management takes place in all the infrastructures of the mine operation. A waste management center was built to temporarily store the generated classified waste. Hazardous waste is managed through a Waste Management center. The mine is located in a remote part of the Amazon rainforest. It is surrounded by a dense forest.
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 264 chunk 1 (score=0.8491)
+ffice/Dry building 
+• Main office building 
+• Electrical room and control room 
+• Workshop 
+• Canteen 
+• First aid station and fire station 
+• Laboratory 
+• Warehouse and laydown area 
+• Short term concentrate container storage 
+• Permanent camp 
+• Greenhouse 
+• Communications systems 
+• Security access control at the main gate along the access road and at the process plant. Only 
+authorized personnel are permitted on site. 
+• Waste storage facilities 
+• Stockpiles 
+• TSF
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 240 chunk 2 (score=0.8438)
+years. 
+20.4.6 Other Waste Materials Reporting to the TSF 
+The only other waste material to be placed in the TSF is sludge from the water treatment plant, and this 
+has been included in the storage volume estimates. Further testing on sludge samples should be completed 
+by Aurelian to confirm the settling and geochemical characteristics of this materi al and its impact on the 
+tailings behaviour and storage, although the total volume is small compared to the tailings volume.  
+Site sediment mate
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 4 (score=0.8430)
+............... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ................................................ 20-11 
+20.4.7 Stage Construction and TSF Current Condition ........................................... 20-11 
+20.4.8 Instrumentation and Monitoring .................................................................... 20-11 
+20.4.9 Operating Philosophy .................................................................................... 20-12 
+20.4.10 Design Basis .............
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 232 chunk 3 (score=0.8337)
+rmal operation, biologists assist to rescue species 
+that interact with the mine operation, and they are relocated in the surrounding forest.  
+Waste Management takes place in all the infrastructures of the mine operation. A waste management 
+center was built to temporary store the generated classified waste. Hazardous waste is managed through 
+a certified company that transports, treats, and provides final disposal . Non-hazardous waste that is non-
+recyclable is sent to the Yantzaza Municipali
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 2 (score=0.8316)
+............................................................................... 20-4 
+20.4 Tailings Storage Facility ................................................................................. 20-4 
+20.4.1 Introduction ..................................................................................................... 20-4 
+20.4.2 Site Conditions and Investigations .................................................................. 20-5 
+20.4.3 Tailings Characteristics ....................
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 3 (score=0.8301)
+......................................... 20-5 
+20.4.3 Tailings Characteristics ................................................................................... 20-8 
+20.4.4 Design ............................................................................................................. 20-9 
+20.4.5 Storage Capacity ........................................................................................... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ...........................
+------------------------------------------------------------

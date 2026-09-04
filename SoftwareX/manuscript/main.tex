@@ -1,0 +1,100 @@
+%% Template article for Elsevier's document class `elsarticle`
+%% with numbered style bibliographic references
+\documentclass[preprint,12pt, a4paper]{elsarticle}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{orcidlink}
+\usepackage{longtable}
+\usepackage{float}
+\setlength{\parindent}{0pt}
+
+\journal{SoftwareX}
+
+\begin{document}
+\renewcommand{\labelenumii}{\arabic{enumi}.\arabic{enumii}}
+
+\begin{frontmatter}
+
+\title{A Modular NLU-Solr Architecture with Dynamic GIS Visual Synchronization for Conversational Spatial Search}
+
+\author[1]{F{\'e}lix de Miguel \orcidlink{0009-0000-9607-110X}\corref{cor1}}
+\ead{fdemiguel@ubu.es}
+
+\author[1]{Daniel Urda \orcidlink{0000-0003-2662-798X}}
+\ead{durda@ubu.es}
+
+\author[1]{Nu{\~n}o Basurto \orcidlink{0000-0001-7289-4689}}
+\ead{nbasurto@ubu.es}
+
+\cortext[cor1]{Corresponding author at: Grupo de Inteligencia Computacional Aplicada (GICAP), Departamento de Digitalizaci{\'o}n, Escuela Polit{\'e}cnica Superior, Universidad de Burgos, Av. Cantabria s/n, 09006 Burgos, Spain.}
+
+\address[1]{Grupo de Inteligencia Computacional Aplicada (GICAP), Departamento de Digitalizaci{\'o}n, Escuela Polit{\'e}cnica Superior, Universidad de Burgos, Av. Cantabria s/n, 09006 Burgos, Spain}
+
+\begin{abstract}
+Navigating complex geospatial data spaces through conventional search portals presents substantial friction for domain users, requiring rigid query syntax or exposing interfaces to Large Language Model (LLM) database schema hallucinations. In this paper, we present a domain-agnostic, modular open-source software architecture connecting a dual-variant Natural Language Understanding (NLU) pipeline with Apache Solr spatial indexing and dynamic Geographic Information System (GIS) map visual synchronization. The architecture establishes a synchronized map-and-chat interface, enabling users to translate free-form natural language queries directly into deterministic, visually synchronized spatial filtering. To eliminate schema hallucinations between pipeline nodes, the system couples Few-Shot intent parsing with strict OpenAPI JSON Schema enforcement evaluated under greedy decoding. Extracted search parameters are dynamically transformed into structured Boolean filter queries, simultaneously rendering active visual filter badges and triggering animated glowing pulse markers across the cartographic interface. To demonstrate its practical applicability, the architecture is instantiated and evaluated within \textbf{CRMsDataSpace}, a European research initiative for Critical Raw Materials. Empirical evaluation across 40 critical stress tests and 100 domain queries demonstrates high extraction accuracy (96.6\% overall accuracy and 87.61\% macro F1-score), while zero-setup standalone mock execution guarantees immediate reproducibility without external API key dependencies.
+\end{abstract}
+
+\begin{graphicalabstract}
+\centering
+\includegraphics[width=\textwidth]{graphical_abstract.png}
+\end{graphicalabstract}
+
+\begin{highlights}
+    \item Generic, domain-agnostic NLU-Solr software architecture integrating conversational LLM parsing with Apache Solr spatial search and Leaflet GIS visual synchronization.
+    \item Synchronized map-and-chat web application delivering real-time cartographic feedback via glowing pulse markers and interactive active filter badges.
+    \item Dual-variant NLU pipeline combining Few-Shot domain exemplars with strict OpenAPI JSON Schema validation to eliminate database schema hallucinations.
+    \item Real-world validation and deployment as the conversational demonstrator for the European research project \textbf{CRMsDataSpace} (Grant Agreement No.~101216677).
+    \item Zero-setup standalone mock execution mode with a synthetic 100-site dataset, guaranteeing immediate reviewer reproducibility without API key dependencies.
+\end{highlights}
+
+\begin{keyword}
+Geographic Information Systems (GIS) \sep Software Architecture \sep Natural Language Understanding (NLU) \sep Large Language Models (LLMs) \sep Spatial Data Search \sep Common European Data Spaces
+\end{keyword}
+
+\end{frontmatter}
+
+\section*{Required Metadata}
+\label{sec:Metadata}
+
+\begin{longtable}{|l|p{6.5cm}|p{6.5cm}|}
+\hline
+\textbf{Nr.} & \textbf{Code metadata description} & \textbf{Metadata} \\
+\hline
+C1 & Current code version & v1.0.0 \\
+\hline
+C2 & Permanent link to code/repository used for this code version & \url{https://github.com/felixdmv/CRMsDataSpace-SoftwareX} \\
+\hline
+C3 & Legal Code License & MIT License \\
+\hline
+C4 & Code versioning system used & git \\
+\hline
+C5 & Software code languages, tools, and services used & Python 3.9+, HTML5, JavaScript (Leaflet.js), TailwindCSS, Google Gemini API \\
+\hline
+C6 & Compilation requirements, operating environments \& dependencies & Standard Python 3.9+ library (Standalone Mock Mode); Optional: Google Generative AI SDK, OpenAI API client \\
+\hline
+C7 & Link to developer documentation/manual & \url{https://github.com/felixdmv/CRMsDataSpace-SoftwareX/blob/main/README.md} \\
+\hline
+C8 & Support email for questions & \href{mailto:fdemiguel@ubu.es}{fdemiguel@ubu.es} \\
+\hline
+\caption{Code metadata (mandatory)}
+\label{tab:metadata}
+\end{longtable}
+
+%% Modular Sections
+\input{sections/motivation_significance}
+\input{sections/software_description}
+\input{sections/illustrative_examples}
+\input{sections/impact}
+\input{sections/conclusions}
+\input{sections/others}
+
+%% References
+\bibliographystyle{elsarticle-num}
+\bibliography{references}
+
+\end{document}

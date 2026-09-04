@@ -1,0 +1,7 @@
+hoja_o_seccion,que_es,que_hay_que_rellenar,desde_que_fila
+registro_informes,Una fila por PDF.,Rellenar metadatos del informe y del activo. Las filas EJEMPLO ya están completas. Empezar en la fila EXPERTOS.,fila 22
+evaluacion_unfc,"Una fila por mina, escombrera, depósito o activo.",Rellenar una única clasificación UNFC para el conjunto del activo.,fila 21
+evidencia_ejes,"Una fila por variable usada para justificar E, F o G.",Añadir todas las variables que el experto considere necesarias para justificar la clasificación.,fila 55
+pares_qa,Preguntas y respuestas gold.,Rellenar preguntas en inglés y respuestas gold en inglés.,fila 18
+regla_clave,No separar UNFC por elemento.,"La clasificación se hace para el conjunto del activo y materiales, no por elemento individual.",
+objetivo,Pedir lo mínimo útil para comparar expertos frente a modelos.,Los ejemplos están inventados y solo muestran el formato deseado.,

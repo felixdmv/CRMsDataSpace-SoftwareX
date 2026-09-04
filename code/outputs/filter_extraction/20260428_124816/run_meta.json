@@ -1,0 +1,31 @@
+{
+  "created_at": "2026-04-28T12:48:16.137674",
+  "input_file": "C:\\Users\\fdemiguel\\OneDrive - Universidad de Burgos\\Documentos\\CRMsDataSpace\\code\\templates\\filter_queries.csv",
+  "providers": {
+    "openai": {
+      "model": "gpt-5.5",
+      "source": "https://developers.openai.com/api/docs/models",
+      "checked_on": "2026-04-28",
+      "note": "OpenAI docs recommend gpt-5.5 as the flagship model for complex reasoning and coding."
+    },
+    "gemini": {
+      "model": "gemini-2.5-pro",
+      "source": "https://ai.google.dev/gemini-api/docs/models",
+      "checked_on": "2026-04-28",
+      "note": "Google lists Gemini 2.5 Pro as its most advanced stable model for complex tasks; Gemini 3 Pro was shut down on 2026-03-09."
+    },
+    "anthropic": {
+      "model": "claude-opus-4-7",
+      "source": "https://platform.claude.com/docs/en/about-claude/models/overview",
+      "checked_on": "2026-04-28",
+      "note": "Anthropic recommends Claude Opus 4.7 for the most complex tasks."
+    },
+    "xai": {
+      "model": "grok-4.20-reasoning",
+      "source": "https://docs.x.ai/overview",
+      "checked_on": "2026-04-28",
+      "note": "xAI documents Grok 4.20 as the newest flagship model in the API docs."
+    }
+  },
+  "rows": 5
+}

@@ -1,0 +1,42 @@
+\section{Motivation and significance}
+\label{sec:MotivationAndSignificance}
+
+Modern Geographic Information Systems (GIS) and domain-specific data spaces manage vast volumes of multi-attribute spatial, environmental, and observational records~\cite{curry2022data}. Interacting with these platforms typically requires users to navigate complex relational schemas, master rigid query syntax (such as SQL or Lucene), or execute dozens of manual filter selections across multi-level nested web forms~\cite{huang2022natural, dou2024survey}. This introduces substantial cognitive friction, limits exploratory spatial inquiry, and prevents non-technical domain stakeholders from effectively discovering relevant geographic assets.
+
+Recent breakthroughs in Large Language Models (LLMs) and conversational artificial intelligence have created promising opportunities for natural language querying in geospatial domains (GeoAI)~\cite{janowicz2020geoai, mai2023opportunities, li2023geollm}. However, deploying raw LLMs as conversational interfaces over spatial databases introduces three severe technical impediments:
+\begin{enumerate}
+    \item \textbf{Database Schema Hallucination}: Raw LLMs frequently invent non-existent database field names, unsupported attribute categories, or misaligned relational keys when generating database queries~\cite{dou2024survey, willard2023outlines}.
+    \item \textbf{Non-Deterministic Output Structures}: Generative models can alter JSON keys, return unsolicited conversational filler, or produce syntactically unparseable payloads that break downstream database APIs~\cite{willard2023outlines, pydantic2023}.
+    \item \textbf{Absence of Geospatial Visual Feedback}: Standard conversational chatbots operate as isolated text streams without bidirectional synchronization with cartographic map viewports. Users cannot visually verify spatial distributions, assess proximity, or interact with highlighted facilities in real time~\cite{scheider2021question, huang2022natural}.
+\end{enumerate}
+
+To bridge this gap, this paper presents a generic, modular, open-source software architecture connecting a dual-variant Natural Language Understanding (NLU) pipeline, Apache Solr structured spatial indexing, and dynamic Geographic Information System (GIS) map visual synchronization. The architecture is domain-agnostic: by establishing clean functional boundaries between intent parsing, terminology normalization, search index querying, and cartographic rendering, the pipeline can be instantiated across diverse spatial disciplines by modifying only the domain thesaurus and the OpenAPI schema specification.
+
+\begin{table}[h!]
+    \centering
+    \small
+    \caption{Comparative analysis of the proposed NLU-Solr-GIS architecture against existing spatial search and conversational AI approaches.}
+    \label{tab:tool_comparison}
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{lccccc}
+            \hline
+            \textbf{Feature / Dimension} & \textbf{Traditional GIS Portals} & \textbf{Raw LLM Chatbots} & \textbf{Text-to-SQL Interfaces} & \textbf{Vanilla Solr/Lucene Search} & \textbf{Proposed NLU-Solr-GIS Architecture} \\
+            \hline
+            \textbf{Query Modality} & Rigid UI / Dropdowns & Free-form Natural Text & Natural Language & Keyword / Solr Syntax & Conversational Multi-Criteria NLU \\
+            \textbf{Schema Hallucination Risk} & None (Static Form) & High (Unconstrained) & Medium-High & None & \textbf{Zero (OpenAPI Schema Enforced)} \\
+            \textbf{Output Determinism} & High & Low (Stochastic Text) & Moderate (SQL errors) & High & \textbf{Guaranteed (JSON Schema)} \\
+            \textbf{Dynamic GIS Synchronization} & Manual Pan / Zoom & None (Text-only) & Rare & Limited & \textbf{Real-Time Pulse \& Badges} \\
+            \textbf{Domain Vocabulary Normalization} & None (Exact strings) & Latent (Unpredictable) & External lookup & Synonyms file & \textbf{Pluggable Domain Thesaurus} \\
+            \textbf{Reviewer Zero-Setup Mode} & Not Applicable & Requires Paid API Key & Requires Live DB & Requires Solr Cluster & \textbf{Native Standalone Mock Mode} \\
+            \textbf{Traceable Evidence Reranking} & None & None (Hallucination risk) & None & Keyword BM25 & \textbf{Information Density Vector RAG} \\
+            \hline
+        \end{tabular}
+    }
+\end{table}
+
+\subsection{Case Study and Validation Testbed: The CRMsDataSpace European Project}
+\label{subsec:CaseStudyContext}
+
+To demonstrate the practical applicability of the proposed architecture within a demanding, real-world deployment, the software is instantiated and validated within \textbf{CRMsDataSpace}, a European research project funded by the Research Fund for Coal and Steel (Grant Agreement No.~101216677). 
+
+The objective of the CRMsDataSpace initiative is to establish a Common European Data Space on Critical Raw Materials (CRMs) for the European Green Deal~\cite{european2024crma, blengini2020eu}. The project characterises closed extractive waste facilities, tailings ponds, and spoil heaps across Europe as secondary mineral sources to support EU supply resilience~\cite{vidal2017environmental, lottermoser2010mine}. Within this ecosystem, our software architecture serves as the conversational front-end of the Minimum Viable Data Space (MVDS), allowing mining engineers, geologists, and policymakers to query multi-criteria spatial and mineralogical records in natural language with synchronized cartographic feedback. The CRMs domain acts as an exemplary case study highlighting the versatility and robustness of the generic software pattern.

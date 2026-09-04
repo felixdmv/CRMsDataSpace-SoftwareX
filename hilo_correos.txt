@@ -1,0 +1,69 @@
+De: FELIX DE MIGUEL VILLALBA <fdemiguel@ubu.es>
+Enviado: jueves, 25 de junio de 2026 11:45
+Para: Ana González Alonso <ana.gonzalez@satec.es>; DANIEL URDA MUÑOZ <durda@ubu.es>; NUÑO BASURTO HORNILLOS <nbasurto@ubu.es>; marquesantonio <marquesantonio@uniovi.es>; PEDRO RIESGO FERNANDEZ <priesgo@uniovi.es>
+Cc: Carlos Olivares Navarro <carlos.olivares@satec.es>; maria.feria <maria.feria@satec.es>; alberto.alvarez <alberto.alvarez@satec.es>; Jaime Rodríguez Pérez <jaime.perez@satec.es>; Hugo Javier Díaz Ramírez <hugo.diaz@satec.es>; William Levy De los Ríos Quiñones <william.rios@satec.es>; oscar.blanco <oscar.blanco@satec.es>; Eliana Vallejo Arango <eliana.vallejo@satec.es>; Tania Cantero Escribano <tania.cantero@satec.es>; Jon Ulibarri Ramos <jon.ulibarri@satec.es>; RAQUEL REDONDO GUEVARA <rredondo@ubu.es>
+Asunto: RE: Propuesta de definición: RAG geográfico enriquecido con Apache Solr
+ 
+Hola a todos,
+En primer lugar, disculpad la demora en la respuesta y gracias Ana por la definición tan detallada.
+Hemos analizado en detalle vuestra propuesta para el desarrollo del RAG geográfico sobre Apache Solr y nos parece un enfoque muy acertado para este espacio de datos.
+Para facilitar la coordinación y mostraros cómo vemos la interacción de los distintos componentes, os adjuntamos un diagrama del flujo de datos que tenemos diseñado:
+ 
+Creemos que así puede quedar bastante bien definido; cualquier apunte es bienvenido.
+De nuestro lado, ya tenemos avanzado un prototipo de la interfaz (mockup interactivo) que simula esta experiencia de usuario (chat conectado a mapay que ya hemos puesto en marcha utilizando Solr para la recuperación de información.                                                                                           
+Para poder pasar del prototipo al desarrollo real e iniciar la integración del LLM, Solr y el chat en la plataforma web, necesitaríamos que nos facilitarais acceso a los entornos. Cabe destacar que, dado que nuestro trabajo está enfocado exclusivamente en la parte de inteligencia artificial, no interferiremos en el resto de la aplicación, cuyo desarrollo sigue estando en vuestras manos.
+Nos adaptamos a lo que estéis usando (Docker o cualquier otro sistema). Decidnos cómo preferís que nos conectemos y nos ajustaremos a vuestras indicaciones para empezar a trabajar.
+Saludos
+Félix de Miguel Villalba
+Departamento de Digitalización - Grupo de Inteligencia Computacional Aplicada (GICAP)
+Escuela Politécnica Superior, Edificio C- Campus Vena
+C/ Francisco Vitoria s/n. 09006. Burgos
+UNIVERSIDAD DE BURGOS
+________________________________________
+De: Ana González Alonso <ana.gonzalez@satec.es>
+Enviado: martes, 16 de junio de 2026 16:19
+Para: FELIX DE MIGUEL VILLALBA <fdemiguel@ubu.es>; DANIEL URDA MUÑOZ <durda@ubu.es>; NUÑO BASURTO HORNILLOS <nbasurto@ubu.es>; marquesantonio <marquesantonio@uniovi.es>; PEDRO RIESGO FERNANDEZ <priesgo@uniovi.es>
+Cc: Carlos Olivares Navarro <carlos.olivares@satec.es>; maria.feria <maria.feria@satec.es>; alberto.alvarez <alberto.alvarez@satec.es>; Jaime Rodríguez Pérez <jaime.perez@satec.es>; Hugo Javier Díaz Ramírez <hugo.diaz@satec.es>; William Levy De los Ríos Quiñones <william.rios@satec.es>; oscar.blanco <oscar.blanco@satec.es>; Eliana Vallejo Arango <eliana.vallejo@satec.es>; Tania Cantero Escribano <tania.cantero@satec.es>; Jon Ulibarri Ramos <jon.ulibarri@satec.es>
+Asunto: Propuesta de definición: RAG geográfico enriquecido con Apache Solr
+ 
+Hola a todos,
+ 
+Perdonar por el retraso he tenido un par de temas urgentes, si queréis que lo hablemos o lo veamos montamos una reunión.
+ 
+La propuesta consiste en construir un RAG geográfico enriquecido sobre Apache Solr, orientado a recuperar información documental, semántica y territorial de forma integrada. La idea no es limitarse a buscar texto dentro de documentos, sino convertir cada documento o fragmento en una unidad de conocimiento enriquecida con entidades, metadatos, coordenadas, contexto geográfico y referencias externas procedentes de bases de datos o modelos analíticos.
+Apache Solr encaja como núcleo de recuperación porque permite combinar varias capacidades en un mismo motor: búsqueda textual, filtros estructurados, facetas, búsqueda vectorial y búsqueda geoespacial. Solr documenta oficialmente Dense Vector Search para indexar y consultar vectores densos generados por modelos de IA; Spatial Search para búsquedas geográficas mediante tipos como LatLonPointSpatialField, BBoxField y RPT; y Solr Cell/Tika para extraer texto y metadatos desde documentos binarios como PDFs, Word u otros formatos documentales.
+Referencias:
+https://solr.apache.org/guide/solr/latest/query-guide/dense-vector-search.html
+https://solr.apache.org/guide/solr/latest/query-guide/spatial-search.html
+https://solr.apache.org/guide/solr/latest/indexing-guide/indexing-with-tika.html
+ 
+El enfoque sería especialmente útil en escenarios donde la documentación está vinculada a territorio, activos físicos, permisos, expedientes, informes técnicos, datos históricos, inventarios o información procedente de sistemas corporativos. En este modelo, un agente de IA no consultaría únicamente documentos por similitud semántica, sino que podría recuperar evidencias filtradas por ubicación, entidad, tipo de material, fecha, estado administrativo, fuente documental o relaciones de negocio.
+El análisis de escombreras en España y la identificación de materiales potencialmente recuperables. La documentación técnica, ambiental, minera o administrativa asociada a estas escombreras podría ser ingerida por el sistema, procesada y enriquecida. A partir de informes, expedientes, memorias técnicas, inventarios históricos, documentación geológica, autorizaciones o bases de datos corporativas, el RAG podría identificar menciones a materiales, ubicación de las escombreras, composición estimada, origen de los residuos, volumen aproximado, riesgos ambientales, titularidad, estado administrativo, accesibilidad, proximidad a infraestructuras y cualquier otra variable relevante.
+La capa geográfica permitiría asociar cada escombrera o documento a coordenadas, áreas, bounding boxes, zonas administrativas o celdas espaciales. Esto permitiría consultas territoriales y visualización cartográfica de los resultados. El sistema podría recuperar no solo documentos que mencionen una escombrera concreta, sino también documentación relacionada con áreas próximas, materiales similares, zonas con restricciones ambientales o activos cercanos.
+La capa semántica permitiría recuperar información aunque los documentos no usen exactamente las mismas palabras. Por ejemplo, el sistema podría relacionar documentación sobre residuos mineros, estériles, balsas, relaves, escombreras, subproductos, materiales valorizables o recuperación de materias primas, siempre que los embeddings y la indexación semántica estén correctamente diseñados.
+La capa de NER permitiría extraer entidades relevantes como nombres de explotaciones, municipios, provincias, empresas titulares, materiales, minerales, elementos químicos, autorizaciones, códigos de expediente, organismos públicos, fechas, volúmenes, tonelajes o referencias ambientales. Estas entidades podrían convertirse en filtros y facetas dentro de Solr, facilitando la navegación y la selección de resultados.
+La capa de metadatos permitiría enriquecer el RAG con información procedente de la propia documentación y de bases de datos internas. Desde la documentación se podrían extraer tipo de informe, fecha, autor, fuente, página, sección, versión o clasificación. Desde una base de datos corporativa se podrían incorporar identificadores de activo, estado del expediente, titularidad, permisos, riesgos, prioridad, costes estimados, proximidad a infraestructuras, restricciones operativas o estado de evaluación.
+Además, este RAG geográfico podría enriquecerse con modelos analíticos externos, incluidos modelos alineados con marcos de datos como OSDU.
+ 
+En este contexto, el RAG no tendría que decidir por sí solo la viabilidad de una operación. Su función principal sería recuperar, estructurar y contextualizar evidencias. La viabilidad podría ser analizada por modelos especializados externos que evaluasen variables técnicas, económicas, ambientales, logísticas o regulatorias. Por ejemplo, modelos geológicos, modelos de estimación de recursos, modelos de recuperación de materiales, modelos de coste operativo, modelos de riesgo ambiental o modelos de priorización de activos podrían recibir como entrada la información recuperada por el RAG y devolver indicadores de viabilidad.
+De este modo, el sistema tendría dos niveles complementarios. El primer nivel sería el RAG geográfico, encargado de localizar, recuperar y contextualizar la información documental y espacial. El segundo nivel estaría compuesto por modelos analíticos especializados, capaces de aplicar algoritmos propios para valorar si una operación de recuperación de materiales es técnicamente viable, económicamente razonable, ambientalmente aceptable o administrativamente factible.
+El papel del agente de IA sería coordinar estas capacidades. El agente podría interpretar la consulta del usuario, recuperar evidencias en Solr, solicitar información adicional a bases de datos, invocar modelos especializados y construir una respuesta trazable. La respuesta no debería basarse en una inferencia libre del modelo, sino en evidencias documentales, metadatos, relaciones geográficas y resultados calculados por algoritmos externos.
+ 
+Por tanto  la propuesta plantea un RAG geográfico enriquecido sobre Apache Solr capaz de combinar documentación, búsqueda semántica, entidades, metadatos, geografía y datos estructurados. Aplicado al caso de escombreras en España, permitiría recuperar y analizar información sobre materiales potencialmente valorizables, ubicación, contexto documental, condicionantes administrativos y variables operativas. Además, podría integrarse con modelos externos, incluidos modelos basados en ecosistemas de datos como OSDU, para evaluar la viabilidad de operaciones de recuperación mediante algoritmos especializados.
+ 
+Desde el punto de vista de desarrollo,  Solr puede integrarse con aplicaciones externas mediante sus APIs HTTP/REST y su JSON Request API, lo que permite consultar, indexar y actualizar información desde un backend, un pipeline de ingesta o un agente de IA. Para entornos Python, puede utilizarse pysolr, un cliente ligero para conectar con Solr, lanzar consultas e indexar documentos desde procesos de NLP, enriquecimiento documental o servicios RAG. En entornos Java/JVM, Solr dispone de SolrJ como cliente de integración:
+Solr API Documentation:
+https://solr.apache.org/api/index.html
+Solr JSON Request API:
+https://solr.apache.org/guide/solr/latest/query-guide/json-request-api.html
+Solr JSON Query DSL:
+https://solr.apache.org/guide/solr/latest/query-guide/json-query-dsl.html
+pysolr, cliente Python para Apache Solr:
+https://pypi.org/project/pysolr/
+SolrJ, cliente Java/JVM para Solr:
+https://solr.apache.org/guide/solr/latest/deployment-guide/solrj.html
+Desde el punto de vista de visualización, el RAG geográfico puede exponer los resultados como capas cartográficas consumibles por un visor GIS o web mapping. Estas capas podrían incluir documentos georreferenciados, entidades geográficas extraídas, materiales o recursos identificados, contexto territorial y resultados analíticos derivados de modelos externos. Los resultados podrían servirse como GeoJSON u otros formatos compatibles con visores como MapLibre, OpenLayers, Leaflet o herramientas GIS corporativas.
+ 
+Cualquier cosa ya sabéis donde estamos.
+ 
+Ana

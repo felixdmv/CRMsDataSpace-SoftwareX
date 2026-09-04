@@ -1,0 +1,55 @@
+campo,formato,opciones_o_guia,notas
+tipo_fila,texto,EJEMPLO|EXPERTOS,Marca filas de ejemplo y la primera fila a completar.
+nombre_pdf,texto,Mismo valor que en registro_informes,Usar exactamente el mismo nombre.
+nombre_fuente,texto,Mismo valor que en registro_informes,Usar exactamente el mismo nombre.
+eje,texto,E|F|G,Eje al que contribuye la variable.
+variable,texto,Usar lista sugerida o definir otra_variable,Se pueden añadir todas las variables que el experto considere necesarias.
+valor_numerico,número,Usar la escala indicada para cada variable,"El experto puede añadir tantas variables como necesite para justificar E, F y G."
+paginas_evidencia,texto,12|13|14-16,Las páginas son obligatorias; las notas y extractos son opcionales.
+(extracto_o_nota),texto opcional,fragmento breve o resumen,Usar solo si ayuda a entender la justificación.
+(comentario_experto),texto opcional,explicación adicional,Usar para razonar por qué una o varias variables empujan a E/F/G.
+""
+eje,variable,descripcion,escala_numerica,notas
+E,viabilidad_economica,Viabilidad económica global del proyecto de recuperación.,"0 desconocido, 1 baja, 2 media, 3 alta","Usar economía global del conjunto de materiales, no de un elemento aislado."
+E,demanda_mercado,Demanda de mercado de los materiales o productos del conjunto.,"0 desconocida, 1 baja, 2 media, 3 alta","Considerar mercado de salida, interés industrial y potencial de venta."
+E,valor_estimado,Calidad de la estimación de valor o ingresos.,"0 ninguna, 1 aproximada, 2 preliminar, 3 detallada",Mayor puntuación si el informe cuantifica valor o retorno.
+E,coste_estimado,Calidad de la estimación de costes.,"0 ninguna, 1 aproximada, 2 preliminar, 3 detallada","Considerar capex, opex, tratamiento, transporte, permisos y cierre."
+E,aceptacion_social,Aceptación social o ausencia de conflicto relevante.,"0 desconocida, 1 baja, 2 media, 3 alta","Usar consultas, oposición local, aceptación pública o apoyo social."
+E,area_protegida,Restricción asociada a área protegida o figura equivalente.,"0 desconocida, 1 restricción alta, 2 restricción media, 3 restricción baja o nula",Puntuar lo favorable que es la condición para la viabilidad.
+E,restriccion_ambiental,Restricciones ambientales o legales.,"0 desconocida, 1 alta, 2 media, 3 baja",Las puntuaciones bajas implican más barreras.
+E,impacto_ambiental,Impacto ambiental esperado del proyecto.,"0 desconocido, 1 alto, 2 medio, 3 bajo","Puntuar favorabilidad, no longitud del informe."
+E,estado_regulatorio,Madurez de permisos y situación regulatoria.,"0 desconocido, 1 no iniciado, 2 en progreso, 3 autorizado o muy avanzado","Usar permisos, concesiones, autorizaciones y condicionantes."
+E,permiso_requerido,Carga de permisos adicionales pendiente.,"0 desconocida, 1 alta, 2 media, 3 baja o cubierta",Mayor puntuación implica menor barrera regulatoria.
+F,madurez_proyecto,Madurez global del proyecto.,"1 F1, 2 F2, 3 F3, 4 F4, 9 desconocido",La categoría final F se registra en la hoja de evaluación.
+F,proyecto_definido,Grado de definición del proyecto.,"0 ninguno, 1 conceptual, 2 parcial, 3 bien definido","Usar definición de proceso, alcance, producto y plan de implantación."
+F,nivel_estudio,Nivel de estudio más alto evidenciado.,"0 ninguno, 1 scoping, 2 PEA, 3 PFS/FS/operación",Usar el nivel más alto claramente identificado en el informe.
+F,estado_desarrollo,Estado de desarrollo del proyecto.,"0 desconocido, 1 temprano, 2 evaluación, 3 construcción u operación","Mirar el estado del proyecto, no solo del activo minero."
+G,sondeos,Soporte de sondeos o trabajos subsuperficiales.,"0 ninguno, 1 bajo, 2 medio, 3 alto",Aplicado al conocimiento del conjunto del depósito o escombrera.
+G,muestreo,Calidad y cobertura del muestreo.,"0 ninguno, 1 baja, 2 media, 3 alta","Usar cantidad, representatividad y distribución del muestreo."
+G,composicion_quimica,Confianza en la caracterización química.,"0 ninguna, 1 baja, 2 media, 3 alta",Aplicada al conjunto de materiales y su posible valorización.
+G,propiedades_fisicas,Confianza en la caracterización física/mineralógica.,"0 ninguna, 1 baja, 2 media, 3 alta","Ejemplos: densidad, humedad, granulometría, mineralogía."
+G,distribucion_espacial,Confianza en la geometría y distribución espacial.,"0 ninguna, 1 baja, 2 media, 3 alta","Usar topografía, secciones, modelado, continuidad o cartografía."
+G,observaciones,Soporte de observaciones de campo e interpretación.,"0 ninguno, 1 bajo, 2 medio, 3 alto","Visitas, logs, fotos, observaciones directas e interpretación."
+G,criticidad,"Criticidad estratégica del conjunto de materiales según regulación, mercado o contexto europeo.","0 desconocida, 1 baja, 2 media, 3 alta",Nueva variable: permite reflejar importancia estratégica de los materiales.
+E/F/G,otra_variable,Variable adicional definida por el experto si considera que la lista no es suficiente.,usar criterio experto,Permite añadir todas las variables necesarias para justificar la clasificación final.
+""
+tipo_fila,nombre_pdf,nombre_fuente,eje,variable,valor_numerico,paginas_evidencia,(extracto_o_nota),(comentario_experto)
+EJEMPLO,DMET_-_240523_Aguablanca_Technical_Report_PFS_Final.pdf,Aguablanca,E,viabilidad_economica,3,"1-3,45-60",Variable destacada por el experto para justificar E.,Ejemplo inventado.
+EJEMPLO,DMET_-_240523_Aguablanca_Technical_Report_PFS_Final.pdf,Aguablanca,E,estado_regulatorio,3,"1-3,45-60",Otra variable E relevante para justificar la clase.,Ejemplo inventado.
+EJEMPLO,DMET_-_240523_Aguablanca_Technical_Report_PFS_Final.pdf,Aguablanca,F,nivel_estudio,2,"1-3,45-60",Variable destacada por el experto para justificar F.,Ejemplo inventado.
+EJEMPLO,DMET_-_240523_Aguablanca_Technical_Report_PFS_Final.pdf,Aguablanca,F,proyecto_definido,3,"1-3,45-60",Otra variable F relevante para justificar la clase.,Ejemplo inventado.
+EJEMPLO,DMET_-_240523_Aguablanca_Technical_Report_PFS_Final.pdf,Aguablanca,G,muestreo,2,"1-3,45-60",Variable destacada por el experto para justificar G.,Ejemplo inventado.
+EJEMPLO,DMET_-_240523_Aguablanca_Technical_Report_PFS_Final.pdf,Aguablanca,G,criticidad,2,"1-3,45-60",Nueva variable G: criticidad estratégica del conjunto de materiales.,Ejemplo inventado.
+EJEMPLO,1._Cobre_Las_Cruces_Technical_Report_Feb_2024_FINAL.pdf,Cobre Las Cruces PMS / PMR,E,viabilidad_economica,3,"15-17,80-110",Variable destacada por el experto para justificar E.,Ejemplo inventado.
+EJEMPLO,1._Cobre_Las_Cruces_Technical_Report_Feb_2024_FINAL.pdf,Cobre Las Cruces PMS / PMR,E,estado_regulatorio,3,"15-17,80-110",Otra variable E relevante para justificar la clase.,Ejemplo inventado.
+EJEMPLO,1._Cobre_Las_Cruces_Technical_Report_Feb_2024_FINAL.pdf,Cobre Las Cruces PMS / PMR,F,nivel_estudio,1,"15-17,80-110",Variable destacada por el experto para justificar F.,Ejemplo inventado.
+EJEMPLO,1._Cobre_Las_Cruces_Technical_Report_Feb_2024_FINAL.pdf,Cobre Las Cruces PMS / PMR,F,proyecto_definido,3,"15-17,80-110",Otra variable F relevante para justificar la clase.,Ejemplo inventado.
+EJEMPLO,1._Cobre_Las_Cruces_Technical_Report_Feb_2024_FINAL.pdf,Cobre Las Cruces PMS / PMR,G,muestreo,2,"15-17,80-110",Variable destacada por el experto para justificar G.,Ejemplo inventado.
+EJEMPLO,1._Cobre_Las_Cruces_Technical_Report_Feb_2024_FINAL.pdf,Cobre Las Cruces PMS / PMR,G,criticidad,2,"15-17,80-110",Nueva variable G: criticidad estratégica del conjunto de materiales.,Ejemplo inventado.
+EJEMPLO,070912ElValleTechnicalReport.pdf,El Valle / Carlés / La Brueva / Godán,E,viabilidad_economica,3,"1-2,56-90",Variable destacada por el experto para justificar E.,Ejemplo inventado.
+EJEMPLO,070912ElValleTechnicalReport.pdf,El Valle / Carlés / La Brueva / Godán,E,estado_regulatorio,3,"1-2,56-90",Otra variable E relevante para justificar la clase.,Ejemplo inventado.
+EJEMPLO,070912ElValleTechnicalReport.pdf,El Valle / Carlés / La Brueva / Godán,F,nivel_estudio,2,"1-2,56-90",Variable destacada por el experto para justificar F.,Ejemplo inventado.
+EJEMPLO,070912ElValleTechnicalReport.pdf,El Valle / Carlés / La Brueva / Godán,F,proyecto_definido,3,"1-2,56-90",Otra variable F relevante para justificar la clase.,Ejemplo inventado.
+EJEMPLO,070912ElValleTechnicalReport.pdf,El Valle / Carlés / La Brueva / Godán,G,muestreo,3,"1-2,56-90",Variable destacada por el experto para justificar G.,Ejemplo inventado.
+EJEMPLO,070912ElValleTechnicalReport.pdf,El Valle / Carlés / La Brueva / Godán,G,criticidad,2,"1-2,56-90",Nueva variable G: criticidad estratégica del conjunto de materiales.,Ejemplo inventado.
+EXPERTOS,NOMBRE_PDF_AQUI,NOMBRE_FUENTE_AQUI,E_F_O_G,VARIABLE_AQUI,VALOR_NUMERICO_AQUI,PAGINAS_AQUI,EXTRACTO_O_NOTA_AQUI,COMENTARIO_EXPERTO_AQUI

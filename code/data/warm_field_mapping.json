@@ -1,0 +1,222 @@
+[
+  {
+    "source_field": "id",
+    "description": "id elemento en la tabla",
+    "warm_mapping": "Código interno del sistema"
+  },
+  {
+    "source_field": "id_site",
+    "description": "código de la escombrera/balsa",
+    "warm_mapping": "id"
+  },
+  {
+    "source_field": "date",
+    "description": "fecha de alta",
+    "warm_mapping": "Código interno del sistema"
+  },
+  {
+    "source_field": "country_code",
+    "description": "Tutorial:Country codes and protocol order - Statistics Explained - Eurostat",
+    "warm_mapping": "country:CountryISOCodeList"
+  },
+  {
+    "source_field": "nuts3_code",
+    "description": "Overview - NUTS - Nomenclature of territorial units for statistics - Eurostat",
+    "warm_mapping": null
+  },
+  {
+    "source_field": "nuts3_label",
+    "description": "Overview - NUTS - Nomenclature of territorial units for statistics - Eurostat",
+    "warm_mapping": null
+  },
+  {
+    "source_field": "province",
+    "description": null,
+    "warm_mapping": "province"
+  },
+  {
+    "source_field": "municipality",
+    "description": null,
+    "warm_mapping": "municipality"
+  },
+  {
+    "source_field": "locality",
+    "description": null,
+    "warm_mapping": "place"
+  },
+  {
+    "source_field": "local_name",
+    "description": null,
+    "warm_mapping": "place (depende de la granularidad)"
+  },
+  {
+    "source_field": "utm_x",
+    "description": "longitud UTM",
+    "warm_mapping": "centroid:GM_point"
+  },
+  {
+    "source_field": "utm_y",
+    "description": "latitud UTM",
+    "warm_mapping": "centroid:GM_point"
+  },
+  {
+    "source_field": "alt",
+    "description": "altitud",
+    "warm_mapping": "altitude"
+  },
+  {
+    "source_field": "utm",
+    "description": "UTM Huso 30 (para Asturias)",
+    "warm_mapping": "projection:EPSGCodeList (para proyecto acordado siempre WGS84)"
+  },
+  {
+    "source_field": "exp_subs_1",
+    "description": "sustancia explotada 1",
+    "warm_mapping": "substanceType:SubstanceCodeList / percentage.QuantityRange"
+  },
+  {
+    "source_field": "exp_subs_2",
+    "description": "sustancia explotada 2",
+    "warm_mapping": "substanceType:SubstanceCodeList / percentage.QuantityRange"
+  },
+  {
+    "source_field": "exp_subs_3",
+    "description": "sustancia explotada 3",
+    "warm_mapping": "substanceType:SubstanceCodeList / percentage.QuantityRange"
+  },
+  {
+    "source_field": "min_as_1",
+    "description": "asociación mineral 1",
+    "warm_mapping": "Commodity: CommodityCodelist /commodityRole:CommodityRoleCodeList"
+  },
+  {
+    "source_field": "min_as_2",
+    "description": "asociación mineral 2",
+    "warm_mapping": "Commodity: CommodityCodelist /commodityRole:CommodityRoleCodeList"
+  },
+  {
+    "source_field": "min_as_3",
+    "description": "asociación mineral 3",
+    "warm_mapping": "Commodity: CommodityCodelist /commodityRole:CommodityRoleCodeList"
+  },
+  {
+    "source_field": "cont_subs_1",
+    "description": "sustancia contaminante 1",
+    "warm_mapping": "Commodity: CommodityCodelist /commodityRole:CommodityRoleCodeList"
+  },
+  {
+    "source_field": "cont_subs_2",
+    "description": "sustancia contaminante 2",
+    "warm_mapping": "Commodity: CommodityCodelist /commodityRole:CommodityRoleCodeList"
+  },
+  {
+    "source_field": "cont_subs_3",
+    "description": "sustancia contaminante 3",
+    "warm_mapping": "Commodity: CommodityCodelist /commodityRole:CommodityRoleCodeList"
+  },
+  {
+    "source_field": "usable_subs_1",
+    "description": "sustancia aprovechable 1",
+    "warm_mapping": "Commodity: CommodityCodelist /commodityRole:CommodityRoleCodeList"
+  },
+  {
+    "source_field": "usable_subs_2",
+    "description": "sustancia aprovechable 2",
+    "warm_mapping": "Commodity: CommodityCodelist /commodityRole:CommodityRoleCodeList"
+  },
+  {
+    "source_field": "usable_subs_3",
+    "description": "sustancia aprovechable 3",
+    "warm_mapping": "Commodity: CommodityCodelist /commodityRole:CommodityRoleCodeList"
+  },
+  {
+    "source_field": "debris_lit_1",
+    "description": "litología de los escombros de mina 1",
+    "warm_mapping": "lithologyEMC:lithology"
+  },
+  {
+    "source_field": "debris_lit_2",
+    "description": "litología de los escombros de mina 2",
+    "warm_mapping": "lithologyEMC:lithology"
+  },
+  {
+    "source_field": "debris_lit_3",
+    "description": "litología de los escombros de mina 3",
+    "warm_mapping": "lithologyEMC:lithology"
+  },
+  {
+    "source_field": "exp_name",
+    "description": "nombre de la explotación minera",
+    "warm_mapping": "mineName"
+  },
+  {
+    "source_field": "act_type",
+    "description": "tipo de actividad (ej: Metalurgia, Minería de rocas y minerales industriales, Minería energética, Minería metálica, Obra civil, Proceso industrial, etc.)",
+    "warm_mapping": "miningActivityType:MiningActivityCodeList"
+  },
+  {
+    "source_field": "expl_type",
+    "description": "tipo de explotación minera",
+    "warm_mapping": "mineType:MineCodeList"
+  },
+  {
+    "source_field": "company",
+    "description": "empresa propietaria",
+    "warm_mapping": "company:CI_ResponsibleParty"
+  },
+  {
+    "source_field": "admin_status",
+    "description": "situación administrativa de la explotación",
+    "warm_mapping": "id (del permiso)"
+  },
+  {
+    "source_field": "mine_status",
+    "description": "estado de la explotación",
+    "warm_mapping": "StatusType:StatusCodeList"
+  },
+  {
+    "source_field": "dep_type",
+    "description": "tipo de depósito (este inventario sólo recoge balsa o escombrera)",
+    "warm_mapping": "El modelo va más allá y recoge proporción de la parte, rol y fuente"
+  },
+  {
+    "source_field": "morphology",
+    "description": "morfología del depósito de la escombrera (Aluvial, Estratiforme, Filoniana, Masiva, Lentejonar, Irregular, Isométrica, Otros)",
+    "warm_mapping": "El modelo recoge la morfología del depósito en explotación en la mina. No tiene traducción directa."
+  },
+  {
+    "source_field": "area",
+    "description": null,
+    "warm_mapping": "area"
+  },
+  {
+    "source_field": "restored",
+    "description": "restaurado (TRUE/FALSE)",
+    "warm_mapping": "restorationStatus:RestorationStatusCodeList"
+  },
+  {
+    "source_field": "rest_type",
+    "description": "tipo de restauración",
+    "warm_mapping": "restorationType:RestorationTypeCodeList"
+  },
+  {
+    "source_field": "linked_fac",
+    "description": "instalaciones asociadas",
+    "warm_mapping": "id (de la instalación)"
+  },
+  {
+    "source_field": "site_context",
+    "description": "encaje, contexto o emplazamiento de la escombrera o balsa",
+    "warm_mapping": "geomorphologicalSetting:geomorphologicalSettingCodeList"
+  },
+  {
+    "source_field": "observations",
+    "description": null,
+    "warm_mapping": "aditionalInformation"
+  },
+  {
+    "source_field": "source",
+    "description": "fuente de la información",
+    "warm_mapping": "dataSource:CI_responsibleParty"
+  }
+]

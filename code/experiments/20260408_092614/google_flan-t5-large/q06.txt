@@ -1,0 +1,61 @@
+Question: Summarize the monitoring instrumentation used for the TSF.
+
+Answer:
+The purpose of the instrumentation and monitoring program is to measure and record key performance indicators including displacements, pore pressures, and se epage flows during: (a) construction. Based on construction observations, CQC/CQA records, survey records and observed performance during dam raises construction
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 232 chunk 6 (score=0.8740)
+hemical monitoring has been defined 
+for the TSF. Geotechnical controls include piezometers,  settlement plates, inclinometers, and topographic 
+landmarks. Geochemical controls include flow measurements, groundwater monitoring, as well as surface 
+water monitoring and analysis to determine potential acid rock drainage.
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 250 chunk 5 (score=0.8549)
+in Attachment  I 
+(Table I-4 to Table I-8) 
+• Instrumentation monitoring frequency to be updated based 
+on construction/operating conditions and observed 
+behavior of each instrument.
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 240 chunk 5 (score=0.8531)
+and Monitoring 
+Routine dam safety inspections to monitor dam performance during operations and construction are carried 
+out. 
+Installed instrumentation includes vibrating wire piezometers (VWP); inclinomet ers; settlement plates; 
+accelerograph; surface survey monuments and survey rods and seepage weirs.  
+The purpose of the instrumentation and monitoring program is to measure and record key performance 
+indicators including displacements, pore pressures, and se epage flows during: (a) constr
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 234 chunk 3 (score=0.8445)
+e 
+water management st ructures including a temporary diversion ditch, six cofferdams and an underdrain 
+system below the liner to help manage surface water, groundwater and seepage during construction.  
+Based on construction observations, CQC/CQA records, survey records and observed performance during 
+dam raises construction, it is KCB’s opinion that the TSF in its current condition meets the design intent for 
+the facility and the structure is stable.  
+Based on tailings production estimates
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 250 chunk 3 (score=0.8443)
+vel 
+• Tailings beach surveying and pond monthly bathymetry. 
+• Daily pond levels recording, tailings volume tracking and 
+comparison with the stage storage curve. 
+• Flow rates monitoring 
+• Seepage mapping and recording of flow rates (weirs), 
+turbidity, and locations. 
+• Instrumentation installed 
+• Standpipe piezometer and piezometers within the dam and 
+foundation. 
+• Vibrating Wire Piezometers 
+• Settlement Plates 
+• Two in- place Inclinometers with settlement gauges to 
+evaluate foundatio
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 236 chunk 4 (score=0.8440)
+at the TSF. From 2009 to 2015 
+the investigations focused on evaluating deeper foundation conditions within th e dam footprint and the 
+surficial soil distribution within the basin. In 2016-2017, the investigations were focused along the upstream 
+cut-off trench alignment and to obtain preliminary hydrogeological information from the impoundment basin. 
+The 2018 site investigation focused on surficial geological mapping, sample collection for advance testing 
+to characterize the foundation, inf
+------------------------------------------------------------

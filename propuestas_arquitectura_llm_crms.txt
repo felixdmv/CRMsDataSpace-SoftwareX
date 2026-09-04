@@ -1,0 +1,59 @@
+====================================================================
+PROPUESTA DE ARQUITECTURA Y PRÁCTICAS PARA EL PROYECTO CRMSDATASPACE
+====================================================================
+Contexto: Integración de LLMs (orquestación, generación de queries, RAG sobre Apache Solr y estructuración de respuestas JSON) en entornos de materias primas críticas (CRM).
+
+Este documento resume las ideas clave y mejores prácticas de diseño para asegurar robustez, evitar alucinaciones y garantizar el tipado estricto en la respuesta del modelo.
+
+--------------------------------------------------------------------
+1. EL LLM COMO ORQUESTADOR Y GENERADOR DE QUERIES (Intent Classification)
+--------------------------------------------------------------------
+Dado que el LLM procesará la query del usuario para interactuar con Apache Solr y otras APIs, debe actuar como un agente determinista en su traducción.
+
+* El Reto: Los LLMs tienden a inventar campos, operadores lógicos o parámetros que no existen en el esquema de Solr (alucinación de API).
+* Solución por Prompting (Few-Shot): Definir un esquema estrictamente cerrado en el system prompt. Proporcionar de 3 a 5 ejemplos reales de mapeo (Query de Usuario -> Parámetros de Solr/JSON).
+* Ejemplo de Estructura en el System Prompt:
+  "Tu única tarea es traducir la query del usuario a un objeto JSON estructurado para Apache Solr. 
+  Campos permitidos: ['material', 'country', 'supply_risk', 'year'].
+  No utilices ningún campo fuera de esta lista."
+
+--------------------------------------------------------------------
+2. OPTIMIZACIÓN DEL RAG CON APACHE SOLR
+--------------------------------------------------------------------
+En materias críticas, la precisión de la recuperación (Retrieval) define la calidad de la respuesta. No basta con coincidencia exacta de palabras clave.
+
+* Búsqueda Híbrida: Si la infraestructura lo permite, combinar la potencia de búsqueda léxica tradicional (BM25/TF-IDF de Solr) con embeddings vectoriales (búsqueda semántica). Esto permite mapear conceptos complejos (ej. buscar "Cobalto" y recuperar documentos clave sobre "baterías de ión de litio" o "concesiones mineras en el Congo").
+* Curación de Contexto (Reranking): Evitar pasar "ruido" al LLM. Implementar un paso de ordenación o filtrado previo para enviar solo los fragmentos con mayor densidad de información útil, maximizando el uso de la ventana de contexto.
+
+--------------------------------------------------------------------
+3. RESPUESTAS ESTRUCTURADAS: GARANTÍA DE FORMATO JSON (JSON Mode)
+--------------------------------------------------------------------
+Para que el pipeline de vuestra aplicación procese la salida del LLM de forma automática y la pinte en la interfaz de usuario, el JSON de salida no puede fallar.
+
+* Forzado por API (JSON Mode): En lugar de confiar solo en que el LLM haga caso al prompt, utilizar la configuración nativa de la API (por ejemplo, en Gemini utilizando 'response_mime_type: "application/json"').
+* Esquema de Respuesta (Schema Enforcement): Definir el esquema esperado usando JSON Schema o Pydantic directamente en la llamada de la API (a través del parámetro 'response_schema'). Esto obliga al modelo a nivel de decodificación de tokens a generar un JSON estructuralmente válido y ajustado al esquema.
+
+--------------------------------------------------------------------
+4. ROBUSTEZ Y SEGURIDAD (Mitigación de Alucinaciones en Materias Críticas)
+--------------------------------------------------------------------
+El espacio de datos de materias primas críticas de la UE no puede permitirse datos falsificados.
+
+* Restricción Estricta (Strict Context Grounding): El prompt del sistema para la síntesis de respuesta debe anular el conocimiento interno del modelo si el dato no está en el RAG.
+  Prompt sugerido: 
+  "Responde única y exclusivamente utilizando la información proporcionada en el contexto de Solr. Si la respuesta no se puede deducir de los datos provistos, responde con: {"error": "Información no disponible en el espacio de datos"}. Está terminantemente prohibido utilizar conocimiento externo o asumir datos."
+* Trazabilidad y Citas: Diseñar el JSON de salida para que obligatoriamente contenga un nodo de referencias.
+  Ejemplo de Schema de salida:
+  {
+    "respuesta": "El litio tiene un riesgo de suministro de...",
+    "fuentes": [
+      {
+        "doc_id": "EUR-LEX-32024R1252",
+        "seccion": "Anexo II",
+        "score_confianza": 0.95
+      }
+    ]
+  }
+
+====================================================================
+Documento generado para el proyecto cRMsDataSpace.
+====================================================================

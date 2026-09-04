@@ -1,0 +1,30 @@
+\section{Motivation and significance}
+\label{sec:MotivationAndSignificance}
+The rapid expansion of the Internet of Things (IoT) has resulted in a vast number of interconnected devices projected to reach approximately 40 billion worldwide by 2030~\cite{number_connected_iot_devices}. This unprecedented growth has generated highly heterogeneous network traffic and has created an increasingly complex and distributed communication ecosystem. This massive expansion has significantly increased both data generation and the potential attack surface, making IoT networks particularly vulnerable to a variety of cyber threats~\cite{iot_security_analysis}. According to Forescout’s Riskiest Connected Devices of the 2025 report, routers alone account for more than 50\% of devices with critical vulnerabilities, surpassing computers and wireless access points~\cite{forescout_2025_riskiest}. These findings underline the increasing exposure of IoT infrastructure to cyberattacks that target the network layer.
+
+Despite the abundance of research on Intrusion Detection Systems (IDS)~\cite{intrusion_detection_systems, survey_IDS}, there is still a lack of flexible, open-source simulation environments that allow researchers to reproduce IoT network scenarios and evaluate machine learning models under realistic, controlled conditions~\cite{challenges_iot_simulators}. The IoT-Sim was developed to address this gap by providing a platform where users can design network topologies, generate traffic, and simulate cyberattacks while integrating artificial intelligence models for anomaly detection.
+
+The simulator contributes to scientific discovery by enabling reproducible experiments in complex IoT environments and providing a benchmark platform for evaluating and comparing different machine learning algorithms, hyperparameters, and detection strategies. Users can interact with the simulator through a graphical interface, allowing them to configure IoT topologies, generate realistic network traffic, inject attacks such as Denial of Service, and evaluate models on the simulated data.
+
+The simulator is designed to provide a comprehensive environment for IoT network research. Unlike network simulators such as NEMO~\cite{nemo}, NS-3~\cite{ns3} or CORE~\cite{core} (compared in Table~\ref{tab:comparison}), which focus primarily on detailed network modeling and offer limited integration with machine learning for cybersecurity, this simulator enables users to evaluate a wide range of artificial intelligence algorithms and models on the generated traffic. Integrating IoT network simulation, attack modeling, and machine learning evaluation within a single reproducible framework offers a complete platform for studying, benchmarking, and improving intrusion detection strategies in IoT networks.
+
+\begin{table}[h!]
+    \centering
+    \caption{Comparison of IoT-Sim with existing network simulation tools.}
+    \label{tab:comparison}
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{lccccc}
+            \hline
+            \textbf{Feature} & \textbf{IoT-Sim (Proposed)} & \textbf{NEMO~\cite{nemo}} & \textbf{NS-3~\cite{ns3}} & \textbf{CORE~\cite{core}} \\
+            \hline
+            \textbf{Architecture} & Client-side Web (Angular) & Emulator (Java) & Discrete Event (C++/Python) & Emulator (Linux Namespaces) \\
+            \textbf{Prerequisites} & Modern Web Browser & Java VM (JRE 1.8+) & Compiler Toolchain & Linux Kernel \\
+            \textbf{Setup Complexity} & None (Zero-install) & Low & High & Medium \\
+            \textbf{AI/ML Integration} & Native (TensorFlow.js) & Manual & External (Modules) & External \\
+            \textbf{User Interface} & Interactive GUI & CLI & Scripts (C++) \& NetAnim & GUI/CLI \\
+            \textbf{Target Audience} & Education \& Prototyping & Scalable Emulation & Protocol Development & Network Ops \& Testing \\
+            \textbf{Scalability} & Medium (Browser-bound) & High & High & Medium \\
+            \hline
+        \end{tabular}
+    }
+\end{table}

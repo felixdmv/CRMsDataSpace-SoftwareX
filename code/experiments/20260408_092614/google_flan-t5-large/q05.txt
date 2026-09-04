@@ -1,0 +1,61 @@
+Question: According to 2023LUGTechnicalReport.pdf, what is the operating philosophy for the TSF?
+
+Answer:
+cyanide destruction process prior to discharge to 1 ppm. 1.7 Tailings Technology Conventional un-thickened tailings (e.g., cyanidation destruction process) are used for tailing processing at the Aurelian mine. [1]
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 4 (score=0.8541)
+............... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ................................................ 20-11 
+20.4.7 Stage Construction and TSF Current Condition ........................................... 20-11 
+20.4.8 Instrumentation and Monitoring .................................................................... 20-11 
+20.4.9 Operating Philosophy .................................................................................... 20-12 
+20.4.10 Design Basis .............
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 255 chunk 1 (score=0.8297)
+and electrical.  
+TSF capital costs relate to TSF raises and maintenance of the TSF. 
+Process plant capital costs are mainly related to regular process and equipment reliability improvements . 
+Studies and engineering will commence in 2023 to debottleneck the process plant to reliably achieve 
+4,400 tpd. No flowsheet changes nor significant process plant upgrades are expected due to the treatment 
+of ore from the south zone of the mine. 
+Site and warehouse capital costs include general costs for
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 28 chunk 9 (score=0.8259)
+Table 17.1: Process Plant Performance Summary (2020-2022) ............................................................. 17-1 
+Table 20.1: Summary of Peak Ground Accelerations .............................................................................. 20-7 
+Table 20.2: TSF Key Design Basis ........................................................................................................ 20-12 
+Table 21.1: Summary of Life of Mine Capital Costs (USD M) Excluding Taxes  ..................
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 241 chunk 4 (score=0.8244)
+ion issued by Aurelian). TSF 
+began operation on September 28, 2019 
+1.6 Metallurgical Process Gravity, Flotation and Leach (GFL). Treated with cyanide 
+destruction process prior to discharge to 1 ppm. 
+1.7 Tailings Technology Conventional un-thickened tailings (e.g., slurry)
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 13 chunk 6 (score=0.8233)
+aste plant and TSF. 
+8) As of the effective date of the Technical Report, to the best of my knowledge, information and belief, the 
+sections and sub -sections of the Technical Report listed in item 6 above contain all scientific and technical 
+information that is required to be disclosed to make these sections and sub-sections of the Technical Report 
+not misleading. 
+9) I have read NI 43-101 and believe that the sections and sub-sections of the Technical Report listed in item 6 
+above have been
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 246 chunk 0 (score=0.8226)
+NI 43-101 Technical Report  
+  Fruta del Norte Mine, Ecuador 
+ 
+Section 20 March 2023 Page 20-17 
+Item Design Basic 
+5.2 Storage Requirements 
+The TSF is a “Zero Discharge” system during operation and is 
+designed for next storage requirements: 
+• Tailings (see Attachment I, Table I-1) 
+• Sludge (see Item 4.2) 
+• Operating decant pond of 250,000 m3. Minimum 2 m depth 
+based on draught requirements of the reclaim barge. 
+Volume to be confirmed in deposition model for Stage 3 
+and Stage 4 Dam R
+------------------------------------------------------------

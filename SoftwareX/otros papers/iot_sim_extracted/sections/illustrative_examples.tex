@@ -1,0 +1,63 @@
+% \textit{Provide at least one illustrative example to demonstrate the major functions of your software/code.}
+% \textit{\textbf{Optional}: you may include one explanatory  video or screencast that will appear next to your article, in the right hand side panel. Please upload any video as a single supplementary file with your article. Only one MP4 formatted, with 150MB maximum size, video is possible per article. Recommended video dimensions are 640 x 480 at a maximum of 30 frames / second. Prior to submission please test and validate your .mp4 file at  \url{http://elsevier-apps.sciverse.com/GadgetVideoPodcastPlayerWeb/verification} . This tool will display your video exactly in the same way as it will appear on ScienceDirect. }
+
+\section{Illustrative examples}
+\label{sec:IllustrativeExamples}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{iot_simulator.jpg}
+    \caption{The IoT-Sim showing the detection of a network attack. The graphical user interface components are highlighted with different colors and labeled A–D. Descriptions of these components are provided in the text.}
+    \label{fig:general_view}
+\end{figure}
+
+Figure~\ref{fig:general_view} shows a screenshot of the general view of the IoT-Sim running a Denial of Service (DoS) attack~\cite{dos_ddos_attack} on a simple network composed of four nodes and one router.
+
+The simulator window is divided into several areas. The main area, \sethlcolor{orange}\hl{(B)}, is a canvas in which objects can be added to design the network topology. The topology comprises two types of elements:
+
+\begin{itemize}
+    \item \textbf{Nodes:} Shown in the figure as \textcolor{white}{\sethlcolor{blue}\hl{(C)}}, nodes are the primary elements of the network architecture. Nodes can be of different types, depending on their functions:
+    \begin{itemize}
+        \item \textbf{Router \textcolor{white}{\sethlcolor{blue}\hl{(C.1)}}:} The network's core component; this device enables communication between other nodes.
+        \item \textbf{IoT device \textcolor{white}{\sethlcolor{blue}\hl{(C.2)}}:} Typical network endpoints that may be targeted by attacks.
+        \item \textbf{Computer \textcolor{white}{\sethlcolor{blue}\hl{(C.3)}}:} Devices that can launch attacks against other nodes.
+    \end{itemize}
+    \item \textbf{Connections:} Connect a node to the router, enabling communication with all networks. The connection allows the analysis of all network traffic passing through it. When a detection model is active on the connection, a colored circle indicates the model's status, as shown in the figure as \sethlcolor{green}\hl{(D)}. The status can be one of the following: processing data (blue), attack detected (red), or normal traffic (green).
+\end{itemize}
+
+The application menu \textcolor{white}{\sethlcolor{red}\hl{(A)}} allows users to control all main configurations of the simulator. It provides options for opening existing projects, saving the current one, loading custom libraries containing commands and attacks, and importing detection models. In addition, it enables users to undo modifications, insert new nodes, and adjust visual settings to improve the accessibility and usability of the simulation environment.
+
+In addition to the main view, the IoT-Sim provides several complementary views that allow users to interact with specific network components and configure the simulation parameters in detail. 
+Figures~\ref{fig:node_network_traffic},~\ref{fig:node_phantom_attacker},~\ref{fig:node_configuration}, and~\ref{fig:connection_configuration} illustrates these additional views, which are displayed when a user clicks on a specific node or connection.
+
+\begin{itemize}
+    \item \textbf{Node traffic and command panel (Fig.~\ref{fig:node_network_traffic}):} Shows the incoming and outgoing traffic of a selected node. It also provides a section for executing custom commands imported by the user, thereby enabling the generation of simulated benign traffic. This unified view simplifies the verification process, allowing users to instantly confirm that injected commands are generating the expected traffic patterns.
+    \item \textbf{Attack configuration panel (Fig.~\ref{fig:node_phantom_attacker}):} Enables the setup and customization of simulated attacks. Users can select the attack type, configure their parameters, and assign target devices within the network. By presenting complex scripts through a simple interface, the tool lowers the technical barrier for security testing and facilitates rapid experimentation with different attack scenarios.
+    \item \textbf{Node settings panel (Fig.~\ref{fig:node_configuration}):} Provides options for modifying the properties of individual nodes, such as the IP address, name, and type. This panel facilitates quick adjustments to the network topology, allowing researchers to agilely prototype and dynamically adjust node roles without resetting the entire simulation environment.
+    \item \textbf{Connection and detection model panel (Fig.~\ref{fig:connection_configuration}):} Displays detailed information regarding the connections between nodes and routers. It also allows users to attach and manage detection models associated with each connection and visualize their operational status. This mechanism simplifies model deployment, providing immediate visual feedback that helps users interpret detection performance and sensitivity in real time.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{node_network_traffic.jpeg}
+    \caption{Node traffic and command panel.}
+    \label{fig:node_network_traffic}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{node_phantom_attacker.jpeg}
+    \caption{Attack configuration panel.}
+    \label{fig:node_phantom_attacker}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{node_configuration.jpeg}
+    \caption{Node settings panel.}
+    \label{fig:node_configuration}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{connection.jpeg}
+    \caption{Connection and detection model panel.}
+    \label{fig:connection_configuration}
+\end{figure}

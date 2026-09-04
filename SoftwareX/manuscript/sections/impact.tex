@@ -1,0 +1,67 @@
+\section{Impact}
+\label{sec:Impact}
+
+The proposed NLU-Solr-GIS architecture provides a reusable, open-source software pattern for democratizing access to complex geospatial data spaces. Reviewers and research practitioners evaluate research software based on its ability to unlock new scientific inquiries, accelerate existing workflows, and offer widespread reusability across disciplines~\cite{softwarex2015}.
+
+\subsection{Domain-Agnostic Architectural Reusability and Cross-Domain Generalization}
+\label{subsec:CrossDomain}
+
+A fundamental design goal of this software is architectural modularity and domain independence. The clean functional decoupling between the conversational intent parser, the pluggable normalization thesaurus, the Solr spatial filter generator, and the Leaflet GIS interface allows developers to adapt the architecture to diverse geospatial disciplines with minimal configuration overhead.
+
+To illustrate how effortlessly the software transfers to an alternate domain, consider an application in **Cadastral Management and Urban Planning**. In this setting, an urban planner seeks available land for solar farms or municipal infrastructure with the query:
+\begin{quote}
+\textit{``Muestra parcelas rústicas de más de 5 hectáreas en la provincia de Burgos no protegidas''} \\
+\small(\textit{``Show unbuilt rustic parcels over 5 hectares in Burgos province that are not environmentally protected''})
+\end{quote}
+
+Adopting our architecture for this cadastral use case requires modifying only two declarative files without altering the core pipeline, LLM orchestration, or cartographic synchronization:
+\begin{enumerate}
+    \item \textbf{OpenAPI Schema Extension}: Replacing mineral attributes with cadastral slots:
+    \begin{verbatim}
+    "properties": {
+      "parcel_type": {"type": "ARRAY", "items": {"type": "STRING", 
+                      "enum": ["rustico", "urbano", "industrial"]}},
+      "min_surface_ha": {"type": "NUMBER"},
+      "provinces": {"type": "ARRAY", "items": {"type": "STRING"}},
+      "protected_area": {"type": "BOOLEAN"}
+    }
+    \end{verbatim}
+    \item \textbf{Solr Parameter Mapping}: Binding slots to the cadastral index:
+    \begin{verbatim}
+    fq=cadastral_type_s:("rustico")
+    fq=surface_ha_d:[5.0 TO *]
+    fq=province_canonical_s:("burgos")
+    fq=environmental_protection_b:false
+    \end{verbatim}
+\end{enumerate}
+The remaining components—greedy schema-enforced decoding, reactive filter badges, dynamic bounding box auto-framing, and pulsing SVG site markers—function immediately out of the box. Identical adaptation applies to **Environmental Protection and Disaster Response** (tracking wildfire perimeters and flood hazard zones) or **Renewable Energy Infrastructure** (identifying land parcels based on slope, solar irradiance, and distance to power grids).
+
+\subsection{Accelerating Research in Critical Raw Materials and Circular Economy}
+\label{subsec:CRMImpact}
+
+While domain-agnostic, the architecture's deployment as the core interface of the European project \textbf{CRMsDataSpace} demonstrates tangible impact in an urgent, high-stakes application: the valorisation of historical mining waste under the European Critical Raw Materials Act (Regulation EU 2024/1252)~\cite{european2024crma} and the European Green Deal.
+
+Prior to this software, researchers and policymakers investigating secondary raw material recovery were constrained by fragmented regional databases and opaque spreadsheets. By unifying conversational NLU with Apache Solr spatial indexing, the software enables researchers to pursue novel domain research questions:
+\begin{itemize}
+    \item \textit{Which unrestored tailings facilities in Southern Europe exhibit high concentrations of cobalt or lithium in close proximity to industrial transport corridors?}
+    \item \textit{How are closed extractive waste facilities distributed relative to regional environmental protection zones across national borders?}
+\end{itemize}
+The integration of grounded RAG ensures that technical documentation regarding dam stability, geochemical assays, and UNFC classifications is retrieved with full provenance, supporting reproducible environmental and economic feasibility assessments~\cite{vidal2017environmental, crirscomining}.
+
+\subsection{Transformation of User Workflow and Cognitive Load Reduction}
+\label{subsec:WorkflowTransformation}
+
+In traditional GIS data portals, executing a multi-criteria spatial filter (e.g., selecting multiple jurisdictions, mineral commodities, facility categories, and unrestored status) requires interacting with 15 to 20 nested checkboxes, dropdown lists, and modal dialogue boxes. Furthermore, spatial queries requiring Boolean negations or non-standard mineral synonyms frequently yield zero results due to rigid keyword matching.
+
+The proposed architecture transforms this daily practice into a single natural language interaction. A free-text query executes in under two seconds. The immediate cartographic feedback—rendering active filter badges and lighting up matching sites with glowing animated pulses while dimming non-relevant markers—allows domain researchers to instantly verify spatial patterns and validate query interpretations without tedious trial-and-error.
+
+\subsection{Open Science, Transparency, and Zero-Setup Reproducibility}
+\label{subsec:OpenScience}
+
+A recurring barrier in AI-assisted software publication is the dependency on paid commercial cloud APIs, complex container orchestration, and proprietary database clusters. This software directly overcomes this reproducibility barrier by providing:
+\begin{itemize}
+    \item A fully functional \textbf{Standalone Mock Mode} that executes the complete NLU parsing, Solr query construction, and Leaflet visual synchronization using standard Python 3.9+ with zero third-party package dependencies.
+    \item A realistic synthetic European CRM dataset comprising 100 georeferenced extractive waste facilities across 12 European countries and 12 strategic raw materials.
+    \item Full open-source release under the permissive MIT License in a publicly accessible GitHub repository, accompanied by extensive documentation.
+\end{itemize}
+This ensures that peer reviewers, academic researchers, and students can clone the repository and evaluate the entire software pipeline with a single command (\texttt{python run\_app.py}) in under 30 seconds.

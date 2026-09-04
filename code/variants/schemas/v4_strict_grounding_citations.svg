@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 550" width="100%" height="100%">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.08"/>
+    </filter>
+    <pattern id="dotGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#CBD5E1" />
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#dotGrid)" />
+  <text x="30" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#0F172A">VARIANTE 4: STRICT CONTEXT GROUNDING & CITATIONS</text>
+  <!-- Node: 1. User Query -->
+  <g filter="url(#shadow)">
+    <rect x="80" y="100" width="220" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#475569" stroke-width="2" />
+    <path d="M 90 100 L 290 100 A 10 10 0 0 1 300 110 L 300 132 L 80 132 L 80 110 A 10 10 0 0 1 90 100 Z" fill="#64748B" />
+    <text x="92" y="121" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">1. User Query</text>
+    <rect x="224.2" y="106" width="67.80000000000001" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="230.2" y="118" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">NL String</text>
+    <text x="92" y="154" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">NL Query Input</text>
+    <text x="92" y="172" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• e.g. 'Balsas de cobalto en Asturias'</text>
+    <text x="92" y="187" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Solicita informacion factica del CRM</text>
+  </g>
+  <!-- Node: 2. NLU Parser -->
+  <g filter="url(#shadow)">
+    <rect x="350" y="100" width="220" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#3730A3" stroke-width="2" />
+    <path d="M 360 100 L 560 100 A 10 10 0 0 1 570 110 L 570 132 L 350 132 L 350 110 A 10 10 0 0 1 360 100 Z" fill="#4F46E5" />
+    <text x="362" y="121" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">2. NLU Parser</text>
+    <rect x="488.0" y="106" width="74.0" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="494.0" y="118" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">LLM Parser</text>
+    <text x="362" y="154" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Intent & Filter Extraction</text>
+    <text x="362" y="172" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Detecta intencion de busqueda</text>
+    <text x="362" y="187" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Aisla filtros del CRM</text>
+  </g>
+  <!-- Node: 3. Solr Database Query -->
+  <g filter="url(#shadow)">
+    <rect x="620" y="100" width="220" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#065F46" stroke-width="2" />
+    <path d="M 630 100 L 830 100 A 10 10 0 0 1 840 110 L 840 132 L 620 132 L 620 110 A 10 10 0 0 1 630 100 Z" fill="#059669" />
+    <text x="632" y="121" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">3. Solr Database Query</text>
+    <rect x="751.8" y="106" width="80.2" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="757.8" y="118" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">Apache Solr</text>
+    <text x="632" y="154" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Context Retrieval</text>
+    <text x="632" y="172" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Ejecuta filtros en la BD Solr</text>
+    <text x="632" y="187" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Retorna total de registros encontrados</text>
+  </g>
+  <!-- Node: 4. Early Exit Guard -->
+  <g filter="url(#shadow)">
+    <rect x="890" y="100" width="220" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#991B1B" stroke-width="2" />
+    <path d="M 900 100 L 1100 100 A 10 10 0 0 1 1110 110 L 1110 132 L 890 132 L 890 110 A 10 10 0 0 1 900 100 Z" fill="#DC2626" />
+    <text x="902" y="121" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">4. Early Exit Guard</text>
+    <rect x="1015.6" y="106" width="86.4" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="1021.6" y="118" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">Python Logic</text>
+    <text x="902" y="154" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Hallucination Prevention</text>
+    <text x="902" y="172" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Chequea cantidad de resultados</text>
+    <text x="902" y="187" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Si N=0: frena la ejecucion</text>
+    <text x="902" y="202" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Bypassea llamada al LLM</text>
+  </g>
+  <!-- Node: 5. Grounded NLG Synthesizer -->
+  <g filter="url(#shadow)">
+    <rect x="890" y="340" width="220" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#3730A3" stroke-width="2" />
+    <path d="M 900 340 L 1100 340 A 10 10 0 0 1 1110 350 L 1110 372 L 890 372 L 890 350 A 10 10 0 0 1 900 340 Z" fill="#4F46E5" />
+    <text x="902" y="361" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">5. Grounded NLG Synthesizer</text>
+    <rect x="1015.6" y="346" width="86.4" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="1021.6" y="358" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">LLM Grounded</text>
+    <text x="902" y="394" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Zero-Knowledge Synthesis</text>
+    <text x="902" y="412" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Prohibido usar conocimiento externo</text>
+    <text x="902" y="427" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Fuerza JSON con citas exactas</text>
+    <text x="902" y="442" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Campos: respuesta, fuentes (id, seccion)</text>
+  </g>
+  <!-- Node: 6. Final Output -->
+  <g filter="url(#shadow)">
+    <rect x="500" y="340" width="260" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#475569" stroke-width="2" />
+    <path d="M 510 340 L 750 340 A 10 10 0 0 1 760 350 L 760 372 L 500 372 L 500 350 A 10 10 0 0 1 510 340 Z" fill="#64748B" />
+    <text x="512" y="361" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">6. Final Output</text>
+    <rect x="696.6" y="346" width="55.4" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="702.6" y="358" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">Chat UI</text>
+    <text x="512" y="394" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Traceable Response</text>
+    <text x="512" y="412" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Muestra texto redactado</text>
+    <text x="512" y="427" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Pinta citas estructuradas en UI</text>
+    <text x="512" y="442" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• O devuelve error estandar ('Sin Datos')</text>
+  </g>
+  <line x1="300" y1="155" x2="350" y2="155" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 350 155 L 341.33974596215563 160.0 L 341.33974596215563 150.0 Z" fill="#94A3B8" />
+  <text x="325.0" y="150.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">Raw Text</text>
+  <line x1="570" y1="155" x2="620" y2="155" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 620 155 L 611.3397459621556 160.0 L 611.3397459621556 150.0 Z" fill="#94A3B8" />
+  <text x="595.0" y="150.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">Solr Params</text>
+  <line x1="840" y1="155" x2="890" y2="155" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 890 155 L 881.3397459621556 160.0 L 881.3397459621556 150.0 Z" fill="#94A3B8" />
+  <text x="865.0" y="150.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">Query Results JSON</text>
+  <line x1="1000" y1="210" x2="1000" y2="340" stroke="#059669" stroke-width="2" />
+  <path d="M 1000 340 L 995.0 331.33974596215563 L 1005.0 331.33974596215563 Z" fill="#059669" />
+  <text x="1000.0" y="270.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">If Results > 0</text>
+  <path d="M 890 155 Q 825.0 207.5 760 360" fill="none" stroke="#DC2626" stroke-width="2" />
+  <path d="M 760 360 L 758.8556032906998 350.0656980027914 L 768.031159543799 354.0417723791344 Z" fill="#DC2626" />
+  <text x="825.0" y="227.5" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">If 0 Results: Direct Error JSON</text>
+  <line x1="890" y1="395" x2="760" y2="395" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 760 395 L 768.6602540378444 390.0 L 768.6602540378444 400.0 Z" fill="#94A3B8" />
+  <text x="825.0" y="390.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">Grounded JSON Response</text>
+</svg>

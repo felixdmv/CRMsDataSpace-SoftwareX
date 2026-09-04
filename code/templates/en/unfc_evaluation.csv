@@ -1,0 +1,21 @@
+field,format,allowed_values_or_example,notes
+row_type,text,EXAMPLE|EXPERTS,Marks sample rows and the first row to complete.
+pdf_name,text,Same value as in report_register,Use exactly the same name.
+source_name,text,Same value as in report_register,Use exactly the same name.
+unfc_code_final,text,E1;F2;G3,Final code for the asset as a whole.
+e_category_final,text,E1|E2|E3|E4|unknown,Final E axis category.
+f_category_final,text,F1|F2|F3|F4|unknown,Final F axis category.
+g_category_final,text,G1|G2|G3|G4|unknown,Final G axis category.
+quantity_basis_code,numeric code,1=contained metal or contained useful substance|2=saleable or recoverable product|3=gross material tonnage|4=other basis defined by expert,Explains what the quantity fields represent.
+measured_quantity,number,15700,Measured quantity in the basis indicated by the code.
+indicated_quantity,number,25500,Indicated quantity in the basis indicated by the code.
+inferred_quantity,number,16000,Inferred quantity in the basis indicated by the code.
+unit,text,t|kt|Mt|oz|kg,Use a single unit per row.
+key_pages,text,"1-3,45-60",Pages supporting the classification.
+expert_rationale,text,Short explanation,Summary of why this final classification was chosen.
+""
+row_type,pdf_name,source_name,unfc_code_final,e_category_final,f_category_final,g_category_final,quantity_basis_code,measured_quantity,indicated_quantity,inferred_quantity,unit,key_pages,expert_rationale
+EXAMPLE,DMET_-_240523_Aguablanca_Technical_Report_PFS_Final.pdf,Aguablanca,E1;F2;G2,E1,F2,G2,1,15700,25500,16000,t,"1-3,45-60",Complete invented classification for the project as a whole.
+EXAMPLE,1._Cobre_Las_Cruces_Technical_Report_Feb_2024_FINAL.pdf,Cobre Las Cruces PMS / PMR,E1;F1;G2,E1,F1,G2,2,35000,42000,14000,t,"15-17,80-110",Complete invented classification for the material set as a whole.
+EXAMPLE,070912ElValleTechnicalReport.pdf,El Valle / Carlés / La Brueva / Godán,E1;F2;G1,E1,F2,G1,1,520000,340000,110000,oz,"1-2,56-90",Complete invented classification for the asset as a whole.
+EXPERTS,PDF_NAME_HERE,SOURCE_NAME_HERE,E1;F2;G3,E1,F2,G3,1,MEASURED_QUANTITY_HERE,INDICATED_QUANTITY_HERE,INFERRED_QUANTITY_HERE,UNIT_HERE,PAGES_HERE,RATIONALE_HERE

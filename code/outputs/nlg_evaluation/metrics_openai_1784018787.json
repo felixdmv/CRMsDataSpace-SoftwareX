@@ -1,0 +1,187 @@
+{
+  "provider": "openai",
+  "timestamp": 1784018972.696802,
+  "total_test_cases": 7,
+  "passed_test_cases": 7,
+  "success_rate": 1.0,
+  "average_score": 1.0,
+  "average_time_seconds": 1.18,
+  "results": [
+    {
+      "id": "TC_001",
+      "query": "Dime escombreras de carbón en Asturias",
+      "response_text": "He encontrado 3 escombreras de carbón en Asturias gestionadas por HUNOSA: Arroyo de la Nicolasa (en Mieres, sin restaurar y con surgencias de agua registradas), Aguilar - Pumardongo (también en Mieres, activa pero con depósito abandonado, sin restaurar y con surgencias), y La Casona (en Figaredo, con actividad reciente documentada pero clasificada como abandonada, sin restaurar y con surgencias de agua).",
+      "api_results_count": 3,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo",
+          "La Casona"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "carbón",
+          "asturias",
+          "hunosa"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 1.25
+    },
+    {
+      "id": "TC_002",
+      "query": "Qué escombreras tiene HUNOSA?",
+      "response_text": "HUNOSA gestiona actualmente tres escombreras principales en Asturias: Arroyo de la Nicolasa, Aguilar - Pumardongo y La Casona (Figaredo). Todas ellas se encuentran en el municipio de Mieres, se asocian a la minería del carbón y presentan surgencias de agua en estado sin restaurar.",
+      "api_results_count": 3,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo",
+          "La Casona"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "hunosa"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 1.05
+    },
+    {
+      "id": "TC_003",
+      "query": "Busca el proyecto San Nicolás",
+      "response_text": "El proyecto San Nicolás se refiere a la escombrera Arroyo de la Nicolasa en Mieres, Asturias. Es una escombrera de carbón de la empresa HUNOSA, actualmente en estado abandonado y sin restaurar, con observaciones técnicas de surgencias de agua.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "nicolás"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 0.95
+    },
+    {
+      "id": "TC_004",
+      "query": "Hay escombreras sin restaurar con surgencias de agua?",
+      "response_text": "Sí, existen tres escombreras sin restaurar y con presencia de surgencias de agua registradas en Asturias: Arroyo de la Nicolasa, Aguilar - Pumardongo y La Casona. Las tres están asociadas a la explotación histórica de carbón de HUNOSA.",
+      "api_results_count": 3,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo",
+          "La Casona"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "agua",
+          "surgencia",
+          "restaurar"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 1.35
+    },
+    {
+      "id": "TC_005",
+      "query": "Dime escombreras de cobre en Andalucía",
+      "response_text": "En Andalucía se encuentra el Proyecto Riotinto, que incluye una gran balsa de estériles (tailings storage facility) en Huelva. Este depósito contiene cobre, oro y plata de la actividad minera de Atalaya Mining. Se clasifica como un proyecto activo.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Riotinto Project"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "cobre",
+          "andalucía",
+          "atalaya"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 1.15
+    },
+    {
+      "id": "TC_006",
+      "query": "Busca escombreras de wolframio en Castilla y León",
+      "response_text": "En Castilla y León destaca la escombrera de Los Santos en Salamanca. Contiene wolframio (tungsteno) de la actividad de Almonty Industries. Actualmente se encuentra en estado de mantenimiento y cuidado, estudiándose el reprocesamiento de sus estériles.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Los Santos"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "wolframio",
+          "tungsteno",
+          "salamanca"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 1.2
+    },
+    {
+      "id": "TC_007",
+      "query": "Hay proyectos de litio en Extremadura?",
+      "response_text": "Sí, en Extremadura destaca el proyecto San José Valdeflórez cerca de Cáceres. Se trata de un gran depósito de litio en fase de desarrollo con almacenamiento subterráneo de relaves, gestionado por Infinity Lithium.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "San José Valdeflórez"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "litio",
+          "cáceres"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 1.3
+    }
+  ]
+}

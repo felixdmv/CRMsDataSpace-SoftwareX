@@ -1,0 +1,49 @@
+Question: List all waste materials placed into the TSF and short descriptions.
+
+Answer:
+Technical Report listed in item 6 above contain all scientific and technical information that is required to be disclosed to make these sections and sub -sections of the Technical Report not misleading. 9) I have read NI 43-101 and believe that the sections and subsections of this Technical Report are not misleading
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 4 (score=0.8545)
+............... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ................................................ 20-11 
+20.4.7 Stage Construction and TSF Current Condition ........................................... 20-11 
+20.4.8 Instrumentation and Monitoring .................................................................... 20-11 
+20.4.9 Operating Philosophy .................................................................................... 20-12 
+20.4.10 Design Basis .............
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 27 chunk 10 (score=0.8346)
+................................ 13-5 
+Table 13.6: Summary Metallurgical Programs ......................................................................................... 13-9 
+Table 14.1: Summary of Mineral Resource – December 31, 2022 .......................................................... 14-1 
+Table 14.2: Descriptive Statistics of Resource Assay Values - Au .......................................................... 14-8 
+Table 14.3: Descriptive Statistics of Resource Assay Values - Ag ..
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 3 (score=0.8338)
+......................................... 20-5 
+20.4.3 Tailings Characteristics ................................................................................... 20-8 
+20.4.4 Design ............................................................................................................. 20-9 
+20.4.5 Storage Capacity ........................................................................................... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ...........................
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 13 chunk 6 (score=0.8256)
+aste plant and TSF. 
+8) As of the effective date of the Technical Report, to the best of my knowledge, information and belief, the 
+sections and sub -sections of the Technical Report listed in item 6 above contain all scientific and technical 
+information that is required to be disclosed to make these sections and sub-sections of the Technical Report 
+not misleading. 
+9) I have read NI 43-101 and believe that the sections and sub-sections of the Technical Report listed in item 6 
+above have been
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 27 chunk 1 (score=0.8239)
+le 2.1: FDN Technical Report Qualified Persons and Areas of Responsibility  .................................... 2-1 
+Table 2.2: Site Visit Dates .......................................................................................................................... 2-2 
+Table 2.3: List of Main Abbreviations ......................................................................................................... 2-4 
+Table 4.1: Metallic Mineral Tenure – AESA Concessions .......................
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 28 chunk 9 (score=0.8179)
+Table 17.1: Process Plant Performance Summary (2020-2022) ............................................................. 17-1 
+Table 20.1: Summary of Peak Ground Accelerations .............................................................................. 20-7 
+Table 20.2: TSF Key Design Basis ........................................................................................................ 20-12 
+Table 21.1: Summary of Life of Mine Capital Costs (USD M) Excluding Taxes  ..................
+------------------------------------------------------------

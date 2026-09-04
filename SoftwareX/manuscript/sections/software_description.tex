@@ -1,0 +1,182 @@
+\section{Software description}
+\label{sec:SoftwareDescription}
+
+The proposed software architecture is engineered as a decoupled, modular system designed to bridge conversational natural language processing, spatial search engine indexing, and interactive web mapping. The design prioritizes strict separation of concerns, defensive programming against LLM hallucinations, and immediate cartographic visual feedback.
+
+\subsection{Software Architecture Overview}
+\label{subsec:SoftwareArchitecture}
+
+The architecture is structured around four decoupled execution stages, as illustrated in the workflow diagram in Figure~\ref{fig:arch}.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.98\textwidth]{architecture_diagram.png}
+\caption{Overall decoupled software pipeline architecture combining conversational NLU intent parsing, query generation, spatial search engine retrieval, and dynamic GIS web map synchronization.}
+\label{fig:arch}
+\end{figure}
+
+The functional workflow operates through four decoupled layers:
+
+\begin{enumerate}
+    \item \textbf{Stage 1: Conversational NLU \& Schema Enforcement}: The user submits a free-text spatial query $Q$ through the web interface. Rather than permitting unconstrained text generation, the query is processed by a dual-variant NLU parser that combines Few-Shot contextual exemplars with a strict OpenAPI JSON Schema evaluated under greedy decoding ($T = 0.0$)~\cite{willard2023outlines, gemini2024}. This contract guarantees that the extracted payload strictly adheres to pre-defined intent types and entity slots, completely eliminating database schema hallucinations (Figure~\ref{fig:comp1}).
+    
+    \begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.90\textwidth]{component1_nlu_schema.png}
+    \caption{Workflow of Stage 1: Conversational NLU Intent Parsing with dual-variant Few-Shot prompting and OpenAPI JSON Schema enforcement.}
+    \label{fig:comp1}
+    \end{figure}
+
+    \item \textbf{Stage 2: Pluggable Domain Normalization \& Search Query Generation}: Extracted entity values frequently contain informal expressions, regional language synonyms, or chemical element symbols. Component~2 routes these values through a pluggable domain thesaurus that normalizes terms into canonical vocabularies aligned with standard reporting taxonomies~\cite{ballatore2014vocabulary}. A schema validator verifies structural integrity before constructing disjunctive and conjunctive Boolean search filter arrays for Apache Solr (Figure~\ref{fig:comp2}).
+
+    \begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.90\textwidth]{component2_query_builder.png}
+    \caption{Workflow of Stage 2: Multilingual Domain Term Normalization, Validation, and Solr Filter Query Generation.}
+    \label{fig:comp2}
+    \end{figure}
+
+    \item \textbf{Stage 3: Spatial Search Engine Indexing \& Vector Evidence Retrieval}: The generated filter queries execute against an Apache Solr spatial core~\cite{solr2020}. Solr evaluates geospatial constraints using spatial indexing fields (such as \texttt{LatLonPointSpatialField} and bounding box filters) and computes live multi-dimensional facet distributions~\cite{solr2020, manning2008information}. In parallel, when the query requests unstructured technical or regulatory evidence, a dense vector index (FAISS)~\cite{johnson2019billion, lewis2020retrieval} performs similarity retrieval over document chunks, applying an information-density reranker to select top-scoring citation snippets (Figure~\ref{fig:comp3}).
+
+    \begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.90\textwidth]{component3_search_rag.png}
+    \caption{Workflow of Stage 3: Dual Spatial Search Engine (Apache Solr) and Technical Document Vector Retrieval (FAISS).}
+    \label{fig:comp3}
+    \end{figure}
+
+    \item \textbf{Stage 4: Dynamic GIS Map & Conversational Web Dashboard}: The client web application, built with Leaflet.js~\cite{leaflet2023} and TailwindCSS, receives the consolidated spatial records, facet statistics, and textual evidence. The interface dynamically renders active filter badges above the map header, updates the site counter indicator, animates matching facility markers with glowing pulse rings, and dims non-matching sites. Furthermore, a bidirectional floating filter widget synchronizes with conversational NLU extractions, enabling users to inspect, select, or refine multi-country criteria (such as Spain and Portugal simultaneously) and multiple commodity tags. Simultaneously, a grounded response synthesizer generates a concise narrative explanation with traceable document citations, while an inspection drawer provides side-by-side auditing of raw JSON payloads and Solr parameters (Figure~\ref{fig:comp4}).
+
+    \begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.90\textwidth]{component4_gis_ui.png}
+    \caption{Workflow of Stage 4: Dynamic GIS Map Synchronization, Grounded Narrative Synthesis, and Inspection Drawer UI.}
+    \label{fig:comp4}
+    \end{figure}
+\end{enumerate}
+
+\subsection{Software Functionalities}
+\label{subsec:SoftwareFunctionalities}
+
+The software architecture delivers the following general-purpose capabilities:
+
+\begin{itemize}
+    \item \textbf{Multi-Criteria Natural Language Filtering}: Users can formulate complex queries combining geographic boundaries, domain commodities/categories, physical facility types, and operational/environmental conditions.
+    \item \textbf{Dynamic GIS Visual Synchronization \& Multi-Select Attribute Widget}: Extracted search criteria are converted into interactive visual badges on the map header and automatically populate a floating multi-selection attribute panel. Users can toggle multiple jurisdictions (e.g., cross-border queries spanning Spain and Portugal) or commodities manually with immediate two-way state synchronization. The map viewport dynamically focuses on the filtered cluster, triggering animated pulsing markers on matching sites while dimming non-matching locations to guide visual exploration.
+    \item \textbf{Zero-Setup Standalone Mock Mode}: For reviewers and educational deployment without paid API subscriptions, the software includes a standalone rule-based NLU engine and a simulated Solr backend populated with 100 georeferenced synthetic sites.
+    \item \textbf{Grounded Evidence and Anti-Hallucination Guard}: If zero records match a spatial query or if requested technical documentation is absent, the system executes an early exit guard returning a standard traceability message (\textit{``Information not available in data space''}), preventing the generation of fabricated values or fictitious coordinates.
+    \item \textbf{Interactive Pipeline Inspection Drawer}: A slide-out developer panel allows researchers and engineers to inspect the exact intermediate JSON artifacts, extracted slots, normalized entities, and executed Solr filter parameters in real time.
+\end{itemize}
+
+\subsection{Query Formalization and Code Snippets Analysis}
+\label{subsec:CodeSnippets}
+
+To guarantee absolute interoperability between conversational NLU and structured search, query transformation is formalized as a deterministic mapping function. Let a user query be denoted by $Q$. The NLU parsing step maps $Q$ into an intent class $I \in \{\text{search}, \text{filter}, \text{hybrid}, \text{generic\_qa}\}$ and an entity slot dictionary $S$:
+\begin{equation}
+    (I, S) = \mathcal{M}_{\text{LLM}}(Q \mid \mathcal{P}_{\text{few-shot}}, \mathcal{S}_{\text{OpenAPI}})
+\end{equation}
+where $\mathcal{S}_{\text{OpenAPI}}$ denotes the strict JSON Schema enforced during decoding. The extracted slots are then normalized through the domain thesaurus $\mathcal{T}$:
+\begin{equation}
+    S_{\text{canonical}} = \mathcal{T}(S) = \{k: [c(v) \mid v \in S[k]] \quad \forall k \in \text{dom}(S)\}
+\end{equation}
+
+Listing~\ref{lst:schema} displays the Python implementation of the strict OpenAPI JSON Schema enforced during LLM inference in the reference case study, illustrating how domain constraints are configured.
+
+\begin{figure}[h!]
+\centering
+\begin{minipage}{0.95\textwidth}
+\begin{verbatim}
+# Listing 1: OpenAPI JSON Schema constraint for NLU parsing
+SEARCH_INTENT_SCHEMA = {
+    "type": "OBJECT",
+    "properties": {
+        "intent": {
+            "type": "STRING",
+            "enum": ["search", "filter", "hybrid", "generic_qa"]
+        },
+        "countries": {"type": "ARRAY", "items": {"type": "STRING"}},
+        "regions": {"type": "ARRAY", "items": {"type": "STRING"}},
+        "commodities": {"type": "ARRAY", "items": {"type": "STRING"}},
+        "storage_facility_types": {
+            "type": "ARRAY", 
+            "items": {"type": "STRING", 
+                      "enum": ["waste_dump", "tailings_pond", "stockpile"]}
+        },
+        "project_status": {
+            "type": "ARRAY", 
+            "items": {"type": "STRING", "enum": ["active", "closed", "historic"]}
+        },
+        "restored": {"type": "BOOLEAN"}
+    },
+    "required": ["intent"]
+}
+\end{verbatim}
+\end{minipage}
+\caption{OpenAPI JSON Schema specification enforced during NLU decoding.}
+\label{lst:schema}
+\end{figure}
+
+Once validated, the normalized slots $S_{\text{canonical}}$ are transformed into an array of Apache Solr filter queries $F_q = \{f_1, f_2, \dots, f_m\}$, where each non-empty attribute array is mapped to a disjunctive constraint joined by Boolean \texttt{OR}, and all active dimensions are combined via Boolean \texttt{AND} (Listing~\ref{lst:querybuilder}).
+
+\begin{figure}[h!]
+\centering
+\begin{minipage}{0.95\textwidth}
+\begin{verbatim}
+# Listing 2: Deterministic Solr filter query constructor
+def build_solr_filter_queries(slots: dict) -> list[str]:
+    fq_list = []
+    field_mapping = {
+        "countries": "country_canonical_s",
+        "commodities": "commodities_ss",
+        "storage_facility_types": "facility_type_s",
+        "project_status": "status_s"
+    }
+    for slot_key, solr_field in field_mapping.items():
+        values = slots.get(slot_key, [])
+        if values:
+            escaped_vals = [f'"{v}"' for v in values]
+            fq_list.append(f"{solr_field}:({' OR '.join(escaped_vals)})")
+    if slots.get("restored") is not None:
+        fq_list.append(f"restored_b:{str(slots['restored']).lower()}")
+    return fq_list
+\end{verbatim}
+\end{minipage}
+\caption{Deterministic Python logic translating normalized slots into Solr filter queries.}
+\label{lst:querybuilder}
+\end{figure}
+
+This parameter mapping completely decouples natural language phrasing from the physical database schema, rendering the software immune to prompt injection attacks or unexpected schema drift.
+
+\subsection{Scalability and Performance Analysis}
+\label{subsec:ScalabilityPerformance}
+
+To assess the operational viability of the architecture across different computational environments, we evaluated the system under two operational modes: (i)~Standalone Local Mock Mode (running entirely within the client and lightweight Python process without external network calls), and (ii)~Live Cloud API Mode (utilizing Google Gemini~1.5 Flash for NLU parsing).
+
+\begin{table}[h!]
+\centering
+\small
+\caption{Latency and computational resource metrics across execution modes evaluated on an Intel Core i7-12700H workstation with 100 georeferenced European sites.}
+\label{tab:performance_metrics}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Execution Mode} & \textbf{NLU Latency} & \textbf{Search Execution} & \textbf{Map Rendering} & \textbf{Total End-to-End} \\
+\hline
+Standalone Mock Mode & 0.8 ms & 1.2 ms & 14.5 ms & \textbf{16.5 ms} \\
+Live Gemini 1.5 Flash & 1,180.0 ms & 1.4 ms & 15.2 ms & \textbf{1,196.6 ms} \\
+Live Gemini 1.5 Pro & 2,420.0 ms & 1.4 ms & 15.0 ms & \textbf{2,436.4 ms} \\
+\hline
+\end{tabular}
+\end{table}
+
+As documented in Table~\ref{tab:performance_metrics}, Standalone Mock Mode achieves near-instantaneous execution ($\sim$16.5~ms end-to-end), making it ideal for continuous integration, regression testing, and reviewer verification. Under Live API execution, the bottleneck resides entirely within remote LLM inference ($\sim$1.2~s), while the local Python pipeline, Solr indexing, and Leaflet rendering remain negligible ($<$17~ms). In the browser, the Leaflet map effortlessly manages 100+ animated pulsed SVG markers at 60 frames per second with a memory footprint under 35~MB.
+
+\subsection{Execution Safety, Input Sanitization, and Fault Tolerance}
+\label{subsec:ExecutionSafety}
+
+A common concern in conversational AI software architectures is vulnerability to adversarial prompt injection, database query manipulation, and execution failures caused by out-of-scope user inputs. The proposed architecture incorporates defensive programming across three containment tiers:
+
+\begin{itemize}
+    \item \textbf{Schema Whitelisting and Prompt Isolation}: Because the LLM generation is restricted by the OpenAPI schema specification, adversarial text injections (e.g., attempts to execute administrative database commands or output raw system instructions) fail structural validation at token decoding time. The NLU layer extracts only whitelisted JSON properties.
+    \item \textbf{Lucene Query Sanitization}: All extracted strings routed to Apache Solr are escaped against Lucene reserved syntax characters (\texttt{+ - \&\& || ! ( ) \{ \} [ ] \^{} " \~{} * ? : \textbackslash{} /}). Parameter values are strictly encapsulated in double quotes within field-specific filter queries (\texttt{fq}), completely preventing Lucene query injection attacks.
+    \item \textbf{Out-of-Scope Fallback and Early-Exit Guards}: When user inputs do not correspond to spatial searches (e.g., generic conversational chatter or out-of-domain questions), the classifier assigns the \texttt{generic\_qa} intent, bypassing the spatial search index and directing the query to a conversational help handler. If a spatial search yields zero matching records, the system triggers an early-exit guard, returning a deterministic notification to the user interface rather than allowing the generative model to extrapolate or fabricate fictitious locations.
+\end{itemize}

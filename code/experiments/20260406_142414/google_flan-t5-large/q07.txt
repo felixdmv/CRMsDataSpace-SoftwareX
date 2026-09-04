@@ -1,0 +1,70 @@
+Question: What is the sludge production rate and solids content specified for the WTP?
+
+Answer:
+NI 43-101 Technical Report Fruta del Norte Mine, Ecuador Section 2 March 2023 Page 2-5 Abbreviations Full Description h/wk Hours per week HDPE High-Density Polyethylene hp Horsepower Hz Hertz IRR Internal Rate of Return ISO International Organization for Standardization
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 52 chunk 0 (score=0.8387)
+NI 43-101 Technical Report  
+  Fruta del Norte Mine, Ecuador 
+ 
+Section 2 March 2023 Page 2-5 
+Abbreviations Full Description 
+h/wk Hours per week 
+HDPE High-Density Polyethylene 
+hp Horsepower 
+Hz Hertz 
+IRR Internal Rate of Return 
+ISO International Organization for Standardization 
+k Kilo – (000’s) 
+kg Kilograms 
+kg/t Kilograms per tonne 
+kV Kilovolts 
+km Kilometre 
+km/h Kilometre per hour 
+kPa Kilopascal 
+kW Kilowatts 
+kWh Kilowatts per hour 
+l Litre 
+M Mega or Millions (000,000’s) 
+masl
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 41 chunk 2 (score=0.8341)
+f 3,500 tpd in 
+2020. The process plant was subsequently expanded in 2021 to treat 4,200 tpd. Debottlenecking work was 
+carried out in 2022 and the plant is currently operating at an average throughput rate of 4,400 tpd. Studies 
+and engineering will commence in 2023 to debottleneck the process plant to reliably achieve 5,000 tpd. No 
+flowsheet changes nor significant process plant upgrades are expected due to t he treatment of ore from 
+the south zone of the mine. 
+The process plant consists of
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 4 (score=0.8288)
+............... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ................................................ 20-11 
+20.4.7 Stage Construction and TSF Current Condition ........................................... 20-11 
+20.4.8 Instrumentation and Monitoring .................................................................... 20-11 
+20.4.9 Operating Philosophy .................................................................................... 20-12 
+20.4.10 Design Basis .............
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 38 chunk 6 (score=0.8284)
+thods were evaluated before extending the current design 
+parameters for longhole mining methods. The analysis confirmed that the proposed production rate of 4,400 
+tpd is achievable, ore continuity is sufficient for economic extraction, and that the orebody can be
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 27 chunk 10 (score=0.8277)
+................................ 13-5 
+Table 13.6: Summary Metallurgical Programs ......................................................................................... 13-9 
+Table 14.1: Summary of Mineral Resource – December 31, 2022 .......................................................... 14-1 
+Table 14.2: Descriptive Statistics of Resource Assay Values - Au .......................................................... 14-8 
+Table 14.3: Descriptive Statistics of Resource Assay Values - Ag ..
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 22 chunk 0 (score=0.8260)
+NI 43-101 Technical Report  
+  Fruta del Norte Mine, Ecuador 
+ 
+Table of Contents March 2023 Page vii 
+16.8.5 Dewatering .................................................................................................... 16-17 
+16.8.6 Process Water ............................................................................................... 16-18 
+16.8.7 Power ............................................................................................................ 16-18 
+16.9 Blasting a
+------------------------------------------------------------

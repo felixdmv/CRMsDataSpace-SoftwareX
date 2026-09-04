@@ -1,0 +1,149 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{geometry}
+\usepackage{xcolor}
+
+\title{
+    Response to Reviewers \\
+    \large IoT-Sim: An Interactive Platform for Designing and Securing Smart Device Networks
+}
+\date{}
+
+\begin{document}
+\maketitle
+
+First of all, we would like to thank the reviewers for their valuable comments and corrections that have assisted us greatly in improving the contribution. Their detailed comments have enabled us to improve both the scientific content of the paper and its presentation. The revision of the manuscript and the subsequent changes are described in detail below. 
+
+Our revision has taken full account of the comments from the reviewers. The principal goal has at all times been to improve the scientific contribution of the paper, its readability, and its overall presentation. The whole paper has been revised and proofread once again.
+
+\newpage
+
+\section*{Reviewer \#1}
+This manuscript presents IoT-Sim, a modular and browser-based simulation tool designed to facilitate the development and evaluation of intrusion detection models in Internet of Things (IoT) networks. The software is lightweight, client-side only (implemented using Angular and TensorFlow.js), and open source under the MIT License. It allows users to visually construct network topologies, simulate traffic, inject attack scenarios, and evaluate detection models under controlled conditions.
+
+The work is timely and addresses a clearly identified gap in the current landscape of IoT security experimentation frameworks. The writing is clear and technically sound, and the authors make a compelling case for the utility of the tool in both research and pedagogical settings.
+
+\subsection*{Strengths}
+\begin{itemize}
+    \item Relevance and Utility: The paper targets an important problem—reproducible evaluation of intrusion detection systems in IoT environments—using a tool that requires minimal infrastructure and is accessible to both researchers and students.
+    \item Technical Implementation: The authors adopt sound software engineering practices, including modular architecture, object-oriented design, and separation of concerns. The client-only implementation reduces deployment complexity.
+    \item Reproducibility and Extensibility: The simulator supports the import and export of network configurations, attacks, and detection models, making it suitable for reproducible experiments and iterative testing.
+    \item Accessibility: The use of standard web technologies and compatibility with major browsers lowers the entry barrier significantly, particularly for educational use.
+    \item Open Source Availability: The code is available on GitHub, and the inclusion of a reproducible capsule further supports transparency and reusability.
+\end{itemize}
+
+\subsection*{Weaknesses and Areas for Improvement}
+\begin{itemize}
+    \item \textbf{Lack of Developer Documentation}: While the code is available, there is no formal developer documentation provided (metadata field C8). This could hinder adoption and community-driven extension of the platform.
+    
+    \textbf{Recommendation}: Include a dedicated developer guide in the repository that explains the code structure, extension points, and build instructions.
+
+    {\color{blue}
+        \textbf{Response}: We value the reviewer's focus on the critical role of documentation in promoting community adoption.
+        
+        To address this, we have introduced a detailed Developer Guide in the repository, accessible through the Wiki. This guide now outlines the project's directory structure, offers step-by-step instructions for building, and describes the architecture for adding custom modules to the tool. As a result, we have revised Table 1 (Code Metadata) in the manuscript, particularly field C8, to include a direct link to this new developer documentation.
+    }
+    
+    \item \textbf{Limited Evaluation Detail}: Although the paper mentions an internal laboratory evaluation comparing centralized and federated models, it lacks empirical detail.
+    
+    \textbf{Recommendation}: Include quantitative or qualitative results from these evaluations (e.g., detection accuracy, latency, resource usage) to support the tool's effectiveness as a benchmarking platform.
+
+    {\color{blue}
+        \textbf{Response}: We appreciate the reviewer's suggestion to include more empirical data. However, we respectfully submit that conducting a comprehensive benchmarking study of specific detection models (comparing accuracy or precision between Federated and Centralized approaches) falls outside the scope of this SoftwareX publication, which aims to present the simulation tool itself rather than novel intrusion detection research.
+
+        Nevertheless, to address the request for empirical evidence supporting the tool's effectiveness and resource usage, we have introduced a new subsection, Section 2.3 (Scalability and performance analysis). In this section, we include qualitative and quantitative details regarding the simulator’s computational overhead (RAM and CPU usage) and browser-based limitations. We believe that these data effectively demonstrate the platform's viability for its intended purpose—prototyping and education—without shifting the paper's focus toward an algorithmic comparative study, which is reserved for future work.
+    }
+    
+    \item \textbf{Security Considerations}: The simulator allows the import of external scripts and execution of custom commands. However, the manuscript does not address security mechanisms that mitigate potential risks from malicious or erroneous user inputs. 
+    
+    \textbf{Recommendation}: Add a brief discussion of execution safety, sandboxing, or other mechanisms used to prevent client-side abuse.
+    
+    {\color{blue}
+        \textbf{Response}: We sincerely thank the reviewer for highlighting the importance of addressing execution safety in the context of external script importation. We agree that adding a discussion on how the platform mitigates potential risks from user inputs significantly strengthens the manuscript and clarifies the security boundaries of the proposed tool.
+
+        Following this recommendation, we have revised Section 2.1 (Software architecture) to provide a detailed explanation of these security features. We clarified that IoT-Sim utilizes the built-in sandbox of the browser to ensure that the execution of the custom script remains isolated from the host operating system. Additionally, we noted that the lack of a backend server removes any possibility of cross-user contamination. Furthermore, we stressed that the Data Management Layer applies structural validation and normalization to all imported modules, thereby preventing the execution of a malformed code that could potentially disrupt the simulation.
+    }
+    
+    \item \textbf{Model Integration Workflow}: While the simulator supports TensorFlow models, the process of conversion to TensorFlow.js and integration into the system may not be straightforward for all users.
+    
+    \textbf{Recommendation}: Consider providing example scripts and a step-by-step tutorial to facilitate model integration, especially for users with limited machine learning experience.
+    
+    {\color{blue}
+        \textbf{Response}: We sincerely thank the reviewer for highlighting the potential challenges users might face during the model conversion process and we agree that providing clear guidance is essential for the tool's accessibility.
+        
+        To address this issue, we have updated the software documentation in the public repository to include a dedicated section on model integration. This new resource provides a step-by-step tutorial and includes example Python scripts to automate the conversion from standard TensorFlow to TensorFlow.js. Furthermore, we have revised the corresponding footnote in the manuscript to explicitly direct readers to this documentation for detailed instructions.
+    }
+    
+    \item \textbf{Comparative Analysis with Existing Tools}: The discussion of related tools such as NS-3, CORE, and NEMO is relatively brief and mostly descriptive.
+    
+    \textbf{Recommendation}: A comparative table or more structured comparison outlining the differences in use cases, extensibility, machine learning support, and user-friendliness would strengthen the motivation for the presented work.
+    
+    {\color{blue}
+        \textbf{Response}: We sincerely thank the reviewer for this valuable suggestion. We agree that a direct, structured comparison was necessary to better position IoT-Sim within the existing landscape of network simulation tools.
+
+        To address this issue, we have included Table 2 in Section 1. This table provides a structured comparison of IoT-Sim against the other tools discussed in the manuscript (NS-3, CORE, and NEMO).
+    }
+\end{itemize}
+
+\subsection*{Minor Issues}
+\begin{itemize}
+    \item Some figures (e.g., GUI panels) are helpful but would benefit from accompanying textual descriptions that go beyond interface elements to reflect on usability and workflow.
+    
+    {\color{blue}
+        \textbf{Response}: We thank the reviewer for this constructive suggestion. We fully agree that describing the figures merely by their interface components fails to convey the platform's actual usability benefits. To address this, we have rewritten the descriptions for Figures 3–6 in Section 3 to better connect the visual design with the experimental workflow. The updated text now focuses on the utility of these panels, explaining how they simplify specific tasks rather than just describing what is shown on the screen.
+    }
+    
+    \item Ensure that all external links (GitHub, TensorFlow converter, etc.) are functioning at the time of publication.
+    
+    {\color{blue}
+        \textbf{Response}: We have verified all external URLs included in the manuscript, including the links to the GitHub repository, the online documentation, and the third-party tools. We confirm that all links are currently active and accessible.
+    }
+    
+    \item The acknowledgment of AI assistance (ChatGPT) in language editing is noted and complies with transparency guidelines.
+    
+    {\color{blue}
+        \textbf{Response}: We thank the reviewer for confirming our compliance. The declaration regarding the use of AI tools for language editing remains in the manuscript, in adherence to the journal’s transparency guidelines.
+    }
+\end{itemize}
+
+\subsection*{Conclusion}
+The manuscript introduces a useful, well-implemented simulation platform that fills an important niche in IoT security research and experimentation. While the manuscript is generally of high quality, addressing the concerns above—particularly regarding documentation, evaluation detail, and model integration clarity—would improve the work and increase its impact and usability.
+
+\newpage
+
+\section*{Reviewer \#2}
+Greetings to the authors The article is well documented, meanwhile some of the reflections are suggested for improvement 1.
+
+\begin{itemize}
+    \item The evaluation section is limited to two detection paradigms (centralized and federated learning).
+    
+    Authors may expand the experiments to include: Multiple attack types beyond DoS like spoofing, replay attacks and Compare performance metrics across different models.
+
+    {\color{blue}
+        \textbf{Response}: We thank the reviewer for these insightful suggestions. We respectfully clarify that, as a SoftwareX publication, the primary objective of this manuscript is to describe the design and capabilities of the IoT-Sim tool, rather than to comprehensively benchmark intrusion detection algorithms or attack vectors. The presented case study (DoS with Federated Learning) serves as a proof-of-concept to demonstrate the functionality of the simulator.
+
+        While implementing additional attacks falls outside the current scope, we have emphasized in the manuscript that the tool's modular architecture is explicitly designed to allow researchers to implement custom attack scripts and integrate diverse models. We believe this extensibility positions the tool as an enabler for the exact type of comparative research the reviewer suggests for future work.
+    }
+
+    \item The client-side architecture is innovative, the paper does not discuss limitations regarding large-scale simulations or browser resource constraints.
+    
+    Please add a section on scalability and potential optimizations.
+
+    {\color{blue}
+        \textbf{Response}: We are grateful for the reviewer's insights on the architectural trade-offs and appreciate their acknowledgment of the innovative client-side approach. We concur that it is crucial to have an open discussion about the limitations of this architecture.
+
+        To address this, we have added a new subsection, Section 2.3 (Scalability and performance analysis). In this part, we clearly outline the scalability limitations concerning large-scale simulations and browser resource constraints, particularly memory heap and single-threaded execution. Additionally, as requested, we have included a specific discussion on potential optimizations, emphasizing current strategies like WebGL acceleration for AI inference and suggesting future enhancements such as Web Workers to boost performance.
+    }
+
+    \item  Security measures or sandboxing techniques implemented to prevent malicious code execution within the simulation environment is not evidential.
+
+    {\color{blue}
+        \textbf{Response}: We appreciate the reviewer’s observation regarding the lack of evidential security measures for preventing malicious code execution. We agree that it is essential for readers to understand how the simulator mitigates risks related to user-defined logic, and we recognize that the protective measures embedded in the system's design were not fully detailed in the initial manuscript.
+
+        To address this, we have revised Section 2.1 to make the security strategy evident. We specified that the application operates entirely within the client-side browser sandbox, which acts as the primary defense against malicious access to the host environment. Additionally, we detailed the internal validation protocols implemented in the Data Management Layer, explaining how they act as a filter to ensure that only properly structured and normalized commands are executed within the simulation loop.
+    }
+\end{itemize}
+The manuscript is strong in novelty and technical contribution. Addressing the above comments will enhance clarity, usability, and experimental aspects.
+\end{document}

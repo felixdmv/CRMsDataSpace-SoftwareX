@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 550" width="100%" height="100%">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.08"/>
+    </filter>
+    <pattern id="dotGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#CBD5E1" />
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#dotGrid)" />
+  <text x="30" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#0F172A">ARQUITECTURA BASE (ORIGINAL)</text>
+  <!-- Node: 1. User Query -->
+  <g filter="url(#shadow)">
+    <rect x="80" y="100" width="220" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#475569" stroke-width="2" />
+    <path d="M 90 100 L 290 100 A 10 10 0 0 1 300 110 L 300 132 L 80 132 L 80 110 A 10 10 0 0 1 90 100 Z" fill="#64748B" />
+    <text x="92" y="121" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">1. User Query</text>
+    <rect x="224.2" y="106" width="67.80000000000001" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="230.2" y="118" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">NL String</text>
+    <text x="92" y="154" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Entrada de consulta</text>
+    <text x="92" y="172" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Consulta en lenguaje natural</text>
+    <text x="92" y="187" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• e.g., 'Dime escombreras en Huelva'</text>
+  </g>
+  <!-- Node: 2. NLU Pipeline -->
+  <g filter="url(#shadow)">
+    <rect x="350" y="100" width="220" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#3730A3" stroke-width="2" />
+    <path d="M 360 100 L 560 100 A 10 10 0 0 1 570 110 L 570 132 L 350 132 L 350 110 A 10 10 0 0 1 360 100 Z" fill="#4F46E5" />
+    <text x="362" y="121" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">2. NLU Pipeline</text>
+    <rect x="444.6" y="106" width="117.4" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="450.6" y="118" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">LLM / Regex Rules</text>
+    <text x="362" y="154" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Extraccion de filtros</text>
+    <text x="362" y="172" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Identifica entidades por regex/LLM</text>
+    <text x="362" y="187" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Clasifica intenciones basicas</text>
+  </g>
+  <!-- Node: 3. Query Builder -->
+  <g filter="url(#shadow)">
+    <rect x="620" y="100" width="220" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#92400E" stroke-width="2" />
+    <path d="M 630 100 L 830 100 A 10 10 0 0 1 840 110 L 840 132 L 620 132 L 620 110 A 10 10 0 0 1 630 100 Z" fill="#D97706" />
+    <text x="632" y="121" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">3. Query Builder</text>
+    <rect x="782.8" y="106" width="49.2" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="788.8" y="118" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">Python</text>
+    <text x="632" y="154" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Traduccion a BD</text>
+    <text x="632" y="172" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Mapea JSON de filtros</text>
+    <text x="632" y="187" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Genera parametros de consulta Solr</text>
+  </g>
+  <!-- Node: 4. Solr Database -->
+  <g filter="url(#shadow)">
+    <rect x="890" y="100" width="220" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#065F46" stroke-width="2" />
+    <path d="M 900 100 L 1100 100 A 10 10 0 0 1 1110 110 L 1110 132 L 890 132 L 890 110 A 10 10 0 0 1 900 100 Z" fill="#059669" />
+    <text x="902" y="121" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">4. Solr Database</text>
+    <rect x="1021.8" y="106" width="80.2" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="1027.8" y="118" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">Apache Solr</text>
+    <text x="902" y="154" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Recuperacion de registros</text>
+    <text x="902" y="172" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Busca en indice Solr (Mock API)</text>
+    <text x="902" y="187" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Aplica query syntax (q, fq)</text>
+  </g>
+  <!-- Node: 5. NLG Synthesizer -->
+  <g filter="url(#shadow)">
+    <rect x="890" y="340" width="220" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#3730A3" stroke-width="2" />
+    <path d="M 900 340 L 1100 340 A 10 10 0 0 1 1110 350 L 1110 372 L 890 372 L 890 350 A 10 10 0 0 1 900 340 Z" fill="#4F46E5" />
+    <text x="902" y="361" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">5. NLG Synthesizer</text>
+    <rect x="972.2" y="346" width="129.8" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="978.2" y="358" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">LLM (OpenAI/Gemini)</text>
+    <text x="902" y="394" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Generacion de respuesta</text>
+    <text x="902" y="412" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Resume resultados en castellano</text>
+    <text x="902" y="427" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Tono conversacional simple</text>
+  </g>
+  <!-- Node: 6. Final Response -->
+  <g filter="url(#shadow)">
+    <rect x="620" y="340" width="220" height="110" rx="10" ry="10" fill="#FFFFFF" stroke="#475569" stroke-width="2" />
+    <path d="M 630 340 L 830 340 A 10 10 0 0 1 840 350 L 840 372 L 620 372 L 620 350 A 10 10 0 0 1 630 340 Z" fill="#64748B" />
+    <text x="632" y="361" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">6. Final Response</text>
+    <rect x="776.6" y="346" width="55.4" height="18" rx="4" ry="4" fill="#1E293B" />
+    <text x="782.6" y="358" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">Chat UI</text>
+    <text x="632" y="394" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Visualizacion en Chat</text>
+    <text x="632" y="412" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Retorna respuesta de texto natural</text>
+    <text x="632" y="427" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#475569">• Pinta listado basico de minas</text>
+  </g>
+  <line x1="300" y1="155" x2="350" y2="155" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 350 155 L 341.33974596215563 160.0 L 341.33974596215563 150.0 Z" fill="#94A3B8" />
+  <text x="325.0" y="150.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">Raw Text</text>
+  <line x1="570" y1="155" x2="620" y2="155" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 620 155 L 611.3397459621556 160.0 L 611.3397459621556 150.0 Z" fill="#94A3B8" />
+  <text x="595.0" y="150.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">Intent + Filters</text>
+  <line x1="840" y1="155" x2="890" y2="155" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 890 155 L 881.3397459621556 160.0 L 881.3397459621556 150.0 Z" fill="#94A3B8" />
+  <text x="865.0" y="150.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">Solr Params (q, fq)</text>
+  <line x1="1000" y1="210" x2="1000" y2="340" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 1000 340 L 995.0 331.33974596215563 L 1005.0 331.33974596215563 Z" fill="#94A3B8" />
+  <text x="1000.0" y="270.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">DB Records JSON</text>
+  <line x1="890" y1="395" x2="840" y2="395" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 840 395 L 848.6602540378444 390.0 L 848.6602540378444 400.0 Z" fill="#94A3B8" />
+  <text x="865.0" y="390.0" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#64748B" text-anchor="middle">Synthesized Text</text>
+  <path d="M 190 210 Q 540.0 252.5 890 395" fill="none" stroke="#94A3B8" stroke-width="2" />
+  <path d="M 890 395 L 880.102202606946 396.4260458499129 L 883.8161093704871 387.1412789410603 Z" fill="#94A3B8" />
+  <text x="540.0" y="272.5" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#4F46E5" text-anchor="middle">Query Context</text>
+</svg>

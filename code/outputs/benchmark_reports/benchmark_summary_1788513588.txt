@@ -1,0 +1,25 @@
+
+==============================================================================================================
+ TABLA COMPARATIVA MULTIMODELO - RESULTADOS DEL BENCHMARK EN CLUSTER GPU
+==============================================================================================================
+| Modelo / Proveedor             | Score (%)  | Exito (PASS)  | Sitios Acc.  | KW Acc.    | Alucin. (%)  | Latencia (s) |
+|--------------------------------|------------|---------------|--------------|------------|--------------|--------------|
+| Reglas / WARM (Baseline)       | 36.3%      | 28.6% (2/7)   | 28.6%        | 47.6%      | 0.0%         | 0.01s        |
+| Llama 3.2 3B (Local GPU)       | 36.3%      | 28.6% (2/7)   | 28.6%        | 47.6%      | 0.0%         | 9.72s        |
+|--------------------------------|------------|---------------|--------------|------------|--------------|--------------|
+==============================================================================================================
+
+% --- TABLA LATEX PARA EL ARTÍCULO CIENTÍFICO ---
+\begin{table}[htbp]
+\centering
+\caption{Comparative Performance of Baseline and LLMs for Critical Raw Materials Data Space Queries.}
+\label{tab:crms_llm_benchmark}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Model / Provider} & \textbf{Score (\%)} & \textbf{Pass Rate} & \textbf{Site Acc.} & \textbf{KW Acc.} & \textbf{Halluc. (\%)} & \textbf{Avg Latency (s)} \\
+\midrule
+Reglas / WARM (Baseline) & 36.3\% & 28.6\% & 28.6\% & 47.6\% & 0.0\% & 0.01s \\
+Llama 3.2 3B (Local GPU) & 36.3\% & 28.6\% & 28.6\% & 47.6\% & 0.0\% & 9.72s \\
+\bottomrule
+\end{tabular}
+\end{table}

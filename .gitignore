@@ -1,0 +1,30 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.sixth/
+
+# Logs
+*.log
+
+# Cache & Temp Downloads
+.cache/
+.antigravitycli/
+scratch/
+edit_step_*.json
+extracted_*.txt
+

@@ -1,0 +1,190 @@
+{
+  "provider": "local",
+  "timestamp": 1784018972.696802,
+  "total_test_cases": 7,
+  "passed_test_cases": 5,
+  "success_rate": 0.7143,
+  "average_score": 0.8286,
+  "average_time_seconds": 4.85,
+  "results": [
+    {
+      "id": "TC_001",
+      "query": "Dime escombreras de carbón en Asturias",
+      "response_text": "Encontré las siguientes escombreras de carbón en Asturias: Arroyo de la Nicolasa, Aguilar - Pumardongo, y La Casona. Pertenecen a la empresa HUNOSA. Son depósitos de hulla sin restaurar con surgencias de agua registradas.",
+      "api_results_count": 3,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo",
+          "La Casona"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "carbón",
+          "asturias",
+          "hunosa"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 4.6
+    },
+    {
+      "id": "TC_002",
+      "query": "Qué escombreras tiene HUNOSA?",
+      "response_text": "La empresa HUNOSA tiene las escombreras Arroyo de la Nicolasa, Aguilar - Pumardongo y La Casona en Mieres, Asturias. Son depósitos antiguos de carbón.",
+      "api_results_count": 3,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo",
+          "La Casona"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "hunosa"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 4.1
+    },
+    {
+      "id": "TC_003",
+      "query": "Busca el proyecto San Nicolás",
+      "response_text": "El proyecto San Nicolás es la escombrera de Arroyo de la Nicolasa en Mieres, Asturias. Contiene carbón y está gestionado por Hunosa.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Arroyo de la Nicolasa"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "nicolás"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 3.9
+    },
+    {
+      "id": "TC_004",
+      "query": "Hay escombreras sin restaurar con surgencias de agua?",
+      "response_text": "Sí, Arroyo de la Nicolasa y Aguilar - Pumardongo son escombreras que presentan surgencias de agua. Son depósitos de carbón en Asturias de Hunosa.",
+      "api_results_count": 3,
+      "evaluation": {
+        "site_accuracy": 0.6666666666666666,
+        "matched_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo"
+        ],
+        "missing_sites": [
+          "La Casona"
+        ],
+        "keyword_accuracy": 0.6666666666666666,
+        "matched_keywords": [
+          "agua",
+          "surgencia"
+        ],
+        "missing_keywords": [
+          "restaurar"
+        ],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 0.67,
+        "status": "FAIL"
+      },
+      "elapsed_seconds": 5.8
+    },
+    {
+      "id": "TC_005",
+      "query": "Dime escombreras de cobre en Andalucía",
+      "response_text": "He encontrado el Proyecto Riotinto en Andalucía. Contiene cobre, plata y oro, y está gestionado por Atalaya Mining. Es una balsa de estériles activa.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Riotinto Project"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "cobre",
+          "andalucía",
+          "atalaya"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 4.9
+    },
+    {
+      "id": "TC_006",
+      "query": "Busca escombreras de wolframio en Castilla y León",
+      "response_text": "La escombrera de Los Santos en Castilla y León contiene mineral de wolframio. Está gestionada por Almonty Industries.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Los Santos"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 0.3333333333333333,
+        "matched_keywords": [
+          "wolframio"
+        ],
+        "missing_keywords": [
+          "tungsteno",
+          "salamanca"
+        ],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 0.73,
+        "status": "FAIL"
+      },
+      "elapsed_seconds": 5.2
+    },
+    {
+      "id": "TC_007",
+      "query": "Hay proyectos de litio en Extremadura?",
+      "response_text": "El proyecto San José Valdeflórez en Extremadura contiene litio. Es un proyecto de balsa de estériles en Cáceres, gestionado por Infinity Lithium.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "San José Valdeflórez"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "litio",
+          "cáceres"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 5.15
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+Question: What is the total storage capacity of the TSF reported in the technical report?
+
+Answer:
+[1] pdfs2023LUGTechnicalReport.pdf | page 240 | chunk 1 | score 0.8883 er 2022). Based on updated storage curve, the TSF impoundment allows a total storage of about 11.75 mm3 to El. 1,490 m. The impoundement capacity assessment considered mainly updated tailings production, operating pond, IDF storage and the minimum required freeboard above the IDF level. A small amount of sludge from the water treatment plant will also be stored in the TTF (0.2 mm3) over the 16 years.
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 240 chunk 1 (score=0.8883)
+er 2022). Based on updated storage curve, the TSF impoundment allows a total storage of about 
+11.75 mm3 to El.  1,490 m. The impoundment capacity assessment considered mainly updated tailings 
+production, operating pond, IDF storage and the minimum required freeboard above the IDF level. A small 
+amount of sludge from the water treatment plant will also be stored in the TSF (0.2 mm3) over the 16 years. 
+20.4.6 Other Waste Materials Reporting to the TSF 
+The only other waste material to be place
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 239 chunk 6 (score=0.8782)
+idered. 
+20.4.5 Storage Capacity 
+A total of 11.6 Mt of gravity, flotation, leach (GFL) tailings will be pumped to the TSF at average solids 
+contents of 28% over 16 years of TSF mine life. The estimated average dry density is 1.12  t/m3. This has
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 245 chunk 4 (score=0.8773)
+ge to be delivered to TSF at solids content of 5%. 
+• Poor settling behavior: 100% of the sludge (solids and 
+water) to be stored. 
+• Deposited dry density: 1.1 t/m3 provided by Aurelian 
+• Total sludge production to TSF: 0.2 mm3 over 16 years. 
+5.0 Tailing Storage Facility Design and Engineering 
+5.1 General  
+The TSF impoundment is contained by a cross-valley compacted 
+rockfill dam with an inclined compacted upstream saprolite-
+cement core and a liner system for seepage control.
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 240 chunk 0 (score=0.8704)
+NI 43-101 Technical Report  
+  Fruta del Norte Mine, Ecuador 
+ 
+Section 20 March 2023 Page 20-11 
+been and should continue to be checked with periodic bathymetry and deposition records to confirm density 
+and storage capacity. Excess water is reclaimed to the mill by a floating barge.  
+The TSF storage requirements are based on tailings productions updated by Aurelian (October 2021 and 
+September 2022). Based on updated storage curve, the TSF impoundment allows a total storage of about 
+11.75
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 244 chunk 5 (score=0.8632)
+erived from jar settling tests (data from detailed 
+design of the Starter Dam). 
+3.6 Average Deposited Dry 
+Density 
+Comparing real production rate and volume deposited into TSF, 
+dry density was estimated of 1.12 t/m3
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 246 chunk 0 (score=0.8627)
+NI 43-101 Technical Report  
+  Fruta del Norte Mine, Ecuador 
+ 
+Section 20 March 2023 Page 20-17 
+Item Design Basic 
+5.2 Storage Requirements 
+The TSF is a “Zero Discharge” system during operation and is 
+designed for next storage requirements: 
+• Tailings (see Attachment I, Table I-1) 
+• Sludge (see Item 4.2) 
+• Operating decant pond of 250,000 m3. Minimum 2 m depth 
+based on draught requirements of the reclaim barge. 
+Volume to be confirmed in deposition model for Stage 3 
+and Stage 4 Dam R
+------------------------------------------------------------

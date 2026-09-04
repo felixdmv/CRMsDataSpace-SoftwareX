@@ -1,0 +1,93 @@
+Question: What is the monitoring frequency for tailings beach surveying and pond bathymetry?
+
+Answer:
+1. Tailings Beach Surveying and Pond Monthly Bathymetry
+
+2. Daily Pond Levels Recording, Tailings Volume Tracking and Comparison with the Stage Storage Curve
+
+4. Flow Rates Monitoring
+
+6. Instrumentation Installed
+
+7. Standpipe Piezometry and Piezometery within the Dam and Foundation
+
+8. Vibration Wire Piezo
+
+10. Settlement Plate
+
+11. Two In- Place Inclinator with Settlement Gauges to Evaluate Foundatio
+
+12. In-place inclinometer with settlement gauge to evaluate foundatio
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 250 chunk 3 (score=0.9187)
+vel 
+• Tailings beach surveying and pond monthly bathymetry. 
+• Daily pond levels recording, tailings volume tracking and 
+comparison with the stage storage curve. 
+• Flow rates monitoring 
+• Seepage mapping and recording of flow rates (weirs), 
+turbidity, and locations. 
+• Instrumentation installed 
+• Standpipe piezometer and piezometers within the dam and 
+foundation. 
+• Vibrating Wire Piezometers 
+• Settlement Plates 
+• Two in- place Inclinometers with settlement gauges to 
+evaluate foundatio
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 250 chunk 2 (score=0.9037)
+should be refined and/or optimized based on 
+actual behavior. 
+Instrumentation installed during 2019 through 2022 construction 
+must be maintained and continue with monitoring. 
+Additional instruments may be recommended for next 
+construction to help monitor dam performance as required 
+9.2 Monitoring 
+Monitoring will include, without being limited to: 
+• Control tailings surface and pond water level 
+• Tailings beach surveying and pond monthly bathymetry. 
+• Daily pond levels recording, tailing
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 238 chunk 1 (score=0.8904)
+etric surveys and water 
+balances are required to assess performance. 
+Tailings Beach 
+Since the start of operation of the TSF, in mid- 2019, the tailings and the water decant pond have been 
+developed and modified according to the physical properties of the tailings, and the disposal, climate and 
+operating conditions. 
+Sub-aerial slopes, shows an initially steep slope near the discharge points of 0.8% to 0.5%, after which the 
+slope becomes shallower at about 0.3% to 0.2% (still above water).
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 245 chunk 1 (score=0.8752)
+h 
+Slopes 
+Tailings deposition beach slopes are as follow: 
+• Slope above water: 0.35%. (Updated from bathymetry)  
+• Slope below water: 0.70%. (Updated from bathymetry) 
+• Slopes were updated based on assessment of the 
+impoundment current condition using tailings surface 
+bathymetric data. 
+3.9 Tailings Rheology Refer to Technical Note ECFN-AUS-MC-6720-MEM-01001 – 
+Ausenco, dated February 13, 2018.  
+3.10 Geochemical Properties 
+Aurelian stipulated KCB assume Non-potentially Acid Generating 
+(
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 238 chunk 3 (score=0.8750)
+veloping. 
+Medium slopes of 0.8% to 0.45% occur where the main beach transitions to the middle or deep pond areas. 
+Finally, tailings slopes are flatter from 0.3% to 0.1% i n the deep pond. The underwater slopes thus vary 
+based on distance from discharge point, and the initial original ground surface. Bathymetry provides a 
+typical section that reflects these three underwater conditions. Therefore, for beach development and 
+deposition modeling, an average of 0.7% for sub-aqueous slopes has bee
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 238 chunk 4 (score=0.8700)
+e, for beach development and 
+deposition modeling, an average of 0.7% for sub-aqueous slopes has been used. 
+Tailings Geochemistry 
+The tailings is characterized as non- acid generating (NAG) with a NP/AP ratio of 2: 93 based on 
+geochemical testing. There may be elevated levels of total suspended solids (TSS) requiring settlement, 
+and there will be elevated levels of cyanide deposited in the tailings. KCB have assumed that cyanide will 
+report to the TSF at approximately 1 ppm, and natural deg
+------------------------------------------------------------

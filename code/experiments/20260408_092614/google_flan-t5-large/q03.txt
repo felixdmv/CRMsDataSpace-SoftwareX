@@ -1,0 +1,62 @@
+Question: Describe how sludge from the water treatment plant is managed and its potential impacts.
+
+Answer:
+human use treatment plants to provide water used in the camps and offices. Potable water is produced on site only for the kitchen food preparation and dispenser using a reverse osmosis system. All other drinking water is bottled and supplied by a local supplier. Four water management ponds
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 227 chunk 3 (score=0.8469)
+There are three human use treatment plants to provide water used in the camps and offices. Potable water 
+is produced on site only for the kitchen food preparation and dispenser using a reverse osmosis system. 
+All other drinking water is bottled and supplied by a local supplier. 
+Four water management ponds that were used for industrial water supply during construction serve as 
+industrial water supply back-up for the operation; three of them receive affected waters during operations. 
+To max
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 231 chunk 3 (score=0.8460)
+s carried out quarterly at a total of twenty-five points along the the Machinaza 
+River (this River receives all the discharges from the operation) and along creeks close to the operational  
+areas. A total of fifty-seven parameters are analyzed for each point including heavy metals, anions, cations, 
+among others. 
+Industrial and sewage treated water d ischarges are monitored at the end of pipe for compliance with 
+the maximum permissible limits. No contacted water is discharged to the environm
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 224 chunk 3 (score=0.8442)
+the water treatment plant is primarily utilized in the ADR, ILR and refinery circuits, used 
+as gland seal water and for reagent dilution. Treated water is used for the grinding mill cooling systems and 
+in the mine. 
+The domestic water tank supplies the camp, mine and process plant. Domestic water requirements in the 
+plant include the plant safety showers and bathroo ms. Domestic water is not drinkable (potable); drinking 
+water is supplied as bottled water.
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 231 chunk 4 (score=0.8441)
+or compliance with 
+the maximum permissible limits. No contacted water is discharged to the environment without prior 
+treatment. A total of three points of discharge, two for sewage water and one for industrial water, are 
+monitored on a monthly basis. 
+FDN internal laboratory analyzes some of the water quality and discharges monitoring points on a daily 
+basis to ensure good performance for the operation.
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 232 chunk 3 (score=0.8437)
+rmal operation, biologists assist to rescue species 
+that interact with the mine operation, and they are relocated in the surrounding forest.  
+Waste Management takes place in all the infrastructures of the mine operation. A waste management 
+center was built to temporary store the generated classified waste. Hazardous waste is managed through 
+a certified company that transports, treats, and provides final disposal . Non-hazardous waste that is non-
+recyclable is sent to the Yantzaza Municipali
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 245 chunk 3 (score=0.8419)
+o 2017). 
+4.0 Other Materials to be Deposited into the TSF 
+4.1 General 
+Sludge from the Water Treatment Plant (WTP) will be deposited 
+into the TSF during the mine life through the same tailings 
+pipeline.  
+All foundation stripping spoils will be disposed in a new waste 
+dump. 
+4.2 Sludge Production at WTP 
+and into the TSF 
+Sludge production and properties: 
+• Production rate: 1.4 m3/h. 
+• Sludge to be delivered to TSF at solids content of 5%. 
+• Poor settling behavior: 100% of the sludge (so
+------------------------------------------------------------

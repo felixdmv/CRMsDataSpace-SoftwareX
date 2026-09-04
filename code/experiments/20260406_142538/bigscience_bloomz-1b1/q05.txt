@@ -1,0 +1,59 @@
+Question: According to 2023LUGTechnicalReport.pdf, what is the operating philosophy for the TSF?
+
+Answer:
+I don't know
+
+Sources used:
+[SOURCE 1] pdfs\2023LUGTechnicalReport.pdf page 23 chunk 4 (score=0.8541)
+............... 20-10 
+20.4.6 Other Waste Materials Reporting to the TSF ................................................ 20-11 
+20.4.7 Stage Construction and TSF Current Condition ........................................... 20-11 
+20.4.8 Instrumentation and Monitoring .................................................................... 20-11 
+20.4.9 Operating Philosophy .................................................................................... 20-12 
+20.4.10 Design Basis .............
+------------------------------------------------------------
+[SOURCE 2] pdfs\2023LUGTechnicalReport.pdf page 28 chunk 9 (score=0.8259)
+Table 17.1: Process Plant Performance Summary (2020-2022) ............................................................. 17-1 
+Table 20.1: Summary of Peak Ground Accelerations .............................................................................. 20-7 
+Table 20.2: TSF Key Design Basis ........................................................................................................ 20-12 
+Table 21.1: Summary of Life of Mine Capital Costs (USD M) Excluding Taxes  ..................
+------------------------------------------------------------
+[SOURCE 3] pdfs\2023LUGTechnicalReport.pdf page 13 chunk 6 (score=0.8233)
+aste plant and TSF. 
+8) As of the effective date of the Technical Report, to the best of my knowledge, information and belief, the 
+sections and sub -sections of the Technical Report listed in item 6 above contain all scientific and technical 
+information that is required to be disclosed to make these sections and sub-sections of the Technical Report 
+not misleading. 
+9) I have read NI 43-101 and believe that the sections and sub-sections of the Technical Report listed in item 6 
+above have been
+------------------------------------------------------------
+[SOURCE 4] pdfs\2023LUGTechnicalReport.pdf page 9 chunk 5 (score=0.8156)
+wing sections and subsections: 7 to 12 and 14. 
+7) I have visited the site from November 15 to 18, 2022. 
+8) As of the effective date of the Technical Report, to the best of my knowledge, information and belief, 
+the sections and sub-sections of the Technical Report  listed in item 6 above contain all scientific and 
+technical information that is required to be disclose d to make these sections and sub-sections of the 
+Technical Report not misleading. 
+9) I have read NI 43-101 and believe that t
+------------------------------------------------------------
+[SOURCE 5] pdfs\2023LUGTechnicalReport.pdf page 8 chunk 0 (score=0.8125)
+2 
+ 
+all scientific and technical information that is required to be disclosed to make these sections 
+and sub-sections of the Technical Report not misleading. 
+ 
+Dated this 29th day of March 2023. 
+ 
+(Signed and Sealed) Ron Hochstein 
+_______________________________ 
+Ron Hochstein, P.Eng.  
+President and Chief Executive Officer
+------------------------------------------------------------
+[SOURCE 6] pdfs\2023LUGTechnicalReport.pdf page 13 chunk 5 (score=0.8097)
+association and past relevant work 
+experience, I fulfil the requirements to be a qualified person for the purposes of NI 43-101. 
+6) I have participated in the preparation of the Technical Report and am responsible for the supervision or creation 
+of the following sections and sub-sections: 1.8, 1.12, 13, 17 and 27. 
+7) I visited the site during 26-29 April 2022 and inspected the process plant, paste plant and TSF. 
+8) As of the effective date of the Technical Report, to the best of my knowledg
+------------------------------------------------------------

@@ -1,0 +1,18 @@
+campo,formato,opciones_o_ejemplo,notas
+tipo_fila,texto,EJEMPLO|EXPERTOS,Marca filas de ejemplo y la primera fila a completar.
+nombre_pdf,texto,Mismo valor que en registro_informes,Usar exactamente el mismo nombre.
+nombre_fuente,texto,Mismo valor que en registro_informes,Usar exactamente el mismo nombre.
+tipo_pregunta,texto,tecnica|economica|ambiental|regulatoria|social|UNFC|clasificacion,Usar la categoría más concreta posible.
+pregunta,texto,Siempre en inglés,Asumimos preguntas en inglés para evaluar modelos.
+respuesta_gold_corta,texto,Respuesta breve,Debe ser la respuesta mínima correcta.
+respuesta_gold_larga,texto,Respuesta desarrollada,Puede incluir contexto adicional validado por el experto.
+terminos_obligatorios,texto,term1|term2|term3,Términos que deben aparecer en una respuesta correcta.
+(alternativas_aceptables),texto opcional,sinónimos o abreviaturas,Opcional.
+paginas_fuente,texto,12|13|14-16,Páginas que justifican la respuesta gold.
+(notas_revisor),texto opcional,Observaciones libres,Opcional.
+""
+tipo_fila,nombre_pdf,nombre_fuente,tipo_pregunta,pregunta,respuesta_gold_corta,respuesta_gold_larga,terminos_obligatorios,(alternativas_aceptables),paginas_fuente,(notas_revisor)
+EJEMPLO,1._Cobre_Las_Cruces_Technical_Report_Feb_2024_FINAL.pdf,Cobre Las Cruces PMS / PMR,regulatoria,Which metals are permitted in the concession modification?,"Copper, zinc, lead, and silver.","The report summary states that copper, zinc, lead, and silver are included.",copper|zinc|lead|silver,cu|zn|pb|ag,17,Ejemplo inventado.
+EJEMPLO,DMET_-_240523_Aguablanca_Technical_Report_PFS_Final.pdf,Aguablanca,UNFC,What study level is shown on the title page?,Preliminary Feasibility Study (PFS).,The title page identifies a Preliminary Feasibility Study.,preliminary feasibility study|pfs,pre-feasibility study,1,Ejemplo inventado.
+EJEMPLO,070912ElValleTechnicalReport.pdf,El Valle / Carlés / La Brueva / Godán,tecnica,What is the main commodity in the report title?,Gold.,The title identifies the deposits as gold deposits.,gold,au,1,Ejemplo inventado.
+EXPERTOS,NOMBRE_PDF_AQUI,NOMBRE_FUENTE_AQUI,TIPO_PREGUNTA_AQUI,ESCRIBIR_PREGUNTA_EN_INGLES,RESPUESTA_GOLD_CORTA_AQUI,RESPUESTA_GOLD_LARGA_AQUI,TERMINOS_OBLIGATORIOS_AQUI,ALTERNATIVAS_ACEPTABLES_AQUI,PAGINAS_FUENTE_AQUI,NOTAS_AQUI

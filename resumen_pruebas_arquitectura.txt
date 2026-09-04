@@ -1,0 +1,149 @@
+================================================================================
+REPORTE RESUMEN DE PRUEBAS DE ARQUITECTURA E INTEGRACIÓN LLM (cRMsDataSpace)
+================================================================================
+Fecha de emisión: 2026-07-20
+Proyecto: CRMsDataSpace (Espacio de Datos de Materias Primas Críticas)
+Grupo: GICAP (Grupo de Inteligencia Computacional Aplicada) - UBU
+Contacto para entregable: Félix de Miguel Villalba (fdemiguel@ubu.es)
+Destinatarios: Supervisores del Proyecto / Socios de Integración (Satec / Uniovi)
+================================================================================
+
+Este documento resume los avances técnicos recientes, las alternativas de 
+arquitectura de Inteligencia Artificial que se han implementado y evaluado, y 
+la propuesta final recomendada para el entregable del proyecto.
+
+--------------------------------------------------------------------------------
+1. CONTEXTO Y OBJETIVO DEL SISTEMA
+--------------------------------------------------------------------------------
+El objetivo de cRMsDataSpace es construir un asistente inteligente capaz de
+localizar y analizar recursos de materias primas críticas (CRM) como litio,
+cobalto o wolframio en escombreras y balsas mineras en España. El sistema debe:
+  * Interpretar consultas en lenguaje natural del usuario (NLU).
+  * Traducir de forma precisa estas consultas a parámetros y filtros sobre una 
+    base de datos estructurada (Apache Solr / simulador WARM).
+  * Realizar búsquedas híbridas (semánticas y vectoriales en FAISS sobre PDFs de
+    informes técnicos de estabilidad minera y ensayos).
+  * Generar respuestas en lenguaje natural (NLG) libres de alucinaciones, 
+    estructuradas en JSON para interactuar de forma segura con la interfaz de 
+    usuario web y visor GIS.
+
+--------------------------------------------------------------------------------
+2. COMPONENTES Y REORGANIZACIÓN DEL PROYECTO
+--------------------------------------------------------------------------------
+Para dotar al desarrollo de modularidad y escalabilidad, el código se ha 
+estructurado de la siguiente forma bajo el directorio `/code`:
+  * /code/common/: Módulos compartidos (cliente unificado de APIs de LLM con
+    modo JSON `llm_client.py`, buscador vectorial FAISS `search.py`, extractor 
+    de texto OCR `extract_text.py`, e indexador `build_index.py`).
+  * /code/variants/: Implementaciones de las 4 arquitecturas propuestas 
+    (v1 a v4, además del código original) para su evaluación.
+  * /code/apps/: Interfaces de usuario (Gradio para chat `chat_app.py`, 
+    cuadros de mando analíticos y cartografía GIS en Streamlit `dashboard_app.py` 
+    y `dashboard_app_gis.py`, e interfaz de terminal `ask.py`).
+  * /code/evaluation/: Benchmarks automatizados (`benchmark_solr_vs_llm.py`, 
+    `filter_extraction_benchmark.py` y `evaluate_nlg_quality.py`).
+  * Gateway Dinámico (.env): Implementación de un enrutador dinámico en 
+    `code/chat_agent.py` que lee la variable `CRMS_ARCH_VARIANT` de la 
+    configuración local para activar cualquiera de las arquitecturas de forma 
+    transparente a la aplicación.
+
+--------------------------------------------------------------------------------
+3. ALTERNATIVAS AL SISTEMA EVALUADAS (PARADIGMAS DE GENERACIÓN NLG)
+--------------------------------------------------------------------------------
+Se evaluaron tres paradigmas tecnológicos principales para la generación de la 
+respuesta (NLG) sobre un banco de pruebas de 7 casos de prueba críticos (Gold Cases):
+
+A) Reglas Deterministas / Plantillas Estáticas (Python básico):
+   * Descripción: Respuestas pre-programadas basadas en lógica condicional sobre 
+     los resultados directos de la base de datos Solr.
+   * Ventajas: Tiempo de respuesta inmediato (< 1 ms), 0% alucinaciones, 
+     fiabilidad total de datos.
+   * Inconvenientes: Respuestas rígidas, incapacidad de entender contextos 
+     semánticos de PDFs científicos, experiencia de usuario deficiente.
+
+B) LLM Local de parámetros reducidos (Qwen2.5-0.5B-Instruct ejecutado localmente):
+   * Descripción: Uso de un modelo open-source ligero en la CPU local del cliente 
+     para evitar llamadas externas y proteger la privacidad.
+   * Ventajas: Coste cero de API, soberanía de datos y ejecución sin conexión.
+   * Inconvenientes: Rendimiento inaceptable para producción. Tasa de éxito del 
+     14.3% (fallos constantes en la extracción de parámetros estructurados) y 
+     latencias muy elevadas (media de 24.8 segundos por consulta en CPU). Modelos 
+     más capaces (como Phi-3-mini) requerían más de 5 minutos por consulta.
+
+C) LLMs de Frontera Comerciales (OpenAI GPT-4o / Google Gemini 2.5 Pro):
+   * Descripción: Integración mediante llamadas API a modelos de gran tamaño.
+   * Ventajas: 100% de éxito en la resolución de consultas complejas, latencia 
+     muy baja (1.18 s en GPT-4o, 1.42 s en Gemini), excelente capacidad de 
+     razonamiento y síntesis textual.
+   * Inconvenientes: Coste económico de consumo de API y dependencia de 
+     conexión a servidores externos.
+
+--------------------------------------------------------------------------------
+4. EVALUACIÓN DE LAS 4 VARIANTES DE ARQUITECTURA DE INTEGRACIÓN LLM
+--------------------------------------------------------------------------------
+Se diseñaron, implementaron y probaron 4 variantes específicas para resolver 
+desafíos de estructuración, precisión y seguridad en el flujo de información:
+
+* Variante 1: Few-Shot Intent Classification & Closed API Schema
+  - Solución: System Prompt restrictivo con la definición exacta de los campos 
+    de la base de datos de Solr y 5 ejemplos detallados (Few-Shot) de traducción.
+  - Resultado: Mitiga la "alucinación de API" (que el LLM intente inventar campos 
+    de filtro o operadores lógicos inexistentes en Solr). Clasificación de 
+    intenciones altamente precisa.
+
+* Variante 2: Hybrid Search & Context Curation (Reranking)
+  - Solución: Combina la consulta léxica estructurada a Solr con una búsqueda 
+    vectorial (FAISS) de fragmentos relevantes en los PDFs. Aplica un Reranker 
+    basado en umbrales de score numéricos para eliminar la información insustancial.
+  - Resultado: Reduce el ruido del contexto inyectado al LLM. Optimiza el consumo 
+    de tokens de la ventana de contexto y disminuye los tiempos de respuesta.
+
+* Variante 3: Structured Responses & Schema Enforcement (responseSchema)
+  - Solución: Uso del modo estructurado nativo de las APIs de LLM (ej. 
+    `responseSchema` de Gemini) para obligar a que la respuesta del modelo 
+    cumpla un esquema JSON cerrado.
+  - Resultado: Garantía del 100% de que la respuesta del LLM sea parseable. 
+    Evita fallos y caídas en el front-end de la aplicación al pintar tablas o mapas.
+
+* Variante 4: Strict Context Grounding & Traceability (Citations)
+  - Solución: System Prompt extremadamente restrictivo que bloquea el conocimiento 
+    general del LLM (hallucination-proof). Si la base de datos no tiene registros, 
+    el sistema realiza una salida anticipada (early exit) con un mensaje de error 
+    determinado sin llamar al LLM. Además, obliga al modelo a estructurar un 
+    nodo `"fuentes"` con `"doc_id"`, `"seccion"` y `"score_confianza"`.
+  - Resultado: Evita la alucinación científica (no se inventan leyes de mineral 
+    o titularidad de escombreras). Proporciona trazabilidad completa para que el 
+    usuario pueda verificar la fuente del informe en PDF de donde procede el dato.
+
+--------------------------------------------------------------------------------
+5. RECOMENDACIÓN DE CARA AL PROYECTO (ARQUITECTURA HÍBRIDA FUSIONADA)
+--------------------------------------------------------------------------------
+Para el desarrollo definitivo e integración del RAG Geográfico en el espacio de 
+datos, los resultados demuestran que la mejor solución es una **Arquitectura 
+Híbrida Fusionada** que integre los mejores aspectos de cada variante probada:
+
+1. FASE DE ENTRADA (NLU): 
+   Usar la variante **v3 (JSON Schema)** con técnicas de **v1 (Few-Shot)**.
+   * Por qué: Asegura que el LLM traduzca la query del usuario a filtros 
+     estructurados compatibles con Solr sin inventar campos y garantizando un 
+     JSON estructuralmente perfecto para el backend.
+
+2. FASE DE RECUPERACIÓN (Retrieval): 
+   Usar la variante **v2 (Hybrid Search & Rerank)**.
+   * Por qué: Recupera metadatos consolidados del catálogo de escombreras en Solr 
+     y los enriquece con fragmentos vectoriales de los informes de estabilidad de 
+     los PDFs locales. El Reranker garantiza que solo se envíen los 3 fragmentos 
+     de mayor calidad, ahorrando tokens y reduciendo ruido.
+
+3. FASE DE SALIDA (NLG): 
+   Usar la variante **v4 (Strict Grounding & Citations)**.
+   * Por qué: Impide al LLM asumir o inventar datos ausentes de los documentos 
+     oficiales de cRMsDataSpace. Proporciona en la respuesta un nodo de citas 
+     estructurado que la aplicación web puede consumir para dibujar pins de 
+     coordenadas en el mapa GIS o mostrar enlaces de descarga directa al PDF de 
+     la fuente correspondiente.
+
+Esta propuesta de arquitectura fusionada minimiza costes de infraestructura,
+elimina alucinaciones sobre materias primas críticas y garantiza la integración 
+robusta con la interfaz cartográfica diseñada por el equipo del consorcio.
+================================================================================

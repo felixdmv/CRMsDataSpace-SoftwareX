@@ -1,0 +1,191 @@
+{
+  "provider": "local",
+  "timestamp": 1784020755.0062637,
+  "total_test_cases": 7,
+  "passed_test_cases": 1,
+  "success_rate": 0.1429,
+  "average_score": 0.4014,
+  "average_time_seconds": 24.83,
+  "results": [
+    {
+      "id": "TC_001",
+      "query": "Dime escombreras de carbón en Asturias",
+      "response_text": "Lo siento, pero parece que hay algún error en tu consulta original. No puedo encontrar información sobre escombreras de carbón en Asturias o cualquier otro país específico. Por favor, verifica si has introducido correctamente las fechas y las regiones solicitadas.",
+      "api_results_count": 0,
+      "evaluation": {
+        "site_accuracy": 0.0,
+        "matched_sites": [],
+        "missing_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo",
+          "La Casona"
+        ],
+        "keyword_accuracy": 0.6666666666666666,
+        "matched_keywords": [
+          "carbón",
+          "asturias"
+        ],
+        "missing_keywords": [
+          "hunosa"
+        ],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 0.27,
+        "status": "FAIL"
+      },
+      "elapsed_seconds": 49.96
+    },
+    {
+      "id": "TC_002",
+      "query": "Qué escombreras tiene HUNOSA?",
+      "response_text": "Lo siento, pero parece que hay algún error en tu consulta original. La base de datos proporcionada no incluye información sobre HUNOSA o las comorbilidades específicas relacionadas con escombreras. Por favor, verifica si has introducido correctamente los detalles necesarios para poder ayudarte mejor.",
+      "api_results_count": 0,
+      "evaluation": {
+        "site_accuracy": 0.0,
+        "matched_sites": [],
+        "missing_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo",
+          "La Casona"
+        ],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "hunosa"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 0.4,
+        "status": "FAIL"
+      },
+      "elapsed_seconds": 18.9
+    },
+    {
+      "id": "TC_003",
+      "query": "Busca el proyecto San Nicolás",
+      "response_text": "El proyecto San Nicolás no se encuentra en ninguna de las categorías especificadas en los filtros que has proporcionado. No puedo encontrar ningún proyecto relacionado con San Nicolás en la base de datos que ofrezcan material presas. Por favor, verifica si hay algún error o si necesitas más información adicional sobre este proyecto.",
+      "api_results_count": 0,
+      "evaluation": {
+        "site_accuracy": 0.0,
+        "matched_sites": [],
+        "missing_sites": [
+          "Arroyo de la Nicolasa"
+        ],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "nicolás"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 0.4,
+        "status": "FAIL"
+      },
+      "elapsed_seconds": 17.92
+    },
+    {
+      "id": "TC_004",
+      "query": "Hay escombreras sin restaurar con surgencias de agua?",
+      "response_text": "No hay información relevante en la base de datos que indique si hay escombreras sin restauración debido a surgencias de agua. Por lo tanto, no puedo ayudarte a responder a tu consulta.",
+      "api_results_count": 0,
+      "evaluation": {
+        "site_accuracy": 0.0,
+        "matched_sites": [],
+        "missing_sites": [
+          "Arroyo de la Nicolasa",
+          "Aguilar - Pumardongo",
+          "La Casona"
+        ],
+        "keyword_accuracy": 0.6666666666666666,
+        "matched_keywords": [
+          "agua",
+          "surgencia"
+        ],
+        "missing_keywords": [
+          "restaurar"
+        ],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 0.27,
+        "status": "FAIL"
+      },
+      "elapsed_seconds": 16.41
+    },
+    {
+      "id": "TC_005",
+      "query": "Dime escombreras de cobre en Andalucía",
+      "response_text": "Lo siento, pero parece que hay algún problema con la consulta original o con la base de datos proporcionada. No puedo encontrar información sobre escombreras de cobre en Andalucía. Por favor, verifica si has introducido correctamente los fuentes de datos y asegúrate de que las fechas sean correctas.",
+      "api_results_count": 0,
+      "evaluation": {
+        "site_accuracy": 0.0,
+        "matched_sites": [],
+        "missing_sites": [
+          "Riotinto Project"
+        ],
+        "keyword_accuracy": 0.6666666666666666,
+        "matched_keywords": [
+          "cobre",
+          "andalucía"
+        ],
+        "missing_keywords": [
+          "atalaya"
+        ],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 0.27,
+        "status": "FAIL"
+      },
+      "elapsed_seconds": 20.24
+    },
+    {
+      "id": "TC_006",
+      "query": "Busca escombreras de wolframio en Castilla y León",
+      "response_text": "Buscamos escombreras de wolframio en Castilla y León. Encontramos una muestra de información:\n\n- **Nombre del sitio**: Los Santos\n- **País**: España\n- **Región**: Castilla y León\n- **Latitud**: 40.55° N\n- **Longitud**: -5.79° E\n- **Comodidades**: Tungsten\n- **Material tipo**: Tungsteno\n- **Tipo de fábrica**: Mina de wolframio\n- **Estado actual**: Mantenimiento\n- **Empresa**: Almonty Industries\n- **Número de unidad de control**: E2\n- **Número de unidad de fabricación**: F2\n- **Número de unidad de gestión**: G2\n- **Características ambientales**: No especificadas\n- **Descripción**: Mina de wolframio en Salamanca. Actualmente en mantenimiento, estudiando re-procesamiento de estérités.\n\nEsperamos que esta información sea útil para tu búsqueda.",
+      "api_results_count": 1,
+      "evaluation": {
+        "site_accuracy": 1.0,
+        "matched_sites": [
+          "Los Santos"
+        ],
+        "missing_sites": [],
+        "keyword_accuracy": 1.0,
+        "matched_keywords": [
+          "wolframio",
+          "tungsteno",
+          "salamanca"
+        ],
+        "missing_keywords": [],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 1.0,
+        "status": "PASS"
+      },
+      "elapsed_seconds": 37.32
+    },
+    {
+      "id": "TC_007",
+      "query": "Hay proyectos de litio en Extremadura?",
+      "response_text": "No hay proyectos de litio en Extremadura actualmente.",
+      "api_results_count": 0,
+      "evaluation": {
+        "site_accuracy": 0.0,
+        "matched_sites": [],
+        "missing_sites": [
+          "San José Valdeflórez"
+        ],
+        "keyword_accuracy": 0.5,
+        "matched_keywords": [
+          "litio"
+        ],
+        "missing_keywords": [
+          "cáceres"
+        ],
+        "hallucinated_sites": [],
+        "has_hallucinations": false,
+        "score": 0.2,
+        "status": "FAIL"
+      },
+      "elapsed_seconds": 13.09
+    }
+  ]
+}

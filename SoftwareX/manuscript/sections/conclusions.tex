@@ -1,0 +1,8 @@
+\section{Conclusions}
+\label{sec:Conclusions}
+
+In this paper, we presented a modular, domain-agnostic open-source software architecture that connects conversational Natural Language Understanding (NLU), Apache Solr spatial indexing, and dynamic Geographic Information System (GIS) map visual synchronization. The architecture eliminates database schema hallucinations by coupling Few-Shot intent parsing with strict OpenAPI JSON Schema constraints evaluated under greedy decoding. 
+
+The software translates conversational spatial queries into structured Solr Boolean filter parameters, synchronizing visual filter badges and animated pulse markers across an interactive Leaflet web map. Validated within the European research project \textbf{CRMsDataSpace} as a demanding domain case study, empirical evaluation across 40 critical stress tests and 100 benchmark queries demonstrated superior extraction accuracy (96.6\% overall accuracy and 87.61\% macro F1-score), outperforming classical NLP rule engines and zero-shot entity recognizers while maintaining sub-second execution. Furthermore, the inclusion of a standalone mock execution mode and a synthetic 100-site dataset guarantees immediate reproducibility for academic reviewers without API key barriers.
+
+Future developments will focus on expanding the architecture toward multi-agent coordination, integrating Open Subsurface Data Universe (OSDU) standards for deep analytical modeling, and supporting dynamic raster layer overlays (GeoTIFF) directly within the conversational GIS feedback loop.
