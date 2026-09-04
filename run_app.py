@@ -1073,6 +1073,16 @@ class MyHandler(SimpleHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
 
+    def do_GET(self):
+        if self.path == '/api/sites':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(json.dumps(DATABASE_SITES).encode('utf-8'))
+        else:
+            super().do_GET()
+
     def do_POST(self):
         if self.path == '/api/chat':
             try:
