@@ -122,19 +122,29 @@ class SoftwareXHandler(SimpleHTTPRequestHandler):
 class SoftwareXHTTPServer(HTTPServer):
     allow_reuse_address = True
 
-def run_server(port=PORT):
-    server_address = ('', port)
+def run_server(port=PORT, host="0.0.0.0"):
+    import socket
+    try:
+        import torch
+        cuda_status = f"CUDA GPU ({torch.cuda.get_device_name(0)})" if torch.cuda.is_available() else "CPU Mode (WARNING: No GPU detected!)"
+    except Exception:
+        cuda_status = "CPU Mode (No GPU)"
+        
+    server_address = (host, port)
     httpd = SoftwareXHTTPServer(server_address, SoftwareXHandler)
-    url = f"http://localhost:{port}"
+    url = f"http://{socket.gethostname()}:{port}"
     print("=" * 60)
     print("  CRMs Data Space - SoftwareX Architecture Demonstrator")
-    print(f"  Server running live at: {url}")
+    print(f"  [INFO] Servidor Híbrido iniciado con éxito en {url}")
+    print(f"  [INFO] Modo de Inferencia: {cuda_status}")
+    print(f"  [INFO] Endpoint API REST en: http://{socket.gethostname()}:{port}/api/chat")
     print("  Press Ctrl+C to stop.")
     print("=" * 60)
+    sys.stdout.flush()
     
     # Optionally open web browser
     try:
-        webbrowser.open(url)
+        webbrowser.open(f"http://localhost:{port}")
     except Exception:
         pass
         
@@ -145,4 +155,9 @@ def run_server(port=PORT):
         httpd.server_close()
 
 if __name__ == "__main__":
-    run_server()
+    import argparse
+    parser = argparse.ArgumentParser(description="SoftwareX Web Application Server")
+    parser.add_argument("--port", type=int, default=PORT, help="Port to listen on")
+    parser.add_argument("--host", type=str, default="0.0.0.0", help="Host interface to bind")
+    args = parser.parse_args()
+    run_server(port=args.port, host=args.host)
