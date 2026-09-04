@@ -1,0 +1,18 @@
+
+========================================================================
+  SOFTWAREX BENCHMARK EVALUATION REPORT (100 TEST CASES)
+========================================================================
+Provider Evaluated: MOCK
+Total Test Queries: 100
+
+1. INTENT CLASSIFICATION ACCURACY:
+   - Intent Accuracy: 85.00% (85/100)
+
+2. FIELD EXTRACTION METRICS (PRECISION / RECALL / F1-SCORE):
+   - Countries:         Precision: 100.00% | Recall: 100.00% | F1-Score: 100.00%
+   - Commodities (CRMs): Precision: 100.00% | Recall: 100.00% | F1-Score: 100.00%
+   - Facility Types:    Precision: 63.64% | Recall: 100.00% | F1-Score: 77.78%
+   - Project Status:    Precision: 63.64% | Recall: 100.00% | F1-Score: 77.78%
+
+OVERALL AVERAGE F1-SCORE: 88.89%
+========================================================================

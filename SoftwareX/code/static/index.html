@@ -1,0 +1,4070 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRMsDataSpace Explorer — Conversational NLU & GIS Spatial Search</title>
+  <meta name="description" content="SoftwareX demonstrator: Decoupled NLU-Solr software architecture with Leaflet.js GIS map visual synchronization for Critical Raw Materials data spaces.">
+
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Leaflet.js CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            geodark: {
+              bg: '#0a0d18',
+              card: '#0f1424',
+              border: '#1e293b',
+              accent: '#059669',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0d18; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+    /* Map Marker Pulse Animation */
+    @keyframes marker-pulse-emerald {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    @keyframes marker-pulse-gold {
+      0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); }
+      70% { box-shadow: 0 0 0 12px rgba(251, 191, 36, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+    }
+    .marker-pulse-emerald { animation: marker-pulse-emerald 2s infinite; }
+    .marker-pulse-gold { animation: marker-pulse-gold 2s infinite; }
+    .marker-circle-hover:hover { transform: scale(1.35); box-shadow: 0 0 24px #ffffff !important; z-index: 999; }
+    .leaflet-container { background: #070a13 !important; }
+  </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-100 bg-[#060811] antialiased select-none">
+
+  <!-- ==========================================
+      HEADER BAR
+      ========================================== -->
+  <header class="h-14 bg-[#0a0e1c] border-b border-geodark-border px-4 flex items-center justify-between shrink-0 shadow-md relative z-20">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-between p-1.5 shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.5a2.5 2.5 0 002.5-2.5V11a2 2 0 012-2h1.065M12 2a10 10 0 100 20 10 10 0 000-20z" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="font-bold text-sm text-slate-100 tracking-wide flex items-center gap-2">
+          CRMsDataSpace Explorer
+          <span class="text-[10px] font-mono font-normal bg-emerald-950 text-emerald-400 border border-emerald-800/80 px-2 py-0.5 rounded">
+            SoftwareX Reference Architecture v1.0.0
+          </span>
+        </h1>
+        <p class="text-[10.5px] text-slate-400 font-medium">Conversational NLU & Solr Spatial Filtering for European Critical Raw Materials</p>
+      </div>
+    </div>
+
+    <!-- Active Filter Badges over Map Header -->
+    <div id="active-filters-container" class="hidden md:flex items-center gap-2 bg-slate-950/80 border border-slate-800/80 px-3 py-1.5 rounded-lg max-w-xl">
+      <span class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold shrink-0">Active GIS Filters:</span>
+      <div id="active-filters-badges" class="flex items-center gap-1.5 overflow-x-auto text-[10.5px]">
+        <span class="text-slate-500 italic text-[10px]">No active filters (Showing full European Data Space)</span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div id="site-counter-display" class="text-[11px] font-mono font-semibold text-emerald-400 bg-emerald-950/50 border border-emerald-900/50 px-3 py-1.5 rounded-md hidden sm:block">
+        Showing 100 / 100 European Sites
+      </div>
+      
+      <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-md">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="text-slate-400 text-[10px]">Mode:</span>
+        <span id="current-model-indicator" class="text-emerald-400 font-bold text-[10px] uppercase">Standalone Engine</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================
+      MAIN CONTENT CONTAINER
+      ========================================== -->
+  <main class="flex-1 flex flex-col overflow-hidden relative">
+    
+    <!-- Middle: Horizontal split Panels (Chat | Map & Technical) -->
+    <div class="flex-1 flex flex-row overflow-hidden">
+      
+      <!-- ==========================================
+          LEFT PANEL: CHAT & EVIDENCES (50%)
+          ========================================== -->
+      <section class="w-1/2 h-full flex flex-col border-r border-geodark-border bg-[#0a0d18] relative z-10">
+        
+        <!-- Reviewer Test Bench Bar -->
+        <div class="p-3 bg-[#0d1222] border-b border-geodark-border flex flex-col gap-1.5 shadow-sm">
+          <div class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            Reviewer Test Bench (Preset Benchmark Queries)
+          </div>
+          
+          <div class="grid grid-cols-3 gap-2">
+            <button 
+              id="btn-scenario-1"
+              onclick="runScenario('query_1')"
+              class="text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-geodark-card border-geodark-border hover:border-slate-600 text-slate-300"
+            >
+              <span class="font-semibold block text-emerald-400 mb-1">Test 1: Active Li & Co</span>
+              <span class="text-slate-400 text-[10px]">Lithium and Cobalt active sites in Spain & Finland</span>
+            </button>
+            
+            <button 
+              id="btn-scenario-2"
+              onclick="runScenario('query_2')"
+              class="text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-geodark-card border-geodark-border hover:border-slate-600 text-slate-300"
+            >
+              <span class="font-semibold block text-amber-400 mb-1">Test 2: Tungsten Ponds</span>
+              <span class="text-slate-400 text-[10px]">Unrestored tungsten ponds in Germany</span>
+            </button>
+
+            <button 
+              id="btn-scenario-3"
+              onclick="runScenario('query_3')"
+              class="text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-geodark-card border-geodark-border hover:border-slate-600 text-slate-300"
+            >
+              <span class="font-semibold block text-blue-400 mb-1">Test 3: REE Deposits</span>
+              <span class="text-slate-400 text-[10px]">Rare Earth Elements in Sweden & France</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Feed Window -->
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-[#080b14]">
+          
+          <!-- Welcome Message -->
+          <div class="flex justify-start mb-4">
+            <div class="max-w-[90%] bg-slate-900 border border-slate-800 text-slate-200 text-xs px-4 py-3 rounded-xl rounded-tl-none shadow-lg">
+              <div class="font-bold text-emerald-400 text-xs mb-1">👋 Welcome to CRMsDataSpace Explorer</div>
+              <p class="text-slate-300 leading-relaxed">
+                This conversational assistant allows domain experts and scientific reviewers to query the European Critical Raw Materials Data Space using natural language.
+              </p>
+              <div class="mt-2.5 pt-2.5 border-t border-slate-800/80 text-[11px] text-slate-400">
+                <span class="font-semibold text-slate-200">Try asking:</span>
+                <ul class="list-disc list-inside mt-1 space-y-0.5 text-emerald-300 font-mono text-[10.5px]">
+                  <li>"Show active lithium and cobalt waste dumps in Spain and Finland"</li>
+                  <li>"Unrestored tungsten tailings ponds in Germany"</li>
+                  <li>"Rare Earth Elements (REE) facilities in Sweden"</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Input Bar with integrated LLM Provider Selector right next to query box -->
+        <form onsubmit="event.preventDefault(); handleCustomSubmit(event); return false;" class="p-3 bg-[#0d1222] border-t border-geodark-border flex flex-col gap-2 shrink-0 z-10">
+          <div class="flex items-center gap-2 w-full">
+            <!-- LLM Provider Selector -->
+            <select 
+              id="llm-provider-select" 
+              onchange="changeLLMProvider(this.value)" 
+              class="bg-slate-950 border border-emerald-500/80 hover:border-emerald-400 text-emerald-400 font-bold text-[11px] px-2 py-2 rounded-lg focus:outline-none cursor-pointer transition-all shadow-md shrink-0"
+              title="Execution Engine Mode"
+            >
+              <option value="rules">⚡ Baseline Reglas / WARM (Mock)</option>
+              <option value="qwen">🚀 Qwen 2.5 7B (Local GPU)</option>
+              <option value="llama">🦙 Llama 3.2 3B (Local GPU)</option>
+              <option value="deepseek">🐋 DeepSeek R1 7B (Local GPU)</option>
+              <option value="phi3">🔬 Phi-3 Mini 4K (Local GPU)</option>
+              <option value="gemma">💎 Gemma 2 2B (Local GPU)</option>
+              <option value="gemini">✨ Gemini 2.0 / 1.5 (Cloud API)</option>
+              <option value="openai">🤖 OpenAI GPT-4o (Cloud API)</option>
+            </select>
+
+            <input 
+              type="text" 
+              id="chat-input"
+              placeholder="Enter spatial query (e.g. 'Active lithium tailings in Spain & Finland')..." 
+              class="flex-1 bg-slate-950 border border-geodark-border rounded-lg px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500/80"
+            />
+
+            <button type="button" onclick="sendChatMessage()" class="bg-emerald-600 hover:bg-emerald-500 border border-emerald-500/20 text-white font-medium text-xs px-4 py-2 rounded-lg transition-all flex items-center gap-1.5 shrink-0"
+            >
+              <span>Send</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- API Key Input Field (Hidden by default in Standalone Mode) -->
+          <div id="api-key-container" class="hidden flex items-center gap-2 bg-slate-950 p-2 border border-slate-800 rounded-lg">
+            <span class="text-[10px] text-amber-400 font-semibold shrink-0">API Key:</span>
+            <input 
+              type="password" 
+              id="api-key-input" 
+              placeholder="Enter optional Gemini / OpenAI API Key..." 
+              class="flex-1 bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-[10.5px] text-slate-200 focus:border-emerald-500 focus:outline-none" 
+            />
+            <button type="button" onclick="saveAPIKey()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-[10px] px-3 py-1 rounded transition-all shrink-0">
+              Save Key
+            </button>
+          </div>
+        </form>
+
+      </section>
+
+      <!-- ==========================================
+          RIGHT PANEL: MAP & INFORMATION (50%)
+          ========================================== -->
+      <section class="w-1/2 h-full flex flex-col relative">
+        
+        <!-- Leaflet Map Area -->
+        <div class="flex-1 relative border-b border-geodark-border overflow-hidden">
+          <div id="map" class="w-full h-full bg-[#070a13]"></div>
+          
+          <!-- Floating Manual Filters Widget on Map Right Side -->
+          <div id="manual-filter-widget" class="absolute top-3 right-3 z-[1000] bg-slate-900/95 border border-slate-800 backdrop-blur-md rounded-xl p-3 shadow-2xl w-72 pointer-events-auto">
+            <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-800">
+              <span class="text-[10.5px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                🎛️ Spatial & Attribute Filters
+              </span>
+              <button type="button" onclick="resetManualFilters()" class="text-[9.5px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-2 py-0.5 rounded transition-all">
+                Reset All
+              </button>
+            </div>
+            
+            <div class="space-y-2.5 text-[10.5px]">
+              <!-- Country Multi-Select -->
+              <div class="relative">
+                <div class="flex items-center justify-between mb-0.5">
+                  <label class="text-[9.5px] text-slate-400 font-semibold">Country (Europe):</label>
+                  <span id="count-selected-countries" class="text-[9px] text-emerald-400 font-mono">All</span>
+                </div>
+                <button type="button" onclick="toggleFilterMenu('country')" class="w-full bg-slate-950 border border-slate-800 hover:border-slate-700 rounded px-2.5 py-1.5 text-left text-slate-200 flex items-center justify-between text-[11px] focus:outline-none">
+                  <span id="label-selected-countries" class="truncate">All European Countries</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div id="pills-selected-countries" class="flex flex-wrap gap-1 mt-1 empty:hidden"></div>
+                <div id="dropdown-menu-country" class="hidden absolute left-0 right-0 z-50 mt-1 bg-slate-950 border border-slate-700 rounded-lg p-2 max-h-40 overflow-y-auto space-y-1 shadow-2xl">
+                  <div class="grid grid-cols-2 gap-1 text-[10px]">
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="spain" onchange="toggleManualCheckbox('countries', 'spain')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Spain</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="portugal" onchange="toggleManualCheckbox('countries', 'portugal')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Portugal</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="germany" onchange="toggleManualCheckbox('countries', 'germany')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Germany</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="france" onchange="toggleManualCheckbox('countries', 'france')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>France</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="sweden" onchange="toggleManualCheckbox('countries', 'sweden')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Sweden</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="finland" onchange="toggleManualCheckbox('countries', 'finland')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Finland</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="poland" onchange="toggleManualCheckbox('countries', 'poland')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Poland</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="italy" onchange="toggleManualCheckbox('countries', 'italy')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Italy</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="austria" onchange="toggleManualCheckbox('countries', 'austria')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Austria</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="greece" onchange="toggleManualCheckbox('countries', 'greece')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Greece</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="ireland" onchange="toggleManualCheckbox('countries', 'ireland')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Ireland</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="czechia" onchange="toggleManualCheckbox('countries', 'czechia')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span>Czechia</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Commodity Multi-Select -->
+              <div class="relative">
+                <div class="flex items-center justify-between mb-0.5">
+                  <label class="text-[9.5px] text-slate-400 font-semibold">CRM Metal / Commodity:</label>
+                  <span id="count-selected-commodities" class="text-[9px] text-amber-400 font-mono">All</span>
+                </div>
+                <button type="button" onclick="toggleFilterMenu('commodity')" class="w-full bg-slate-950 border border-slate-800 hover:border-slate-700 rounded px-2.5 py-1.5 text-left text-slate-200 flex items-center justify-between text-[11px] focus:outline-none">
+                  <span id="label-selected-commodities" class="truncate">All Critical Raw Materials</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div id="pills-selected-commodities" class="flex flex-wrap gap-1 mt-1 empty:hidden"></div>
+                <div id="dropdown-menu-commodity" class="hidden absolute left-0 right-0 z-50 mt-1 bg-slate-950 border border-slate-700 rounded-lg p-2 max-h-40 overflow-y-auto space-y-1 shadow-2xl">
+                  <div class="grid grid-cols-2 gap-1 text-[10px]">
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="tungsten" onchange="toggleManualCheckbox('commodities', 'tungsten')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Tungsten (W)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="lithium" onchange="toggleManualCheckbox('commodities', 'lithium')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Lithium (Li)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="cobalt" onchange="toggleManualCheckbox('commodities', 'cobalt')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Cobalt (Co)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="copper" onchange="toggleManualCheckbox('commodities', 'copper')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Copper (Cu)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="rare earth elements" onchange="toggleManualCheckbox('commodities', 'rare earth elements')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Rare Earth (REE)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="nickel" onchange="toggleManualCheckbox('commodities', 'nickel')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Nickel (Ni)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="tin" onchange="toggleManualCheckbox('commodities', 'tin')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Tin (Sn)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="tantalum" onchange="toggleManualCheckbox('commodities', 'tantalum')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Tantalum (Ta)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="graphite" onchange="toggleManualCheckbox('commodities', 'graphite')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Graphite</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="titanium" onchange="toggleManualCheckbox('commodities', 'titanium')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Titanium (Ti)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="pge" onchange="toggleManualCheckbox('commodities', 'pge')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>PGE (Pt)</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="manganese" onchange="toggleManualCheckbox('commodities', 'manganese')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
+                      <span>Manganese (Mn)</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Storage Facility Type -->
+              <div>
+                <div class="flex items-center justify-between mb-0.5">
+                  <label class="text-[9.5px] text-slate-400 font-semibold">Storage Facility Type:</label>
+                  <span id="count-selected-facilities" class="text-[9px] text-slate-400 font-mono">All</span>
+                </div>
+                <select id="manual-filter-facility" onchange="handleSelectFacility(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none text-[11px]">
+                  <option value="">All Facility Types</option>
+                  <option value="waste dump">Waste Dump</option>
+                  <option value="tailings storage facility">Tailings Storage Facility (TSF)</option>
+                  <option value="stockpile">Mineral Stockpile</option>
+                  <option value="pond">Settling Pond</option>
+                </select>
+              </div>
+
+              <!-- Operational Status -->
+              <div>
+                <div class="flex items-center justify-between mb-0.5">
+                  <label class="text-[9.5px] text-slate-400 font-semibold">Operational Status:</label>
+                  <span id="count-selected-statuses" class="text-[9px] text-slate-400 font-mono">All</span>
+                </div>
+                <select id="manual-filter-status" onchange="handleSelectStatus(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none text-[11px]">
+                  <option value="">All Statuses</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="development">Under Development</option>
+                  <option value="care and maintenance">Care & Maintenance</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Map floating legend -->
+          <div class="absolute bottom-3 left-3 bg-geodark-card/90 border border-geodark-border/80 backdrop-blur-md rounded-lg p-2.5 text-[11px] text-slate-300 z-[1000] shadow-xl pointer-events-auto">
+            <h5 class="font-bold text-slate-200 mb-1.5 flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+              </svg>
+              CRM Category Legend
+            </h5>
+            <div class="space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 border border-white inline-block"></span>
+                <span>Tungsten / Tin / Base (W, Sn)</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-white inline-block"></span>
+                <span>Battery Metals (Lithium, Cobalt)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Technical Information Panel (Selected Facility Specifications) -->
+        <div id="ficha-container" class="h-[235px] bg-[#090d15] p-3.5 overflow-y-auto shrink-0 flex flex-col border-t border-geodark-border shadow-inner">
+          <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-800">
+            <h3 id="site-name" class="font-bold text-sm text-emerald-400">Select a facility marker on the map</h3>
+            <span id="site-status" class="text-[10px] font-mono px-2 py-0.5 rounded border border-emerald-800 text-emerald-400 bg-emerald-950">ACTIVE</span>
+          </div>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 text-[11px] mb-2.5">
+            <div><span class="text-slate-400 block text-[9.5px]">Operator:</span><span id="site-company" class="font-medium text-slate-200">EU Operator</span></div>
+            <div><span class="text-slate-400 block text-[9.5px]">Location:</span><span id="site-region" class="font-medium text-slate-200">Europe</span></div>
+            <div><span class="text-slate-400 block text-[9.5px]">Commodities:</span><span id="site-commodities" class="font-medium text-amber-300">Lithium, Cobalt</span></div>
+            <div><span class="text-slate-400 block text-[9.5px]">UNFC Code:</span><span id="site-unfc" class="font-mono text-emerald-400">UNFC E1-F2-G1</span></div>
+          </div>
+          <div class="text-[11px] text-slate-300 leading-relaxed">
+            <span class="text-slate-400 block text-[9.5px] mb-0.5">Technical Overview:</span>
+            <p id="site-description" class="text-slate-300">Click any site marker on the interactive Europe map to view detailed facility specifications, UNFC classifications, and geo-environmental flags.</p>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- ==========================================
+        BOTTOM PANEL: APACHE SOLR ENGINE INSPECTOR
+        ========================================== -->
+    <div id="bottom-panel" class="border-t border-geodark-border transition-all duration-300 relative bg-[#070a12] flex flex-col shrink-0 h-[250px]">
+      
+      <!-- Drawer Header Bar -->
+      <div 
+        onclick="toggleBottomPanel()"
+        class="h-9 bg-[#0b0e1b] px-4 flex items-center justify-between cursor-pointer border-b border-geodark-border hover:bg-slate-900/80 transition-all select-none"
+      >
+        <div class="flex items-center gap-2 text-xs">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+          </span>
+          <span class="font-bold text-slate-200 flex items-center gap-2">
+            Apache Solr Engine Inspector 
+            <span class="text-[10px] font-normal text-slate-500 font-mono">
+              (NLU Pipeline & Search Audit Drawer)
+            </span>
+          </span>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <!-- Inspector Tabs -->
+          <div id="inspector-tabs" class="flex bg-slate-950 p-0.5 rounded border border-slate-800" onclick="event.stopPropagation()">
+            <button 
+              type="button"
+              id="tab-query"
+              onclick="switchInspectorTab('query')"
+              class="px-3 py-1 rounded text-[10px] font-semibold transition-all bg-slate-800 text-emerald-400"
+            >
+              Solr Query Syntax (q, fq)
+            </button>
+            <button 
+              type="button"
+              id="tab-facets"
+              onclick="switchInspectorTab('facets')"
+              class="px-3 py-1 rounded text-[10px] font-semibold transition-all text-slate-400 hover:text-slate-200"
+            >
+              Facet Counts
+            </button>
+            <button 
+              type="button"
+              id="tab-ner"
+              onclick="switchInspectorTab('ner')"
+              class="px-3 py-1 rounded text-[10px] font-semibold transition-all text-slate-400 hover:text-slate-200"
+            >
+              NLU Extracted JSON
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drawer Content -->
+      <div class="flex-1 p-3 overflow-y-auto font-mono text-xs">
+        <div id="inspector-query-content" class="h-full">
+          <pre id="inspector-query-code" class="text-amber-300 text-[11px] leading-relaxed">{
+  "info": "Submit a conversational query above or click a preset test case to inspect generated Apache Solr search parameters."
+}</pre>
+        </div>
+
+        <div id="inspector-facets-content" class="h-full hidden">
+          <pre id="inspector-facets-code" class="text-emerald-300 text-[11px] leading-relaxed">{
+  "info": "Facet distributions (country counts, commodity breakdown, status) will be displayed here."
+}</pre>
+        </div>
+
+        <div id="inspector-ner-content" class="h-full hidden">
+          <pre id="inspector-ner-code" class="text-blue-300 text-[11px] leading-relaxed">{
+  "info": "Structured JSON contract extracted by Dual-Variant NLU Engine (v1 Few-Shot / v3 OpenAPI Schema)."
+}</pre>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+  <!-- ==========================================
+      JAVASCRIPT LOGIC (PURE VANILLA)
+      ========================================== -->
+  <script>
+    // ==========================================
+    // DATASET: 100 Synthetic European CRM Facilities
+    // ==========================================
+    let MINING_SITES = [
+  {
+    "id": "EU-CRM-001",
+    "site_name": "Styria Lithium Waste Dump #01",
+    "company": "Alpine Mining Corp GmbH",
+    "country": "austria",
+    "country_name": "Austria",
+    "region": "Styria",
+    "province": "Styria",
+    "municipality": "Styria Lithium Waste Dump #01",
+    "lat": 47.3837,
+    "lon": 14.33,
+    "commodities": [
+      "lithium"
+    ],
+    "commodities_label": "Lithium",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "tailings",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "12.88 MT",
+    "description": "Synthetic EU CRM storage site located in Styria, Austria. Contains estimated 12.88 MT of tailings rich in Lithium with average grade of 0.07%. Managed by Alpine Mining Corp GmbH under active status.",
+    "environmental_flags": [
+      "not restored"
+    ],
+    "unfc_code": "E3-F3-G2",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-002",
+    "site_name": "Norrbotten Tungsten (Wolfram) Waste Dump #02",
+    "company": "Danube Resources Sp. z o.o.",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Norrbotten",
+    "province": "Norrbotten",
+    "municipality": "Norrbotten Tungsten (Wolfram) Waste Dump #02",
+    "lat": 65.9675,
+    "lon": 20.0134,
+    "commodities": [
+      "tungsten"
+    ],
+    "commodities_label": "Tungsten (Wolfram)",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "slag",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "6.98 MT",
+    "description": "Synthetic EU CRM storage site located in Norrbotten, Sweden. Contains estimated 6.98 MT of slag rich in Tungsten (Wolfram) with average grade of 0.1%. Managed by Danube Resources Sp. z o.o. under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F3-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-003",
+    "site_name": "Bergslagen Titanium Tailings Storage Facility #03",
+    "company": "Nordic Minerals Ltd",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Bergslagen",
+    "province": "Bergslagen",
+    "municipality": "Bergslagen Titanium Tailings Storage Facility #03",
+    "lat": 60.5365,
+    "lon": 15.8181,
+    "commodities": [
+      "titanium",
+      "copper"
+    ],
+    "commodities_label": "Titanium, Copper",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "tailings",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "7.31 MT",
+    "description": "Synthetic EU CRM storage site located in Bergslagen, Sweden. Contains estimated 7.31 MT of tailings rich in Titanium, Copper with average grade of 700 ppm. Managed by Nordic Minerals Ltd under inactive status.",
+    "environmental_flags": [
+      "water emergence"
+    ],
+    "unfc_code": "E1-F3-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-004",
+    "site_name": "Alentejo Platinum Group Elements Waste Dump #04",
+    "company": "Etrurian Green Metals Sp. z o.o.",
+    "country": "portugal",
+    "country_name": "Portugal",
+    "region": "Alentejo",
+    "province": "Alentejo",
+    "municipality": "Alentejo Platinum Group Elements Waste Dump #04",
+    "lat": 38.8814,
+    "lon": -8.0391,
+    "commodities": [
+      "pge",
+      "tungsten"
+    ],
+    "commodities_label": "Platinum Group Elements, Tungsten (Wolfram)",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "slag",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "5.88 MT",
+    "description": "Synthetic EU CRM storage site located in Alentejo, Portugal. Contains estimated 5.88 MT of slag rich in Platinum Group Elements, Tungsten (Wolfram) with average grade of 382 ppm. Managed by Etrurian Green Metals Sp. z o.o. under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-005",
+    "site_name": "Leinster Rare Earth Elements Pond #05",
+    "company": "Celtic Metals Ltd NV",
+    "country": "ireland",
+    "country_name": "Ireland",
+    "region": "Leinster",
+    "province": "Leinster",
+    "municipality": "Leinster Rare Earth Elements Pond #05",
+    "lat": 53.1532,
+    "lon": -7.3762,
+    "commodities": [
+      "rare earth elements",
+      "manganese"
+    ],
+    "commodities_label": "Rare Earth Elements, Manganese",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "slag",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "14.82 MT",
+    "description": "Synthetic EU CRM storage site located in Leinster, Ireland. Contains estimated 14.82 MT of slag rich in Rare Earth Elements, Manganese with average grade of 647 ppm. Managed by Celtic Metals Ltd NV under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F2-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-006",
+    "site_name": "Norte Cobalt Pond #06",
+    "company": "Celtic Metals Ltd Sp. z o.o.",
+    "country": "portugal",
+    "country_name": "Portugal",
+    "region": "Norte",
+    "province": "Norte",
+    "municipality": "Norte Cobalt Pond #06",
+    "lat": 41.353,
+    "lon": -7.7946,
+    "commodities": [
+      "cobalt",
+      "rare earth elements"
+    ],
+    "commodities_label": "Cobalt, Rare Earth Elements",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "tailings",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "21.59 MT",
+    "description": "Synthetic EU CRM storage site located in Norte, Portugal. Contains estimated 21.59 MT of tailings rich in Cobalt, Rare Earth Elements with average grade of 61 ppm. Managed by Celtic Metals Ltd Sp. z o.o. under development status.",
+    "environmental_flags": [
+      "monitored seepage",
+      "acid mine drainage potential"
+    ],
+    "unfc_code": "E3-F3-G2",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-007",
+    "site_name": "Vasterbotten Tungsten (Wolfram) Stockpile #07",
+    "company": "Baltic Minerals GmbH",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Vasterbotten",
+    "province": "Vasterbotten",
+    "municipality": "Vasterbotten Tungsten (Wolfram) Stockpile #07",
+    "lat": 64.1292,
+    "lon": 19.0176,
+    "commodities": [
+      "tungsten"
+    ],
+    "commodities_label": "Tungsten (Wolfram)",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "slag",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "4.24 MT",
+    "description": "Synthetic EU CRM storage site located in Vasterbotten, Sweden. Contains estimated 4.24 MT of slag rich in Tungsten (Wolfram) with average grade of 1.38%. Managed by Baltic Minerals GmbH under active status.",
+    "environmental_flags": [
+      "high stability risk",
+      "acid mine drainage potential"
+    ],
+    "unfc_code": "E3-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-008",
+    "site_name": "Norrbotten Lithium Tailings Storage Facility #08",
+    "company": "Iberian CRMs GmbH",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Norrbotten",
+    "province": "Norrbotten",
+    "municipality": "Norrbotten Lithium Tailings Storage Facility #08",
+    "lat": 66.6048,
+    "lon": 20.7534,
+    "commodities": [
+      "lithium",
+      "nickel"
+    ],
+    "commodities_label": "Lithium, Nickel",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "tailings",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "16.66 MT",
+    "description": "Synthetic EU CRM storage site located in Norrbotten, Sweden. Contains estimated 16.66 MT of tailings rich in Lithium, Nickel with average grade of 1.71%. Managed by Iberian CRMs GmbH under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F2-G3",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-009",
+    "site_name": "Central Macedonia Manganese Stockpile #09",
+    "company": "EuroResources Sp. z o.o.",
+    "country": "greece",
+    "country_name": "Greece",
+    "region": "Central Macedonia",
+    "province": "Central Macedonia",
+    "municipality": "Central Macedonia Manganese Stockpile #09",
+    "lat": 40.6323,
+    "lon": 23.2482,
+    "commodities": [
+      "manganese"
+    ],
+    "commodities_label": "Manganese",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "sludge",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "14.07 MT",
+    "description": "Synthetic EU CRM storage site located in Central Macedonia, Greece. Contains estimated 14.07 MT of sludge rich in Manganese with average grade of 652 ppm. Managed by EuroResources Sp. z o.o. under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F1-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-010",
+    "site_name": "Auvergne-Rhone-Alpes Lithium Waste Dump #10",
+    "company": "Baltic Minerals Sp. z o.o.",
+    "country": "france",
+    "country_name": "France",
+    "region": "Auvergne-Rhone-Alpes",
+    "province": "Auvergne-Rhone-Alpes",
+    "municipality": "Auvergne-Rhone-Alpes Lithium Waste Dump #10",
+    "lat": 45.9285,
+    "lon": 4.311,
+    "commodities": [
+      "lithium"
+    ],
+    "commodities_label": "Lithium",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "waste rock",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "12.08 MT",
+    "description": "Synthetic EU CRM storage site located in Auvergne-Rhone-Alpes, France. Contains estimated 12.08 MT of waste rock rich in Lithium with average grade of 1.42%. Managed by Baltic Minerals Sp. z o.o. under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F1-G1",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-011",
+    "site_name": "Kainuu Tin Tailings Storage Facility #11",
+    "company": "Nordic Minerals GmbH",
+    "country": "finland",
+    "country_name": "Finland",
+    "region": "Kainuu",
+    "province": "Kainuu",
+    "municipality": "Kainuu Tin Tailings Storage Facility #11",
+    "lat": 64.8252,
+    "lon": 28.8567,
+    "commodities": [
+      "tin",
+      "graphite"
+    ],
+    "commodities_label": "Tin, Natural Graphite",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "tailings",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "5.19 MT",
+    "description": "Synthetic EU CRM storage site located in Kainuu, Finland. Contains estimated 5.19 MT of tailings rich in Tin, Natural Graphite with average grade of 0.97%. Managed by Nordic Minerals GmbH under active status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F2-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-012",
+    "site_name": "Norte Platinum Group Elements Tailings Storage Facility #12",
+    "company": "Silesia CRM Group SA",
+    "country": "portugal",
+    "country_name": "Portugal",
+    "region": "Norte",
+    "province": "Norte",
+    "municipality": "Norte Platinum Group Elements Tailings Storage Facility #12",
+    "lat": 41.4382,
+    "lon": -8.1445,
+    "commodities": [
+      "pge",
+      "graphite"
+    ],
+    "commodities_label": "Platinum Group Elements, Natural Graphite",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "slag",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "4.53 MT",
+    "description": "Synthetic EU CRM storage site located in Norte, Portugal. Contains estimated 4.53 MT of slag rich in Platinum Group Elements, Natural Graphite with average grade of 52 ppm. Managed by Silesia CRM Group SA under inactive status.",
+    "environmental_flags": [
+      "social opposition",
+      "not restored"
+    ],
+    "unfc_code": "E2-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-013",
+    "site_name": "Carinthia Tungsten (Wolfram) Tailings Storage Facility #13",
+    "company": "Trans-European Raw Materials GmbH",
+    "country": "austria",
+    "country_name": "Austria",
+    "region": "Carinthia",
+    "province": "Carinthia",
+    "municipality": "Carinthia Tungsten (Wolfram) Tailings Storage Facility #13",
+    "lat": 46.9829,
+    "lon": 13.9703,
+    "commodities": [
+      "tungsten"
+    ],
+    "commodities_label": "Tungsten (Wolfram)",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "tailings",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "1.89 MT",
+    "description": "Synthetic EU CRM storage site located in Carinthia, Austria. Contains estimated 1.89 MT of tailings rich in Tungsten (Wolfram) with average grade of 0.92%. Managed by Trans-European Raw Materials GmbH under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F1-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-014",
+    "site_name": "Lower Silesia Titanium Tailings Storage Facility #14",
+    "company": "Celtic Metals Ltd GmbH",
+    "country": "poland",
+    "country_name": "Poland",
+    "region": "Lower Silesia",
+    "province": "Lower Silesia",
+    "municipality": "Lower Silesia Titanium Tailings Storage Facility #14",
+    "lat": 50.8464,
+    "lon": 16.0161,
+    "commodities": [
+      "titanium",
+      "rare earth elements"
+    ],
+    "commodities_label": "Titanium, Rare Earth Elements",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "tailings",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "16.91 MT",
+    "description": "Synthetic EU CRM storage site located in Lower Silesia, Poland. Contains estimated 16.91 MT of tailings rich in Titanium, Rare Earth Elements with average grade of 371 ppm. Managed by Celtic Metals Ltd GmbH under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F3-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-015",
+    "site_name": "Norte Tantalum & Niobium Tailings Storage Facility #15",
+    "company": "Nordic Minerals GmbH",
+    "country": "portugal",
+    "country_name": "Portugal",
+    "region": "Norte",
+    "province": "Norte",
+    "municipality": "Norte Tantalum & Niobium Tailings Storage Facility #15",
+    "lat": 41.7932,
+    "lon": -7.6963,
+    "commodities": [
+      "tantalum",
+      "pge"
+    ],
+    "commodities_label": "Tantalum & Niobium, Platinum Group Elements",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "tailings",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "9.55 MT",
+    "description": "Synthetic EU CRM storage site located in Norte, Portugal. Contains estimated 9.55 MT of tailings rich in Tantalum & Niobium, Platinum Group Elements with average grade of 211 ppm. Managed by Nordic Minerals GmbH under inactive status.",
+    "environmental_flags": [
+      "high stability risk",
+      "not restored"
+    ],
+    "unfc_code": "E3-F3-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-016",
+    "site_name": "Bergslagen Cobalt Tailings Storage Facility #16",
+    "company": "Alpine Mining Corp NV",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Bergslagen",
+    "province": "Bergslagen",
+    "municipality": "Bergslagen Cobalt Tailings Storage Facility #16",
+    "lat": 60.6071,
+    "lon": 15.9135,
+    "commodities": [
+      "cobalt"
+    ],
+    "commodities_label": "Cobalt",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "slag",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "16.04 MT",
+    "description": "Synthetic EU CRM storage site located in Bergslagen, Sweden. Contains estimated 16.04 MT of slag rich in Cobalt with average grade of 320 ppm. Managed by Alpine Mining Corp NV under care and maintenance status.",
+    "environmental_flags": [
+      "heavy metal leach risk",
+      "social opposition",
+      "not restored"
+    ],
+    "unfc_code": "E1-F1-G3",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-017",
+    "site_name": "Castilla y Leon Tungsten (Wolfram) Waste Dump #17",
+    "company": "Etrurian Green Metals GmbH",
+    "country": "spain",
+    "country_name": "Spain",
+    "region": "Castilla y Leon",
+    "province": "Castilla y Leon",
+    "municipality": "Castilla y Leon Tungsten (Wolfram) Waste Dump #17",
+    "lat": 41.8971,
+    "lon": -3.8591,
+    "commodities": [
+      "tungsten",
+      "manganese"
+    ],
+    "commodities_label": "Tungsten (Wolfram), Manganese",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "sludge",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "13.87 MT",
+    "description": "Synthetic EU CRM storage site located in Castilla y Leon, Spain. Contains estimated 13.87 MT of sludge rich in Tungsten (Wolfram), Manganese with average grade of 1.51%. Managed by Etrurian Green Metals GmbH under development status.",
+    "environmental_flags": [
+      "high stability risk",
+      "water emergence"
+    ],
+    "unfc_code": "E1-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-018",
+    "site_name": "Styria Platinum Group Elements Pond #18",
+    "company": "Silesia CRM Group SA",
+    "country": "austria",
+    "country_name": "Austria",
+    "region": "Styria",
+    "province": "Styria",
+    "municipality": "Styria Platinum Group Elements Pond #18",
+    "lat": 47.2271,
+    "lon": 14.9624,
+    "commodities": [
+      "pge"
+    ],
+    "commodities_label": "Platinum Group Elements",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "slag",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "4.89 MT",
+    "description": "Synthetic EU CRM storage site located in Styria, Austria. Contains estimated 4.89 MT of slag rich in Platinum Group Elements with average grade of 390 ppm. Managed by Silesia CRM Group SA under inactive status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F3-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-019",
+    "site_name": "Karlovy Vary Tin Waste Dump #19",
+    "company": "Alpine Mining Corp GmbH",
+    "country": "czechia",
+    "country_name": "Czechia",
+    "region": "Karlovy Vary",
+    "province": "Karlovy Vary",
+    "municipality": "Karlovy Vary Tin Waste Dump #19",
+    "lat": 50.3488,
+    "lon": 12.9474,
+    "commodities": [
+      "tin",
+      "lithium"
+    ],
+    "commodities_label": "Tin, Lithium",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "slag",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "1.08 MT",
+    "description": "Synthetic EU CRM storage site located in Karlovy Vary, Czechia. Contains estimated 1.08 MT of slag rich in Tin, Lithium with average grade of 0.36%. Managed by Alpine Mining Corp GmbH under development status.",
+    "environmental_flags": [
+      "social opposition",
+      "not restored"
+    ],
+    "unfc_code": "E2-F2-G3",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-020",
+    "site_name": "Thrace Lithium Stockpile #20",
+    "company": "Etrurian Green Metals AB",
+    "country": "greece",
+    "country_name": "Greece",
+    "region": "Thrace",
+    "province": "Thrace",
+    "municipality": "Thrace Lithium Stockpile #20",
+    "lat": 41.3447,
+    "lon": 25.3619,
+    "commodities": [
+      "lithium",
+      "tungsten"
+    ],
+    "commodities_label": "Lithium, Tungsten (Wolfram)",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "slag",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "11.19 MT",
+    "description": "Synthetic EU CRM storage site located in Thrace, Greece. Contains estimated 11.19 MT of slag rich in Lithium, Tungsten (Wolfram) with average grade of 1.77%. Managed by Etrurian Green Metals AB under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F2-G3",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-021",
+    "site_name": "Usti nad Labem Lithium Waste Dump #21",
+    "company": "Baltic Minerals AB",
+    "country": "czechia",
+    "country_name": "Czechia",
+    "region": "Usti nad Labem",
+    "province": "Usti nad Labem",
+    "municipality": "Usti nad Labem Lithium Waste Dump #21",
+    "lat": 50.6818,
+    "lon": 13.9229,
+    "commodities": [
+      "lithium",
+      "titanium"
+    ],
+    "commodities_label": "Lithium, Titanium",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "waste rock",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "16.75 MT",
+    "description": "Synthetic EU CRM storage site located in Usti nad Labem, Czechia. Contains estimated 16.75 MT of waste rock rich in Lithium, Titanium with average grade of 0.24%. Managed by Baltic Minerals AB under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F3-G2",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-022",
+    "site_name": "Upper Silesia Natural Graphite Pond #22",
+    "company": "Celtic Metals Ltd GmbH",
+    "country": "poland",
+    "country_name": "Poland",
+    "region": "Upper Silesia",
+    "province": "Upper Silesia",
+    "municipality": "Upper Silesia Natural Graphite Pond #22",
+    "lat": 50.2139,
+    "lon": 18.9183,
+    "commodities": [
+      "graphite"
+    ],
+    "commodities_label": "Natural Graphite",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "slag",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "11.03 MT",
+    "description": "Synthetic EU CRM storage site located in Upper Silesia, Poland. Contains estimated 11.03 MT of slag rich in Natural Graphite with average grade of 643 ppm. Managed by Celtic Metals Ltd GmbH under care and maintenance status.",
+    "environmental_flags": [
+      "monitored seepage",
+      "social opposition"
+    ],
+    "unfc_code": "E2-F3-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-023",
+    "site_name": "Bavaria Cobalt Stockpile #23",
+    "company": "Iberian CRMs SA",
+    "country": "germany",
+    "country_name": "Germany",
+    "region": "Bavaria",
+    "province": "Bavaria",
+    "municipality": "Bavaria Cobalt Stockpile #23",
+    "lat": 48.7037,
+    "lon": 11.019,
+    "commodities": [
+      "cobalt",
+      "copper"
+    ],
+    "commodities_label": "Cobalt, Copper",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "tailings",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "1.63 MT",
+    "description": "Synthetic EU CRM storage site located in Bavaria, Germany. Contains estimated 1.63 MT of tailings rich in Cobalt, Copper with average grade of 536 ppm. Managed by Iberian CRMs SA under inactive status.",
+    "environmental_flags": [
+      "acid mine drainage potential",
+      "heavy metal leach risk"
+    ],
+    "unfc_code": "E2-F3-G3",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-024",
+    "site_name": "Upper Silesia Tin Tailings Storage Facility #24",
+    "company": "Trans-European Raw Materials Ltd",
+    "country": "poland",
+    "country_name": "Poland",
+    "region": "Upper Silesia",
+    "province": "Upper Silesia",
+    "municipality": "Upper Silesia Tin Tailings Storage Facility #24",
+    "lat": 50.1505,
+    "lon": 18.9058,
+    "commodities": [
+      "tin"
+    ],
+    "commodities_label": "Tin",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "tailings",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "1.73 MT",
+    "description": "Synthetic EU CRM storage site located in Upper Silesia, Poland. Contains estimated 1.73 MT of tailings rich in Tin with average grade of 0.46%. Managed by Trans-European Raw Materials Ltd under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F2-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-025",
+    "site_name": "Thrace Tantalum & Niobium Pond #25",
+    "company": "Alpine Mining Corp NV",
+    "country": "greece",
+    "country_name": "Greece",
+    "region": "Thrace",
+    "province": "Thrace",
+    "municipality": "Thrace Tantalum & Niobium Pond #25",
+    "lat": 41.2543,
+    "lon": 25.1919,
+    "commodities": [
+      "tantalum",
+      "pge"
+    ],
+    "commodities_label": "Tantalum & Niobium, Platinum Group Elements",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "sludge",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "7.29 MT",
+    "description": "Synthetic EU CRM storage site located in Thrace, Greece. Contains estimated 7.29 MT of sludge rich in Tantalum & Niobium, Platinum Group Elements with average grade of 846 ppm. Managed by Alpine Mining Corp NV under inactive status.",
+    "environmental_flags": [
+      "heavy metal leach risk",
+      "water emergence"
+    ],
+    "unfc_code": "E1-F3-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-026",
+    "site_name": "North Karelia Cobalt Pond #26",
+    "company": "Hellenic Mining Ltd",
+    "country": "finland",
+    "country_name": "Finland",
+    "region": "North Karelia",
+    "province": "North Karelia",
+    "municipality": "North Karelia Cobalt Pond #26",
+    "lat": 62.7442,
+    "lon": 28.9143,
+    "commodities": [
+      "cobalt"
+    ],
+    "commodities_label": "Cobalt",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "slag",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "2.03 MT",
+    "description": "Synthetic EU CRM storage site located in North Karelia, Finland. Contains estimated 2.03 MT of slag rich in Cobalt with average grade of 480 ppm. Managed by Hellenic Mining Ltd under inactive status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F3-G3",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-027",
+    "site_name": "Tuscany Copper Pond #27",
+    "company": "Silesia CRM Group AB",
+    "country": "italy",
+    "country_name": "Italy",
+    "region": "Tuscany",
+    "province": "Tuscany",
+    "municipality": "Tuscany Copper Pond #27",
+    "lat": 43.3869,
+    "lon": 11.6493,
+    "commodities": [
+      "copper",
+      "nickel"
+    ],
+    "commodities_label": "Copper, Nickel",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "slag",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "16.89 MT",
+    "description": "Synthetic EU CRM storage site located in Tuscany, Italy. Contains estimated 16.89 MT of slag rich in Copper, Nickel with average grade of 1.44%. Managed by Silesia CRM Group AB under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E3-F1-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-028",
+    "site_name": "Extremadura Titanium Tailings Storage Facility #28",
+    "company": "Danube Resources GmbH",
+    "country": "spain",
+    "country_name": "Spain",
+    "region": "Extremadura",
+    "province": "Extremadura",
+    "municipality": "Extremadura Titanium Tailings Storage Facility #28",
+    "lat": 39.5776,
+    "lon": -5.769,
+    "commodities": [
+      "titanium",
+      "pge"
+    ],
+    "commodities_label": "Titanium, Platinum Group Elements",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "sludge",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "11.64 MT",
+    "description": "Synthetic EU CRM storage site located in Extremadura, Spain. Contains estimated 11.64 MT of sludge rich in Titanium, Platinum Group Elements with average grade of 395 ppm. Managed by Danube Resources GmbH under inactive status.",
+    "environmental_flags": [
+      "social opposition",
+      "not restored"
+    ],
+    "unfc_code": "E2-F2-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-029",
+    "site_name": "Central Macedonia Copper Tailings Storage Facility #29",
+    "company": "Alpine Mining Corp GmbH",
+    "country": "greece",
+    "country_name": "Greece",
+    "region": "Central Macedonia",
+    "province": "Central Macedonia",
+    "municipality": "Central Macedonia Copper Tailings Storage Facility #29",
+    "lat": 40.6027,
+    "lon": 23.402,
+    "commodities": [
+      "copper",
+      "rare earth elements"
+    ],
+    "commodities_label": "Copper, Rare Earth Elements",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "tailings",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "12.1 MT",
+    "description": "Synthetic EU CRM storage site located in Central Macedonia, Greece. Contains estimated 12.1 MT of tailings rich in Copper, Rare Earth Elements with average grade of 0.22%. Managed by Alpine Mining Corp GmbH under inactive status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F2-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-030",
+    "site_name": "Munster Tungsten (Wolfram) Tailings Storage Facility #30",
+    "company": "Baltic Minerals NV",
+    "country": "ireland",
+    "country_name": "Ireland",
+    "region": "Munster",
+    "province": "Munster",
+    "municipality": "Munster Tungsten (Wolfram) Tailings Storage Facility #30",
+    "lat": 52.098,
+    "lon": -8.5964,
+    "commodities": [
+      "tungsten"
+    ],
+    "commodities_label": "Tungsten (Wolfram)",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "waste rock",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "20.85 MT",
+    "description": "Synthetic EU CRM storage site located in Munster, Ireland. Contains estimated 20.85 MT of waste rock rich in Tungsten (Wolfram) with average grade of 0.45%. Managed by Baltic Minerals NV under development status.",
+    "environmental_flags": [
+      "social opposition",
+      "high stability risk",
+      "not restored"
+    ],
+    "unfc_code": "E3-F1-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-031",
+    "site_name": "Lapland Natural Graphite Pond #31",
+    "company": "Hellenic Mining NV",
+    "country": "finland",
+    "country_name": "Finland",
+    "region": "Lapland",
+    "province": "Lapland",
+    "municipality": "Lapland Natural Graphite Pond #31",
+    "lat": 67.9822,
+    "lon": 26.892,
+    "commodities": [
+      "graphite"
+    ],
+    "commodities_label": "Natural Graphite",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "sludge",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "4.25 MT",
+    "description": "Synthetic EU CRM storage site located in Lapland, Finland. Contains estimated 4.25 MT of sludge rich in Natural Graphite with average grade of 230 ppm. Managed by Hellenic Mining NV under active status.",
+    "environmental_flags": [
+      "high stability risk",
+      "social opposition",
+      "not restored"
+    ],
+    "unfc_code": "E3-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-032",
+    "site_name": "Vasterbotten Rare Earth Elements Pond #32",
+    "company": "EuroResources Ltd",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Vasterbotten",
+    "province": "Vasterbotten",
+    "municipality": "Vasterbotten Rare Earth Elements Pond #32",
+    "lat": 64.7126,
+    "lon": 20.0377,
+    "commodities": [
+      "rare earth elements"
+    ],
+    "commodities_label": "Rare Earth Elements",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "slag",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "21.35 MT",
+    "description": "Synthetic EU CRM storage site located in Vasterbotten, Sweden. Contains estimated 21.35 MT of slag rich in Rare Earth Elements with average grade of 236 ppm. Managed by EuroResources Ltd under development status.",
+    "environmental_flags": [
+      "water emergence"
+    ],
+    "unfc_code": "E2-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-033",
+    "site_name": "Central Macedonia Natural Graphite Pond #33",
+    "company": "Hellenic Mining SA",
+    "country": "greece",
+    "country_name": "Greece",
+    "region": "Central Macedonia",
+    "province": "Central Macedonia",
+    "municipality": "Central Macedonia Natural Graphite Pond #33",
+    "lat": 41.0057,
+    "lon": 23.4536,
+    "commodities": [
+      "graphite"
+    ],
+    "commodities_label": "Natural Graphite",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "sludge",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "2.78 MT",
+    "description": "Synthetic EU CRM storage site located in Central Macedonia, Greece. Contains estimated 2.78 MT of sludge rich in Natural Graphite with average grade of 276 ppm. Managed by Hellenic Mining SA under inactive status.",
+    "environmental_flags": [
+      "monitored seepage"
+    ],
+    "unfc_code": "E3-F3-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-034",
+    "site_name": "Kainuu Manganese Pond #34",
+    "company": "Danube Resources SA",
+    "country": "finland",
+    "country_name": "Finland",
+    "region": "Kainuu",
+    "province": "Kainuu",
+    "municipality": "Kainuu Manganese Pond #34",
+    "lat": 64.3061,
+    "lon": 27.6578,
+    "commodities": [
+      "manganese"
+    ],
+    "commodities_label": "Manganese",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "waste rock",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "18.7 MT",
+    "description": "Synthetic EU CRM storage site located in Kainuu, Finland. Contains estimated 18.7 MT of waste rock rich in Manganese with average grade of 830 ppm. Managed by Danube Resources SA under care and maintenance status.",
+    "environmental_flags": [
+      "water emergence",
+      "monitored seepage"
+    ],
+    "unfc_code": "E2-F2-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-035",
+    "site_name": "Norrbotten Rare Earth Elements Waste Dump #35",
+    "company": "EuroResources Sp. z o.o.",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Norrbotten",
+    "province": "Norrbotten",
+    "municipality": "Norrbotten Rare Earth Elements Waste Dump #35",
+    "lat": 66.0363,
+    "lon": 20.1158,
+    "commodities": [
+      "rare earth elements"
+    ],
+    "commodities_label": "Rare Earth Elements",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "waste rock",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "7.66 MT",
+    "description": "Synthetic EU CRM storage site located in Norrbotten, Sweden. Contains estimated 7.66 MT of waste rock rich in Rare Earth Elements with average grade of 179 ppm. Managed by EuroResources Sp. z o.o. under active status.",
+    "environmental_flags": [
+      "heavy metal leach risk",
+      "acid mine drainage potential"
+    ],
+    "unfc_code": "E1-F3-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-036",
+    "site_name": "Lapland Lithium Pond #36",
+    "company": "Saxon Metals Tech SA",
+    "country": "finland",
+    "country_name": "Finland",
+    "region": "Lapland",
+    "province": "Lapland",
+    "municipality": "Lapland Lithium Pond #36",
+    "lat": 66.6587,
+    "lon": 27.7401,
+    "commodities": [
+      "lithium",
+      "copper"
+    ],
+    "commodities_label": "Lithium, Copper",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "tailings",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "4.22 MT",
+    "description": "Synthetic EU CRM storage site located in Lapland, Finland. Contains estimated 4.22 MT of tailings rich in Lithium, Copper with average grade of 1.46%. Managed by Saxon Metals Tech SA under active status.",
+    "environmental_flags": [
+      "acid mine drainage potential"
+    ],
+    "unfc_code": "E1-F1-G3",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-037",
+    "site_name": "Munster Natural Graphite Pond #37",
+    "company": "Etrurian Green Metals SA",
+    "country": "ireland",
+    "country_name": "Ireland",
+    "region": "Munster",
+    "province": "Munster",
+    "municipality": "Munster Natural Graphite Pond #37",
+    "lat": 52.5258,
+    "lon": -8.6483,
+    "commodities": [
+      "graphite",
+      "tin"
+    ],
+    "commodities_label": "Natural Graphite, Tin",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "waste rock",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "23.72 MT",
+    "description": "Synthetic EU CRM storage site located in Munster, Ireland. Contains estimated 23.72 MT of waste rock rich in Natural Graphite, Tin with average grade of 262 ppm. Managed by Etrurian Green Metals SA under development status.",
+    "environmental_flags": [
+      "water emergence",
+      "social opposition",
+      "not restored"
+    ],
+    "unfc_code": "E1-F1-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-038",
+    "site_name": "Extremadura Tantalum & Niobium Tailings Storage Facility #38",
+    "company": "Nordic Minerals NV",
+    "country": "spain",
+    "country_name": "Spain",
+    "region": "Extremadura",
+    "province": "Extremadura",
+    "municipality": "Extremadura Tantalum & Niobium Tailings Storage Facility #38",
+    "lat": 39.5865,
+    "lon": -6.0252,
+    "commodities": [
+      "tantalum",
+      "pge"
+    ],
+    "commodities_label": "Tantalum & Niobium, Platinum Group Elements",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "slag",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "6.22 MT",
+    "description": "Synthetic EU CRM storage site located in Extremadura, Spain. Contains estimated 6.22 MT of slag rich in Tantalum & Niobium, Platinum Group Elements with average grade of 320 ppm. Managed by Nordic Minerals NV under care and maintenance status.",
+    "environmental_flags": [
+      "high stability risk",
+      "water emergence"
+    ],
+    "unfc_code": "E3-F1-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-039",
+    "site_name": "Norte Tungsten (Wolfram) Stockpile #39",
+    "company": "Celtic Metals Ltd Sp. z o.o.",
+    "country": "portugal",
+    "country_name": "Portugal",
+    "region": "Norte",
+    "province": "Norte",
+    "municipality": "Norte Tungsten (Wolfram) Stockpile #39",
+    "lat": 41.8402,
+    "lon": -7.8411,
+    "commodities": [
+      "tungsten",
+      "copper"
+    ],
+    "commodities_label": "Tungsten (Wolfram), Copper",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "sludge",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "13.73 MT",
+    "description": "Synthetic EU CRM storage site located in Norte, Portugal. Contains estimated 13.73 MT of sludge rich in Tungsten (Wolfram), Copper with average grade of 0.8%. Managed by Celtic Metals Ltd Sp. z o.o. under active status.",
+    "environmental_flags": [
+      "acid mine drainage potential",
+      "heavy metal leach risk"
+    ],
+    "unfc_code": "E3-F2-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-040",
+    "site_name": "Brittany Titanium Stockpile #40",
+    "company": "Celtic Metals Ltd GmbH",
+    "country": "france",
+    "country_name": "France",
+    "region": "Brittany",
+    "province": "Brittany",
+    "municipality": "Brittany Titanium Stockpile #40",
+    "lat": 46.3973,
+    "lon": 2.4933,
+    "commodities": [
+      "titanium",
+      "pge"
+    ],
+    "commodities_label": "Titanium, Platinum Group Elements",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "tailings",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "24.93 MT",
+    "description": "Synthetic EU CRM storage site located in Brittany, France. Contains estimated 24.93 MT of tailings rich in Titanium, Platinum Group Elements with average grade of 496 ppm. Managed by Celtic Metals Ltd GmbH under inactive status.",
+    "environmental_flags": [
+      "heavy metal leach risk",
+      "acid mine drainage potential"
+    ],
+    "unfc_code": "E2-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-041",
+    "site_name": "Norte Copper Stockpile #41",
+    "company": "Nordic Minerals Ltd",
+    "country": "portugal",
+    "country_name": "Portugal",
+    "region": "Norte",
+    "province": "Norte",
+    "municipality": "Norte Copper Stockpile #41",
+    "lat": 41.593,
+    "lon": -8.0373,
+    "commodities": [
+      "copper",
+      "tantalum"
+    ],
+    "commodities_label": "Copper, Tantalum & Niobium",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "sludge",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "21.69 MT",
+    "description": "Synthetic EU CRM storage site located in Norte, Portugal. Contains estimated 21.69 MT of sludge rich in Copper, Tantalum & Niobium with average grade of 1.49%. Managed by Nordic Minerals Ltd under active status.",
+    "environmental_flags": [
+      "not restored"
+    ],
+    "unfc_code": "E3-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-042",
+    "site_name": "North Karelia Tantalum & Niobium Tailings Storage Facility #42",
+    "company": "Etrurian Green Metals Ltd",
+    "country": "finland",
+    "country_name": "Finland",
+    "region": "North Karelia",
+    "province": "North Karelia",
+    "municipality": "North Karelia Tantalum & Niobium Tailings Storage Facility #42",
+    "lat": 63.0015,
+    "lon": 29.9467,
+    "commodities": [
+      "tantalum",
+      "manganese"
+    ],
+    "commodities_label": "Tantalum & Niobium, Manganese",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "slag",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "3.47 MT",
+    "description": "Synthetic EU CRM storage site located in North Karelia, Finland. Contains estimated 3.47 MT of slag rich in Tantalum & Niobium, Manganese with average grade of 695 ppm. Managed by Etrurian Green Metals Ltd under care and maintenance status.",
+    "environmental_flags": [
+      "water emergence",
+      "monitored seepage"
+    ],
+    "unfc_code": "E1-F3-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-043",
+    "site_name": "Tuscany Platinum Group Elements Stockpile #43",
+    "company": "Trans-European Raw Materials GmbH",
+    "country": "italy",
+    "country_name": "Italy",
+    "region": "Tuscany",
+    "province": "Tuscany",
+    "municipality": "Tuscany Platinum Group Elements Stockpile #43",
+    "lat": 43.4796,
+    "lon": 11.0755,
+    "commodities": [
+      "pge",
+      "tungsten"
+    ],
+    "commodities_label": "Platinum Group Elements, Tungsten (Wolfram)",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "waste rock",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "9.9 MT",
+    "description": "Synthetic EU CRM storage site located in Tuscany, Italy. Contains estimated 9.9 MT of waste rock rich in Platinum Group Elements, Tungsten (Wolfram) with average grade of 663 ppm. Managed by Trans-European Raw Materials GmbH under development status.",
+    "environmental_flags": [
+      "monitored seepage",
+      "water emergence",
+      "not restored"
+    ],
+    "unfc_code": "E2-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-044",
+    "site_name": "Bergslagen Nickel Pond #44",
+    "company": "Trans-European Raw Materials Ltd",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Bergslagen",
+    "province": "Bergslagen",
+    "municipality": "Bergslagen Nickel Pond #44",
+    "lat": 60.7975,
+    "lon": 15.5171,
+    "commodities": [
+      "nickel",
+      "pge"
+    ],
+    "commodities_label": "Nickel, Platinum Group Elements",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "slag",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "11.66 MT",
+    "description": "Synthetic EU CRM storage site located in Bergslagen, Sweden. Contains estimated 11.66 MT of slag rich in Nickel, Platinum Group Elements with average grade of 0.59%. Managed by Trans-European Raw Materials Ltd under development status.",
+    "environmental_flags": [
+      "not restored"
+    ],
+    "unfc_code": "E1-F3-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-045",
+    "site_name": "North Karelia Tantalum & Niobium Waste Dump #45",
+    "company": "Nordic Minerals Ltd",
+    "country": "finland",
+    "country_name": "Finland",
+    "region": "North Karelia",
+    "province": "North Karelia",
+    "municipality": "North Karelia Tantalum & Niobium Waste Dump #45",
+    "lat": 62.4091,
+    "lon": 28.6707,
+    "commodities": [
+      "tantalum"
+    ],
+    "commodities_label": "Tantalum & Niobium",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "sludge",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "2.94 MT",
+    "description": "Synthetic EU CRM storage site located in North Karelia, Finland. Contains estimated 2.94 MT of sludge rich in Tantalum & Niobium with average grade of 517 ppm. Managed by Nordic Minerals Ltd under active status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F3-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-046",
+    "site_name": "Centro Nickel Pond #46",
+    "company": "Danube Resources NV",
+    "country": "portugal",
+    "country_name": "Portugal",
+    "region": "Centro",
+    "province": "Centro",
+    "municipality": "Centro Nickel Pond #46",
+    "lat": 39.8987,
+    "lon": -7.5353,
+    "commodities": [
+      "nickel",
+      "tin"
+    ],
+    "commodities_label": "Nickel, Tin",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "tailings",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "18.11 MT",
+    "description": "Synthetic EU CRM storage site located in Centro, Portugal. Contains estimated 18.11 MT of tailings rich in Nickel, Tin with average grade of 1.37%. Managed by Danube Resources NV under care and maintenance status.",
+    "environmental_flags": [
+      "acid mine drainage potential",
+      "high stability risk"
+    ],
+    "unfc_code": "E1-F1-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-047",
+    "site_name": "Karlovy Vary Tin Tailings Storage Facility #47",
+    "company": "Danube Resources SA",
+    "country": "czechia",
+    "country_name": "Czechia",
+    "region": "Karlovy Vary",
+    "province": "Karlovy Vary",
+    "municipality": "Karlovy Vary Tin Tailings Storage Facility #47",
+    "lat": 50.3376,
+    "lon": 12.8689,
+    "commodities": [
+      "tin",
+      "cobalt"
+    ],
+    "commodities_label": "Tin, Cobalt",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "sludge",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "7.69 MT",
+    "description": "Synthetic EU CRM storage site located in Karlovy Vary, Czechia. Contains estimated 7.69 MT of sludge rich in Tin, Cobalt with average grade of 0.69%. Managed by Danube Resources SA under inactive status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F3-G3",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-048",
+    "site_name": "Alentejo Tin Pond #48",
+    "company": "Saxon Metals Tech SA",
+    "country": "portugal",
+    "country_name": "Portugal",
+    "region": "Alentejo",
+    "province": "Alentejo",
+    "municipality": "Alentejo Tin Pond #48",
+    "lat": 37.9699,
+    "lon": -7.8329,
+    "commodities": [
+      "tin",
+      "pge"
+    ],
+    "commodities_label": "Tin, Platinum Group Elements",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "slag",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "22.52 MT",
+    "description": "Synthetic EU CRM storage site located in Alentejo, Portugal. Contains estimated 22.52 MT of slag rich in Tin, Platinum Group Elements with average grade of 0.85%. Managed by Saxon Metals Tech SA under inactive status.",
+    "environmental_flags": [
+      "monitored seepage",
+      "not restored"
+    ],
+    "unfc_code": "E1-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-049",
+    "site_name": "Upper Silesia Tantalum & Niobium Pond #49",
+    "company": "Celtic Metals Ltd NV",
+    "country": "poland",
+    "country_name": "Poland",
+    "region": "Upper Silesia",
+    "province": "Upper Silesia",
+    "municipality": "Upper Silesia Tantalum & Niobium Pond #49",
+    "lat": 50.5981,
+    "lon": 19.182,
+    "commodities": [
+      "tantalum"
+    ],
+    "commodities_label": "Tantalum & Niobium",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "sludge",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "7.73 MT",
+    "description": "Synthetic EU CRM storage site located in Upper Silesia, Poland. Contains estimated 7.73 MT of sludge rich in Tantalum & Niobium with average grade of 724 ppm. Managed by Celtic Metals Ltd NV under active status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F2-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-050",
+    "site_name": "Asturias Manganese Stockpile #50",
+    "company": "Saxon Metals Tech NV",
+    "country": "spain",
+    "country_name": "Spain",
+    "region": "Asturias",
+    "province": "Asturias",
+    "municipality": "Asturias Manganese Stockpile #50",
+    "lat": 43.4913,
+    "lon": -5.4392,
+    "commodities": [
+      "manganese",
+      "tantalum"
+    ],
+    "commodities_label": "Manganese, Tantalum & Niobium",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "slag",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "19.3 MT",
+    "description": "Synthetic EU CRM storage site located in Asturias, Spain. Contains estimated 19.3 MT of slag rich in Manganese, Tantalum & Niobium with average grade of 747 ppm. Managed by Saxon Metals Tech NV under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F3-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-051",
+    "site_name": "Vasterbotten Lithium Waste Dump #51",
+    "company": "Iberian CRMs Sp. z o.o.",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Vasterbotten",
+    "province": "Vasterbotten",
+    "municipality": "Vasterbotten Lithium Waste Dump #51",
+    "lat": 64.1126,
+    "lon": 20.1135,
+    "commodities": [
+      "lithium"
+    ],
+    "commodities_label": "Lithium",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "tailings",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "21.97 MT",
+    "description": "Synthetic EU CRM storage site located in Vasterbotten, Sweden. Contains estimated 21.97 MT of tailings rich in Lithium with average grade of 0.67%. Managed by Iberian CRMs Sp. z o.o. under care and maintenance status.",
+    "environmental_flags": [
+      "social opposition",
+      "water emergence"
+    ],
+    "unfc_code": "E2-F2-G3",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-052",
+    "site_name": "Norte Rare Earth Elements Pond #52",
+    "company": "Hellenic Mining AB",
+    "country": "portugal",
+    "country_name": "Portugal",
+    "region": "Norte",
+    "province": "Norte",
+    "municipality": "Norte Rare Earth Elements Pond #52",
+    "lat": 41.6772,
+    "lon": -7.763,
+    "commodities": [
+      "rare earth elements",
+      "manganese"
+    ],
+    "commodities_label": "Rare Earth Elements, Manganese",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "waste rock",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "16.98 MT",
+    "description": "Synthetic EU CRM storage site located in Norte, Portugal. Contains estimated 16.98 MT of waste rock rich in Rare Earth Elements, Manganese with average grade of 738 ppm. Managed by Hellenic Mining AB under active status.",
+    "environmental_flags": [
+      "high stability risk"
+    ],
+    "unfc_code": "E3-F2-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-053",
+    "site_name": "Asturias Natural Graphite Waste Dump #53",
+    "company": "Iberian CRMs SA",
+    "country": "spain",
+    "country_name": "Spain",
+    "region": "Asturias",
+    "province": "Asturias",
+    "municipality": "Asturias Natural Graphite Waste Dump #53",
+    "lat": 43.28,
+    "lon": -5.659,
+    "commodities": [
+      "graphite",
+      "copper"
+    ],
+    "commodities_label": "Natural Graphite, Copper",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "tailings",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "23.68 MT",
+    "description": "Synthetic EU CRM storage site located in Asturias, Spain. Contains estimated 23.68 MT of tailings rich in Natural Graphite, Copper with average grade of 361 ppm. Managed by Iberian CRMs SA under development status.",
+    "environmental_flags": [
+      "acid mine drainage potential"
+    ],
+    "unfc_code": "E1-F1-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-054",
+    "site_name": "North Karelia Manganese Waste Dump #54",
+    "company": "Celtic Metals Ltd SA",
+    "country": "finland",
+    "country_name": "Finland",
+    "region": "North Karelia",
+    "province": "North Karelia",
+    "municipality": "North Karelia Manganese Waste Dump #54",
+    "lat": 62.4339,
+    "lon": 29.2521,
+    "commodities": [
+      "manganese",
+      "graphite"
+    ],
+    "commodities_label": "Manganese, Natural Graphite",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "sludge",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "17.41 MT",
+    "description": "Synthetic EU CRM storage site located in North Karelia, Finland. Contains estimated 17.41 MT of sludge rich in Manganese, Natural Graphite with average grade of 272 ppm. Managed by Celtic Metals Ltd SA under active status.",
+    "environmental_flags": [
+      "heavy metal leach risk",
+      "not restored"
+    ],
+    "unfc_code": "E2-F1-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-055",
+    "site_name": "Lapland Tin Tailings Storage Facility #55",
+    "company": "EuroResources SA",
+    "country": "finland",
+    "country_name": "Finland",
+    "region": "Lapland",
+    "province": "Lapland",
+    "municipality": "Lapland Tin Tailings Storage Facility #55",
+    "lat": 67.0713,
+    "lon": 27.7707,
+    "commodities": [
+      "tin"
+    ],
+    "commodities_label": "Tin",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "sludge",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "19.78 MT",
+    "description": "Synthetic EU CRM storage site located in Lapland, Finland. Contains estimated 19.78 MT of sludge rich in Tin with average grade of 0.45%. Managed by EuroResources SA under active status.",
+    "environmental_flags": [
+      "not restored"
+    ],
+    "unfc_code": "E1-F1-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-056",
+    "site_name": "Occitanie Tungsten (Wolfram) Waste Dump #56",
+    "company": "Iberian CRMs SA",
+    "country": "france",
+    "country_name": "France",
+    "region": "Occitanie",
+    "province": "Occitanie",
+    "municipality": "Occitanie Tungsten (Wolfram) Waste Dump #56",
+    "lat": 44.2883,
+    "lon": 2.2741,
+    "commodities": [
+      "tungsten"
+    ],
+    "commodities_label": "Tungsten (Wolfram)",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "slag",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "9.28 MT",
+    "description": "Synthetic EU CRM storage site located in Occitanie, France. Contains estimated 9.28 MT of slag rich in Tungsten (Wolfram) with average grade of 1.42%. Managed by Iberian CRMs SA under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E3-F2-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-057",
+    "site_name": "Bavaria Tin Tailings Storage Facility #57",
+    "company": "Trans-European Raw Materials GmbH",
+    "country": "germany",
+    "country_name": "Germany",
+    "region": "Bavaria",
+    "province": "Bavaria",
+    "municipality": "Bavaria Tin Tailings Storage Facility #57",
+    "lat": 49.2508,
+    "lon": 10.9216,
+    "commodities": [
+      "tin"
+    ],
+    "commodities_label": "Tin",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "sludge",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "23.66 MT",
+    "description": "Synthetic EU CRM storage site located in Bavaria, Germany. Contains estimated 23.66 MT of sludge rich in Tin with average grade of 0.1%. Managed by Trans-European Raw Materials GmbH under development status.",
+    "environmental_flags": [
+      "high stability risk",
+      "social opposition"
+    ],
+    "unfc_code": "E1-F1-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-058",
+    "site_name": "Centro Manganese Tailings Storage Facility #58",
+    "company": "Baltic Minerals Sp. z o.o.",
+    "country": "portugal",
+    "country_name": "Portugal",
+    "region": "Centro",
+    "province": "Centro",
+    "municipality": "Centro Manganese Tailings Storage Facility #58",
+    "lat": 40.6214,
+    "lon": -7.3165,
+    "commodities": [
+      "manganese"
+    ],
+    "commodities_label": "Manganese",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "waste rock",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "17.95 MT",
+    "description": "Synthetic EU CRM storage site located in Centro, Portugal. Contains estimated 17.95 MT of waste rock rich in Manganese with average grade of 440 ppm. Managed by Baltic Minerals Sp. z o.o. under inactive status.",
+    "environmental_flags": [],
+    "unfc_code": "E3-F3-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-059",
+    "site_name": "Lower Silesia Manganese Waste Dump #59",
+    "company": "Silesia CRM Group Ltd",
+    "country": "poland",
+    "country_name": "Poland",
+    "region": "Lower Silesia",
+    "province": "Lower Silesia",
+    "municipality": "Lower Silesia Manganese Waste Dump #59",
+    "lat": 50.9492,
+    "lon": 16.6667,
+    "commodities": [
+      "manganese",
+      "cobalt"
+    ],
+    "commodities_label": "Manganese, Cobalt",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "sludge",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "18.38 MT",
+    "description": "Synthetic EU CRM storage site located in Lower Silesia, Poland. Contains estimated 18.38 MT of sludge rich in Manganese, Cobalt with average grade of 370 ppm. Managed by Silesia CRM Group Ltd under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F2-G3",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-060",
+    "site_name": "Carinthia Cobalt Tailings Storage Facility #60",
+    "company": "Trans-European Raw Materials SA",
+    "country": "austria",
+    "country_name": "Austria",
+    "region": "Carinthia",
+    "province": "Carinthia",
+    "municipality": "Carinthia Cobalt Tailings Storage Facility #60",
+    "lat": 46.8436,
+    "lon": 13.7681,
+    "commodities": [
+      "cobalt",
+      "tungsten"
+    ],
+    "commodities_label": "Cobalt, Tungsten (Wolfram)",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "sludge",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "14.87 MT",
+    "description": "Synthetic EU CRM storage site located in Carinthia, Austria. Contains estimated 14.87 MT of sludge rich in Cobalt, Tungsten (Wolfram) with average grade of 625 ppm. Managed by Trans-European Raw Materials SA under active status.",
+    "environmental_flags": [
+      "social opposition",
+      "acid mine drainage potential"
+    ],
+    "unfc_code": "E2-F2-G3",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-061",
+    "site_name": "Bergslagen Nickel Waste Dump #61",
+    "company": "Trans-European Raw Materials AB",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Bergslagen",
+    "province": "Bergslagen",
+    "municipality": "Bergslagen Nickel Waste Dump #61",
+    "lat": 60.5625,
+    "lon": 15.5709,
+    "commodities": [
+      "nickel"
+    ],
+    "commodities_label": "Nickel",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "slag",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "3.31 MT",
+    "description": "Synthetic EU CRM storage site located in Bergslagen, Sweden. Contains estimated 3.31 MT of slag rich in Nickel with average grade of 0.52%. Managed by Trans-European Raw Materials AB under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F2-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-062",
+    "site_name": "Styria Titanium Stockpile #62",
+    "company": "Danube Resources AB",
+    "country": "austria",
+    "country_name": "Austria",
+    "region": "Styria",
+    "province": "Styria",
+    "municipality": "Styria Titanium Stockpile #62",
+    "lat": 47.4672,
+    "lon": 14.9364,
+    "commodities": [
+      "titanium",
+      "manganese"
+    ],
+    "commodities_label": "Titanium, Manganese",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "tailings",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "0.65 MT",
+    "description": "Synthetic EU CRM storage site located in Styria, Austria. Contains estimated 0.65 MT of tailings rich in Titanium, Manganese with average grade of 196 ppm. Managed by Danube Resources AB under inactive status.",
+    "environmental_flags": [
+      "monitored seepage",
+      "heavy metal leach risk"
+    ],
+    "unfc_code": "E3-F3-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-063",
+    "site_name": "Occitanie Tin Stockpile #63",
+    "company": "Iberian CRMs GmbH",
+    "country": "france",
+    "country_name": "France",
+    "region": "Occitanie",
+    "province": "Occitanie",
+    "municipality": "Occitanie Tin Stockpile #63",
+    "lat": 43.5005,
+    "lon": 2.3835,
+    "commodities": [
+      "tin"
+    ],
+    "commodities_label": "Tin",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "waste rock",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "18.98 MT",
+    "description": "Synthetic EU CRM storage site located in Occitanie, France. Contains estimated 18.98 MT of waste rock rich in Tin with average grade of 0.11%. Managed by Iberian CRMs GmbH under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E3-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-064",
+    "site_name": "Norrbotten Natural Graphite Tailings Storage Facility #64",
+    "company": "Silesia CRM Group Sp. z o.o.",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Norrbotten",
+    "province": "Norrbotten",
+    "municipality": "Norrbotten Natural Graphite Tailings Storage Facility #64",
+    "lat": 65.5331,
+    "lon": 21.6369,
+    "commodities": [
+      "graphite"
+    ],
+    "commodities_label": "Natural Graphite",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "waste rock",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "1.84 MT",
+    "description": "Synthetic EU CRM storage site located in Norrbotten, Sweden. Contains estimated 1.84 MT of waste rock rich in Natural Graphite with average grade of 259 ppm. Managed by Silesia CRM Group Sp. z o.o. under development status.",
+    "environmental_flags": [
+      "water emergence",
+      "not restored"
+    ],
+    "unfc_code": "E2-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-065",
+    "site_name": "Usti nad Labem Tungsten (Wolfram) Waste Dump #65",
+    "company": "EuroResources Ltd",
+    "country": "czechia",
+    "country_name": "Czechia",
+    "region": "Usti nad Labem",
+    "province": "Usti nad Labem",
+    "municipality": "Usti nad Labem Tungsten (Wolfram) Waste Dump #65",
+    "lat": 50.7515,
+    "lon": 14.3158,
+    "commodities": [
+      "tungsten"
+    ],
+    "commodities_label": "Tungsten (Wolfram)",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "waste rock",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "23.07 MT",
+    "description": "Synthetic EU CRM storage site located in Usti nad Labem, Czechia. Contains estimated 23.07 MT of waste rock rich in Tungsten (Wolfram) with average grade of 1.55%. Managed by EuroResources Ltd under active status.",
+    "environmental_flags": [
+      "heavy metal leach risk",
+      "high stability risk"
+    ],
+    "unfc_code": "E3-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-066",
+    "site_name": "Lapland Titanium Stockpile #66",
+    "company": "Trans-European Raw Materials SA",
+    "country": "finland",
+    "country_name": "Finland",
+    "region": "Lapland",
+    "province": "Lapland",
+    "municipality": "Lapland Titanium Stockpile #66",
+    "lat": 66.8228,
+    "lon": 25.2622,
+    "commodities": [
+      "titanium",
+      "tantalum"
+    ],
+    "commodities_label": "Titanium, Tantalum & Niobium",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "tailings",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "10.2 MT",
+    "description": "Synthetic EU CRM storage site located in Lapland, Finland. Contains estimated 10.2 MT of tailings rich in Titanium, Tantalum & Niobium with average grade of 367 ppm. Managed by Trans-European Raw Materials SA under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E3-F2-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-067",
+    "site_name": "Central Macedonia Natural Graphite Stockpile #67",
+    "company": "Iberian CRMs Sp. z o.o.",
+    "country": "greece",
+    "country_name": "Greece",
+    "region": "Central Macedonia",
+    "province": "Central Macedonia",
+    "municipality": "Central Macedonia Natural Graphite Stockpile #67",
+    "lat": 41.0268,
+    "lon": 23.6416,
+    "commodities": [
+      "graphite"
+    ],
+    "commodities_label": "Natural Graphite",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "waste rock",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "4.25 MT",
+    "description": "Synthetic EU CRM storage site located in Central Macedonia, Greece. Contains estimated 4.25 MT of waste rock rich in Natural Graphite with average grade of 827 ppm. Managed by Iberian CRMs Sp. z o.o. under inactive status.",
+    "environmental_flags": [],
+    "unfc_code": "E3-F1-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-068",
+    "site_name": "Leinster Platinum Group Elements Stockpile #68",
+    "company": "Celtic Metals Ltd AB",
+    "country": "ireland",
+    "country_name": "Ireland",
+    "region": "Leinster",
+    "province": "Leinster",
+    "municipality": "Leinster Platinum Group Elements Stockpile #68",
+    "lat": 52.9514,
+    "lon": -7.0112,
+    "commodities": [
+      "pge",
+      "titanium"
+    ],
+    "commodities_label": "Platinum Group Elements, Titanium",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "waste rock",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "14.99 MT",
+    "description": "Synthetic EU CRM storage site located in Leinster, Ireland. Contains estimated 14.99 MT of waste rock rich in Platinum Group Elements, Titanium with average grade of 410 ppm. Managed by Celtic Metals Ltd AB under inactive status.",
+    "environmental_flags": [
+      "acid mine drainage potential",
+      "social opposition"
+    ],
+    "unfc_code": "E2-F2-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-069",
+    "site_name": "Alentejo Cobalt Pond #69",
+    "company": "Alpine Mining Corp AB",
+    "country": "portugal",
+    "country_name": "Portugal",
+    "region": "Alentejo",
+    "province": "Alentejo",
+    "municipality": "Alentejo Cobalt Pond #69",
+    "lat": 37.9761,
+    "lon": -7.5676,
+    "commodities": [
+      "cobalt",
+      "pge"
+    ],
+    "commodities_label": "Cobalt, Platinum Group Elements",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "sludge",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "15.32 MT",
+    "description": "Synthetic EU CRM storage site located in Alentejo, Portugal. Contains estimated 15.32 MT of sludge rich in Cobalt, Platinum Group Elements with average grade of 563 ppm. Managed by Alpine Mining Corp AB under active status.",
+    "environmental_flags": [
+      "not restored"
+    ],
+    "unfc_code": "E2-F1-G2",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-070",
+    "site_name": "Styria Lithium Pond #70",
+    "company": "Danube Resources NV",
+    "country": "austria",
+    "country_name": "Austria",
+    "region": "Styria",
+    "province": "Styria",
+    "municipality": "Styria Lithium Pond #70",
+    "lat": 47.4595,
+    "lon": 14.4541,
+    "commodities": [
+      "lithium",
+      "nickel"
+    ],
+    "commodities_label": "Lithium, Nickel",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "slag",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "15.15 MT",
+    "description": "Synthetic EU CRM storage site located in Styria, Austria. Contains estimated 15.15 MT of slag rich in Lithium, Nickel with average grade of 1.42%. Managed by Danube Resources NV under care and maintenance status.",
+    "environmental_flags": [
+      "social opposition",
+      "acid mine drainage potential"
+    ],
+    "unfc_code": "E2-F1-G3",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-071",
+    "site_name": "Bergslagen Platinum Group Elements Stockpile #71",
+    "company": "Saxon Metals Tech Ltd",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Bergslagen",
+    "province": "Bergslagen",
+    "municipality": "Bergslagen Platinum Group Elements Stockpile #71",
+    "lat": 60.2753,
+    "lon": 15.5896,
+    "commodities": [
+      "pge",
+      "titanium"
+    ],
+    "commodities_label": "Platinum Group Elements, Titanium",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "tailings",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "3.66 MT",
+    "description": "Synthetic EU CRM storage site located in Bergslagen, Sweden. Contains estimated 3.66 MT of tailings rich in Platinum Group Elements, Titanium with average grade of 775 ppm. Managed by Saxon Metals Tech Ltd under inactive status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F3-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-072",
+    "site_name": "Karlovy Vary Platinum Group Elements Stockpile #72",
+    "company": "Hellenic Mining GmbH",
+    "country": "czechia",
+    "country_name": "Czechia",
+    "region": "Karlovy Vary",
+    "province": "Karlovy Vary",
+    "municipality": "Karlovy Vary Platinum Group Elements Stockpile #72",
+    "lat": 50.1795,
+    "lon": 13.049,
+    "commodities": [
+      "pge",
+      "manganese"
+    ],
+    "commodities_label": "Platinum Group Elements, Manganese",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "tailings",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "6.05 MT",
+    "description": "Synthetic EU CRM storage site located in Karlovy Vary, Czechia. Contains estimated 6.05 MT of tailings rich in Platinum Group Elements, Manganese with average grade of 190 ppm. Managed by Hellenic Mining GmbH under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F3-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-073",
+    "site_name": "Carinthia Titanium Waste Dump #73",
+    "company": "Iberian CRMs NV",
+    "country": "austria",
+    "country_name": "Austria",
+    "region": "Carinthia",
+    "province": "Carinthia",
+    "municipality": "Carinthia Titanium Waste Dump #73",
+    "lat": 46.7693,
+    "lon": 13.833,
+    "commodities": [
+      "titanium",
+      "tungsten"
+    ],
+    "commodities_label": "Titanium, Tungsten (Wolfram)",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "slag",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "11.22 MT",
+    "description": "Synthetic EU CRM storage site located in Carinthia, Austria. Contains estimated 11.22 MT of slag rich in Titanium, Tungsten (Wolfram) with average grade of 470 ppm. Managed by Iberian CRMs NV under inactive status.",
+    "environmental_flags": [
+      "monitored seepage",
+      "not restored"
+    ],
+    "unfc_code": "E2-F3-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-074",
+    "site_name": "Central Macedonia Nickel Waste Dump #74",
+    "company": "Trans-European Raw Materials Sp. z o.o.",
+    "country": "greece",
+    "country_name": "Greece",
+    "region": "Central Macedonia",
+    "province": "Central Macedonia",
+    "municipality": "Central Macedonia Nickel Waste Dump #74",
+    "lat": 40.8236,
+    "lon": 23.4029,
+    "commodities": [
+      "nickel",
+      "graphite"
+    ],
+    "commodities_label": "Nickel, Natural Graphite",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "waste rock",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "10.76 MT",
+    "description": "Synthetic EU CRM storage site located in Central Macedonia, Greece. Contains estimated 10.76 MT of waste rock rich in Nickel, Natural Graphite with average grade of 0.31%. Managed by Trans-European Raw Materials Sp. z o.o. under development status.",
+    "environmental_flags": [
+      "not restored"
+    ],
+    "unfc_code": "E1-F2-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-075",
+    "site_name": "Central Macedonia Manganese Stockpile #75",
+    "company": "Silesia CRM Group SA",
+    "country": "greece",
+    "country_name": "Greece",
+    "region": "Central Macedonia",
+    "province": "Central Macedonia",
+    "municipality": "Central Macedonia Manganese Stockpile #75",
+    "lat": 40.6207,
+    "lon": 22.9429,
+    "commodities": [
+      "manganese",
+      "graphite"
+    ],
+    "commodities_label": "Manganese, Natural Graphite",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "tailings",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "23.69 MT",
+    "description": "Synthetic EU CRM storage site located in Central Macedonia, Greece. Contains estimated 23.69 MT of tailings rich in Manganese, Natural Graphite with average grade of 277 ppm. Managed by Silesia CRM Group SA under inactive status.",
+    "environmental_flags": [
+      "social opposition",
+      "not restored"
+    ],
+    "unfc_code": "E2-F1-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-076",
+    "site_name": "Lower Silesia Copper Tailings Storage Facility #76",
+    "company": "Hellenic Mining NV",
+    "country": "poland",
+    "country_name": "Poland",
+    "region": "Lower Silesia",
+    "province": "Lower Silesia",
+    "municipality": "Lower Silesia Copper Tailings Storage Facility #76",
+    "lat": 51.2976,
+    "lon": 16.6799,
+    "commodities": [
+      "copper"
+    ],
+    "commodities_label": "Copper",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "waste rock",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "20.86 MT",
+    "description": "Synthetic EU CRM storage site located in Lower Silesia, Poland. Contains estimated 20.86 MT of waste rock rich in Copper with average grade of 1.37%. Managed by Hellenic Mining NV under inactive status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F2-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-077",
+    "site_name": "Norrbotten Tungsten (Wolfram) Pond #77",
+    "company": "Silesia CRM Group NV",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Norrbotten",
+    "province": "Norrbotten",
+    "municipality": "Norrbotten Tungsten (Wolfram) Pond #77",
+    "lat": 66.2448,
+    "lon": 20.6904,
+    "commodities": [
+      "tungsten",
+      "titanium"
+    ],
+    "commodities_label": "Tungsten (Wolfram), Titanium",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "tailings",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "19.95 MT",
+    "description": "Synthetic EU CRM storage site located in Norrbotten, Sweden. Contains estimated 19.95 MT of tailings rich in Tungsten (Wolfram), Titanium with average grade of 0.83%. Managed by Silesia CRM Group NV under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F2-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-078",
+    "site_name": "Central Macedonia Manganese Tailings Storage Facility #78",
+    "company": "Nordic Minerals Sp. z o.o.",
+    "country": "greece",
+    "country_name": "Greece",
+    "region": "Central Macedonia",
+    "province": "Central Macedonia",
+    "municipality": "Central Macedonia Manganese Tailings Storage Facility #78",
+    "lat": 40.5726,
+    "lon": 22.8472,
+    "commodities": [
+      "manganese"
+    ],
+    "commodities_label": "Manganese",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "waste rock",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "24.38 MT",
+    "description": "Synthetic EU CRM storage site located in Central Macedonia, Greece. Contains estimated 24.38 MT of waste rock rich in Manganese with average grade of 119 ppm. Managed by Nordic Minerals Sp. z o.o. under inactive status.",
+    "environmental_flags": [
+      "high stability risk",
+      "monitored seepage",
+      "not restored"
+    ],
+    "unfc_code": "E3-F3-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-079",
+    "site_name": "Carinthia Copper Stockpile #79",
+    "company": "Baltic Minerals NV",
+    "country": "austria",
+    "country_name": "Austria",
+    "region": "Carinthia",
+    "province": "Carinthia",
+    "municipality": "Carinthia Copper Stockpile #79",
+    "lat": 46.7352,
+    "lon": 14.2471,
+    "commodities": [
+      "copper",
+      "nickel"
+    ],
+    "commodities_label": "Copper, Nickel",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "tailings",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "19.04 MT",
+    "description": "Synthetic EU CRM storage site located in Carinthia, Austria. Contains estimated 19.04 MT of tailings rich in Copper, Nickel with average grade of 0.26%. Managed by Baltic Minerals NV under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F3-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-080",
+    "site_name": "Piedmont Tantalum & Niobium Waste Dump #80",
+    "company": "Alpine Mining Corp SA",
+    "country": "italy",
+    "country_name": "Italy",
+    "region": "Piedmont",
+    "province": "Piedmont",
+    "municipality": "Piedmont Tantalum & Niobium Waste Dump #80",
+    "lat": 45.1071,
+    "lon": 7.6202,
+    "commodities": [
+      "tantalum"
+    ],
+    "commodities_label": "Tantalum & Niobium",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "tailings",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "8.23 MT",
+    "description": "Synthetic EU CRM storage site located in Piedmont, Italy. Contains estimated 8.23 MT of tailings rich in Tantalum & Niobium with average grade of 367 ppm. Managed by Alpine Mining Corp SA under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E3-F2-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-081",
+    "site_name": "Styria Nickel Tailings Storage Facility #81",
+    "company": "Silesia CRM Group NV",
+    "country": "austria",
+    "country_name": "Austria",
+    "region": "Styria",
+    "province": "Styria",
+    "municipality": "Styria Nickel Tailings Storage Facility #81",
+    "lat": 47.0426,
+    "lon": 15.0573,
+    "commodities": [
+      "nickel",
+      "tin"
+    ],
+    "commodities_label": "Nickel, Tin",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "waste rock",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "11.27 MT",
+    "description": "Synthetic EU CRM storage site located in Styria, Austria. Contains estimated 11.27 MT of waste rock rich in Nickel, Tin with average grade of 1.72%. Managed by Silesia CRM Group NV under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F1-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-082",
+    "site_name": "Thrace Cobalt Waste Dump #82",
+    "company": "Celtic Metals Ltd Ltd",
+    "country": "greece",
+    "country_name": "Greece",
+    "region": "Thrace",
+    "province": "Thrace",
+    "municipality": "Thrace Cobalt Waste Dump #82",
+    "lat": 41.0916,
+    "lon": 25.6243,
+    "commodities": [
+      "cobalt"
+    ],
+    "commodities_label": "Cobalt",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "waste rock",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "15.26 MT",
+    "description": "Synthetic EU CRM storage site located in Thrace, Greece. Contains estimated 15.26 MT of waste rock rich in Cobalt with average grade of 486 ppm. Managed by Celtic Metals Ltd Ltd under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F3-G2",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-083",
+    "site_name": "Usti nad Labem Titanium Tailings Storage Facility #83",
+    "company": "Iberian CRMs SA",
+    "country": "czechia",
+    "country_name": "Czechia",
+    "region": "Usti nad Labem",
+    "province": "Usti nad Labem",
+    "municipality": "Usti nad Labem Titanium Tailings Storage Facility #83",
+    "lat": 50.7439,
+    "lon": 13.9354,
+    "commodities": [
+      "titanium"
+    ],
+    "commodities_label": "Titanium",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "tailings",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "4.0 MT",
+    "description": "Synthetic EU CRM storage site located in Usti nad Labem, Czechia. Contains estimated 4.0 MT of tailings rich in Titanium with average grade of 672 ppm. Managed by Iberian CRMs SA under development status.",
+    "environmental_flags": [
+      "heavy metal leach risk",
+      "acid mine drainage potential"
+    ],
+    "unfc_code": "E1-F1-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-084",
+    "site_name": "Lower Silesia Titanium Stockpile #84",
+    "company": "Silesia CRM Group AB",
+    "country": "poland",
+    "country_name": "Poland",
+    "region": "Lower Silesia",
+    "province": "Lower Silesia",
+    "municipality": "Lower Silesia Titanium Stockpile #84",
+    "lat": 50.919,
+    "lon": 16.7028,
+    "commodities": [
+      "titanium",
+      "tungsten"
+    ],
+    "commodities_label": "Titanium, Tungsten (Wolfram)",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "waste rock",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "16.41 MT",
+    "description": "Synthetic EU CRM storage site located in Lower Silesia, Poland. Contains estimated 16.41 MT of waste rock rich in Titanium, Tungsten (Wolfram) with average grade of 305 ppm. Managed by Silesia CRM Group AB under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F1-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-085",
+    "site_name": "Lower Silesia Nickel Waste Dump #85",
+    "company": "Hellenic Mining GmbH",
+    "country": "poland",
+    "country_name": "Poland",
+    "region": "Lower Silesia",
+    "province": "Lower Silesia",
+    "municipality": "Lower Silesia Nickel Waste Dump #85",
+    "lat": 50.9071,
+    "lon": 16.0588,
+    "commodities": [
+      "nickel",
+      "copper"
+    ],
+    "commodities_label": "Nickel, Copper",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "waste rock",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "22.52 MT",
+    "description": "Synthetic EU CRM storage site located in Lower Silesia, Poland. Contains estimated 22.52 MT of waste rock rich in Nickel, Copper with average grade of 0.81%. Managed by Hellenic Mining GmbH under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F3-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-086",
+    "site_name": "Alentejo Natural Graphite Waste Dump #86",
+    "company": "Iberian CRMs GmbH",
+    "country": "portugal",
+    "country_name": "Portugal",
+    "region": "Alentejo",
+    "province": "Alentejo",
+    "municipality": "Alentejo Natural Graphite Waste Dump #86",
+    "lat": 38.9291,
+    "lon": -7.7003,
+    "commodities": [
+      "graphite",
+      "nickel"
+    ],
+    "commodities_label": "Natural Graphite, Nickel",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "slag",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "19.86 MT",
+    "description": "Synthetic EU CRM storage site located in Alentejo, Portugal. Contains estimated 19.86 MT of slag rich in Natural Graphite, Nickel with average grade of 76 ppm. Managed by Iberian CRMs GmbH under care and maintenance status.",
+    "environmental_flags": [
+      "high stability risk",
+      "not restored"
+    ],
+    "unfc_code": "E2-F3-G1",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-087",
+    "site_name": "Vasterbotten Manganese Pond #87",
+    "company": "Saxon Metals Tech Sp. z o.o.",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Vasterbotten",
+    "province": "Vasterbotten",
+    "municipality": "Vasterbotten Manganese Pond #87",
+    "lat": 64.6199,
+    "lon": 20.2477,
+    "commodities": [
+      "manganese",
+      "tantalum"
+    ],
+    "commodities_label": "Manganese, Tantalum & Niobium",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "tailings",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "8.94 MT",
+    "description": "Synthetic EU CRM storage site located in Vasterbotten, Sweden. Contains estimated 8.94 MT of tailings rich in Manganese, Tantalum & Niobium with average grade of 848 ppm. Managed by Saxon Metals Tech Sp. z o.o. under inactive status.",
+    "environmental_flags": [
+      "monitored seepage",
+      "high stability risk"
+    ],
+    "unfc_code": "E1-F2-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-088",
+    "site_name": "North Rhine-Westphalia Tungsten (Wolfram) Waste Dump #88",
+    "company": "Trans-European Raw Materials AB",
+    "country": "germany",
+    "country_name": "Germany",
+    "region": "North Rhine-Westphalia",
+    "province": "North Rhine-Westphalia",
+    "municipality": "North Rhine-Westphalia Tungsten (Wolfram) Waste Dump #88",
+    "lat": 51.546,
+    "lon": 7.1856,
+    "commodities": [
+      "tungsten"
+    ],
+    "commodities_label": "Tungsten (Wolfram)",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "waste rock",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "3.57 MT",
+    "description": "Synthetic EU CRM storage site located in North Rhine-Westphalia, Germany. Contains estimated 3.57 MT of waste rock rich in Tungsten (Wolfram) with average grade of 0.56%. Managed by Trans-European Raw Materials AB under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E3-F1-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-089",
+    "site_name": "Munster Tungsten (Wolfram) Stockpile #89",
+    "company": "Baltic Minerals AB",
+    "country": "ireland",
+    "country_name": "Ireland",
+    "region": "Munster",
+    "province": "Munster",
+    "municipality": "Munster Tungsten (Wolfram) Stockpile #89",
+    "lat": 52.0582,
+    "lon": -8.5552,
+    "commodities": [
+      "tungsten",
+      "manganese"
+    ],
+    "commodities_label": "Tungsten (Wolfram), Manganese",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "tailings",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "16.45 MT",
+    "description": "Synthetic EU CRM storage site located in Munster, Ireland. Contains estimated 16.45 MT of tailings rich in Tungsten (Wolfram), Manganese with average grade of 1.39%. Managed by Baltic Minerals AB under active status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F3-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-090",
+    "site_name": "Thrace Platinum Group Elements Pond #90",
+    "company": "Silesia CRM Group Ltd",
+    "country": "greece",
+    "country_name": "Greece",
+    "region": "Thrace",
+    "province": "Thrace",
+    "municipality": "Thrace Platinum Group Elements Pond #90",
+    "lat": 41.1694,
+    "lon": 25.2736,
+    "commodities": [
+      "pge",
+      "nickel"
+    ],
+    "commodities_label": "Platinum Group Elements, Nickel",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "waste rock",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "11.88 MT",
+    "description": "Synthetic EU CRM storage site located in Thrace, Greece. Contains estimated 11.88 MT of waste rock rich in Platinum Group Elements, Nickel with average grade of 398 ppm. Managed by Silesia CRM Group Ltd under development status.",
+    "environmental_flags": [],
+    "unfc_code": "E3-F1-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-091",
+    "site_name": "Kainuu Tungsten (Wolfram) Tailings Storage Facility #91",
+    "company": "Iberian CRMs SA",
+    "country": "finland",
+    "country_name": "Finland",
+    "region": "Kainuu",
+    "province": "Kainuu",
+    "municipality": "Kainuu Tungsten (Wolfram) Tailings Storage Facility #91",
+    "lat": 64.7562,
+    "lon": 28.8121,
+    "commodities": [
+      "tungsten",
+      "tin"
+    ],
+    "commodities_label": "Tungsten (Wolfram), Tin",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "waste rock",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "1.74 MT",
+    "description": "Synthetic EU CRM storage site located in Kainuu, Finland. Contains estimated 1.74 MT of waste rock rich in Tungsten (Wolfram), Tin with average grade of 1.7%. Managed by Iberian CRMs SA under inactive status.",
+    "environmental_flags": [
+      "heavy metal leach risk",
+      "water emergence",
+      "not restored"
+    ],
+    "unfc_code": "E1-F2-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-092",
+    "site_name": "North Rhine-Westphalia Natural Graphite Stockpile #92",
+    "company": "Alpine Mining Corp GmbH",
+    "country": "germany",
+    "country_name": "Germany",
+    "region": "North Rhine-Westphalia",
+    "province": "North Rhine-Westphalia",
+    "municipality": "North Rhine-Westphalia Natural Graphite Stockpile #92",
+    "lat": 51.6873,
+    "lon": 7.0476,
+    "commodities": [
+      "graphite",
+      "tantalum"
+    ],
+    "commodities_label": "Natural Graphite, Tantalum & Niobium",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "sludge",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "14.79 MT",
+    "description": "Synthetic EU CRM storage site located in North Rhine-Westphalia, Germany. Contains estimated 14.79 MT of sludge rich in Natural Graphite, Tantalum & Niobium with average grade of 99 ppm. Managed by Alpine Mining Corp GmbH under active status.",
+    "environmental_flags": [],
+    "unfc_code": "E1-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-093",
+    "site_name": "Sardinia Natural Graphite Pond #93",
+    "company": "EuroResources Ltd",
+    "country": "italy",
+    "country_name": "Italy",
+    "region": "Sardinia",
+    "province": "Sardinia",
+    "municipality": "Sardinia Natural Graphite Pond #93",
+    "lat": 39.9221,
+    "lon": 9.0697,
+    "commodities": [
+      "graphite",
+      "lithium"
+    ],
+    "commodities_label": "Natural Graphite, Lithium",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "slag",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "1.75 MT",
+    "description": "Synthetic EU CRM storage site located in Sardinia, Italy. Contains estimated 1.75 MT of slag rich in Natural Graphite, Lithium with average grade of 625 ppm. Managed by EuroResources Ltd under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F1-G2",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-094",
+    "site_name": "Bergslagen Platinum Group Elements Tailings Storage Facility #94",
+    "company": "Iberian CRMs GmbH",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Bergslagen",
+    "province": "Bergslagen",
+    "municipality": "Bergslagen Platinum Group Elements Tailings Storage Facility #94",
+    "lat": 60.6617,
+    "lon": 15.0476,
+    "commodities": [
+      "pge"
+    ],
+    "commodities_label": "Platinum Group Elements",
+    "facility_type": "Tailings Storage Facility (TSF)",
+    "material_type": "sludge",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "15.26 MT",
+    "description": "Synthetic EU CRM storage site located in Bergslagen, Sweden. Contains estimated 15.26 MT of sludge rich in Platinum Group Elements with average grade of 461 ppm. Managed by Iberian CRMs GmbH under care and maintenance status.",
+    "environmental_flags": [
+      "acid mine drainage potential",
+      "monitored seepage"
+    ],
+    "unfc_code": "E1-F1-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-095",
+    "site_name": "Tuscany Titanium Stockpile #95",
+    "company": "Danube Resources Sp. z o.o.",
+    "country": "italy",
+    "country_name": "Italy",
+    "region": "Tuscany",
+    "province": "Tuscany",
+    "municipality": "Tuscany Titanium Stockpile #95",
+    "lat": 43.3331,
+    "lon": 11.2589,
+    "commodities": [
+      "titanium"
+    ],
+    "commodities_label": "Titanium",
+    "facility_type": "Mineral Stockpile",
+    "material_type": "slag",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "20.79 MT",
+    "description": "Synthetic EU CRM storage site located in Tuscany, Italy. Contains estimated 20.79 MT of slag rich in Titanium with average grade of 595 ppm. Managed by Danube Resources Sp. z o.o. under development status.",
+    "environmental_flags": [
+      "monitored seepage",
+      "not restored"
+    ],
+    "unfc_code": "E2-F1-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-096",
+    "site_name": "Upper Silesia Manganese Pond #96",
+    "company": "Trans-European Raw Materials NV",
+    "country": "poland",
+    "country_name": "Poland",
+    "region": "Upper Silesia",
+    "province": "Upper Silesia",
+    "municipality": "Upper Silesia Manganese Pond #96",
+    "lat": 50.3109,
+    "lon": 18.9064,
+    "commodities": [
+      "manganese"
+    ],
+    "commodities_label": "Manganese",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "waste rock",
+    "project_status": "inactive",
+    "status_label": "INACTIVE",
+    "status_color": "#f59e0b",
+    "area_m2": "18.17 MT",
+    "description": "Synthetic EU CRM storage site located in Upper Silesia, Poland. Contains estimated 18.17 MT of waste rock rich in Manganese with average grade of 843 ppm. Managed by Trans-European Raw Materials NV under inactive status.",
+    "environmental_flags": [
+      "water emergence",
+      "not restored"
+    ],
+    "unfc_code": "E1-F1-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-097",
+    "site_name": "Extremadura Copper Waste Dump #97",
+    "company": "Trans-European Raw Materials GmbH",
+    "country": "spain",
+    "country_name": "Spain",
+    "region": "Extremadura",
+    "province": "Extremadura",
+    "municipality": "Extremadura Copper Waste Dump #97",
+    "lat": 39.0998,
+    "lon": -5.3921,
+    "commodities": [
+      "copper"
+    ],
+    "commodities_label": "Copper",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "sludge",
+    "project_status": "development",
+    "status_label": "DEVELOPMENT",
+    "status_color": "#f59e0b",
+    "area_m2": "14.24 MT",
+    "description": "Synthetic EU CRM storage site located in Extremadura, Spain. Contains estimated 14.24 MT of sludge rich in Copper with average grade of 1.8%. Managed by Trans-European Raw Materials GmbH under development status.",
+    "environmental_flags": [
+      "high stability risk"
+    ],
+    "unfc_code": "E1-F2-G3",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-098",
+    "site_name": "Carinthia Titanium Waste Dump #98",
+    "company": "Celtic Metals Ltd NV",
+    "country": "austria",
+    "country_name": "Austria",
+    "region": "Carinthia",
+    "province": "Carinthia",
+    "municipality": "Carinthia Titanium Waste Dump #98",
+    "lat": 46.7773,
+    "lon": 14.5475,
+    "commodities": [
+      "titanium"
+    ],
+    "commodities_label": "Titanium",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "waste rock",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "5.58 MT",
+    "description": "Synthetic EU CRM storage site located in Carinthia, Austria. Contains estimated 5.58 MT of waste rock rich in Titanium with average grade of 771 ppm. Managed by Celtic Metals Ltd NV under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E2-F2-G2",
+    "color_theme": "gold"
+  },
+  {
+    "id": "EU-CRM-099",
+    "site_name": "Vasterbotten Cobalt Pond #99",
+    "company": "Etrurian Green Metals SA",
+    "country": "sweden",
+    "country_name": "Sweden",
+    "region": "Vasterbotten",
+    "province": "Vasterbotten",
+    "municipality": "Vasterbotten Cobalt Pond #99",
+    "lat": 64.7054,
+    "lon": 18.7062,
+    "commodities": [
+      "cobalt",
+      "pge"
+    ],
+    "commodities_label": "Cobalt, Platinum Group Elements",
+    "facility_type": "Settling Pond / Balsa",
+    "material_type": "sludge",
+    "project_status": "care and maintenance",
+    "status_label": "CARE AND MAINTENANCE",
+    "status_color": "#f59e0b",
+    "area_m2": "8.99 MT",
+    "description": "Synthetic EU CRM storage site located in Vasterbotten, Sweden. Contains estimated 8.99 MT of sludge rich in Cobalt, Platinum Group Elements with average grade of 502 ppm. Managed by Etrurian Green Metals SA under care and maintenance status.",
+    "environmental_flags": [],
+    "unfc_code": "E3-F2-G3",
+    "color_theme": "emerald"
+  },
+  {
+    "id": "EU-CRM-100",
+    "site_name": "Thrace Natural Graphite Waste Dump #100",
+    "company": "Alpine Mining Corp SA",
+    "country": "greece",
+    "country_name": "Greece",
+    "region": "Thrace",
+    "province": "Thrace",
+    "municipality": "Thrace Natural Graphite Waste Dump #100",
+    "lat": 41.3997,
+    "lon": 25.5688,
+    "commodities": [
+      "graphite"
+    ],
+    "commodities_label": "Natural Graphite",
+    "facility_type": "Waste Dump / Escombrera",
+    "material_type": "slag",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
+    "area_m2": "2.95 MT",
+    "description": "Synthetic EU CRM storage site located in Thrace, Greece. Contains estimated 2.95 MT of slag rich in Natural Graphite with average grade of 388 ppm. Managed by Alpine Mining Corp SA under active status.",
+    "environmental_flags": [
+      "heavy metal leach risk",
+      "acid mine drainage potential"
+    ],
+    "unfc_code": "E3-F1-G1",
+    "color_theme": "gold"
+  }
+];
+
+    let isTyping = false;
+    let selectedSite = null;
+    let markersMap = {};
+    let mapInstance = null;
+    let currentProvider = "mock";
+
+    // ==========================================
+    // MULTI-SELECTION FILTERS & BIDIRECTIONAL SYNC
+    // ==========================================
+    let filterState = {
+      countries: [],
+      commodities: [],
+      facility: '',
+      status: ''
+    };
+
+    function toggleFilterMenu(type) {
+      const menu = document.getElementById(`dropdown-menu-${type}`);
+      if (!menu) return;
+      const isHidden = menu.classList.contains('hidden');
+      document.querySelectorAll('[id^="dropdown-menu-"]').forEach(el => el.classList.add('hidden'));
+      if (isHidden) {
+        menu.classList.remove('hidden');
+      }
+    }
+
+    // Close menus when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#manual-filter-widget')) {
+        document.querySelectorAll('[id^="dropdown-menu-"]').forEach(el => el.classList.add('hidden'));
+      }
+    });
+
+    function toggleManualCheckbox(category, val) {
+      val = val.toLowerCase().trim();
+      const idx = filterState[category].indexOf(val);
+      if (idx >= 0) {
+        filterState[category].splice(idx, 1);
+      } else {
+        filterState[category].push(val);
+      }
+      updateFilterUI();
+      applyManualFilters();
+    }
+
+    function removeFilterItem(category, val) {
+      val = val.toLowerCase().trim();
+      const idx = filterState[category].indexOf(val);
+      if (idx >= 0) {
+        filterState[category].splice(idx, 1);
+      }
+      updateFilterUI();
+      applyManualFilters();
+    }
+
+    function handleSelectFacility(val) {
+      filterState.facility = val.toLowerCase().trim();
+      updateFilterUI();
+      applyManualFilters();
+    }
+
+    function handleSelectStatus(val) {
+      filterState.status = val.toLowerCase().trim();
+      updateFilterUI();
+      applyManualFilters();
+    }
+
+    function updateFilterUI() {
+      // 1. Country checkboxes & pills
+      const countryCheckboxes = document.querySelectorAll('.checkbox-country');
+      countryCheckboxes.forEach(cb => {
+        cb.checked = filterState.countries.includes(cb.value.toLowerCase());
+      });
+      const countryLabel = document.getElementById('label-selected-countries');
+      const countryCount = document.getElementById('count-selected-countries');
+      const countryPills = document.getElementById('pills-selected-countries');
+      if (filterState.countries.length === 0) {
+        if (countryLabel) countryLabel.textContent = 'All European Countries';
+        if (countryCount) countryCount.textContent = 'All';
+        if (countryPills) countryPills.innerHTML = '';
+      } else {
+        const formatted = filterState.countries.map(c => c.charAt(0).toUpperCase() + c.slice(1));
+        if (countryLabel) countryLabel.textContent = formatted.join(', ') + ` (${formatted.length})`;
+        if (countryCount) countryCount.textContent = `${formatted.length} active`;
+        if (countryPills) {
+          countryPills.innerHTML = formatted.map(c => `
+            <span class="inline-flex items-center gap-1 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-[9.5px] px-2 py-0.5 rounded font-mono">
+              ${c}
+              <button type="button" onclick="removeFilterItem('countries', '${c.toLowerCase()}')" class="hover:text-white font-bold ml-0.5">✕</button>
+            </span>
+          `).join('');
+        }
+      }
+
+      // 2. Commodity checkboxes & pills
+      const commCheckboxes = document.querySelectorAll('.checkbox-commodity');
+      commCheckboxes.forEach(cb => {
+        cb.checked = filterState.commodities.includes(cb.value.toLowerCase());
+      });
+      const commLabel = document.getElementById('label-selected-commodities');
+      const commCount = document.getElementById('count-selected-commodities');
+      const commPills = document.getElementById('pills-selected-commodities');
+      if (filterState.commodities.length === 0) {
+        if (commLabel) commLabel.textContent = 'All Critical Raw Materials';
+        if (commCount) commCount.textContent = 'All';
+        if (commPills) commPills.innerHTML = '';
+      } else {
+        const formatted = filterState.commodities.map(c => c.charAt(0).toUpperCase() + c.slice(1));
+        if (commLabel) commLabel.textContent = formatted.join(', ') + ` (${formatted.length})`;
+        if (commCount) commCount.textContent = `${formatted.length} active`;
+        if (commPills) {
+          commPills.innerHTML = formatted.map(c => `
+            <span class="inline-flex items-center gap-1 bg-amber-950/80 border border-amber-800 text-amber-300 text-[9.5px] px-2 py-0.5 rounded font-mono">
+              ${c}
+              <button type="button" onclick="removeFilterItem('commodities', '${c.toLowerCase()}')" class="hover:text-white font-bold ml-0.5">✕</button>
+            </span>
+          `).join('');
+        }
+      }
+
+      // 3. Facility Select & count
+      const facSelect = document.getElementById('manual-filter-facility');
+      const facCount = document.getElementById('count-selected-facilities');
+      if (facSelect) facSelect.value = filterState.facility;
+      if (facCount) facCount.textContent = filterState.facility ? '1 active' : 'All';
+
+      // 4. Status Select & count
+      const statSelect = document.getElementById('manual-filter-status');
+      const statCount = document.getElementById('count-selected-statuses');
+      if (statSelect) statSelect.value = filterState.status;
+      if (statCount) statCount.textContent = filterState.status ? '1 active' : 'All';
+    }
+
+    function applyManualFilters() {
+      const activeBadges = [];
+      if (filterState.countries.length > 0) {
+        activeBadges.push({ label: 'Country', values: filterState.countries.map(c => c.charAt(0).toUpperCase() + c.slice(1)) });
+      }
+      if (filterState.commodities.length > 0) {
+        activeBadges.push({ label: 'Commodity', values: filterState.commodities.map(c => c.charAt(0).toUpperCase() + c.slice(1)) });
+      }
+      if (filterState.facility) {
+        activeBadges.push({ label: 'Facility', values: [filterState.facility] });
+      }
+      if (filterState.status) {
+        activeBadges.push({ label: 'Status', values: [filterState.status] });
+      }
+
+      const matching = MINING_SITES.filter(s => {
+        const siteCountry = (s.country || '').toLowerCase();
+        const siteComms = (s.commodities || []).map(c => c.toLowerCase());
+        const siteFacility = (s.storage_facility_type || s.facility_type || '').toLowerCase();
+        const siteStatus = (s.project_status || '').toLowerCase();
+
+        if (filterState.countries.length > 0 && !filterState.countries.includes(siteCountry)) return false;
+        if (filterState.commodities.length > 0 && !filterState.commodities.some(c => siteComms.some(sc => sc.includes(c)))) return false;
+        if (filterState.facility && !siteFacility.includes(filterState.facility)) return false;
+        if (filterState.status && siteStatus !== filterState.status) return false;
+        return true;
+      });
+
+      renderMarkers(matching);
+      updateActiveFilterBadges(activeBadges, matching.length);
+    }
+
+    function resetManualFilters() {
+      filterState = {
+        countries: [],
+        commodities: [],
+        facility: '',
+        status: ''
+      };
+      updateFilterUI();
+      renderMarkers(MINING_SITES);
+      updateActiveFilterBadges([], MINING_SITES.length);
+    }
+
+    function syncManualFiltersFromNLU(nluFilters, activeMapFilters = []) {
+      if (!nluFilters || typeof nluFilters !== 'object') {
+        nluFilters = {};
+      }
+
+      filterState.countries = (nluFilters.countries || []).map(c => c.toLowerCase().trim());
+      filterState.commodities = (nluFilters.commodities || []).map(c => c.toLowerCase().trim());
+      
+      const facs = (nluFilters.storage_facility_types || []);
+      filterState.facility = facs.length > 0 ? facs[0].toLowerCase().trim() : '';
+      
+      const stats = (nluFilters.project_status || []);
+      filterState.status = stats.length > 0 ? stats[0].toLowerCase().trim() : '';
+
+      updateFilterUI();
+    }
+
+    // ==========================================
+    // HELPER FUNCTIONS FOR FORM & SELECTOR
+    // ==========================================
+    function changeLLMProvider(val) {
+      setModelProvider(val);
+    }
+
+    function handleCustomSubmit(e) {
+      if (e) {
+        if (e.preventDefault) e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+      }
+      sendChatMessage();
+      return false;
+    }
+
+    function saveAPIKey() {
+      const keyVal = document.getElementById('api-key-input')?.value;
+      if (keyVal) {
+        alert('API Key saved successfully for session requests.');
+      }
+    }
+
+    // ==========================================
+    // INITIALIZATION & EVENT LISTENERS
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', async () => {
+      // 1. Initialize Leaflet Map centered on Europe
+      initMap();
+      
+      // 2. Fetch European CRM sites from /api/sites backend if available
+      try {
+        const resp = await fetch('/api/sites');
+        if (resp.ok) {
+          const loadedSites = await resp.json();
+          if (Array.isArray(loadedSites) && loadedSites.length > 0) {
+            MINING_SITES = loadedSites.map(s => {
+              const lat = s.latitude || (s.location ? parseFloat(s.location.split(',')[0]) : 50.0);
+              const lon = s.longitude || (s.location ? parseFloat(s.location.split(',')[1]) : 10.0);
+              return {
+                id: s.id,
+                site_name: s.site_name,
+                company: s.company || 'EU Extractive Operator',
+                country: s.country || 'europe',
+                country_name: s.country_name || (s.country ? s.country.toUpperCase() : 'Europe'),
+                region: s.region_name || s.region || 'EU Region',
+                province: s.region_name || s.country_name || 'EU',
+                municipality: s.site_name,
+                lat: lat,
+                lon: lon,
+                commodities: s.commodities || [],
+                commodities_label: s.commodities_label || (s.commodities ? s.commodities.join(', ') : 'CRM'),
+                facility_type: s.storage_facility_label || s.storage_facility_type || 'Facility',
+                material_type: s.material_type || 'Tailings & Waste',
+                project_status: s.project_status || 'active',
+                status_label: s.project_status ? s.project_status.toUpperCase() : 'ACTIVE',
+                status_color: s.project_status === 'active' ? '#10b981' : '#f59e0b',
+                area_m2: `${s.tonnage_mt || 10} MT capacity`,
+                description: s.description || 'Critical raw materials storage facility registered in the European Data Space.',
+                environmental_flags: s.environmental_flags || [],
+                unfc_code: s.unfc_code || 'UNFC E1-F2-G1',
+                color_theme: s.commodities && (s.commodities.includes('lithium') || s.commodities.includes('cobalt')) ? 'emerald' : 'gold'
+              };
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('Backend fetch /api/sites omitted, using 100-site local dataset:', err);
+      }
+
+      // 3. Render Initial Markers across Europe
+      renderMarkers();
+      updateFilterUI();
+      if (MINING_SITES.length > 0) {
+        selectSite(MINING_SITES[0].id);
+      }
+
+      // 4. Setup chat input listener (Enter key)
+      const getInput = () => document.getElementById('chat-input') || document.getElementById('custom-input');
+      const inputEl = getInput();
+      if (inputEl) {
+        inputEl.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            e.stopPropagation();
+            sendChatMessage();
+          }
+        });
+      }
+    });
+
+    // ==========================================
+    // MAP FUNCTIONS (Leaflet.js Engine)
+    // ==========================================
+    function initMap() {
+      const mapContainer = document.getElementById('map');
+      if (!mapContainer) return;
+
+      mapInstance = L.map('map', {
+        center: [51.1657, 10.4515], // Center of Europe (Germany/Czechia coordinates)
+        zoom: 4,
+        zoomControl: false,
+        attributionControl: false
+      });
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 20,
+        subdomains: 'abcd'
+      }).addTo(mapInstance);
+
+      L.control.attribution({
+        position: 'bottomright',
+        prefix: 'Leaflet.js Engine | CartoDB Dark (OpenStreetMap)'
+      }).addTo(mapInstance);
+
+      L.control.zoom({
+        position: 'topright'
+      }).addTo(mapInstance);
+    }
+
+    function renderMarkers(sitesToHighlight = null) {
+      if (!mapInstance) return;
+
+      // Clear existing markers
+      Object.values(markersMap).forEach(m => m.remove());
+      markersMap = {};
+
+      const highlightGroup = [];
+
+      MINING_SITES.forEach(site => {
+        const isMatched = !sitesToHighlight || sitesToHighlight.some(s => s.id === site.id);
+        const opacity = isMatched ? 1.0 : 0.22;
+
+        let color = '#10b981'; // Emerald
+        let pulseClass = isMatched ? 'marker-pulse-emerald' : '';
+        if (site.color_theme === 'gold') {
+          color = '#fbbf24'; // Gold
+          if (isMatched) pulseClass = 'marker-pulse-gold';
+        }
+
+        const isSelected = selectedSite && selectedSite.id === site.id;
+        
+        // LARGER CIRCLE SIZES FOR EASY CLICKING
+        const size = isSelected ? 26 : (isMatched ? 20 : 12);
+        const borderSize = isSelected ? 3 : 2;
+
+        const customIcon = L.divIcon({
+          className: 'custom-leaflet-marker',
+          html: `<div class="${pulseClass} marker-circle-hover" style="
+            width: ${size}px; 
+            height: ${size}px; 
+            background-color: ${color}; 
+            border: ${borderSize}px solid #ffffff; 
+            border-radius: 50%; 
+            opacity: ${opacity};
+            cursor: pointer;
+            box-shadow: 0 0 16px ${color}aa;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+          "></div>`,
+          iconSize: [size, size],
+          iconAnchor: [size / 2, size / 2]
+        });
+
+        const marker = L.marker([site.lat, site.lon], { icon: customIcon }).addTo(mapInstance);
+        
+        // Popup metadata card
+        const popupHtml = `
+          <div style="font-family: system-ui, sans-serif; padding: 4px; color: #0f172a;">
+            <div style="font-weight: bold; font-size: 13px; color: #047857; margin-bottom: 2px;">${site.site_name}</div>
+            <div style="font-size: 11px; color: #475569; margin-bottom: 4px;">📍 ${site.country_name} (${site.region})</div>
+            <div style="font-size: 11px; margin-bottom: 4px;"><strong>Commodities:</strong> ${site.commodities_label}</div>
+            <div style="font-size: 10px; padding: 2px 6px; background: #e2e8f0; border-radius: 4px; display: inline-block;">${site.facility_type}</div>
+            <button onclick="selectSite('${site.id}', true)" style="margin-top: 8px; width: 100%; padding: 6px; background: #047857; color: white; border: none; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">View Site Details</button>
+          </div>
+        `;
+        marker.bindPopup(popupHtml);
+
+        marker.on('click', () => {
+          selectSite(site.id, true);
+        });
+
+        markersMap[site.id] = marker;
+
+        if (isMatched) {
+          highlightGroup.push([site.lat, site.lon]);
+        }
+      });
+
+      // Fit map bounds to matching markers if filtered
+      if (sitesToHighlight && highlightGroup.length > 0) {
+        try {
+          const bounds = L.latLngBounds(highlightGroup);
+          mapInstance.fitBounds(bounds, { padding: [50, 50], maxZoom: 8 });
+        } catch (e) {
+          console.warn('Could not fit bounds:', e);
+        }
+      }
+    }
+
+    function selectSite(siteId, flyTo = false) {
+      const site = MINING_SITES.find(s => s.id === siteId);
+      if (!site) return;
+
+      selectedSite = site;
+
+      // Update Detail Card on Left UI Panel
+      const nameEl = document.getElementById('site-name');
+      const companyEl = document.getElementById('site-company');
+      const regionEl = document.getElementById('site-region');
+      const commoditiesEl = document.getElementById('site-commodities');
+      const typeEl = document.getElementById('site-facility-type');
+      const statusEl = document.getElementById('site-status');
+      const unfcEl = document.getElementById('site-unfc');
+      const descEl = document.getElementById('site-description');
+
+      if (nameEl) nameEl.textContent = site.site_name;
+      if (companyEl) companyEl.textContent = site.company;
+      if (regionEl) regionEl.textContent = `${site.region}, ${site.country_name}`;
+      if (commoditiesEl) commoditiesEl.textContent = site.commodities_label;
+      if (typeEl) typeEl.textContent = site.facility_type;
+      if (statusEl) {
+        statusEl.textContent = site.status_label;
+        statusEl.style.backgroundColor = site.status_color + '22';
+        statusEl.style.color = site.status_color;
+        statusEl.style.borderColor = site.status_color + '44';
+      }
+      if (unfcEl) unfcEl.textContent = site.unfc_code;
+      if (descEl) descEl.textContent = site.description;
+
+      // Fly to site location on Leaflet map if requested
+      if (flyTo && mapInstance) {
+        mapInstance.flyTo([site.lat, site.lon], 7, { duration: 1.2 });
+        if (markersMap[site.id]) {
+          markersMap[site.id].openPopup();
+        }
+      }
+    }
+
+    // ==========================================
+    // SCENARIOS & CHAT LOGIC
+    // ==========================================
+    function setModelProvider(provider) {
+      currentProvider = provider;
+      const indicator = document.getElementById('current-model-indicator');
+      if (indicator) {
+        if (provider === 'gemini') {
+          indicator.textContent = 'Gemini 2.0 / 1.5 (Cloud API)';
+        } else if (provider === 'openai') {
+          indicator.textContent = 'OpenAI GPT-4o (Cloud API)';
+        } else if (provider === 'qwen') {
+          indicator.textContent = 'Qwen 2.5 7B (Local GPU)';
+        } else if (provider === 'llama') {
+          indicator.textContent = 'Llama 3.2 3B (Local GPU)';
+        } else if (provider === 'deepseek') {
+          indicator.textContent = 'DeepSeek R1 7B (Local GPU)';
+        } else if (provider === 'phi3') {
+          indicator.textContent = 'Phi-3 Mini 4K (Local GPU)';
+        } else if (provider === 'gemma') {
+          indicator.textContent = 'Gemma 2 2B (Local GPU)';
+        } else {
+          indicator.textContent = 'Baseline Reglas / WARM (Mock)';
+        }
+      }
+
+      const apiKeyContainer = document.getElementById('api-key-container');
+      if (apiKeyContainer) {
+        if (provider === 'gemini' || provider === 'openai') {
+          apiKeyContainer.classList.remove('hidden');
+        } else {
+          apiKeyContainer.classList.add('hidden');
+        }
+      }
+    }
+
+    function runScenario(scenarioId) {
+      let query = "";
+      if (scenarioId === 'query_1') {
+        query = "Show active lithium and cobalt waste dumps in Spain and Finland";
+      } else if (scenarioId === 'query_2') {
+        query = "Unrestored tungsten tailings ponds in Germany";
+      } else if (scenarioId === 'query_3') {
+        query = "Rare Earth Elements (REE) facilities in Sweden and France";
+      }
+
+      const getInput = () => document.getElementById('chat-input') || document.getElementById('custom-input');
+      const inputEl = getInput();
+      if (inputEl) {
+        inputEl.value = query;
+      }
+      sendChatMessage(query);
+    }
+
+    async function sendChatMessage(overrideQuery = null) {
+      if (isTyping) return;
+
+      const getInput = () => document.getElementById('chat-input') || document.getElementById('custom-input');
+      const inputEl = getInput();
+      const query = overrideQuery || (inputEl ? inputEl.value.trim() : '');
+      if (!query) return;
+
+      if (inputEl && !overrideQuery) inputEl.value = '';
+
+      const chatContainer = document.getElementById('chat-messages');
+      if (!chatContainer) return;
+
+      // 1. Append User Message Bubble
+      const userBubble = document.createElement('div');
+      userBubble.className = 'flex justify-end mb-3';
+      userBubble.innerHTML = `
+        <div class="max-w-[85%] bg-emerald-600 text-white text-xs px-3.5 py-2.5 rounded-xl rounded-tr-none shadow-md">
+          <p class="font-medium">${escapeHtml(query)}</p>
+        </div>
+      `;
+      chatContainer.appendChild(userBubble);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      // 2. Append Typing Indicator
+      isTyping = true;
+      const typingBubble = document.createElement('div');
+      typingBubble.id = 'typing-indicator';
+      typingBubble.className = 'flex justify-start mb-3';
+      typingBubble.innerHTML = `
+        <div class="bg-slate-900 border border-slate-800 text-slate-300 text-xs px-3.5 py-2.5 rounded-xl rounded-tl-none flex items-center gap-2">
+          <span class="animate-pulse font-mono text-emerald-400">Processing NLU Semantic Extraction & Solr Query...</span>
+        </div>
+      `;
+      chatContainer.appendChild(typingBubble);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      // 3. Send Request to REST Server (/api/chat)
+      try {
+        const apiKey = document.getElementById('api-key-input')?.value || '';
+        const resp = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: query, query: query, provider: currentProvider, api_key: apiKey })
+        });
+
+        const data = await resp.json();
+        
+        // Remove typing indicator
+        const typEl = document.getElementById('typing-indicator');
+        if (typEl) typEl.remove();
+
+        // 4. Append Assistant Response Bubble
+        const assistantBubble = document.createElement('div');
+        assistantBubble.className = 'flex justify-start mb-4';
+        
+        let narrativeHtml = data.narrative || data.response_text || "Query processed successfully.";
+        narrativeHtml = formatMarkdownText(narrativeHtml);
+
+        let evidencesHtml = "";
+        if (data.evidences && data.evidences.length > 0) {
+          evidencesHtml = `<div class="mt-3 pt-3 border-t border-slate-800"><div class="text-[10px] text-amber-400 font-bold uppercase tracking-wider mb-2">📄 Technical PDF Evidence Snippets:</div>`;
+          data.evidences.forEach(ev => {
+            evidencesHtml += `
+              <div class="bg-slate-950 p-2 rounded border border-slate-800/80 mb-2 text-[11px]">
+                <div class="font-bold text-slate-200">${escapeHtml(ev.title)} (Page ${ev.page})</div>
+                <div class="text-slate-400 text-[10px] my-1">${escapeHtml(ev.snippet)}</div>
+                <div class="flex gap-1 flex-wrap">${(ev.entities || []).map(ent => `<span class="bg-emerald-950/60 text-emerald-400 border border-emerald-900/60 px-1.5 py-0.5 rounded text-[9px]">${escapeHtml(ent)}</span>`).join('')}</div>
+              </div>
+            `;
+          });
+          evidencesHtml += `</div>`;
+        }
+
+        assistantBubble.innerHTML = `
+          <div class="max-w-[90%] bg-slate-900 border border-slate-800 text-slate-200 text-xs px-4 py-3 rounded-xl rounded-tl-none shadow-lg">
+            <div class="prose prose-invert text-xs leading-relaxed">${narrativeHtml}</div>
+            ${evidencesHtml}
+          </div>
+        `;
+        chatContainer.appendChild(assistantBubble);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        // 5. Update Map Markers & Highlighting
+        const matchedIds = data.matched_ids || [];
+        const matchingSites = MINING_SITES.filter(s => matchedIds.includes(s.id));
+        renderMarkers(matchingSites.length > 0 ? matchingSites : MINING_SITES);
+
+        // 6. Update Active Map Filter Badges over Map Header
+        updateActiveFilterBadges(data.active_map_filters || [], matchedIds.length);
+
+        // 7. Synchronize Manual Filters Widget on Map Right Side
+        const nluFilters = data.filters || (data.extracted_json && data.extracted_json.filters) || {};
+        syncManualFiltersFromNLU(nluFilters, data.active_map_filters || []);
+
+        // 8. Update Solr Engine Inspector Panel
+        updateInspectorDisplay(data);
+
+      } catch (err) {
+        console.error('API Error:', err);
+        const typEl = document.getElementById('typing-indicator');
+        if (typEl) typEl.remove();
+
+        const errBubble = document.createElement('div');
+        errBubble.className = 'flex justify-start mb-3';
+        errBubble.innerHTML = `
+          <div class="bg-red-950/60 border border-red-900/60 text-red-300 text-xs px-3.5 py-2.5 rounded-xl">
+            Server connection error: ${escapeHtml(err.message)}
+          </div>
+        `;
+        chatContainer.appendChild(errBubble);
+      } finally {
+        isTyping = false;
+      }
+    }
+
+    function updateActiveFilterBadges(activeFilters = [], matchedCount = 0) {
+      const container = document.getElementById('active-filters-badges');
+      const counter = document.getElementById('site-counter-display');
+
+      if (counter) {
+        counter.textContent = `Showing ${matchedCount > 0 ? matchedCount : MINING_SITES.length} / ${MINING_SITES.length} European Sites`;
+      }
+
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (!activeFilters || activeFilters.length === 0) {
+        container.innerHTML = '<span class="text-slate-500 text-[10px] italic">No active filters (Showing full European Data Space)</span>';
+        return;
+      }
+
+      activeFilters.forEach(f => {
+        const badge = document.createElement('div');
+        badge.className = 'flex items-center gap-1.5 bg-emerald-950/70 border border-emerald-800/80 text-emerald-300 text-[10px] px-2.5 py-1 rounded-md shadow-sm font-mono';
+        badge.innerHTML = `<span class="font-bold text-amber-400">${escapeHtml(f.label)}:</span> <span>${escapeHtml(Array.isArray(f.values) ? f.values.join(', ') : f.values)}</span>`;
+        container.appendChild(badge);
+      });
+    }
+
+    function updateInspectorDisplay(data = null) {
+      const solrQueryCode = document.getElementById('inspector-query-code');
+      const facetsCode = document.getElementById('inspector-facets-code');
+      const nerCode = document.getElementById('inspector-ner-code');
+
+      if (data) {
+        if (solrQueryCode) solrQueryCode.textContent = JSON.stringify(data.solr_query || {}, null, 2);
+        if (facetsCode) facetsCode.textContent = JSON.stringify(data.solr_facets || {}, null, 2);
+        if (nerCode) nerCode.textContent = JSON.stringify(data.ner_entities || data.extracted_json || {}, null, 2);
+      }
+    }
+
+    function toggleBottomPanel() {
+      const panel = document.getElementById('bottom-inspector-panel');
+      if (!panel) return;
+      if (panel.classList.contains('h-10')) {
+        panel.classList.remove('h-10');
+        panel.classList.add('h-64');
+      } else {
+        panel.classList.remove('h-64');
+        panel.classList.add('h-10');
+      }
+    }
+
+    function switchInspectorTab(tabName) {
+      const tabs = ['query', 'facets', 'ner'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        const content = document.getElementById(`inspector-${t}-content`);
+        if (btn && content) {
+          if (t === tabName) {
+            btn.className = 'px-3 py-1 rounded text-[10px] font-semibold transition-all bg-slate-800 text-emerald-400';
+            content.classList.remove('hidden');
+          } else {
+            btn.className = 'px-3 py-1 rounded text-[10px] font-semibold transition-all text-slate-400 hover:text-slate-200';
+            content.classList.add('hidden');
+          }
+        }
+      });
+    }
+
+    function formatMarkdownText(text) {
+      if (!text) return '';
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br/>');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>

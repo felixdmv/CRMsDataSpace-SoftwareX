@@ -719,8 +719,9 @@ def get_llm_provider():
     else:
         return "rules"
 
-def get_dynamic_response(question):
-    provider = get_llm_provider()
+def get_dynamic_response(question, provider=None):
+    if not provider:
+        provider = get_llm_provider()
     print(f"\n[Geo-RAG Pipeline] Processing with LLM Provider: {provider}")
     
     parsed_json = None
@@ -984,7 +985,7 @@ def get_foreign_country_response(question, country):
         }
     }
 
-def process_query_backend(question):
+def process_query_backend(question, provider=None):
     q_lower = question.lower()
     cleaned_q = q_lower.strip("?¿!¡. ")
     
@@ -1036,7 +1037,7 @@ def process_query_backend(question):
                 break
         
         if not matched_unsupported:
-            res_payload = get_dynamic_response(question)
+            res_payload = get_dynamic_response(question, provider=provider)
 
     # Inject the LLM 1 entity extraction prompt context for Lineage visualization
     llm1_prompt = "No disponible (ejecución sin LLM)"
@@ -1092,10 +1093,18 @@ class MyHandler(SimpleHTTPRequestHandler):
                 req_data = json.loads(post_data.decode('utf-8'))
                 
                 question = req_data.get('question', '')
-                print(f"\n[API POST] Petición /api/chat recibida. Pregunta: '{question}'")
+                provider = req_data.get('provider', 'mock')
+                api_key = req_data.get('api_key', '')
+                if api_key:
+                    if provider == 'openai':
+                        os.environ['OPENAI_API_KEY'] = api_key
+                    elif provider == 'gemini':
+                        os.environ['GEMINI_API_KEY'] = api_key
+                        
+                print(f"\n[API POST] Petición /api/chat recibida. Pregunta: '{question}' | Provider: '{provider}'")
                 
                 # Procesar la pregunta en Python
-                res_payload = process_query_backend(question)
+                res_payload = process_query_backend(question, provider=provider)
                 
                 # Responder al cliente en formato JSON con cabeceras CORS
                 self.send_response(200)
