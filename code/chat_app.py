@@ -113,6 +113,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-cpu', action='store_true', help='Force CPU execution')
     parser.add_argument('-gpu', action='store_true', help='Enable GPU execution')
+    parser.add_argument('--port', type=int, default=8080, help='Port to run Gradio app')
+    parser.add_argument('--server-name', type=str, default="0.0.0.0", help='Server name / host IP')
+    parser.add_argument('--share', action='store_true', default=True, help='Create public Gradio link')
     args = parser.parse_args()
     
     if args.gpu:
@@ -120,4 +123,5 @@ if __name__ == "__main__":
     else:
         os.environ["USE_GPU"] = "0"
         
-    demo.launch(server_name="0.0.0.0", server_port=7860, share=False)
+    print(f"[CRMs Data Space Chat] Starting Gradio UI on {args.server_name}:{args.port} (share={args.share})...")
+    demo.launch(server_name=args.server_name, server_port=args.port, share=args.share)
