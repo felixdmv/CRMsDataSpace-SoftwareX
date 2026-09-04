@@ -1104,6 +1104,14 @@ class MyHandler(SimpleHTTPRequestHandler):
             self.end_headers()
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Lanzador Servidor Web App Geo-RAG Explorer")
+    parser.add_argument('--port', type=int, default=7860, help="Puerto de ejecución para la WebApp")
+    parser.add_argument('--host', type=str, default="0.0.0.0", help="Host / Nombre del servidor")
+    args = parser.parse_args()
+    PORT = args.port
+    HOST = args.host
+
     if not os.path.exists(DIRECTORY):
         print(f"[ERROR] La carpeta del prototipo '{DIRECTORY}' no existe.")
         sys.exit(1)
@@ -1113,20 +1121,20 @@ if __name__ == "__main__":
     print("  Lanzador de Servidor Híbrido: Web Estática & API REST (Python)")
     print("=" * 60)
     
-    # Iniciar el servidor web en un hilo secundario para no bloquear la terminal
-
-    # Reutilizamos la función start_server declarada antes pero con nuestro nuevo handler
     def start_server_wrapper():
         socketserver.TCPServer.allow_reuse_address = True
-        try:
-            with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
-                print(f"\n[INFO] Servidor Híbrido iniciado en http://localhost:{PORT}")
-                print(f"[INFO] Sirviendo Web en: {DIRECTORY}")
-                print(f"[INFO] Endpoint API REST en: http://localhost:{PORT}/api/chat")
-                httpd.serve_forever()
-        except Exception as e:
-            print(f"\n[ERROR] No se pudo iniciar el servidor en el puerto {PORT}: {e}")
-            print("[ERROR] Asegúrese de cerrar otras instancias o cambiar el PORT en el script.")
+        current_port = PORT
+        while current_port < PORT + 20:
+            try:
+                with socketserver.TCPServer((HOST, current_port), MyHandler) as httpd:
+                    print(f"\n[INFO] Servidor Híbrido iniciado con éxito en http://{HOST}:{current_port}")
+                    print(f"[INFO] Sirviendo Web App en: {DIRECTORY}")
+                    print(f"[INFO] Endpoint API REST en: http://{HOST}:{current_port}/api/chat")
+                    httpd.serve_forever()
+                break
+            except Exception as e:
+                print(f"[WARN] Puerto {current_port} no disponible ({e}). Intentando puerto {current_port + 1}...")
+                current_port += 1
 
     server_thread_wrapper = threading.Thread(target=start_server_wrapper, daemon=True)
     server_thread_wrapper.start()
