@@ -66,7 +66,14 @@ The software is engineered for **immediate reviewer reproducibility**. No extern
    http://localhost:8080
    ```
 
-*(Optional)*: To use live frontier LLM inference, copy `.env.example` to `.env` and configure your `GEMINI_API_KEY` or `OPENAI_API_KEY`.
+*(Optional - Cloud LLMs)*: To use frontier LLM APIs, copy `.env.example` to `.env` and configure `GEMINI_API_KEY` or `OPENAI_API_KEY`.
+
+*(Optional - Local Sovereign GPU Ingestion)*: If running on an institutional compute node equipped with NVIDIA GPUs (CUDA 12):
+```bash
+chmod +x run_gpu.sh
+./run_gpu.sh 8080
+```
+This launches the application using local open-weight foundation models (Qwen 2.5 7B, Llama 3.2 3B, DeepSeek R1 7B, Phi-3 Mini 4K) under PyTorch, enforcing 100% data sovereignty without external cloud API calls.
 
 ---
 
@@ -92,6 +99,10 @@ cd evaluation
 python evaluate_100_tests.py
 ```
 
+To run the comparative multi-model evaluation across local open-weight LLMs on GPU hardware:
+```bash
+python benchmark_all_models.py
+```
 This executes the automated test suite across 100 domain queries in `evaluation/test_battery_100.json`, verifying field-level precision, recall, and macro F1-score across all attributes.
 
 ---

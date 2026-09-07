@@ -45,14 +45,14 @@ The functional workflow operates through four decoupled layers:
     \label{fig:comp3}
     \end{figure}
 
-    \item \textbf{Stage 4: Dynamic GIS Map & Conversational Web Dashboard}: The client web application, built with Leaflet.js~\cite{leaflet2023} and TailwindCSS, receives the consolidated spatial records, facet statistics, and textual evidence. The interface dynamically renders active filter badges above the map header, updates the site counter indicator, animates matching facility markers with glowing pulse rings, and dims non-matching sites. Furthermore, a bidirectional floating filter widget synchronizes with conversational NLU extractions, enabling users to inspect, select, or refine multi-country criteria (such as Spain and Portugal simultaneously) and multiple commodity tags. Simultaneously, a grounded response synthesizer generates a concise narrative explanation with traceable document citations, while an inspection drawer provides side-by-side auditing of raw JSON payloads and Solr parameters (Figure~\ref{fig:comp4}).
+    \item \textbf{Stage 4: Dynamic GIS Map & Conversational Web Dashboard}: The client web application, built with Leaflet.js~\cite{leaflet2023} and TailwindCSS, receives the consolidated spatial records, facet statistics, and textual evidence. As illustrated in Figure~\ref{fig:comp4}, the interface integrates real-time GPU VRAM telemetry (A), an active visual filter sub-bar (B), dynamic cartography with animated glowing pulse rings (C), a grounded conversational chat assistant with traceable document citations (D), and a slide-out developer inspection drawer (E) providing full transparency into intermediate JSON artifacts and executed Solr parameters.
 
-    \begin{figure}[h!]
+    \begin{figure*}[t!]
     \centering
-    \includegraphics[width=0.90\textwidth]{component4_gis_ui.png}
-    \caption{Workflow of Stage 4: Dynamic GIS Map Synchronization, Grounded Narrative Synthesis, and Inspection Drawer UI.}
+    \includegraphics[width=\textwidth]{component4_gis_ui.png}
+    \caption{Annotated operational interface of the CRMsDataSpace web demonstrator: (A)~Real-time GPU VRAM telemetry badge monitoring on-premises NVIDIA A100 inference; (B)~Dynamic active visual filter sub-bar translating conversational criteria into filter pills; (C)~Interactive Leaflet.js GIS map with animated glowing pulse markers on matching European CRM waste facilities and popup metadata cards; (D)~Grounded conversational chat synthesizing responses with traceable PDF technical evidence cards; (E)~Slide-out developer inspection drawer for live auditing of intermediate OpenAPI JSON extractions and Solr spatial filter parameters.}
     \label{fig:comp4}
-    \end{figure}
+    \end{figure*}
 \end{enumerate}
 
 \subsection{Software Functionalities}

@@ -127,14 +127,7 @@ Project Status & 63.64 & 100.00 & 77.78 \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[h!]
-\centering
-\includegraphics[width=0.88\textwidth]{benchmark_evaluation_metrics.png}
-\caption{Field-level extraction metrics (Precision, Recall, F1-Score) across the 100 benchmark test queries.}
-\label{fig:metrics}
-\end{figure}
-
-The benchmark demonstrates 100\% precision and recall for critical geographic boundaries and domain commodities. The lower precision in facility types (60.34\%) is attributable to conversational queries using generic polysemic words (such as \textit{``depósito''}, which can denote either a tailings dam or an unmined ore deposit) that trigger conservative multi-category mapping. Crucially, recall remains at 97.00\% across all dimensions, ensuring that matching facilities are never erroneously omitted from the visual map.
+The baseline benchmark demonstrates 100\% precision and recall for critical geographic boundaries and domain commodities. The lower precision in facility types (60.34\%) is attributable to conversational queries using generic polysemic words (such as \textit{``depósito''}, which can denote either a tailings dam or an unmined ore deposit) that trigger conservative multi-category mapping. Crucially, recall remains at 97.00\% across all dimensions, ensuring that matching facilities are never erroneously omitted from the visual map.
 
 \subsection{Comparative Empirical Benchmark of Local GPU Models on NVIDIA A100 Testbed}
 \label{subsec:LocalGPUBenchmark}
@@ -146,7 +139,14 @@ To validate the operational viability, latency, and extraction fidelity of on-pr
     \item \textbf{Software Stack}: Linux (Red Hat / CentOS ecosystem), Python 3.12, PyTorch with CUDA~12 support, and Hugging Face Transformers executing under half-precision (FP16).
 \end{itemize}
 
-All models were evaluated across the 100-query benchmark battery (\texttt{test\_battery\_100.json}) using identical prompt templates and greedy decoding ($T = 0.0$). Table~\ref{tab:gpu_models_benchmark} presents the comparative evaluation across parameter size, allocated VRAM, mean latency, field-level extraction metrics, and data sovereignty compliance.
+All models were evaluated across the 100-query benchmark battery (\texttt{test\_battery\_100.json}) using identical prompt templates and greedy decoding ($T = 0.0$). Table~\ref{tab:gpu_models_benchmark} and Figure~\ref{fig:metrics} present the comparative evaluation across parameter size, allocated VRAM, mean latency, field-level extraction metrics, and data sovereignty compliance.
+
+\begin{figure*}[t!]
+\centering
+\includegraphics[width=0.98\textwidth]{benchmark_evaluation_metrics.png}
+\caption{Comprehensive empirical evaluation across the 100 domain queries on the NVIDIA A100 testbed: (a)~Comparative extraction fidelity (Intent Accuracy, Country F1, CRM Metal F1, and Overall Macro F1) across rule-based baseline and open-weight LLMs; (b)~Computational footprint and latency trade-offs, showing allocated GPU VRAM (GB) and mean query response time (seconds) under FP16 precision.}
+\label{fig:metrics}
+\end{figure*}
 
 \begin{table*}[t!]
 \centering

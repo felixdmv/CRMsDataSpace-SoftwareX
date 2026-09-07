@@ -27,4 +27,6 @@ Thumbs.db
 scratch/
 edit_step_*.json
 extracted_*.txt
+.gradio/
+code/outputs/
 

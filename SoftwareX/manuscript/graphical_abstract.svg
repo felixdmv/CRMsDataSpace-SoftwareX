@@ -53,18 +53,18 @@
     <text x="72" y="641" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Complies with EU Critical Raw Materials Act framework guidelines</text>
     <text x="72" y="656" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Provides full reproducibility for scientific software benchmark</text>
   </g>
-  <!-- Node: Dual-Variant NLU Engine (v1 Few-Shot + v3 OpenAPI Schema) -->
+  <!-- Node: Dual-Engine Sovereign NLU (Local GPU & Strict OpenAPI Schema) -->
   <g filter="url(#softShadow)">
     <rect x="610" y="140" width="580" height="190" rx="10" ry="10" fill="#FFFFFF" stroke="#4338CA" stroke-width="2" />
     <path d="M 620 140 L 1180 140 A 10 10 0 0 1 1190 150 L 1190 176 L 610 176 L 610 150 A 10 10 0 0 1 620 140 Z" fill="#6366F1" />
-    <text x="622" y="163" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">🧠  Dual-Variant NLU Engine (v1 Few-Shot + v3 OpenAPI Schema)</text>
-    <rect x="1044.5" y="147" width="137.5" height="20" rx="5" ry="5" fill="#0F172A" />
-    <text x="1051.5" y="161" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">LLM Parser + Schema</text>
-    <text x="622" y="198" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Hallucination-Free Semantic Intent & Filter Extraction</text>
-    <text x="622" y="216" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Variant 1 (Few-Shot Parsing): 5 domain examples mapping prompts to canonical filters</text>
-    <text x="622" y="231" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Variant 3 (OpenAPI Schema): Enforces Gemini responseSchema for 100% structured JSON</text>
-    <text x="622" y="246" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Temperature T=0.0 greedy decoding guarantees deterministic output across pipeline nodes</text>
-    <text x="622" y="261" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Eliminates LLM schema hallucinations and invalid field extractions</text>
+    <text x="622" y="163" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">🧠  Dual-Engine Sovereign NLU (Local GPU &amp; Strict OpenAPI Schema)</text>
+    <rect x="1015.0" y="147" width="167.0" height="20" rx="5" ry="5" fill="#0F172A" />
+    <text x="1022.0" y="161" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF">NVIDIA A100 + Slurm + Mock</text>
+    <text x="622" y="198" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#0F172A">Hallucination-Free Semantic Intent &amp; Deterministic JSON</text>
+    <text x="622" y="216" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Local Open LLMs: Llama 3.2 3B, Qwen 2.5 7B, Phi-3 Mini, DeepSeek R1 on private GPU</text>
+    <text x="622" y="231" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• 100% European Data Sovereignty: Zero telemetry leakage to external commercial cloud</text>
+    <text x="622" y="246" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Strict OpenAPI JSON Schema + Few-Shot Prompts (T=0.0 greedy decoding)</text>
+    <text x="622" y="261" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Zero-Setup Standalone Mock Mode for immediate reviewer reproducibility</text>
   </g>
   <!-- Node: Multilingual Normalizer, Validator & Solr QueryBuilder -->
   <g filter="url(#softShadow)">
@@ -105,7 +105,7 @@
     <text x="1292" y="231" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Matching facilities highlight with glowing pulse rings</text>
     <text x="1292" y="246" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Non-matching sites automatically dimmed for visual clarity</text>
     <text x="1292" y="261" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Dynamic site counter indicator ('Showing N / 100 European Sites')</text>
-    <text x="1292" y="276" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Interactive markers with detailed popup metadata cards</text>
+    <text x="1292" y="276" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#334155">• Real-time GPU VRAM Telemetry badge ('NVIDIA A100 | VRAM ... MB')</text>
   </g>
   <!-- Node: Solr Engine Inspector Drawer -->
   <g filter="url(#softShadow)">
