@@ -12,16 +12,18 @@ except ImportError:
     pass
 
 def extract_json_block(text: str) -> Dict[str, Any]:
-    """Extracts and parses JSON object from LLM raw output text."""
+    """Extracts and parses JSON object from LLM raw output text robustly."""
     if not text:
         return {}
     text = text.strip()
     
+    # 1. Direct full text parse
     try:
         return json.loads(text)
     except Exception:
         pass
         
+    # 2. Markdown fenced code block ```json ... ```
     match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
     if match:
         try:
@@ -29,18 +31,66 @@ def extract_json_block(text: str) -> Dict[str, Any]:
         except Exception:
             pass
             
-    start = text.find("{")
-    end = text.rfind("}")
-    if start != -1 and end != -1 and end > start:
+    # 3. Stream raw_decode from the first '{' using JSONDecoder (handles trailing thoughts/tokens)
+    decoder = json.JSONDecoder()
+    pos = 0
+    while True:
+        idx = text.find("{", pos)
+        if idx == -1:
+            break
         try:
-            return json.loads(text[start:end+1])
+            obj, _ = decoder.raw_decode(text[idx:])
+            if isinstance(obj, dict) and ("intent" in obj or "filters" in obj):
+                return obj
         except Exception:
             pass
+        pos = idx + 1
             
     return {}
 
+# Ensure Python.h and system headers are available for Triton JIT compilation
+for candidate in [
+    "/home/felix.demiguel/contenido_computo03_felix/anaconda3/include/python3.12",
+    os.path.expanduser("~/.local/include/python3.12"),
+]:
+    if os.path.exists(candidate):
+        cur_cpath = os.environ.get("CPATH", "")
+        if candidate not in cur_cpath:
+            os.environ["CPATH"] = f"{candidate}:{cur_cpath}" if cur_cpath else candidate
+        cur_cinc = os.environ.get("C_INCLUDE_PATH", "")
+        if candidate not in cur_cinc:
+            os.environ["C_INCLUDE_PATH"] = f"{candidate}:{cur_cinc}" if cur_cinc else candidate
+        break
+
 LOCAL_MODELS_CACHE = {}
 LOCAL_TOKENIZERS_CACHE = {}
+
+MODEL_STATE = {
+    "status": "idle",  # "idle", "loading", "ready", "error"
+    "current_model": "",
+    "repo_id": "",
+    "message": "Ningún modelo local cargado en VRAM.",
+    "vram_gb": 0.0,
+    "vram_total_gb": 0.0,
+    "error": ""
+}
+
+def get_model_state() -> Dict[str, Any]:
+    state = dict(MODEL_STATE)
+    try:
+        import torch
+        if torch.cuda.is_available():
+            state["vram_gb"] = round(torch.cuda.memory_allocated(0) / (1024**3), 2)
+            state["vram_total_gb"] = round(torch.cuda.get_device_properties(0).total_memory / (1024**3), 2)
+            state["cuda_available"] = True
+            state["device_name"] = torch.cuda.get_device_name(0)
+        else:
+            state["cuda_available"] = False
+            state["device_name"] = "No GPU (CPU Mode)"
+    except Exception:
+        state["cuda_available"] = False
+    state["cached_models"] = list(LOCAL_MODELS_CACHE.keys())
+    return state
 
 MODEL_REPO_MAP = {
     "qwen": "Qwen/Qwen2.5-7B-Instruct",
@@ -56,48 +106,125 @@ MODEL_REPO_MAP = {
     "local": "microsoft/Phi-3-mini-4k-instruct"
 }
 
+def unload_all_local_models():
+    """Completely unloads all cached models and tokenizers to free GPU VRAM."""
+    global LOCAL_MODELS_CACHE, LOCAL_TOKENIZERS_CACHE, MODEL_STATE
+    import gc
+    
+    print("[LLM Client] Liberando memoria VRAM de modelos anteriores...", flush=True)
+    for k in list(LOCAL_MODELS_CACHE.keys()):
+        try:
+            del LOCAL_MODELS_CACHE[k]
+        except Exception:
+            pass
+    for k in list(LOCAL_TOKENIZERS_CACHE.keys()):
+        try:
+            del LOCAL_TOKENIZERS_CACHE[k]
+        except Exception:
+            pass
+    LOCAL_MODELS_CACHE.clear()
+    LOCAL_TOKENIZERS_CACHE.clear()
+    
+    gc.collect()
+    try:
+        import torch
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            torch.cuda.ipc_collect()
+    except Exception:
+        pass
+        
+    MODEL_STATE["status"] = "idle"
+    MODEL_STATE["current_model"] = ""
+    MODEL_STATE["repo_id"] = ""
+    MODEL_STATE["vram_gb"] = 0.0
+    MODEL_STATE["message"] = "Memoria VRAM liberada con éxito."
+    print("[LLM Client] VRAM liberada.", flush=True)
+
+def load_local_model_weights(provider: str) -> bool:
+    """Pre-loads local model weights into GPU VRAM with state tracking and VRAM eviction."""
+    global MODEL_STATE
+    prov = provider.lower().strip()
+    repo_id = MODEL_REPO_MAP.get(prov, prov)
+    
+    if repo_id in LOCAL_MODELS_CACHE:
+        MODEL_STATE["status"] = "ready"
+        MODEL_STATE["current_model"] = prov
+        MODEL_STATE["repo_id"] = repo_id
+        MODEL_STATE["message"] = f"Modelo {repo_id} ya reside en memoria GPU VRAM."
+        return True
+
+    # Evict previously loaded models to ensure VRAM is never saturated
+    if LOCAL_MODELS_CACHE:
+        unload_all_local_models()
+        
+    MODEL_STATE["status"] = "loading"
+    MODEL_STATE["current_model"] = prov
+    MODEL_STATE["repo_id"] = repo_id
+    MODEL_STATE["message"] = f"Cargando pesos de {repo_id} en la GPU..."
+    MODEL_STATE["error"] = ""
+    
+    try:
+        import torch
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+        
+        cache_dir = Path.home() / ".cache" / "huggingface"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        os.environ["HF_HOME"] = str(cache_dir)
+        
+        use_cuda = torch.cuda.is_available()
+        dtype = torch.float16 if use_cuda else torch.float32
+        
+        print(f"[LLM Client] Loading local model '{repo_id}' onto GPU (CUDA)...")
+        tokenizer = AutoTokenizer.from_pretrained(repo_id, cache_dir=str(cache_dir), trust_remote_code=True)
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+            
+        model = AutoModelForCausalLM.from_pretrained(
+            repo_id,
+            cache_dir=str(cache_dir),
+            dtype=dtype,
+            device_map="auto" if use_cuda else None,
+            trust_remote_code=True
+        )
+        if not use_cuda:
+            model = model.to("cpu")
+            
+        LOCAL_MODELS_CACHE[repo_id] = model
+        LOCAL_TOKENIZERS_CACHE[repo_id] = tokenizer
+        
+        alloc_gb = round(torch.cuda.memory_allocated(0) / (1024**3), 2) if use_cuda else 0.0
+        MODEL_STATE["status"] = "ready"
+        MODEL_STATE["vram_gb"] = alloc_gb
+        MODEL_STATE["message"] = f"Modelo '{repo_id}' cargado con éxito en GPU VRAM ({alloc_gb} GB)."
+        print(f"[LLM Client] {MODEL_STATE['message']}")
+        return True
+    except Exception as err:
+        MODEL_STATE["status"] = "error"
+        MODEL_STATE["error"] = str(err)
+        MODEL_STATE["message"] = f"Fallo al cargar '{repo_id}': {err}"
+        print(f"[LLM Client Warning] {MODEL_STATE['message']}. Usando fallback inteligente.")
+        return False
+
 def call_local_gpu_model(system_prompt: str, user_prompt: str, provider: str = "qwen", json_mode: bool = False) -> str:
     """
     Executes local inference on available CUDA GPUs using Hugging Face Transformers.
     """
     try:
         import torch
-        from transformers import AutoModelForCausalLM, AutoTokenizer
     except ImportError:
-        print("[LLM Client Warning] PyTorch/Transformers not installed. Falling back to mock NLU parse.")
+        print("[LLM Client Warning] PyTorch not installed. Falling back to mock NLU parse.")
         return mock_nlu_parse(user_prompt)
         
     prov = provider.lower().strip()
     repo_id = MODEL_REPO_MAP.get(prov, prov)
     
-    cache_dir = Path.home() / ".cache" / "huggingface"
-    cache_dir.mkdir(parents=True, exist_ok=True)
-    os.environ["HF_HOME"] = str(cache_dir)
-    
+    if repo_id not in LOCAL_MODELS_CACHE:
+        success = load_local_model_weights(prov)
+        if not success:
+            return mock_nlu_parse(user_prompt)
+            
     try:
-        if repo_id not in LOCAL_MODELS_CACHE:
-            print(f"[LLM Client] Loading local model '{repo_id}' onto GPU (CUDA)...")
-            use_cuda = torch.cuda.is_available()
-            dtype = torch.float16 if use_cuda else torch.float32
-            
-            tokenizer = AutoTokenizer.from_pretrained(repo_id, cache_dir=str(cache_dir), trust_remote_code=True)
-            if tokenizer.pad_token is None:
-                tokenizer.pad_token = tokenizer.eos_token
-                
-            model = AutoModelForCausalLM.from_pretrained(
-                repo_id,
-                cache_dir=str(cache_dir),
-                dtype=dtype,
-                device_map="auto" if use_cuda else None,
-                trust_remote_code=True
-            )
-            if not use_cuda:
-                model = model.to("cpu")
-                
-            LOCAL_MODELS_CACHE[repo_id] = model
-            LOCAL_TOKENIZERS_CACHE[repo_id] = tokenizer
-            print(f"[LLM Client] Model '{repo_id}' successfully loaded into GPU VRAM.")
-            
         model = LOCAL_MODELS_CACHE[repo_id]
         tokenizer = LOCAL_TOKENIZERS_CACHE[repo_id]
         
@@ -113,13 +240,20 @@ def call_local_gpu_model(system_prompt: str, user_prompt: str, provider: str = "
             
         inputs = tokenizer(prompt_text, return_tensors="pt").to(model.device)
         
+        # Determine model stop token IDs for immediate completion
+        eos_ids = [tokenizer.eos_token_id] if tokenizer.eos_token_id is not None else []
+        for extra_stop in ["<|eot_id|>", "<|im_end|>", "<|end|>", "}\n"]:
+            tid = tokenizer.convert_tokens_to_ids(extra_stop)
+            if tid is not None and isinstance(tid, int) and tid > 0 and tid not in eos_ids:
+                eos_ids.append(tid)
+
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
-                max_new_tokens=600,
-                temperature=0.1,
+                max_new_tokens=180,
                 do_sample=False,
-                pad_token_id=tokenizer.pad_token_id or tokenizer.eos_token_id
+                pad_token_id=tokenizer.pad_token_id or tokenizer.eos_token_id,
+                eos_token_id=eos_ids if eos_ids else tokenizer.eos_token_id
             )
             
         generated_tokens = outputs[0][inputs.input_ids.shape[1]:]
@@ -278,7 +412,10 @@ def mock_nlu_parse(user_prompt: str) -> str:
         "lithium": "lithium", "litio": "lithium",
         "cobalt": "cobalt", "cobalto": "cobalt",
         "tungsten": "tungsten", "wolframio": "tungsten", "wolfram": "tungsten", "tungsteno": "tungsten",
-        "rare earth": "rare earth elements", "tierras raras": "rare earth elements", "ree": "rare earth elements",
+        "rare earth": "rare earth elements", "rare earths": "rare earth elements", "rare earth elements": "rare earth elements",
+        "tierras raras": "rare earth elements", "tierra rara": "rare earth elements",
+        "elementos raros": "rare earth elements", "elemento raro": "rare earth elements", "minerales raros": "rare earth elements",
+        "ree": "rare earth elements", "rees": "rare earth elements",
         "nickel": "nickel", "niquel": "nickel", "níquel": "nickel",
         "copper": "copper", "cobre": "copper",
         "tin": "tin", "estaño": "tin", "estano": "tin",

@@ -61,7 +61,8 @@ The proposed architecture transforms this daily practice into a single natural l
 A recurring barrier in AI-assisted software publication is the dependency on paid commercial cloud APIs, complex container orchestration, and proprietary database clusters. This software directly overcomes this reproducibility barrier by providing:
 \begin{itemize}
     \item A fully functional \textbf{Standalone Mock Mode} that executes the complete NLU parsing, Solr query construction, and Leaflet visual synchronization using standard Python 3.9+ with zero third-party package dependencies.
+    \item \textbf{Local GPU Deployment for Sovereign Institutional Infrastructure}: Native compatibility with open-weight foundation models (Llama 3.2 3B, Qwen 2.5 7B, Phi-3 Mini 4K, DeepSeek R1 7B) through a turnkey Slurm launcher script (\texttt{./run\_gpu.sh}), enabling research institutions to operate the entire pipeline in an air-gapped environment without external commercial cloud API leakage.
     \item A realistic synthetic European CRM dataset comprising 100 georeferenced extractive waste facilities across 12 European countries and 12 strategic raw materials.
     \item Full open-source release under the permissive MIT License in a publicly accessible GitHub repository, accompanied by extensive documentation.
 \end{itemize}
-This ensures that peer reviewers, academic researchers, and students can clone the repository and evaluate the entire software pipeline with a single command (\texttt{python run\_app.py}) in under 30 seconds.
+This ensures that peer reviewers, academic researchers, and domain engineers can clone the repository and evaluate the entire software pipeline with a single command (\texttt{python run\_app.py}) in under 30 seconds, or scale up to local GPU clusters for sovereign production workloads.

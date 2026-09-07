@@ -124,4 +124,8 @@ if __name__ == "__main__":
         os.environ["USE_GPU"] = "0"
         
     print(f"[CRMs Data Space Chat] Starting Gradio UI on {args.server_name}:{args.port} (share={args.share})...")
-    demo.launch(server_name=args.server_name, server_port=args.port, share=args.share)
+    try:
+        demo.launch(server_name=args.server_name, server_port=args.port, share=args.share)
+    except OSError:
+        print(f"[Port {args.port} busy, selecting available port automatically...]")
+        demo.launch(server_name=args.server_name, share=args.share)

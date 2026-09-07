@@ -9,6 +9,21 @@ import json
 import webbrowser
 from pathlib import Path
 from http.server import HTTPServer, SimpleHTTPRequestHandler
+import threading
+
+# Ensure Python.h and system headers are available for Triton JIT compilation
+for candidate in [
+    "/home/felix.demiguel/contenido_computo03_felix/anaconda3/include/python3.12",
+    os.path.expanduser("~/.local/include/python3.12"),
+]:
+    if os.path.exists(candidate):
+        cur_cpath = os.environ.get("CPATH", "")
+        if candidate not in cur_cpath:
+            os.environ["CPATH"] = f"{candidate}:{cur_cpath}" if cur_cpath else candidate
+        cur_cinc = os.environ.get("C_INCLUDE_PATH", "")
+        if candidate not in cur_cinc:
+            os.environ["C_INCLUDE_PATH"] = f"{candidate}:{cur_cinc}" if cur_cinc else candidate
+        break
 
 # Ensure code directory is in sys.path
 CODE_DIR = Path(__file__).resolve().parent
@@ -16,6 +31,7 @@ sys.path.insert(0, str(CODE_DIR))
 
 from agent import process_chat_message
 from mock_api import load_dataset
+from llm_client import get_model_state, load_local_model_weights, unload_all_local_models
 
 PORT = 8080
 STATIC_DIR = CODE_DIR / "static"
@@ -38,6 +54,19 @@ class SoftwareXHandler(SimpleHTTPRequestHandler):
             self.end_headers()
             sites = load_dataset()
             self.wfile.write(json.dumps(sites, ensure_ascii=False).encode("utf-8"))
+            return
+            
+        elif self.path == "/api/gpu_status" or self.path == "/api/model_status":
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            status = get_model_state()
+            vram_total = status.get("vram_total_gb", 0)
+            vram_used = status.get("vram_gb", 0)
+            status["vram_used_gb"] = vram_used
+            status["vram_percent"] = round((vram_used / vram_total) * 100, 1) if vram_total > 0 else 0.0
+            self.wfile.write(json.dumps(status).encode("utf-8"))
             return
             
         return super().do_GET()
@@ -109,6 +138,65 @@ class SoftwareXHandler(SimpleHTTPRequestHandler):
                 err_resp = {"error": str(e)}
                 self.wfile.write(json.dumps(err_resp).encode("utf-8"))
             return
+
+        elif self.path == "/api/load_model":
+            content_length = int(self.headers.get("Content-Length", 0))
+            post_data = self.rfile.read(content_length).decode("utf-8")
+            try:
+                payload = json.loads(post_data)
+                provider = payload.get("provider", "llama")
+                state = get_model_state()
+                
+                if state.get("status") == "loading":
+                    self.send_response(200)
+                    self.send_header("Content-Type", "application/json")
+                    self.send_header("Access-Control-Allow-Origin", "*")
+                    self.end_headers()
+                    self.wfile.write(json.dumps(state).encode("utf-8"))
+                    return
+
+                if state.get("status") == "ready" and state.get("current_model") == provider:
+                    self.send_response(200)
+                    self.send_header("Content-Type", "application/json")
+                    self.send_header("Access-Control-Allow-Origin", "*")
+                    self.end_headers()
+                    self.wfile.write(json.dumps(state).encode("utf-8"))
+                    return
+
+                def _bg_load():
+                    load_local_model_weights(provider)
+
+                threading.Thread(target=_bg_load, daemon=True).start()
+
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "loading", "provider": provider}).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "error", "error": str(e)}).encode("utf-8"))
+            return
+
+        elif self.path == "/api/unload_model":
+            try:
+                unload_all_local_models()
+                state = get_model_state()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps(state).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "error", "error": str(e)}).encode("utf-8"))
+            return
             
         self.send_error(404, "Endpoint not found")
 
@@ -130,29 +218,31 @@ def run_server(port=PORT, host="0.0.0.0"):
     except Exception:
         cuda_status = "CPU Mode (No GPU)"
         
-    server_address = (host, port)
-    httpd = SoftwareXHTTPServer(server_address, SoftwareXHandler)
-    url = f"http://{socket.gethostname()}:{port}"
-    print("=" * 60)
-    print("  CRMs Data Space - SoftwareX Architecture Demonstrator")
-    print(f"  [INFO] Servidor Híbrido iniciado con éxito en {url}")
-    print(f"  [INFO] Modo de Inferencia: {cuda_status}")
-    print(f"  [INFO] Endpoint API REST en: http://{socket.gethostname()}:{port}/api/chat")
-    print("  Press Ctrl+C to stop.")
-    print("=" * 60)
-    sys.stdout.flush()
-    
-    # Optionally open web browser
-    try:
-        webbrowser.open(f"http://localhost:{port}")
-    except Exception:
-        pass
-        
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        print("\nShutting down server.")
-        httpd.server_close()
+    current_port = port
+    while current_port < port + 20:
+        try:
+            server_address = (host, current_port)
+            httpd = SoftwareXHTTPServer(server_address, SoftwareXHandler)
+            url = f"http://{socket.gethostname()}:{current_port}"
+            print("=" * 60)
+            print("  CRMs Data Space - SoftwareX Architecture Demonstrator")
+            print(f"  [INFO] Servidor Híbrido iniciado con éxito en {url}")
+            print(f"  [INFO] Modo de Inferencia: {cuda_status}")
+            print(f"  [INFO] Endpoint API REST en: http://{socket.gethostname()}:{current_port}/api/chat")
+            print("  Press Ctrl+C to stop.")
+            print("=" * 60)
+            sys.stdout.flush()
+            
+            try:
+                webbrowser.open(f"http://localhost:{current_port}")
+            except Exception:
+                pass
+                
+            httpd.serve_forever()
+            break
+        except OSError as e:
+            print(f"[WARN] Puerto {current_port} ocupado ({e}). Reintentando en puerto {current_port + 1}...")
+            current_port += 1
 
 if __name__ == "__main__":
     import argparse

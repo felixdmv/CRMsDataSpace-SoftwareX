@@ -77,6 +77,9 @@ def process_chat_message(query: str, provider: str = "mock") -> Dict[str, Any]:
     normalized = normalizer.normalize(raw_json)
     validated = validator.validate(normalized)
     
+    print(f"[NLU Agent] Model/Provider: {provider} | Query: '{query}'")
+    print(f"[NLU Agent] Parsed Filters: {validated.get('filters')}")
+    
     # 3. Solr query construction & execution
     solr_query = query_builder.build(validated)
     solr_results = query_data_space_solr(solr_query["q"], solr_query["fq"])

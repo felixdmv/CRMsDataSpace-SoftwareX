@@ -36,7 +36,7 @@
 \address[1]{Grupo de Inteligencia Computacional Aplicada (GICAP), Departamento de Digitalizaci{\'o}n, Escuela Polit{\'e}cnica Superior, Universidad de Burgos, Av. Cantabria s/n, 09006 Burgos, Spain}
 
 \begin{abstract}
-Navigating complex geospatial data spaces through conventional search portals presents substantial friction for domain users, requiring rigid query syntax or exposing interfaces to Large Language Model (LLM) database schema hallucinations. In this paper, we present a domain-agnostic, modular open-source software architecture connecting a dual-variant Natural Language Understanding (NLU) pipeline with Apache Solr spatial indexing and dynamic Geographic Information System (GIS) map visual synchronization. The architecture establishes a synchronized map-and-chat interface, enabling users to translate free-form natural language queries directly into deterministic, visually synchronized spatial filtering. To eliminate schema hallucinations between pipeline nodes, the system couples Few-Shot intent parsing with strict OpenAPI JSON Schema enforcement evaluated under greedy decoding. Extracted search parameters are dynamically transformed into structured Boolean filter queries, simultaneously rendering active visual filter badges and triggering animated glowing pulse markers across the cartographic interface. To demonstrate its practical applicability, the architecture is instantiated and evaluated within \textbf{CRMsDataSpace}, a European research initiative for Critical Raw Materials. Empirical evaluation across 40 critical stress tests and 100 domain queries demonstrates high extraction accuracy (96.6\% overall accuracy and 87.61\% macro F1-score), while zero-setup standalone mock execution guarantees immediate reproducibility without external API key dependencies.
+Navigating complex geospatial data spaces through conventional search portals presents substantial friction for domain users, requiring rigid query syntax or exposing interfaces to Large Language Model (LLM) database schema hallucinations. Moreover, in strategic domains such as Critical Raw Materials (CRMs), relying on external commercial cloud APIs introduces severe data sovereignty and confidentiality risks. In this paper, we present a domain-agnostic, modular open-source software architecture connecting a dual-variant Natural Language Understanding (NLU) pipeline with Apache Solr spatial indexing and dynamic Geographic Information System (GIS) map visual synchronization. The architecture establishes a synchronized map-and-chat interface, enabling users to translate free-form natural language queries directly into deterministic, visually synchronized spatial filtering. To eliminate schema hallucinations between pipeline nodes, the system couples Few-Shot intent parsing with strict OpenAPI JSON Schema enforcement evaluated under greedy decoding. Extracted search parameters are dynamically transformed into structured Boolean filter queries, simultaneously rendering active visual filter badges and triggering animated glowing pulse markers across the cartographic interface. The software natively supports both zero-setup standalone mock execution and on-premises local execution of open-weight foundation models (Llama 3.2 3B, Qwen 2.5 7B, Phi-3 Mini 4K, DeepSeek R1 7B) on private GPU infrastructure, guaranteeing 100\% European data sovereignty. To demonstrate its practical applicability, the architecture is instantiated and evaluated within \textbf{CRMsDataSpace}, a European research initiative for Critical Raw Materials. Empirical evaluation across 40 critical stress tests and 100 domain queries on an NVIDIA A100 testbed demonstrates high extraction accuracy (up to 93.4\% macro F1-score across local GPU models and 96.6\% overall accuracy), establishing a secure, reproducible foundation for sovereign conversational GIS exploration.
 \end{abstract}
 
 \begin{graphicalabstract}
@@ -48,12 +48,13 @@ Navigating complex geospatial data spaces through conventional search portals pr
     \item Generic, domain-agnostic NLU-Solr software architecture integrating conversational LLM parsing with Apache Solr spatial search and Leaflet GIS visual synchronization.
     \item Synchronized map-and-chat web application delivering real-time cartographic feedback via glowing pulse markers and interactive active filter badges.
     \item Dual-variant NLU pipeline combining Few-Shot domain exemplars with strict OpenAPI JSON Schema validation to eliminate database schema hallucinations.
+    \item On-premises local GPU deployment supporting open-weight LLMs (Llama 3.2, Qwen 2.5, Phi-3, DeepSeek) on private NVIDIA A100 infrastructure for complete European data sovereignty.
     \item Real-world validation and deployment as the conversational demonstrator for the European research project \textbf{CRMsDataSpace} (Grant Agreement No.~101216677).
     \item Zero-setup standalone mock execution mode with a synthetic 100-site dataset, guaranteeing immediate reviewer reproducibility without API key dependencies.
 \end{highlights}
 
 \begin{keyword}
-Geographic Information Systems (GIS) \sep Software Architecture \sep Natural Language Understanding (NLU) \sep Large Language Models (LLMs) \sep Spatial Data Search \sep Common European Data Spaces
+Geographic Information Systems (GIS) \sep Software Architecture \sep Natural Language Understanding (NLU) \sep Large Language Models (LLMs) \sep Spatial Data Search \sep Data Sovereignty \sep Common European Data Spaces
 \end{keyword}
 
 \end{frontmatter}
@@ -73,9 +74,9 @@ C3 & Legal Code License & MIT License \\
 \hline
 C4 & Code versioning system used & git \\
 \hline
-C5 & Software code languages, tools, and services used & Python 3.9+, HTML5, JavaScript (Leaflet.js), TailwindCSS, Google Gemini API \\
+C5 & Software code languages, tools, and services used & Python 3.9+, HTML5, JavaScript (Leaflet.js), TailwindCSS, PyTorch (CUDA 12), Hugging Face Transformers, Google Gemini API \\
 \hline
-C6 & Compilation requirements, operating environments \& dependencies & Standard Python 3.9+ library (Standalone Mock Mode); Optional: Google Generative AI SDK, OpenAI API client \\
+C6 & Compilation requirements, operating environments \& dependencies & Standard Python 3.9+ library (Standalone Mock Mode); Optional for GPU acceleration: NVIDIA GPU with CUDA 12 (A100, RTX 3080/4080+), PyTorch, Transformers; Optional cloud: Google Generative AI SDK, OpenAI API client \\
 \hline
 C7 & Link to developer documentation/manual & \url{https://github.com/felixdmv/CRMsDataSpace-SoftwareX/blob/main/README.md} \\
 \hline

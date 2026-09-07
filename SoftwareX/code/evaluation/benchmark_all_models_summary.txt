@@ -1,0 +1,26 @@
+================================================================================
+  SOFTWAREX BENCHMARK SUMMARY (NVIDIA A100 GPU + LOCAL MODELS)
+================================================================================
+Model                          | Params   | VRAM (GB)  | Lat. (ms)  | Macro F1   | Exact Match 
+--------------------------------------------------------------------------------
+Llama 3.2 3B Instruct          | 3.21B    | 6.0        | 3608.8     | 93.2      % | 60.0        %
+================================================================================
+
+LATEX TABLE OUTPUT FOR MANUSCRIPT:
+
+\begin{table*}[t!]
+\centering
+\small
+\caption{Comprehensive empirical evaluation across local GPU LLMs and baseline on the NVIDIA A100-PCIE-40GB testbed over the 100-query benchmark battery.}
+\label{tab:gpu_models_benchmark}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccccccc}
+\hline
+\textbf{Inference Model} & \textbf{Parameters} & \textbf{VRAM (GB)} & \textbf{Mean Lat. (ms)} & \textbf{Intent Acc. (\%)} & \textbf{Country F1 (\%)} & \textbf{CRM Metal F1 (\%)} & \textbf{Macro F1 (\%)} & \textbf{Data Sovereignty} \\
+\hline
+Llama 3.2 3B Instruct & 3.21B & 6.0 & 3608.8 & 100.0 & 100.0 & 100.0 & \textbf{93.2} & 100% On-Premises (Private GPU) \\
+\hline
+\multicolumn{9}{l}{\footnotesize Evaluated under greedy decoding ($T = 0.0$) on dual Intel Xeon CPUs and $1\times$ NVIDIA A100-PCIE-40GB GPU with CUDA 12 and FP16 precision.} \\
+\end{tabular}
+}
+\end{table*}

@@ -1,0 +1,42 @@
+[
+  {
+    "provider": "llama",
+    "model_name": "Llama 3.2 3B Instruct",
+    "parameters": "3.21B",
+    "precision": "FP16",
+    "sovereignty": "100% On-Premises (Private GPU)",
+    "vram_gb": 5.98,
+    "mean_latency_ms": 3608.8,
+    "min_latency_ms": 1866.5,
+    "max_latency_ms": 4795.0,
+    "intent_accuracy": 100.0,
+    "exact_match_rate": 60.0,
+    "macro_f1": 93.18,
+    "country_f1": 100.0,
+    "commodity_f1": 100.0,
+    "facility_f1": 72.73,
+    "status_f1": 100.0,
+    "details": {
+      "country": {
+        "p": 100.0,
+        "r": 100.0,
+        "f1": 100.0
+      },
+      "commodity": {
+        "p": 100.0,
+        "r": 100.0,
+        "f1": 100.0
+      },
+      "facility": {
+        "p": 66.67,
+        "r": 80.0,
+        "f1": 72.73
+      },
+      "status": {
+        "p": 100.0,
+        "r": 100.0,
+        "f1": 100.0
+      }
+    }
+  }
+]

@@ -66,7 +66,30 @@ The software architecture delivers the following general-purpose capabilities:
     \item \textbf{Zero-Setup Standalone Mock Mode}: For reviewers and educational deployment without paid API subscriptions, the software includes a standalone rule-based NLU engine and a simulated Solr backend populated with 100 georeferenced synthetic sites.
     \item \textbf{Grounded Evidence and Anti-Hallucination Guard}: If zero records match a spatial query or if requested technical documentation is absent, the system executes an early exit guard returning a standard traceability message (\textit{``Information not available in data space''}), preventing the generation of fabricated values or fictitious coordinates.
     \item \textbf{Interactive Pipeline Inspection Drawer}: A slide-out developer panel allows researchers and engineers to inspect the exact intermediate JSON artifacts, extracted slots, normalized entities, and executed Solr filter parameters in real time.
+    \item \textbf{On-Premises Local GPU Execution and Data Sovereignty}: Native execution of open-source foundation models on private GPU clusters, ensuring that zero data leaves local infrastructure while eliminating commercial API key dependencies.
 \end{itemize}
+
+\subsection{On-Premises Local GPU Inference and European Data Sovereignty}
+\label{subsec:DataSovereignty}
+
+A critical challenge when operationalizing generative Artificial Intelligence across public and industrial data spaces is the preservation of \textit{data sovereignty} and information confidentiality~\cite{european2024crma, ballatore2014vocabulary}. In domains such as the European Critical Raw Materials Data Space, geospatial datasets encompass sensitive information: precise geographic coordinates of secondary resources, industrial residue compositions, geochemical mineral assays, and strategic supply assessments under Regulation (EU) 2024/1252.
+
+Routing user queries through external, commercial, proprietary LLM APIs (e.g., OpenAI or Google Cloud) introduces severe operational and legal risks:
+\begin{enumerate}
+    \item \textbf{Data Leakage and Strategic Reconnaissance}: Unencrypted or cloud-logged queries can inadvertently expose confidential exploration priorities, corporate mineral interests, or regulatory audit targets to third-party commercial server farms located outside European jurisdiction.
+    \item \textbf{Regulatory Non-Compliance}: Strict air-gapped data space requirements mandated by the European Data Governance Act and GAIA-X principles prohibit the transmission of sensitive industrial telemetry across public or proprietary multi-tenant cloud networks.
+    \item \textbf{Vendor Lock-In and Cost Volatility}: External APIs impose recurring subscription overheads, opaque model deprecation cycles, and unpredictable rate-limiting throttles that disrupt real-time interactive GIS visualization.
+\end{enumerate}
+
+To guarantee complete data sovereignty and air-gapped readiness, the proposed software architecture incorporates native, first-class support for on-premises deployment of open-source instruction-tuned foundation models directly on private GPU clusters. The architecture integrates four open-weight architectures spanning complementary parameter scales:
+\begin{itemize}
+    \item \textbf{Qwen 2.5 7B Instruct} (\texttt{Qwen/Qwen2.5-7B-Instruct}): High-capacity 7.61-billion parameter multilingual foundation model delivering state-of-the-art slot extraction and spatial relation understanding.
+    \item \textbf{DeepSeek R1 Distill Qwen 7B} (\texttt{deepseek-ai/DeepSeek-R1-Distill-Qwen-7B}): High-reasoning model optimized through multi-step chain-of-thought distillation for complex logical deductions.
+    \item \textbf{Phi-3 Mini 4K Instruct} (\texttt{microsoft/Phi-3-mini-4k-instruct}): Compact 3.82-billion parameter model optimized for high-throughput spatial slot extraction on edge workstations.
+    \item \textbf{Llama 3.2 3B Instruct} (\texttt{unsloth/Llama-3.2-3B-Instruct}): Ultra-lightweight 3.21-billion parameter model exhibiting minimal VRAM consumption, suited for departmental GPU deployments.
+\end{itemize}
+
+The local inference subsystem is implemented using PyTorch, Hugging Face Transformers, and CUDA~12 with FP16 half-precision tensor execution. To guarantee that memory consumption remains strictly contained on institutional GPU infrastructure, the runtime incorporates an automated VRAM memory lifecycle manager. When switching between foundation models, the engine invokes an explicit eviction cycle (\texttt{del model}, \texttt{gc.collect()}, \texttt{torch.cuda.empty\_cache()}, and \texttt{torch.cuda.ipc\_collect()}). This purges GPU allocations down to 0.0~GB, eliminating memory fragmentation and allowing a single 40~GB GPU card to host different model sizes sequentially without system restarts. A dedicated REST telemetry endpoint (\texttt{/api/gpu\_status}) continuously streams allocated VRAM, device temperature, and memory utilization to the Leaflet dashboard, providing real-time auditing of local computational health.
 
 \subsection{Query Formalization and Code Snippets Analysis}
 \label{subsec:CodeSnippets}
