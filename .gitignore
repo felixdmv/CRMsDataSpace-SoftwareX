@@ -29,4 +29,19 @@ edit_step_*.json
 extracted_*.txt
 .gradio/
 code/outputs/
+# Archives & Compiled Docs
+*.zip
+*.pdf
 
+# Local datasets and proprietary documents
+/NI 43-101/
+/International standars/
+/JORC Code/
+/News releases/
+/ASX releases & announcements/
+/Papers/
+/pdfs/
+/quick_test/
+/geo-rag-explorer/
+BBDD_propuesta_LLM_WARM.xlsx
+4 Tasks UBU CRMS v2.png

@@ -140,8 +140,7 @@ CRMsDataSpace-SoftwareX/
 
 The architecture is explicitly decoupled and domain-agnostic:
 - **New Cartographic Domains**: To adapt the system to urban cadastres, forestry, or water management, modify `DOMAIN_SYNONYMS` in [`SoftwareX/code/nlu_pipeline.py`](SoftwareX/code/nlu_pipeline.py).
-- **Custom Schema Dimensions**: Extend `SEARCH_INTENT_SCHEMA` in [`SoftwareX/code/llm_client.py`](SoftwareX/code/llm_client.py) to declare additional spatial or environmental filter facets.
-- **Production Solr Cluster**: Replace the simulator endpoints in [`SoftwareX/code/mock_api.py`](SoftwareX/code/mock_api.py) with standard Solr HTTP endpoints using `pysolr`.
+- **Production Solr / SolrCloud Cluster**: To connect to a live distributed SolrCloud collection or standalone Solr core, define the environment variable: `export SOLR_URL="http://your-solr-host:8983/solr/crms_collection"`. The search connector in [`SoftwareX/code/mock_api.py`](SoftwareX/code/mock_api.py) automatically routes queries via the Solr HTTP REST API (`/select`) with live faceting, while falling back gracefully to the embedded synthetic dataset if the variable is omitted.
 
 ---
 

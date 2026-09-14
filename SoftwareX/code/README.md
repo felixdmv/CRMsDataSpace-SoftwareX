@@ -135,8 +135,7 @@ CRMsDataSpace-SoftwareX/
 ## 🛠️ Developer Guide & Domain Customization
 
 - **Adapting to Other Domains**: Update the canonical dictionary in [`nlu_pipeline.py`](nlu_pipeline.py) under `DOMAIN_SYNONYMS` for your domain (e.g., cadastres, environmental hazards, forestry).
-- **Modifying the OpenAPI Schema**: Adjust `SEARCH_INTENT_SCHEMA` in [`llm_client.py`](llm_client.py) to add or replace filter dimensions.
-- **Connecting a Production Apache Solr Cluster**: Replace the simulation endpoints in [`mock_api.py`](mock_api.py) with standard Solr HTTP queries using `pysolr` or the Solr JSON Request API.
+- **Connecting a Production Apache Solr / SolrCloud Cluster**: To connect to a live distributed SolrCloud collection or standalone Solr core, define the environment variable: `export SOLR_URL="http://your-solr-host:8983/solr/crms_collection"`. The search connector in [`mock_api.py`](mock_api.py) automatically routes queries via the Solr HTTP REST API (`/select`) with live faceting, while falling back gracefully to the embedded synthetic dataset if the variable is omitted.
 
 ---
 

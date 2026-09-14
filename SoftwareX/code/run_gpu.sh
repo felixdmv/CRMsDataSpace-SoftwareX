@@ -18,4 +18,7 @@ echo "============================================================"
 # Silence VS Code Remote IPC socket forwarding warning across compute nodes
 unset VSCODE_IPC_HOOK_CLI
 
-exec srun --partition=computo --gres=gpu:1 python run_app.py --port "$PORT"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+exec python3 "$ROOT_DIR/run_gpu_app.py" --port "$PORT"

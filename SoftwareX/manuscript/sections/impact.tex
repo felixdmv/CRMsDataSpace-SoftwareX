@@ -1,68 +1,31 @@
 \section{Impact}
 \label{sec:Impact}
 
-The proposed NLU-Solr-GIS architecture provides a reusable, open-source software pattern for democratizing access to complex geospatial data spaces. Reviewers and research practitioners evaluate research software based on its ability to unlock new scientific inquiries, accelerate existing workflows, and offer widespread reusability across disciplines~\cite{softwarex2015}.
+The proposed NLU-Solr-GIS architecture provides a reusable, domain-agnostic open-source software pattern for conversational spatial discovery, unlocking new scientific workflows across geospatial data spaces~\cite{softwarex2015}.
 
-\subsection{Domain-Agnostic Architectural Reusability and Cross-Domain Generalization}
+\subsection{Cross-Domain Generalization and Architectural Reusability}
 \label{subsec:CrossDomain}
 
-A fundamental design goal of this software is architectural modularity and domain independence. The clean functional decoupling between the conversational intent parser, the pluggable normalization thesaurus, the Solr spatial filter generator, and the Leaflet GIS interface allows developers to adapt the architecture to diverse geospatial disciplines with minimal configuration overhead.
-
-To illustrate how effortlessly the software transfers to an alternate domain, consider an application in **Cadastral Management and Urban Planning**. In this setting, an urban planner seeks available land for solar farms or municipal infrastructure with the query:
-\begin{quote}
-\textit{``Muestra parcelas rústicas de más de 5 hectáreas en la provincia de Burgos no protegidas''} \\
-\small(\textit{``Show unbuilt rustic parcels over 5 hectares in Burgos province that are not environmentally protected''})
-\end{quote}
-
-Adopting our architecture for this cadastral use case requires modifying only two declarative files without altering the core pipeline, LLM orchestration, or cartographic synchronization:
+A fundamental design objective of this architecture is functional decoupling between intent parsing, domain terminology normalization, spatial indexing, and cartographic rendering. This separation allows developers to transfer the complete conversational GIS pipeline to alternate spatial domains by modifying only two declarative configuration files, without altering core LLM orchestration or GIS synchronization logic:
 \begin{enumerate}
-    \item \textbf{OpenAPI Schema Extension}: Replacing mineral attributes with cadastral slots:
-    \begin{verbatim}
-    "properties": {
-      "parcel_type": {"type": "ARRAY", "items": {"type": "STRING", 
-                      "enum": ["rustico", "urbano", "industrial"]}},
-      "min_surface_ha": {"type": "NUMBER"},
-      "provinces": {"type": "ARRAY", "items": {"type": "STRING"}},
-      "protected_area": {"type": "BOOLEAN"}
-    }
-    \end{verbatim}
-    \item \textbf{Solr Parameter Mapping}: Binding slots to the cadastral index:
-    \begin{verbatim}
-    fq=cadastral_type_s:("rustico")
-    fq=surface_ha_d:[5.0 TO *]
-    fq=province_canonical_s:("burgos")
-    fq=environmental_protection_b:false
-    \end{verbatim}
+    \item \textbf{OpenAPI Schema Specification}: Redefining domain-specific entity slots and categorical enumerations.
+    \item \textbf{Thesaurus and Solr Mapping}: Binding canonical entities to underlying spatial index fields.
 \end{enumerate}
-The remaining components—greedy schema-enforced decoding, reactive filter badges, dynamic bounding box auto-framing, and pulsing SVG site markers—function immediately out of the box. Identical adaptation applies to **Environmental Protection and Disaster Response** (tracking wildfire perimeters and flood hazard zones) or **Renewable Energy Infrastructure** (identifying land parcels based on slope, solar irradiance, and distance to power grids).
 
-\subsection{Accelerating Research in Critical Raw Materials and Circular Economy}
-\label{subsec:CRMImpact}
+To illustrate this adaptability, consider a transfer to \textbf{Cadastral Management and Urban Planning}, where an urban planner searches for available municipal or industrial land:
+\begin{quote}
+\textit{``Show unbuilt rustic parcels over 5 hectares in Madrid province that are not environmentally protected''}
+\end{quote}
+Adapting the pipeline requires configuring the OpenAPI schema with target cadastral dimensions—such as parcel zoning classification, minimum land surface area, administrative provinces (e.g., Madrid), and environmental protection status—which are deterministically mapped to the spatial index filter queries. All downstream components—greedy schema decoding, dynamic active filter badges, automatic bounding box re-centering, and animated glowing marker feedback—function immediately out of the box. Identical modular adaptation applies to disaster response (wildfire and flood monitoring) or renewable energy planning (identifying solar farm parcels based on terrain slope and power grid proximity).
 
-While domain-agnostic, the architecture's deployment as the core interface of the European project \textbf{CRMsDataSpace} demonstrates tangible impact in an urgent, high-stakes application: the valorisation of historical mining waste under the European Critical Raw Materials Act (Regulation EU 2024/1252)~\cite{european2024crma} and the European Green Deal.
+\subsection{Scientific Impact and Sovereign Open Science}
+\label{subsec:ScientificImpact}
 
-Prior to this software, researchers and policymakers investigating secondary raw material recovery were constrained by fragmented regional databases and opaque spreadsheets. By unifying conversational NLU with Apache Solr spatial indexing, the software enables researchers to pursue novel domain research questions:
+Deployed as the conversational demonstrator for the European project \textbf{CRMsDataSpace} (Grant Agreement No.~101216677), the architecture directly addresses the policy priorities of the European Critical Raw Materials Act (Regulation EU 2024/1252)~\cite{european2024crma}. It enables mining engineers, geologists, and environmental auditors to cross-examine historical extractive waste inventories, identifying secondary critical raw material recovery opportunities while assessing acid mine drainage risks across borders~\cite{vidal2017environmental, lottermoser2010mine}.
+
+Crucially, the architecture eliminates the primary barrier to scientific reproducibility in AI-assisted software:
 \begin{itemize}
-    \item \textit{Which unrestored tailings facilities in Southern Europe exhibit high concentrations of cobalt or lithium in close proximity to industrial transport corridors?}
-    \item \textit{How are closed extractive waste facilities distributed relative to regional environmental protection zones across national borders?}
+    \item \textbf{Complete Data Sovereignty}: Native execution of open-weight foundation models on institutional private GPU clusters guarantees that sensitive geospatial and industrial records remain strictly on-premises, fully compliant with European Data Spaces regulations and GAIA-X principles.
+    \item \textbf{Zero-Setup Standalone Reproducibility}: The standalone mock execution mode provides immediate reviewer verification using standard Python with zero external API key requirements or third-party cloud costs.
+    \item \textbf{Open Science Availability}: The codebase, complete synthetic 100-site European dataset, and evaluation suite are made fully accessible under the permissive MIT License in a public GitHub repository.
 \end{itemize}
-The integration of grounded RAG ensures that technical documentation regarding dam stability, geochemical assays, and UNFC classifications is retrieved with full provenance, supporting reproducible environmental and economic feasibility assessments~\cite{vidal2017environmental, crirscomining}.
-
-\subsection{Transformation of User Workflow and Cognitive Load Reduction}
-\label{subsec:WorkflowTransformation}
-
-In traditional GIS data portals, executing a multi-criteria spatial filter (e.g., selecting multiple jurisdictions, mineral commodities, facility categories, and unrestored status) requires interacting with 15 to 20 nested checkboxes, dropdown lists, and modal dialogue boxes. Furthermore, spatial queries requiring Boolean negations or non-standard mineral synonyms frequently yield zero results due to rigid keyword matching.
-
-The proposed architecture transforms this daily practice into a single natural language interaction. A free-text query executes in under two seconds. The immediate cartographic feedback—rendering active filter badges and lighting up matching sites with glowing animated pulses while dimming non-relevant markers—allows domain researchers to instantly verify spatial patterns and validate query interpretations without tedious trial-and-error.
-
-\subsection{Open Science, Transparency, and Zero-Setup Reproducibility}
-\label{subsec:OpenScience}
-
-A recurring barrier in AI-assisted software publication is the dependency on paid commercial cloud APIs, complex container orchestration, and proprietary database clusters. This software directly overcomes this reproducibility barrier by providing:
-\begin{itemize}
-    \item A fully functional \textbf{Standalone Mock Mode} that executes the complete NLU parsing, Solr query construction, and Leaflet visual synchronization using standard Python 3.9+ with zero third-party package dependencies.
-    \item \textbf{Local GPU Deployment for Sovereign Institutional Infrastructure}: Native compatibility with open-weight foundation models (Llama 3.2 3B, Qwen 2.5 7B, Phi-3 Mini 4K, DeepSeek R1 7B) through a turnkey Slurm launcher script (\texttt{./run\_gpu.sh}), enabling research institutions to operate the entire pipeline in an air-gapped environment without external commercial cloud API leakage.
-    \item A realistic synthetic European CRM dataset comprising 100 georeferenced extractive waste facilities across 12 European countries and 12 strategic raw materials.
-    \item Full open-source release under the permissive MIT License in a publicly accessible GitHub repository, accompanied by extensive documentation.
-\end{itemize}
-This ensures that peer reviewers, academic researchers, and domain engineers can clone the repository and evaluate the entire software pipeline with a single command (\texttt{python run\_app.py}) in under 30 seconds, or scale up to local GPU clusters for sovereign production workloads.

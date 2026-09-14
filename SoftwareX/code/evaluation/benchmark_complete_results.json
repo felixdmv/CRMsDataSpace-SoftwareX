@@ -1,41 +1,349 @@
 [
   {
+    "provider": "mock",
+    "model_name": "Deterministic Baseline (Mock)",
+    "parameters": "Rule-based",
+    "precision": "CPU Heuristics",
+    "sovereignty": "100% On-Premises (Air-gapped)",
+    "vram_gb": 0.0,
+    "mean_latency_ms": 0.4,
+    "min_latency_ms": 0.3,
+    "max_latency_ms": 0.6,
+    "intent_accuracy": 80.0,
+    "exact_match_rate": 26.0,
+    "macro_f1": 74.89,
+    "country_f1": 80.47,
+    "commodity_f1": 67.48,
+    "facility_f1": 79.22,
+    "status_f1": 72.41,
+    "category_breakdown": {
+      "canonical_slot_filling": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 100.0,
+        "commodity_f1": 100.0,
+        "facility_f1": 90.91,
+        "status_f1": 85.71,
+        "macro_f1": 94.15
+      },
+      "negations_and_exclusions": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 84.21,
+        "commodity_f1": 62.5,
+        "facility_f1": 90.91,
+        "status_f1": 71.43,
+        "macro_f1": 77.26
+      },
+      "semantic_association_expansion": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 59.09,
+        "commodity_f1": 43.48,
+        "facility_f1": 80.0,
+        "status_f1": 0.0,
+        "macro_f1": 45.64
+      },
+      "technical_standards_and_qa": {
+        "queries": 20,
+        "intent_accuracy": 0.0,
+        "country_f1": 100.0,
+        "commodity_f1": 0.0,
+        "facility_f1": 0.0,
+        "status_f1": 0.0,
+        "macro_f1": 25.0
+      },
+      "noisy_colloquial_multilingual": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 72.73,
+        "commodity_f1": 62.86,
+        "facility_f1": 92.68,
+        "status_f1": 61.54,
+        "macro_f1": 72.45
+      }
+    },
+    "details": {
+      "country": {
+        "p": 91.89,
+        "r": 71.58,
+        "f1": 80.47
+      },
+      "commodity": {
+        "p": 79.71,
+        "r": 58.51,
+        "f1": 67.48
+      },
+      "facility": {
+        "p": 67.03,
+        "r": 96.83,
+        "f1": 79.22
+      },
+      "status": {
+        "p": 65.62,
+        "r": 80.77,
+        "f1": 72.41
+      }
+    }
+  },
+  {
     "provider": "llama",
     "model_name": "Llama 3.2 3B Instruct",
     "parameters": "3.21B",
     "precision": "FP16",
     "sovereignty": "100% On-Premises (Private GPU)",
     "vram_gb": 5.98,
-    "mean_latency_ms": 3608.8,
-    "min_latency_ms": 1866.5,
-    "max_latency_ms": 4795.0,
-    "intent_accuracy": 100.0,
-    "exact_match_rate": 60.0,
-    "macro_f1": 93.18,
-    "country_f1": 100.0,
-    "commodity_f1": 100.0,
-    "facility_f1": 72.73,
-    "status_f1": 100.0,
+    "mean_latency_ms": 1910.7,
+    "min_latency_ms": 874.7,
+    "max_latency_ms": 3082.0,
+    "intent_accuracy": 98.0,
+    "exact_match_rate": 43.0,
+    "macro_f1": 75.92,
+    "country_f1": 85.99,
+    "commodity_f1": 71.05,
+    "facility_f1": 60.93,
+    "status_f1": 85.71,
+    "category_breakdown": {
+      "canonical_slot_filling": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 100.0,
+        "commodity_f1": 100.0,
+        "facility_f1": 72.73,
+        "status_f1": 100.0,
+        "macro_f1": 93.18
+      },
+      "negations_and_exclusions": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 62.75,
+        "commodity_f1": 45.0,
+        "facility_f1": 74.42,
+        "status_f1": 71.43,
+        "macro_f1": 63.4
+      },
+      "semantic_association_expansion": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 98.36,
+        "commodity_f1": 62.65,
+        "facility_f1": 16.67,
+        "status_f1": 100.0,
+        "macro_f1": 69.42
+      },
+      "technical_standards_and_qa": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 100.0,
+        "commodity_f1": 0.0,
+        "facility_f1": 100.0,
+        "status_f1": 100.0,
+        "macro_f1": 75.0
+      },
+      "noisy_colloquial_multilingual": {
+        "queries": 20,
+        "intent_accuracy": 90.0,
+        "country_f1": 78.05,
+        "commodity_f1": 80.0,
+        "facility_f1": 60.0,
+        "status_f1": 77.78,
+        "macro_f1": 73.96
+      }
+    },
     "details": {
       "country": {
-        "p": 100.0,
-        "r": 100.0,
-        "f1": 100.0
+        "p": 79.46,
+        "r": 93.68,
+        "f1": 85.99
       },
       "commodity": {
-        "p": 100.0,
-        "r": 100.0,
-        "f1": 100.0
+        "p": 60.45,
+        "r": 86.17,
+        "f1": 71.05
       },
       "facility": {
-        "p": 66.67,
-        "r": 80.0,
-        "f1": 72.73
+        "p": 52.27,
+        "r": 73.02,
+        "f1": 60.93
       },
       "status": {
-        "p": 100.0,
+        "p": 80.0,
+        "r": 92.31,
+        "f1": 85.71
+      }
+    }
+  },
+  {
+    "provider": "phi3",
+    "model_name": "Phi-3 Mini 4K Instruct",
+    "parameters": "3.82B",
+    "precision": "FP16",
+    "sovereignty": "100% On-Premises (Private GPU)",
+    "vram_gb": 7.12,
+    "mean_latency_ms": 2917.6,
+    "min_latency_ms": 1287.6,
+    "max_latency_ms": 4841.4,
+    "intent_accuracy": 100.0,
+    "exact_match_rate": 48.0,
+    "macro_f1": 75.26,
+    "country_f1": 75.41,
+    "commodity_f1": 66.67,
+    "facility_f1": 62.65,
+    "status_f1": 96.3,
+    "category_breakdown": {
+      "canonical_slot_filling": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 100.0,
+        "commodity_f1": 100.0,
+        "facility_f1": 80.95,
+        "status_f1": 100.0,
+        "macro_f1": 95.24
+      },
+      "negations_and_exclusions": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 40.51,
+        "commodity_f1": 37.5,
+        "facility_f1": 78.26,
+        "status_f1": 92.31,
+        "macro_f1": 62.14
+      },
+      "semantic_association_expansion": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 85.29,
+        "commodity_f1": 64.37,
+        "facility_f1": 14.29,
+        "status_f1": 100.0,
+        "macro_f1": 65.99
+      },
+      "technical_standards_and_qa": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 100.0,
+        "commodity_f1": 0.0,
+        "facility_f1": 0.0,
+        "status_f1": 100.0,
+        "macro_f1": 50.0
+      },
+      "noisy_colloquial_multilingual": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 93.02,
+        "commodity_f1": 69.09,
+        "facility_f1": 61.22,
+        "status_f1": 94.12,
+        "macro_f1": 79.36
+      }
+    },
+    "details": {
+      "country": {
+        "p": 61.74,
+        "r": 96.84,
+        "f1": 75.41
+      },
+      "commodity": {
+        "p": 54.79,
+        "r": 85.11,
+        "f1": 66.67
+      },
+      "facility": {
+        "p": 50.49,
+        "r": 82.54,
+        "f1": 62.65
+      },
+      "status": {
+        "p": 92.86,
         "r": 100.0,
-        "f1": 100.0
+        "f1": 96.3
+      }
+    }
+  },
+  {
+    "provider": "qwen",
+    "model_name": "Qwen 2.5 7B Instruct",
+    "parameters": "7.61B",
+    "precision": "FP16",
+    "sovereignty": "100% On-Premises (Private GPU)",
+    "vram_gb": 14.19,
+    "mean_latency_ms": 1805.5,
+    "min_latency_ms": 965.5,
+    "max_latency_ms": 2837.9,
+    "intent_accuracy": 100.0,
+    "exact_match_rate": 84.0,
+    "macro_f1": 93.11,
+    "country_f1": 94.53,
+    "commodity_f1": 90.1,
+    "facility_f1": 89.71,
+    "status_f1": 98.11,
+    "category_breakdown": {
+      "canonical_slot_filling": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 100.0,
+        "commodity_f1": 100.0,
+        "facility_f1": 100.0,
+        "status_f1": 100.0,
+        "macro_f1": 100.0
+      },
+      "negations_and_exclusions": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 74.42,
+        "commodity_f1": 100.0,
+        "facility_f1": 100.0,
+        "status_f1": 92.31,
+        "macro_f1": 91.68
+      },
+      "semantic_association_expansion": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 100.0,
+        "commodity_f1": 80.95,
+        "facility_f1": 26.67,
+        "status_f1": 100.0,
+        "macro_f1": 76.91
+      },
+      "technical_standards_and_qa": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 100.0,
+        "commodity_f1": 100.0,
+        "facility_f1": 100.0,
+        "status_f1": 100.0,
+        "macro_f1": 100.0
+      },
+      "noisy_colloquial_multilingual": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 100.0,
+        "commodity_f1": 92.0,
+        "facility_f1": 92.68,
+        "status_f1": 100.0,
+        "macro_f1": 96.17
+      }
+    },
+    "details": {
+      "country": {
+        "p": 89.62,
+        "r": 100.0,
+        "f1": 94.53
+      },
+      "commodity": {
+        "p": 84.26,
+        "r": 96.81,
+        "f1": 90.1
+      },
+      "facility": {
+        "p": 83.56,
+        "r": 96.83,
+        "f1": 89.71
+      },
+      "status": {
+        "p": 96.3,
+        "r": 100.0,
+        "f1": 98.11
       }
     }
   }

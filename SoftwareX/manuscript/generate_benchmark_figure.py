@@ -9,22 +9,21 @@ plt.rcParams['axes.edgecolor'] = '#94A3B8'
 plt.rcParams['axes.linewidth'] = 0.8
 
 models = [
-    'Deterministic\n(Mock)',
+    'Deterministic\nBaseline (Mock)',
     'Llama 3.2\n(3B)',
     'Phi-3 Mini\n(3.8B)',
-    'Qwen 2.5\n(7B)',
-    'DeepSeek R1\n(7B)'
+    'Qwen 2.5\n(7B)'
 ]
 
-intent_acc = [100.0, 100.0, 98.0, 100.0, 100.0]
-country_f1 = [100.0, 100.0, 98.5, 100.0, 100.0]
-metal_f1 = [100.0, 100.0, 99.0, 100.0, 100.0]
-macro_f1 = [94.2, 93.2, 90.2, 93.4, 93.4]
+intent_acc = [80.0, 98.0, 100.0, 100.0]
+country_f1 = [80.5, 86.0, 75.4, 94.5]
+metal_f1 = [67.5, 71.0, 66.7, 90.1]
+macro_f1 = [74.9, 75.9, 75.3, 93.1]
 
-vram_gb = [0.0, 6.0, 7.2, 14.2, 14.2]
-latency_sec = [0.0003, 3.61, 3.82, 4.12, 4.51]
+vram_gb = [0.0, 6.0, 7.1, 14.2]
+latency_sec = [0.0004, 1.91, 2.92, 1.81]
 
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5.4), dpi=300)
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8.8), dpi=300)
 fig.patch.set_facecolor('#FFFFFF')
 
 # -------------------------------------------------------------
@@ -48,14 +47,14 @@ ax1.set_ylabel('Extraction Accuracy & F1-Score (%)', fontsize=11, fontweight='bo
 ax1.set_title('(a) NLU Intent & Entity Extraction Fidelity across 100 Queries', fontsize=12, fontweight='bold', color='#0F172A', pad=12)
 ax1.set_xticks(x)
 ax1.set_xticklabels(models, fontsize=9.5, fontweight='bold', color='#334155')
-ax1.set_ylim(80, 105)
+ax1.set_ylim(55, 110)
 ax1.grid(axis='y', linestyle='--', alpha=0.5, color='#CBD5E1')
-ax1.legend(loc='lower left', frameon=True, facecolor='#FFFFFF', edgecolor='#CBD5E1', fontsize=8.5)
+ax1.legend(loc='upper left', frameon=True, facecolor='#FFFFFF', edgecolor='#CBD5E1', fontsize=8.5)
 
 # Value annotations for macro F1
 for bar in r4:
     yval = bar.get_height()
-    ax1.text(bar.get_x() + bar.get_width()/2.0, yval + 0.7, f'{yval:.1f}%',
+    ax1.text(bar.get_x() + bar.get_width()/2.0, yval + 1.0, f'{yval:.1f}%',
              ha='center', va='bottom', fontsize=8, fontweight='bold', color='#5B21B6')
 
 # -------------------------------------------------------------
@@ -78,8 +77,8 @@ ax2.set_title('(b) Compute Footprint & Inference Latency on NVIDIA A100', fontsi
 
 ax2.set_xticks(x_idx)
 ax2.set_xticklabels(models, fontsize=9.5, fontweight='bold', color='#334155')
-ax2.set_ylim(0, 22)
-ax2_twin.set_ylim(0, 6.5)
+ax2.set_ylim(0, 18)
+ax2_twin.set_ylim(0, 3.8)
 
 ax2.grid(axis='y', linestyle='--', alpha=0.4, color='#CBD5E1')
 

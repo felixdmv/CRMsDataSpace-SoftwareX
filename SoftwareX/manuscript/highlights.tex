@@ -1,0 +1,41 @@
+%% Template article for Elsevier's document class `elsarticle`
+\documentclass[preprint,12pt, a4paper]{elsarticle}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{orcidlink}
+
+\journal{SoftwareX}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Highlights: A Modular NLU-Solr Architecture with Dynamic GIS Visual Synchronization for Conversational Spatial Search}
+
+\author[1]{F{\'e}lix de Miguel \orcidlink{0009-0000-9607-110X}\corref{cor1}}
+\ead{fdemiguel@ubu.es}
+
+\author[1]{Daniel Urda \orcidlink{0000-0003-2662-798X}}
+\ead{durda@ubu.es}
+
+\author[1]{Nu{\~n}o Basurto \orcidlink{0000-0001-7289-4689}}
+\ead{nbasurto@ubu.es}
+
+\cortext[cor1]{Corresponding author at: Grupo de Inteligencia Computacional Aplicada (GICAP), Departamento de Digitalizaci{\'o}n, Escuela Polit{\'e}cnica Superior, Universidad de Burgos, Av. Cantabria s/n, 09006 Burgos, Spain.}
+
+\address[1]{Grupo de Inteligencia Computacional Aplicada (GICAP), Departamento de Digitalizaci{\'o}n, Escuela Polit{\'e}cnica Superior, Universidad de Burgos, Av. Cantabria s/n, 09006 Burgos, Spain}
+
+\begin{highlights}
+    \item Generic, domain-agnostic NLU-Solr software architecture integrating conversational LLM parsing with Apache Solr spatial search and Leaflet GIS visual synchronization.
+    \item Synchronized map-and-chat web application delivering real-time cartographic feedback via glowing pulse markers and interactive active filter badges.
+    \item Dual-variant NLU pipeline combining Few-Shot domain exemplars with strict OpenAPI JSON Schema validation to eliminate database schema hallucinations.
+    \item On-premises local GPU deployment supporting open-weight LLMs (Llama 3.2, Qwen 2.5, Phi-3, DeepSeek) on private NVIDIA A100 infrastructure for complete European data sovereignty.
+    \item Real-world validation and deployment as the conversational demonstrator for the European research project \textbf{CRMsDataSpace} (Grant Agreement No.~101216677).
+    \item Zero-setup standalone mock execution mode with a synthetic 100-site dataset, guaranteeing immediate reviewer reproducibility without API key dependencies.
+\end{highlights}
+
+\end{frontmatter}
+
+\end{document}

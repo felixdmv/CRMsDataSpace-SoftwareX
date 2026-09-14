@@ -3,7 +3,10 @@
 ================================================================================
 Model                          | Params   | VRAM (GB)  | Lat. (ms)  | Macro F1   | Exact Match 
 --------------------------------------------------------------------------------
-Llama 3.2 3B Instruct          | 3.21B    | 6.0        | 3608.8     | 93.2      % | 60.0        %
+Deterministic Baseline (Mock)  | Rule-based | 0.0        | 0.4        | 74.9      % | 26.0        %
+Llama 3.2 3B Instruct          | 3.21B    | 6.0        | 1910.7     | 75.9      % | 43.0        %
+Phi-3 Mini 4K Instruct         | 3.82B    | 7.1        | 2917.6     | 75.3      % | 48.0        %
+Qwen 2.5 7B Instruct           | 7.61B    | 14.2       | 1805.5     | 93.1      % | 84.0        %
 ================================================================================
 
 LATEX TABLE OUTPUT FOR MANUSCRIPT:
@@ -18,7 +21,10 @@ LATEX TABLE OUTPUT FOR MANUSCRIPT:
 \hline
 \textbf{Inference Model} & \textbf{Parameters} & \textbf{VRAM (GB)} & \textbf{Mean Lat. (ms)} & \textbf{Intent Acc. (\%)} & \textbf{Country F1 (\%)} & \textbf{CRM Metal F1 (\%)} & \textbf{Macro F1 (\%)} & \textbf{Data Sovereignty} \\
 \hline
-Llama 3.2 3B Instruct & 3.21B & 6.0 & 3608.8 & 100.0 & 100.0 & 100.0 & \textbf{93.2} & 100% On-Premises (Private GPU) \\
+Deterministic Baseline (Mock) & Rule-based & 0.0 (RAM) & 0.4 & 80.0 & 80.5 & 67.5 & \textbf{74.9} & 100% On-Premises (Air-gapped) \\
+Llama 3.2 3B Instruct & 3.21B & 6.0 & 1910.7 & 98.0 & 86.0 & 71.0 & \textbf{75.9} & 100% On-Premises (Private GPU) \\
+Phi-3 Mini 4K Instruct & 3.82B & 7.1 & 2917.6 & 100.0 & 75.4 & 66.7 & \textbf{75.3} & 100% On-Premises (Private GPU) \\
+Qwen 2.5 7B Instruct & 7.61B & 14.2 & 1805.5 & 100.0 & 94.5 & 90.1 & \textbf{93.1} & 100% On-Premises (Private GPU) \\
 \hline
 \multicolumn{9}{l}{\footnotesize Evaluated under greedy decoding ($T = 0.0$) on dual Intel Xeon CPUs and $1\times$ NVIDIA A100-PCIE-40GB GPU with CUDA 12 and FP16 precision.} \\
 \end{tabular}

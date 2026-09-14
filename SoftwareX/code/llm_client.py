@@ -176,16 +176,17 @@ def load_local_model_weights(provider: str) -> bool:
         dtype = torch.float16 if use_cuda else torch.float32
         
         print(f"[LLM Client] Loading local model '{repo_id}' onto GPU (CUDA)...")
-        tokenizer = AutoTokenizer.from_pretrained(repo_id, cache_dir=str(cache_dir), trust_remote_code=True)
+        trust_remote = (repo_id not in ["microsoft/Phi-3-mini-4k-instruct"])
+        tokenizer = AutoTokenizer.from_pretrained(repo_id, cache_dir=str(cache_dir), trust_remote_code=trust_remote)
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
             
         model = AutoModelForCausalLM.from_pretrained(
             repo_id,
             cache_dir=str(cache_dir),
-            dtype=dtype,
+            torch_dtype=dtype,
             device_map="auto" if use_cuda else None,
-            trust_remote_code=True
+            trust_remote_code=trust_remote
         )
         if not use_cuda:
             model = model.to("cpu")

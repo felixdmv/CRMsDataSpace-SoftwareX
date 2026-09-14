@@ -107,11 +107,22 @@ def run_model_benchmark(provider: str, test_cases: List[Dict[str, Any]]) -> Dict
     comm_stats = [0, 0, 0]
     fac_stats = [0, 0, 0]
     status_stats = [0, 0, 0]
+    
+    categories = {}
 
     for idx, tc in enumerate(test_cases, 1):
         q = tc["query"]
+        cat = tc.get("category", "default")
         expected_intent = tc["expected_intent"]
         expected_filters = tc.get("expected_filters", {})
+
+        if cat not in categories:
+            categories[cat] = {
+                "total": 0, "intent_correct": 0,
+                "country_stats": [0, 0, 0], "comm_stats": [0, 0, 0],
+                "fac_stats": [0, 0, 0], "status_stats": [0, 0, 0]
+            }
+        categories[cat]["total"] += 1
 
         start_time = time.perf_counter()
         try:
@@ -129,25 +140,38 @@ def run_model_benchmark(provider: str, test_cases: List[Dict[str, Any]]) -> Dict
         # Intent
         if pred_intent == expected_intent:
             intent_correct += 1
+            categories[cat]["intent_correct"] += 1
 
         # Country
         p, r, f1, tp, fp, fn = calculate_metrics(expected_filters.get("countries", []), pred_filters.get("countries", []))
         country_stats[0] += tp; country_stats[1] += fp; country_stats[2] += fn
+        categories[cat]["country_stats"][0] += tp
+        categories[cat]["country_stats"][1] += fp
+        categories[cat]["country_stats"][2] += fn
         c_match = (set(expected_filters.get("countries", [])) == set(pred_filters.get("countries", [])))
 
         # Commodity
         p, r, f1, tp, fp, fn = calculate_metrics(expected_filters.get("commodities", []), pred_filters.get("commodities", []))
         comm_stats[0] += tp; comm_stats[1] += fp; comm_stats[2] += fn
+        categories[cat]["comm_stats"][0] += tp
+        categories[cat]["comm_stats"][1] += fp
+        categories[cat]["comm_stats"][2] += fn
         m_match = (set(expected_filters.get("commodities", [])) == set(pred_filters.get("commodities", [])))
 
         # Facility
         p, r, f1, tp, fp, fn = calculate_metrics(expected_filters.get("storage_facility_types", []), pred_filters.get("storage_facility_types", []))
         fac_stats[0] += tp; fac_stats[1] += fp; fac_stats[2] += fn
+        categories[cat]["fac_stats"][0] += tp
+        categories[cat]["fac_stats"][1] += fp
+        categories[cat]["fac_stats"][2] += fn
         f_match = (set(expected_filters.get("storage_facility_types", [])) == set(pred_filters.get("storage_facility_types", [])))
 
         # Status
         p, r, f1, tp, fp, fn = calculate_metrics(expected_filters.get("project_status", []), pred_filters.get("project_status", []))
         status_stats[0] += tp; status_stats[1] += fp; status_stats[2] += fn
+        categories[cat]["status_stats"][0] += tp
+        categories[cat]["status_stats"][1] += fp
+        categories[cat]["status_stats"][2] += fn
         s_match = (set(expected_filters.get("project_status", [])) == set(pred_filters.get("project_status", [])))
 
         if c_match and m_match and f_match and s_match:
@@ -172,6 +196,25 @@ def run_model_benchmark(provider: str, test_cases: List[Dict[str, Any]]) -> Dict
     fp, fr, ff1 = compute_macro(fac_stats)
     sp, sr, sf1 = compute_macro(status_stats)
     macro_f1 = round((cf1 + mf1 + ff1 + sf1) / 4.0, 2)
+
+    category_breakdown = {}
+    for cat_name, cdata in categories.items():
+        c_tot = cdata["total"]
+        c_iacc = round((cdata["intent_correct"] / c_tot) * 100.0, 2) if c_tot > 0 else 0.0
+        _, _, c_cf1 = compute_macro(cdata["country_stats"])
+        _, _, c_mf1 = compute_macro(cdata["comm_stats"])
+        _, _, c_ff1 = compute_macro(cdata["fac_stats"])
+        _, _, c_sf1 = compute_macro(cdata["status_stats"])
+        c_macro = round((c_cf1 + c_mf1 + c_ff1 + c_sf1) / 4.0, 2)
+        category_breakdown[cat_name] = {
+            "queries": c_tot,
+            "intent_accuracy": c_iacc,
+            "country_f1": c_cf1,
+            "commodity_f1": c_mf1,
+            "facility_f1": c_ff1,
+            "status_f1": c_sf1,
+            "macro_f1": c_macro
+        }
 
     mean_latency = round(sum(latencies_ms) / len(latencies_ms), 1)
     min_latency = round(min(latencies_ms), 1)
@@ -198,6 +241,7 @@ def run_model_benchmark(provider: str, test_cases: List[Dict[str, Any]]) -> Dict
         "commodity_f1": mf1,
         "facility_f1": ff1,
         "status_f1": sf1,
+        "category_breakdown": category_breakdown,
         "details": {
             "country": {"p": cp, "r": cr, "f1": cf1},
             "commodity": {"p": mp, "r": mr, "f1": mf1},
@@ -258,14 +302,34 @@ def main():
     print(f"  Models to Evaluate: {', '.join(args.models)}")
     print(f"{'='*70}\n")
 
-    benchmark_results = []
+    # Load existing benchmark results if present to allow incremental model runs
+    existing_map = {}
+    if RESULTS_JSON.exists():
+        try:
+            with open(RESULTS_JSON, "r", encoding="utf-8") as f:
+                old_list = json.load(f)
+                for item in old_list:
+                    existing_map[item.get("provider")] = item
+        except Exception:
+            pass
+
     for model_key in args.models:
         if model_key not in MODEL_METADATA:
             print(f"[Warning] Unknown model key '{model_key}'. Skipping.")
             continue
         entry = run_model_benchmark(model_key, test_cases)
         if entry:
-            benchmark_results.append(entry)
+            existing_map[entry["provider"]] = entry
+
+    # Preserve consistent order: mock, llama, phi3, qwen, deepseek
+    order = ["mock", "llama", "phi3", "qwen", "deepseek"]
+    benchmark_results = []
+    for k in order:
+        if k in existing_map:
+            benchmark_results.append(existing_map[k])
+    for k, v in existing_map.items():
+        if k not in order:
+            benchmark_results.append(v)
 
     # Save complete JSON
     with open(RESULTS_JSON, "w", encoding="utf-8") as f:

@@ -1,7 +1,7 @@
 import json
 import os
 import unicodedata
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 # Fake database of mining sites / waste facilities
 MOCK_DATABASE = [
@@ -132,10 +132,63 @@ def normalize_lookup_value(value: Any) -> str:
         if not unicodedata.combining(char)
     )
 
+def query_solr_cloud(solr_base_url: str, q: str = "*:*", fq: List[str] = None) -> Optional[List[Dict[str, Any]]]:
+    """
+    Queries live Apache Solr (SolrCloud / Standalone) collection via HTTP REST API (/select).
+    Returns list of matching site documents.
+    """
+    if fq is None:
+        fq = []
+
+    base = solr_base_url.rstrip("/")
+    collection = os.getenv("SOLR_COLLECTION", "").strip()
+    if collection and not base.endswith(collection):
+        base = f"{base}/{collection}"
+
+    select_url = base if base.endswith("/select") else f"{base}/select"
+    timeout = float(os.getenv("SOLR_TIMEOUT", "5.0"))
+    rows = int(os.getenv("SOLR_ROWS", "1000"))
+
+    params = [
+        ("q", q if q else "*:*"),
+        ("wt", "json"),
+        ("rows", str(rows)),
+    ]
+    for rule in fq:
+        params.append(("fq", rule))
+
+    try:
+        try:
+            import requests
+            resp = requests.get(select_url, params=params, timeout=timeout)
+            if resp.status_code != 200:
+                print(f"[SolrCloud] Server returned status {resp.status_code}: {resp.text[:180]}")
+                return None
+            data = resp.json()
+        except ImportError:
+            import urllib.request
+            import urllib.parse
+            query_string = urllib.parse.urlencode(params)
+            req = urllib.request.Request(f"{select_url}?{query_string}")
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                data = json.loads(response.read().decode("utf-8"))
+
+        return data.get("response", {}).get("docs", [])
+    except Exception as e:
+        print(f"[SolrCloud] Connection to '{select_url}' failed ({e}). Falling back to local mock.")
+        return None
+
 def query_data_space_solr(q: str, fq: List[str]) -> List[Dict[str, Any]]:
     """
-    Simulates querying Apache Solr using 'q' (main free-text query) and 'fq' (filter queries).
+    Retrieves records from Apache Solr (SolrCloud) if SOLR_URL is defined,
+    otherwise executes local search simulation over database.json.
     """
+    solr_url = os.getenv("SOLR_URL", "").strip()
+    if solr_url:
+        cloud_docs = query_solr_cloud(solr_url, q=q, fq=fq)
+        if cloud_docs is not None:
+            return cloud_docs
+
     database = load_database()
     filtered = []
 
