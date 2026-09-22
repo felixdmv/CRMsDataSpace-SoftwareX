@@ -3736,22 +3736,33 @@
           const loadedSites = await resp.json();
           if (Array.isArray(loadedSites) && loadedSites.length > 0) {
             MINING_SITES = loadedSites.map(s => {
-              const lat = parseFloat(s.lat || s.latitude || 0);
-              const lon = parseFloat(s.lon || s.longitude || 0);
+              const lat = parseFloat(s.lat ?? s.latitude ?? (s.coordinates && s.coordinates[0]) ?? 0);
+              const lon = parseFloat(s.lon ?? s.longitude ?? (s.coordinates && s.coordinates[1]) ?? 0);
+              const status = (s.project_status || "Active").toLowerCase();
               return {
                 ...s,
                 id: s.id || `site_${Math.random()}`,
-                name: s.name || s.site_name,
+                name: s.site_name || s.name,
                 site_name: s.site_name || s.name,
-                coordinates: [lat, lon],
+                lat: lat,
+                lon: lon,
                 latitude: lat,
                 longitude: lon,
-                country: s.country || s.country_name,
+                coordinates: [lat, lon],
+                country: (s.country || s.country_name || "").toLowerCase(),
                 country_name: s.country_name || s.country,
+                region: s.region_name || s.region || "",
+                company: s.company || "European Mining Operator",
                 commodities: Array.isArray(s.commodities) ? s.commodities : [s.commodities_label || "CRM"],
                 commodities_label: s.commodities_label || (Array.isArray(s.commodities) ? s.commodities.join(", ") : "CRM"),
-                storage_facility_label: s.storage_facility_label || "Tailings / Waste Dump",
-                project_status: s.project_status || "Active",
+                storage_facility_label: s.storage_facility_label || s.facility_type || "Waste Dump / Escombrera",
+                facility_type: s.facility_type || s.storage_facility_label || "Waste Dump / Escombrera",
+                project_status: status,
+                status_label: status.toUpperCase(),
+                status_color: status === 'active' ? '#10b981' : (status.includes('maintenance') ? '#f59e0b' : '#94a3b8'),
+                color_theme: (s.commodities && s.commodities.some(c => c.toLowerCase().includes('gold') || c.toLowerCase().includes('copper') || c.toLowerCase().includes('tungsten'))) ? 'gold' : 'emerald',
+                unfc_code: s.unfc_code || "E3-F3-G2",
+                description: s.description || (s.technical_summary || `European CRM site located in ${s.country_name || s.country}.`),
                 restored: typeof s.restored === 'boolean' ? s.restored : false
               };
             });
@@ -3763,9 +3774,6 @@
 
       // Render initial markers
       renderMarkers();
-
-      // Populate filter dropdowns from data
-      populateFilterDropdowns();
 
       // Select first site in technical inspector
       if (MINING_SITES.length > 0) {
@@ -3864,6 +3872,10 @@
       const highlightGroup = [];
 
       MINING_SITES.forEach(site => {
+        const lat = parseFloat(site.lat ?? site.latitude ?? (site.coordinates && site.coordinates[0]) ?? 0);
+        const lon = parseFloat(site.lon ?? site.longitude ?? (site.coordinates && site.coordinates[1]) ?? 0);
+        if (!lat || !lon || isNaN(lat) || isNaN(lon)) return;
+
         const isMatched = !sitesToHighlight || sitesToHighlight.some(s => s.id === site.id);
         const opacity = isMatched ? 1.0 : 0.22;
 
@@ -3897,15 +3909,15 @@
           iconAnchor: [size / 2, size / 2]
         });
 
-        const marker = L.marker([site.lat, site.lon], { icon: customIcon }).addTo(mapInstance);
+        const marker = L.marker([lat, lon], { icon: customIcon }).addTo(mapInstance);
         
         // Popup metadata card
         const popupHtml = `
           <div style="font-family: system-ui, sans-serif; padding: 4px; color: #0f172a;">
             <div style="font-weight: bold; font-size: 13px; color: #047857; margin-bottom: 2px;">${site.site_name}</div>
-            <div style="font-size: 11px; color: #475569; margin-bottom: 4px;">📍 ${site.country_name} (${site.region})</div>
+            <div style="font-size: 11px; color: #475569; margin-bottom: 4px;">📍 ${site.country_name || site.country} (${site.region || site.region_name || ''})</div>
             <div style="font-size: 11px; margin-bottom: 4px;"><strong>Commodities:</strong> ${site.commodities_label}</div>
-            <div style="font-size: 10px; padding: 2px 6px; background: #e2e8f0; border-radius: 4px; display: inline-block;">${site.facility_type}</div>
+            <div style="font-size: 10px; padding: 2px 6px; background: #e2e8f0; border-radius: 4px; display: inline-block;">${site.facility_type || site.storage_facility_label || 'Facility'}</div>
             <button onclick="selectSite('${site.id}', true)" style="margin-top: 8px; width: 100%; padding: 6px; background: #047857; color: white; border: none; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">View Site Details</button>
           </div>
         `;
@@ -3918,7 +3930,7 @@
         markersMap[site.id] = marker;
 
         if (isMatched) {
-          highlightGroup.push([site.lat, site.lon]);
+          highlightGroup.push([lat, lon]);
         }
       });
 
@@ -3950,24 +3962,29 @@
       const descEl = document.getElementById('site-description');
 
       if (nameEl) nameEl.textContent = site.site_name;
-      if (companyEl) companyEl.textContent = site.company;
-      if (regionEl) regionEl.textContent = `${site.region}, ${site.country_name}`;
+      if (companyEl) companyEl.textContent = site.company || 'European Mining Operator';
+      if (regionEl) regionEl.textContent = `${site.region || site.region_name || ''}, ${site.country_name || site.country || ''}`;
       if (commoditiesEl) commoditiesEl.textContent = site.commodities_label;
-      if (typeEl) typeEl.textContent = site.facility_type;
+      if (typeEl) typeEl.textContent = site.facility_type || site.storage_facility_label || 'Waste Dump';
       if (statusEl) {
-        statusEl.textContent = site.status_label;
-        statusEl.style.backgroundColor = site.status_color + '22';
-        statusEl.style.color = site.status_color;
-        statusEl.style.borderColor = site.status_color + '44';
+        statusEl.textContent = site.status_label || (site.project_status || 'active').toUpperCase();
+        const col = site.status_color || '#10b981';
+        statusEl.style.backgroundColor = col + '22';
+        statusEl.style.color = col;
+        statusEl.style.borderColor = col + '44';
       }
-      if (unfcEl) unfcEl.textContent = site.unfc_code;
-      if (descEl) descEl.textContent = site.description;
+      if (unfcEl) unfcEl.textContent = site.unfc_code || 'E3-F3-G2';
+      if (descEl) descEl.textContent = site.description || '';
 
       // Fly to site location on Leaflet map if requested
       if (flyTo && mapInstance) {
-        mapInstance.flyTo([site.lat, site.lon], 7, { duration: 1.2 });
-        if (markersMap[site.id]) {
-          markersMap[site.id].openPopup();
+        const lat = parseFloat(site.lat ?? site.latitude ?? (site.coordinates && site.coordinates[0]) ?? 0);
+        const lon = parseFloat(site.lon ?? site.longitude ?? (site.coordinates && site.coordinates[1]) ?? 0);
+        if (lat && lon) {
+          mapInstance.flyTo([lat, lon], 7, { duration: 1.2 });
+          if (markersMap[site.id]) {
+            markersMap[site.id].openPopup();
+          }
         }
       }
     }
