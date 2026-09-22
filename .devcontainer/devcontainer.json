@@ -9,7 +9,7 @@
       "elevateIfNeeded": false
     }
   },
-  "postCreateCommand": "pip install -r SoftwareX/code/requirements.txt || true",
+  "postCreateCommand": "pip install -r code/requirements.txt || true",
   "postAttachCommand": "python run_app.py --port 8080",
   "customizations": {
     "vscode": {

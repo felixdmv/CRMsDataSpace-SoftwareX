@@ -73,7 +73,7 @@ Open your web browser at:
 ```
 http://localhost:8080
 ```
-*(Alternatively, execute `python run_app.py` inside `SoftwareX/code/` for identical behavior).*
+*(Alternatively, execute `python run_app.py` inside `code/` for identical behavior).*
 
 ---
 
@@ -81,7 +81,7 @@ http://localhost:8080
 For institutional environments equipped with compute nodes and NVIDIA CUDA GPUs:
 
 ```bash
-cd SoftwareX/code
+cd code
 chmod +x run_gpu.sh
 ./run_gpu.sh 8080
 ```
@@ -132,20 +132,20 @@ The repository includes fully automated test scripts corresponding to Section 3 
 ### 1. Automated API & Engine Verification Suite
 Validates request formatting, authentication handlers, and zero-crash fallbacks across Mock, Gemini, GPT-4o, and Claude:
 ```bash
-python SoftwareX/code/test_apis.py
+python code/test_apis.py
 ```
 
 ### 2. Golden 100-Query Benchmark Reproduction
-Evaluates intent classification accuracy and field-level F1-scores across all 100 ground-truth queries in `SoftwareX/code/evaluation/test_battery_100.json`:
+Evaluates intent classification accuracy and field-level F1-scores across all 100 ground-truth queries in `code/evaluation/test_battery_100.json`:
 ```bash
-cd SoftwareX/code/evaluation
+cd code/evaluation
 python evaluate_100_tests.py
 ```
 
 ### 3. Multi-Model Comparative Benchmark (NVIDIA A100 Testbed)
 Evaluates latency, VRAM footprint, and F1-score across local open-weight foundation models:
 ```bash
-cd SoftwareX/code/evaluation
+cd code/evaluation
 python benchmark_all_models.py
 ```
 
@@ -166,41 +166,42 @@ python benchmark_all_models.py
 CRMsDataSpace-SoftwareX/
 ├── .devcontainer/
 │   └── devcontainer.json               # 1-Click GitHub Codespaces configuration
+├── code/                               # Reference software implementation
+│   ├── agent.py                        # Orchestrator coordinating Stages 1-4
+│   ├── llm_client.py                   # Multi-engine NLU client (Mock, Local Transformers, Cloud APIs)
+│   ├── mock_api.py                     # Apache Solr spatial simulator with facet engine
+│   ├── nlu_pipeline.py                 # Normalization thesaurus, JSON validator, Solr builder
+│   ├── run_app.py                      # Standalone HTTP web server (Port 8080)
+│   ├── run_gpu.sh                      # Slurm execution script
+│   ├── run_gpu_app.py                  # Slurm launcher & reverse proxy
+│   ├── test_apis.py                    # Automated verification suite for all engines
+│   ├── requirements.txt                # Python dependencies
+│   ├── data/
+│   │   └── synthetic_escombreras_europe.json # 100 European CRM waste facilities
+│   ├── evaluation/
+│   │   ├── test_battery_100.json       # 100 golden test queries with ground truth
+│   │   ├── evaluate_100_tests.py       # Baseline evaluation script
+│   │   ├── benchmark_all_models.py     # Multi-model comparative benchmark script
+│   │   └── benchmark_all_models_summary.txt # Raw empirical benchmark output
+│   └── static/
+│       ├── favicon.ico                 # Application favicon
+│       └── index.html                  # Dynamic Single-Page App (Leaflet.js + TailwindCSS)
 ├── docs/
 │   └── index.html                      # Standalone GitHub Pages web demonstrator
-├── README.md                           # Main documentation & quickstart
+├── .gitignore                          # Git exclude rules
 ├── LICENSE                             # MIT Open-Source License
+├── README.md                           # Main documentation & quickstart
 ├── run_app.py                          # Root standalone launcher (Port 8080)
-├── run_gpu_app.py                      # Slurm GPU launcher & reverse proxy
-├── SoftwareX/
-│   └── code/                           # Reference software implementation
-│       ├── agent.py                    # Orchestrator coordinating Stages 1-4
-│       ├── llm_client.py               # Multi-engine NLU client (Mock, Local Transformers, Cloud APIs)
-│       ├── mock_api.py                 # Apache Solr spatial simulator with facet engine
-│       ├── nlu_pipeline.py             # Normalization thesaurus, JSON validator, Solr builder
-│       ├── run_app.py                  # Standalone HTTP web server (Port 8080)
-│       ├── run_gpu.sh                  # Slurm execution script
-│       ├── run_gpu_app.py              # Slurm launcher & reverse proxy
-│       ├── test_apis.py                # Automated verification suite for all engines
-│       ├── requirements.txt            # Python dependencies
-│       ├── data/
-│       │   └── synthetic_escombreras_europe.json # 100 European CRM waste facilities
-│       ├── evaluation/
-│       │   ├── test_battery_100.json   # 100 golden test queries with ground truth
-│       │   ├── evaluate_100_tests.py   # Baseline evaluation script
-│       │   ├── benchmark_all_models.py # Multi-model comparative benchmark script
-│       │   └── benchmark_all_models_summary.txt # Raw empirical benchmark output
-│       └── static/
-│           ├── favicon.ico             # Application favicon
-│           └── index.html              # Dynamic Single-Page App (Leaflet.js + TailwindCSS)
+├── run_demo.sh                         # 1-Click shell quickstart launcher
+└── run_gpu_app.py                      # Slurm GPU launcher & reverse proxy
 ```
 
 ---
 
 ## 🛠️ Domain Customization & Developer Guide
 
-- **Adapting to Other Domains**: Update the canonical dictionary in [`SoftwareX/code/nlu_pipeline.py`](SoftwareX/code/nlu_pipeline.py) under `DOMAIN_SYNONYMS` for your domain (e.g., cadastres, environmental hazards, forestry).
-- **Connecting a Production Apache Solr / SolrCloud Cluster**: To connect to a live distributed SolrCloud collection or standalone Solr core, define the environment variable: `export SOLR_URL="http://your-solr-host:8983/solr/crms_collection"`. The search connector in [`SoftwareX/code/mock_api.py`](SoftwareX/code/mock_api.py) automatically routes queries via the Solr HTTP REST API (`/select`) with live faceting, falling back gracefully to the embedded synthetic dataset if omitted.
+- **Adapting to Other Domains**: Update the canonical dictionary in [`code/nlu_pipeline.py`](code/nlu_pipeline.py) under `DOMAIN_SYNONYMS` for your domain (e.g., cadastres, environmental hazards, forestry).
+- **Connecting a Production Apache Solr / SolrCloud Cluster**: To connect to a live distributed SolrCloud collection or standalone Solr core, define the environment variable: `export SOLR_URL="http://your-solr-host:8983/solr/crms_collection"`. The search connector in [`code/mock_api.py`](code/mock_api.py) automatically routes queries via the Solr HTTP REST API (`/select`) with live faceting, falling back gracefully to the embedded synthetic dataset if omitted.
 
 ---
 

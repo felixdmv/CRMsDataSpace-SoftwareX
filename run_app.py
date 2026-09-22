@@ -7,9 +7,11 @@ Delegates to SoftwareX architecture demonstrator providing multi-model European 
 import sys
 from pathlib import Path
 
-# Add SoftwareX/code to path
-SOFTWAREX_CODE_DIR = Path(__file__).resolve().parent / "SoftwareX" / "code"
-sys.path.insert(0, str(SOFTWAREX_CODE_DIR))
+# Add code to path
+CODE_DIR = Path(__file__).resolve().parent / "code"
+if not CODE_DIR.exists():
+    CODE_DIR = Path(__file__).resolve().parent / "SoftwareX" / "code"
+sys.path.insert(0, str(CODE_DIR))
 
 # Import and execute SoftwareX server
 from run_app import run_server, PORT

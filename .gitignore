@@ -53,12 +53,11 @@ diagnose_cluster.py
 diagnose_gpu.sh
 SoftwareX/manuscript/Graphical_abstract_v3.png
 
-# Legacy code & draft reports
-/code/
-/SoftwareX/otros papers/
-/SoftwareX/manuscript/
-/SoftwareX/README.md
-/SoftwareX/run_gpu.sh
+# Legacy code & local working directories
+/legacy_code/
+/SoftwareX/
+SoftwareX/
+
 architecture_comparison_report.md
 architecture_tracking.md
 evaluacion_variantes_crms.md
