@@ -3,9 +3,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 
 plt.rcParams['font.family'] = 'sans-serif'
-plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial', 'Helvetica']
-
-out_dir = "/home/felix.demiguel/contenido_computo03_felix/CRMsDataSpace/SoftwareX/manuscript"
+from pathlib import Path
+out_dir = Path(__file__).resolve().parent
 
 def draw_rounded_box(ax, x, y, w, h, title, subtitle, bullets, box_color, header_color, title_color="white", tag=""):
     # Base card background

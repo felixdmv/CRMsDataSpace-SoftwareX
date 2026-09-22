@@ -66,14 +66,20 @@ The software is engineered for **immediate reviewer reproducibility**. No extern
    http://localhost:8080
    ```
 
-*(Optional - Cloud LLMs)*: To use frontier LLM APIs, copy `.env.example` to `.env` and configure `GEMINI_API_KEY` or `OPENAI_API_KEY`.
+*(Optional - Cloud LLMs & Claude Code)*: To use frontier LLM APIs (Google Gemini, OpenAI GPT-4o, Anthropic Claude 3.5/3.7, or Claude Code), copy `.env.example` to `.env` and set `GEMINI_API_KEY`, `OPENAI_API_KEY`, or `ANTHROPIC_API_KEY`. Alternatively, paste keys directly in the web UI.
 
-*(Optional - Local Sovereign GPU Ingestion)*: If running on an institutional compute node equipped with NVIDIA GPUs (CUDA 12):
+4. **Verify All Engines & Protocols (Automated Verification Suite)**:
+   ```bash
+   python test_apis.py
+   ```
+   Validates request formatting, network connectivity, authentication responses, and zero-crash fallbacks across Mock, Gemini, GPT-4o, and Claude.
+
+*(Optional - Local Sovereign GPU Ingestion on HPC Cluster)*: If running on an institutional compute node equipped with NVIDIA GPUs (CUDA 12, e.g. NVIDIA A100):
 ```bash
 chmod +x run_gpu.sh
-./run_gpu.sh 8080
+./run_gpu.sh 8081
 ```
-This launches the application using local open-weight foundation models (Qwen 2.5 7B, Llama 3.2 3B, DeepSeek R1 7B, Phi-3 Mini 4K) under PyTorch, enforcing 100% data sovereignty without external cloud API calls.
+This requests 1x NVIDIA A100 via Slurm inside Apptainer, sets up a transparent TCP reverse proxy on the cluster login node, and enables local open-weight foundation models (Qwen 2.5 7B, Llama 3.2 3B, DeepSeek R1 7B, Phi-3 Mini 4K, Gemma 2 2B), enforcing 100% data sovereignty without external cloud dependencies.
 
 ---
 
@@ -120,10 +126,13 @@ CRMsDataSpace-SoftwareX/
 ├── static/
 │   └── index.html                          # Single-Page App (Leaflet.js + TailwindCSS UI)
 ├── agent.py                                # Hybrid architecture orchestrator
-├── llm_client.py                           # Multi-provider LLM client with OpenAPI schema
+├── llm_client.py                           # Multi-provider LLM client (Local GPU, Gemini, GPT, Claude)
 ├── mock_api.py                             # Apache Solr spatial simulator with facet engine
 ├── nlu_pipeline.py                         # Thesaurus normalizer, validator, and Solr query builder
-├── run_app.py                              # Standalone Python HTTP server (port 8080)
+├── run_app.py                              # Standalone Python HTTP server (0-dependency Mock mode)
+├── run_gpu.sh                              # Automated GPU launcher script (Slurm + Apptainer)
+├── run_gpu_app.py                          # Slurm launcher & transparent TCP reverse proxy
+├── test_apis.py                            # Automated verification suite for all APIs and engines
 ├── requirements.txt                        # Optional cloud dependencies
 ├── LICENSE                                 # MIT License
 ├── .env.example                            # Example API configuration

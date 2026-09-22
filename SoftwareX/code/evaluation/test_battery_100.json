@@ -1,6 +1,7 @@
 [
   {
     "id": "TC-001",
+    "category": "canonical_slot_filling",
     "query": "Muestra escombreras de lithium en Spain",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -18,6 +19,7 @@
   },
   {
     "id": "TC-002",
+    "category": "canonical_slot_filling",
     "query": "Find active cobalt tailings storage facilities in Portugal",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -37,6 +39,7 @@
   },
   {
     "id": "TC-003",
+    "category": "canonical_slot_filling",
     "query": "Depósitos de tungsten y tin en Germany",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -53,12 +56,12 @@
   },
   {
     "id": "TC-004",
-    "query": "Balsas de rare earth elements inactivas en France y Poland",
+    "category": "canonical_slot_filling",
+    "query": "Balsas de rare earth elements inactivas en France",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "france",
-        "poland"
+        "france"
       ],
       "commodities": [
         "rare earth elements"
@@ -74,6 +77,7 @@
   },
   {
     "id": "TC-005",
+    "category": "canonical_slot_filling",
     "query": "Active nickel dumps in Sweden and Italy",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -94,6 +98,7 @@
   },
   {
     "id": "TC-006",
+    "category": "canonical_slot_filling",
     "query": "Muestra escombreras de copper en Finland",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -111,6 +116,7 @@
   },
   {
     "id": "TC-007",
+    "category": "canonical_slot_filling",
     "query": "Find active tin tailings storage facilities in Poland",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -130,6 +136,7 @@
   },
   {
     "id": "TC-008",
+    "category": "canonical_slot_filling",
     "query": "Depósitos de tantalum y manganese en Italy",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -146,6 +153,7 @@
   },
   {
     "id": "TC-009",
+    "category": "canonical_slot_filling",
     "query": "Balsas de graphite inactivas en Greece y Czechia",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -167,6 +175,7 @@
   },
   {
     "id": "TC-010",
+    "category": "canonical_slot_filling",
     "query": "Active titanium dumps in Ireland and Spain",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -187,6 +196,7 @@
   },
   {
     "id": "TC-011",
+    "category": "canonical_slot_filling",
     "query": "Muestra escombreras de pge en Austria",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -204,6 +214,7 @@
   },
   {
     "id": "TC-012",
+    "category": "canonical_slot_filling",
     "query": "Find active manganese tailings storage facilities in Czechia",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -223,6 +234,7 @@
   },
   {
     "id": "TC-013",
+    "category": "canonical_slot_filling",
     "query": "Depósitos de lithium y nickel en Spain",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -239,6 +251,7 @@
   },
   {
     "id": "TC-014",
+    "category": "canonical_slot_filling",
     "query": "Balsas de cobalt inactivas en Portugal y Sweden",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -260,6 +273,7 @@
   },
   {
     "id": "TC-015",
+    "category": "canonical_slot_filling",
     "query": "Active tungsten dumps in Germany and Finland",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -280,6 +294,7 @@
   },
   {
     "id": "TC-016",
+    "category": "canonical_slot_filling",
     "query": "Muestra escombreras de rare earth elements en France",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -297,6 +312,7 @@
   },
   {
     "id": "TC-017",
+    "category": "canonical_slot_filling",
     "query": "Find active nickel tailings storage facilities in Sweden",
     "expected_intent": "filter_search",
     "expected_filters": {
@@ -316,15 +332,16 @@
   },
   {
     "id": "TC-018",
-    "query": "Depósitos de copper y titanium en Finland",
+    "category": "canonical_slot_filling",
+    "query": "Depósitos de copper y cobalt en Poland",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "finland"
+        "poland"
       ],
       "commodities": [
         "copper",
-        "titanium"
+        "cobalt"
       ],
       "storage_facility_types": [],
       "project_status": []
@@ -332,12 +349,13 @@
   },
   {
     "id": "TC-019",
-    "query": "Balsas de tin inactivas en Poland y Ireland",
+    "category": "canonical_slot_filling",
+    "query": "Balsas de tin inactivas en Spain e Italy",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "poland",
-        "ireland"
+        "spain",
+        "italy"
       ],
       "commodities": [
         "tin"
@@ -353,12 +371,13 @@
   },
   {
     "id": "TC-020",
-    "query": "Active tantalum dumps in Italy and Austria",
+    "category": "canonical_slot_filling",
+    "query": "Active tantalum dumps in Ireland and Greece",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "italy",
-        "austria"
+        "ireland",
+        "greece"
       ],
       "commodities": [
         "tantalum"
@@ -373,31 +392,30 @@
   },
   {
     "id": "TC-021",
-    "query": "Muestra escombreras de graphite en Greece",
+    "category": "negations_and_exclusions",
+    "query": "Muestra balsas de litio en Europa pero que no estén en España",
     "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [
-        "greece"
-      ],
+      "countries": [],
       "commodities": [
-        "graphite"
+        "lithium"
       ],
       "storage_facility_types": [
-        "waste dump"
+        "pond",
+        "tailings storage facility"
       ],
       "project_status": []
     }
   },
   {
     "id": "TC-022",
-    "query": "Find active titanium tailings storage facilities in Ireland",
+    "category": "negations_and_exclusions",
+    "query": "Find active cobalt tailings storage facilities not in Portugal",
     "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [
-        "ireland"
-      ],
+      "countries": [],
       "commodities": [
-        "titanium"
+        "cobalt"
       ],
       "storage_facility_types": [
         "tailings storage facility"
@@ -409,14 +427,14 @@
   },
   {
     "id": "TC-023",
-    "query": "Depósitos de pge y tungsten en Austria",
+    "category": "negations_and_exclusions",
+    "query": "Depósitos de tungsten en Germany sin incluir estaño",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "austria"
+        "germany"
       ],
       "commodities": [
-        "pge",
         "tungsten"
       ],
       "storage_facility_types": [],
@@ -425,37 +443,35 @@
   },
   {
     "id": "TC-024",
-    "query": "Balsas de manganese inactivas en Czechia y Germany",
+    "category": "negations_and_exclusions",
+    "query": "Balsas de tierras raras en France excluyendo instalaciones inactivas",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "czechia",
-        "germany"
+        "france"
       ],
       "commodities": [
-        "manganese"
+        "rare earth elements"
       ],
       "storage_facility_types": [
         "pond",
         "tailings storage facility"
       ],
       "project_status": [
-        "inactive"
+        "active"
       ]
     }
   },
   {
     "id": "TC-025",
-    "query": "Active lithium dumps in Spain and France",
+    "category": "negations_and_exclusions",
+    "query": "Active dumps in Sweden excluding nickel",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "spain",
-        "france"
+        "sweden"
       ],
-      "commodities": [
-        "lithium"
-      ],
+      "commodities": [],
       "storage_facility_types": [
         "waste dump"
       ],
@@ -466,14 +482,13 @@
   },
   {
     "id": "TC-026",
-    "query": "Muestra escombreras de cobalt en Portugal",
+    "category": "negations_and_exclusions",
+    "query": "Escombreras de cobre en Europa que no se encuentren en Finlandia",
     "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [
-        "portugal"
-      ],
+      "countries": [],
       "commodities": [
-        "cobalt"
+        "copper"
       ],
       "storage_facility_types": [
         "waste dump"
@@ -483,91 +498,79 @@
   },
   {
     "id": "TC-027",
-    "query": "Find active tungsten tailings storage facilities in Germany",
+    "category": "negations_and_exclusions",
+    "query": "Tailings storage facilities in Poland without tin",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "germany"
+        "poland"
       ],
-      "commodities": [
-        "tungsten"
-      ],
+      "commodities": [],
       "storage_facility_types": [
         "tailings storage facility"
       ],
-      "project_status": [
-        "active"
-      ]
+      "project_status": []
     }
   },
   {
     "id": "TC-028",
-    "query": "Depósitos de rare earth elements y tantalum en France",
+    "category": "negations_and_exclusions",
+    "query": "Depósitos en Italy que no contengan tantalum ni manganeso",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "france"
+        "italy"
       ],
-      "commodities": [
-        "rare earth elements",
-        "tantalum"
-      ],
+      "commodities": [],
       "storage_facility_types": [],
       "project_status": []
     }
   },
   {
     "id": "TC-029",
-    "query": "Balsas de nickel inactivas en Sweden y Italy",
+    "category": "negations_and_exclusions",
+    "query": "Balsas en Grecia y Chequia pero que no sean de grafito",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "sweden",
-        "italy"
+        "greece",
+        "czechia"
       ],
-      "commodities": [
-        "nickel"
-      ],
+      "commodities": [],
       "storage_facility_types": [
         "pond",
         "tailings storage facility"
       ],
-      "project_status": [
-        "inactive"
-      ]
+      "project_status": []
     }
   },
   {
     "id": "TC-030",
-    "query": "Active copper dumps in Finland and Greece",
+    "category": "negations_and_exclusions",
+    "query": "Dumps in Ireland and Spain excluding titanium",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "finland",
-        "greece"
+        "ireland",
+        "spain"
       ],
-      "commodities": [
-        "copper"
-      ],
+      "commodities": [],
       "storage_facility_types": [
         "waste dump"
       ],
-      "project_status": [
-        "active"
-      ]
+      "project_status": []
     }
   },
   {
     "id": "TC-031",
-    "query": "Muestra escombreras de tin en Poland",
+    "category": "negations_and_exclusions",
+    "query": "Escombreras en Austria pero que no tengan platino ni PGE",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "poland"
+        "austria"
       ],
-      "commodities": [
-        "tin"
-      ],
+      "commodities": [],
       "storage_facility_types": [
         "waste dump"
       ],
@@ -576,33 +579,30 @@
   },
   {
     "id": "TC-032",
-    "query": "Find active tantalum tailings storage facilities in Italy",
+    "category": "negations_and_exclusions",
+    "query": "Tailings facilities in Czechia that are not active",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "italy"
+        "czechia"
       ],
-      "commodities": [
-        "tantalum"
-      ],
+      "commodities": [],
       "storage_facility_types": [
         "tailings storage facility"
       ],
       "project_status": [
-        "active"
+        "inactive"
       ]
     }
   },
   {
     "id": "TC-033",
-    "query": "Depósitos de graphite y lithium en Greece",
+    "category": "negations_and_exclusions",
+    "query": "Depósitos de litio en la UE pero sin incluir instalaciones en España",
     "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [
-        "greece"
-      ],
+      "countries": [],
       "commodities": [
-        "graphite",
         "lithium"
       ],
       "storage_facility_types": [],
@@ -611,39 +611,19 @@
   },
   {
     "id": "TC-034",
-    "query": "Balsas de titanium inactivas en Ireland y Spain",
+    "category": "negations_and_exclusions",
+    "query": "Balsas de cobalto en Portugal que no estén abandonadas ni inactivas",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "ireland",
-        "spain"
+        "portugal"
       ],
       "commodities": [
-        "titanium"
+        "cobalt"
       ],
       "storage_facility_types": [
         "pond",
         "tailings storage facility"
-      ],
-      "project_status": [
-        "inactive"
-      ]
-    }
-  },
-  {
-    "id": "TC-035",
-    "query": "Active pge dumps in Austria and Portugal",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "austria",
-        "portugal"
-      ],
-      "commodities": [
-        "pge"
-      ],
-      "storage_facility_types": [
-        "waste dump"
       ],
       "project_status": [
         "active"
@@ -651,16 +631,15 @@
     }
   },
   {
-    "id": "TC-036",
-    "query": "Muestra escombreras de manganese en Czechia",
+    "id": "TC-035",
+    "category": "negations_and_exclusions",
+    "query": "Dumps in Germany excluding tungsten",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "czechia"
+        "germany"
       ],
-      "commodities": [
-        "manganese"
-      ],
+      "commodities": [],
       "storage_facility_types": [
         "waste dump"
       ],
@@ -668,34 +647,45 @@
     }
   },
   {
+    "id": "TC-036",
+    "category": "negations_and_exclusions",
+    "query": "Instalaciones de tierras raras en Europa pero no en Francia",
+    "expected_intent": "filter_search",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [
+        "rare earth elements"
+      ],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
     "id": "TC-037",
-    "query": "Find active lithium tailings storage facilities in Spain",
+    "category": "negations_and_exclusions",
+    "query": "Tailings storage facilities in Sweden without nickel",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "spain"
+        "sweden"
       ],
-      "commodities": [
-        "lithium"
-      ],
+      "commodities": [],
       "storage_facility_types": [
         "tailings storage facility"
       ],
-      "project_status": [
-        "active"
-      ]
+      "project_status": []
     }
   },
   {
     "id": "TC-038",
-    "query": "Depósitos de cobalt y copper en Portugal",
+    "category": "negations_and_exclusions",
+    "query": "Depósitos en Polonia con cobre pero sin cobalto",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "portugal"
+        "poland"
       ],
       "commodities": [
-        "cobalt",
         "copper"
       ],
       "storage_facility_types": [],
@@ -704,37 +694,31 @@
   },
   {
     "id": "TC-039",
-    "query": "Balsas de tungsten inactivas en Germany y Finland",
+    "category": "negations_and_exclusions",
+    "query": "Balsas de estaño que no estén ubicadas en Italia",
     "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [
-        "germany",
-        "finland"
-      ],
+      "countries": [],
       "commodities": [
-        "tungsten"
+        "tin"
       ],
       "storage_facility_types": [
         "pond",
         "tailings storage facility"
       ],
-      "project_status": [
-        "inactive"
-      ]
+      "project_status": []
     }
   },
   {
     "id": "TC-040",
-    "query": "Active rare earth elements dumps in France and Poland",
+    "category": "negations_and_exclusions",
+    "query": "Active dumps excluding tantalum in Ireland",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "france",
-        "poland"
+        "ireland"
       ],
-      "commodities": [
-        "rare earth elements"
-      ],
+      "commodities": [],
       "storage_facility_types": [
         "waste dump"
       ],
@@ -745,51 +729,51 @@
   },
   {
     "id": "TC-041",
-    "query": "Muestra escombreras de nickel en Sweden",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "sweden"
-      ],
-      "commodities": [
-        "nickel"
-      ],
-      "storage_facility_types": [
-        "waste dump"
-      ],
-      "project_status": []
-    }
-  },
-  {
-    "id": "TC-042",
-    "query": "Find active copper tailings storage facilities in Finland",
+    "category": "semantic_association_expansion",
+    "query": "Depósitos con materiales para baterías de vehículos eléctricos en Finlandia",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
         "finland"
       ],
       "commodities": [
-        "copper"
+        "lithium",
+        "cobalt",
+        "nickel",
+        "graphite"
       ],
-      "storage_facility_types": [
-        "tailings storage facility"
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-042",
+    "category": "semantic_association_expansion",
+    "query": "Minerales críticos para imanes permanentes de aerogeneradores en Suecia",
+    "expected_intent": "filter_search",
+    "expected_filters": {
+      "countries": [
+        "sweden"
       ],
-      "project_status": [
-        "active"
-      ]
+      "commodities": [
+        "rare earth elements"
+      ],
+      "storage_facility_types": [],
+      "project_status": []
     }
   },
   {
     "id": "TC-043",
-    "query": "Depósitos de tin y pge en Poland",
+    "category": "semantic_association_expansion",
+    "query": "Instalaciones mineras en la Península Ibérica con litio",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "poland"
+        "spain",
+        "portugal"
       ],
       "commodities": [
-        "tin",
-        "pge"
+        "lithium"
       ],
       "storage_facility_types": [],
       "project_status": []
@@ -797,65 +781,43 @@
   },
   {
     "id": "TC-044",
-    "query": "Balsas de tantalum inactivas en Italy y Austria",
+    "category": "semantic_association_expansion",
+    "query": "Residuos mineros en los países nórdicos con cobre",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "italy",
-        "austria"
+        "sweden",
+        "finland"
       ],
       "commodities": [
-        "tantalum"
+        "copper"
       ],
-      "storage_facility_types": [
-        "pond",
-        "tailings storage facility"
-      ],
-      "project_status": [
-        "inactive"
-      ]
-    }
-  },
-  {
-    "id": "TC-045",
-    "query": "Active graphite dumps in Greece and Czechia",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "greece",
-        "czechia"
-      ],
-      "commodities": [
-        "graphite"
-      ],
-      "storage_facility_types": [
-        "waste dump"
-      ],
-      "project_status": [
-        "active"
-      ]
-    }
-  },
-  {
-    "id": "TC-046",
-    "query": "Muestra escombreras de titanium en Ireland",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "ireland"
-      ],
-      "commodities": [
-        "titanium"
-      ],
-      "storage_facility_types": [
-        "waste dump"
-      ],
+      "storage_facility_types": [],
       "project_status": []
     }
   },
   {
-    "id": "TC-047",
-    "query": "Find active pge tailings storage facilities in Austria",
+    "id": "TC-045",
+    "category": "semantic_association_expansion",
+    "query": "Metales refractarios para aleaciones aeroespaciales en Alemania",
+    "expected_intent": "filter_search",
+    "expected_filters": {
+      "countries": [
+        "germany"
+      ],
+      "commodities": [
+        "tungsten",
+        "tantalum",
+        "titanium"
+      ],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-046",
+    "category": "semantic_association_expansion",
+    "query": "Depósitos con elementos para catalizadores de hidrógeno y pilas de combustible en Austria",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
@@ -864,24 +826,38 @@
       "commodities": [
         "pge"
       ],
-      "storage_facility_types": [
-        "tailings storage facility"
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-047",
+    "category": "semantic_association_expansion",
+    "query": "Secondary raw materials for lithium-ion battery cathode manufacturing in Poland",
+    "expected_intent": "filter_search",
+    "expected_filters": {
+      "countries": [
+        "poland"
       ],
-      "project_status": [
-        "active"
-      ]
+      "commodities": [
+        "lithium",
+        "cobalt",
+        "nickel"
+      ],
+      "storage_facility_types": [],
+      "project_status": []
     }
   },
   {
     "id": "TC-048",
-    "query": "Depósitos de manganese y rare earth elements en Czechia",
+    "category": "semantic_association_expansion",
+    "query": "Critical minerals for offshore wind turbine generators in France",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "czechia"
+        "france"
       ],
       "commodities": [
-        "manganese",
         "rare earth elements"
       ],
       "storage_facility_types": [],
@@ -890,55 +866,52 @@
   },
   {
     "id": "TC-049",
-    "query": "Balsas de lithium inactivas en Spain y France",
+    "category": "semantic_association_expansion",
+    "query": "Extractive waste facilities in the Iberian Peninsula with cobalt",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
         "spain",
-        "france"
-      ],
-      "commodities": [
-        "lithium"
-      ],
-      "storage_facility_types": [
-        "pond",
-        "tailings storage facility"
-      ],
-      "project_status": [
-        "inactive"
-      ]
-    }
-  },
-  {
-    "id": "TC-050",
-    "query": "Active cobalt dumps in Portugal and Sweden",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "portugal",
-        "sweden"
+        "portugal"
       ],
       "commodities": [
         "cobalt"
       ],
-      "storage_facility_types": [
-        "waste dump"
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-050",
+    "category": "semantic_association_expansion",
+    "query": "Mining tailings in Scandinavia containing nickel",
+    "expected_intent": "filter_search",
+    "expected_filters": {
+      "countries": [
+        "sweden",
+        "finland"
       ],
-      "project_status": [
-        "active"
-      ]
+      "commodities": [
+        "nickel"
+      ],
+      "storage_facility_types": [
+        "tailings storage facility"
+      ],
+      "project_status": []
     }
   },
   {
     "id": "TC-051",
-    "query": "Muestra escombreras de tungsten en Germany",
+    "category": "semantic_association_expansion",
+    "query": "High-density refractory metals in Czechia waste dumps",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "germany"
+        "czechia"
       ],
       "commodities": [
-        "tungsten"
+        "tungsten",
+        "tantalum"
       ],
       "storage_facility_types": [
         "waste dump"
@@ -948,32 +921,32 @@
   },
   {
     "id": "TC-052",
-    "query": "Find active rare earth elements tailings storage facilities in France",
+    "category": "semantic_association_expansion",
+    "query": "Electrolyzer catalyst metals in German mining residues",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "france"
+        "germany"
       ],
       "commodities": [
-        "rare earth elements"
+        "pge"
       ],
-      "storage_facility_types": [
-        "tailings storage facility"
-      ],
-      "project_status": [
-        "active"
-      ]
+      "storage_facility_types": [],
+      "project_status": []
     }
   },
   {
     "id": "TC-053",
-    "query": "Depósitos de nickel y graphite en Sweden",
+    "category": "semantic_association_expansion",
+    "query": "Yacimientos con materias primas para almacenamiento energético electroquímico en España",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "sweden"
+        "spain"
       ],
       "commodities": [
+        "lithium",
+        "cobalt",
         "nickel",
         "graphite"
       ],
@@ -983,92 +956,86 @@
   },
   {
     "id": "TC-054",
-    "query": "Balsas de copper inactivas en Finland y Greece",
+    "category": "semantic_association_expansion",
+    "query": "Instalaciones en el arco atlántico ibérico con estaño y wolframio",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "finland",
-        "greece"
+        "spain",
+        "portugal"
       ],
       "commodities": [
-        "copper"
+        "tin",
+        "tungsten"
       ],
-      "storage_facility_types": [
-        "pond",
-        "tailings storage facility"
-      ],
-      "project_status": [
-        "inactive"
-      ]
+      "storage_facility_types": [],
+      "project_status": []
     }
   },
   {
     "id": "TC-055",
-    "query": "Active tin dumps in Poland and Ireland",
+    "category": "semantic_association_expansion",
+    "query": "Mining waste containing battery anode materials in Sweden",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "poland",
-        "ireland"
+        "sweden"
       ],
       "commodities": [
-        "tin"
+        "graphite",
+        "lithium"
       ],
-      "storage_facility_types": [
-        "waste dump"
-      ],
-      "project_status": [
-        "active"
-      ]
+      "storage_facility_types": [],
+      "project_status": []
     }
   },
   {
     "id": "TC-056",
-    "query": "Muestra escombreras de tantalum en Italy",
+    "category": "semantic_association_expansion",
+    "query": "Photovoltaic and semiconductor related critical metals in Italy",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
         "italy"
       ],
       "commodities": [
-        "tantalum"
+        "copper",
+        "tin"
       ],
-      "storage_facility_types": [
-        "waste dump"
-      ],
+      "storage_facility_types": [],
       "project_status": []
     }
   },
   {
     "id": "TC-057",
-    "query": "Find active graphite tailings storage facilities in Greece",
+    "category": "semantic_association_expansion",
+    "query": "Depósitos de residuos mineros en Europa Central con manganeso",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "greece"
+        "germany",
+        "austria",
+        "czechia",
+        "poland"
       ],
       "commodities": [
-        "graphite"
+        "manganese"
       ],
-      "storage_facility_types": [
-        "tailings storage facility"
-      ],
-      "project_status": [
-        "active"
-      ]
+      "storage_facility_types": [],
+      "project_status": []
     }
   },
   {
     "id": "TC-058",
-    "query": "Depósitos de titanium y cobalt en Ireland",
+    "category": "semantic_association_expansion",
+    "query": "Heavy rare earth magnet feedstock facilities in Sweden",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "ireland"
+        "sweden"
       ],
       "commodities": [
-        "titanium",
-        "cobalt"
+        "rare earth elements"
       ],
       "storage_facility_types": [],
       "project_status": []
@@ -1076,88 +1043,289 @@
   },
   {
     "id": "TC-059",
-    "query": "Balsas de pge inactivas en Austria y Portugal",
+    "category": "semantic_association_expansion",
+    "query": "Extractive waste sites in southern European countries with titanium",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "austria",
-        "portugal"
+        "spain",
+        "portugal",
+        "italy",
+        "greece"
       ],
       "commodities": [
-        "pge"
+        "titanium"
       ],
-      "storage_facility_types": [
-        "pond",
-        "tailings storage facility"
-      ],
-      "project_status": [
-        "inactive"
-      ]
+      "storage_facility_types": [],
+      "project_status": []
     }
   },
   {
     "id": "TC-060",
-    "query": "Active manganese dumps in Czechia and Germany",
+    "category": "semantic_association_expansion",
+    "query": "Green transition strategic raw materials impoundments in Finland",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "czechia",
-        "germany"
+        "finland"
       ],
       "commodities": [
-        "manganese"
+        "lithium",
+        "cobalt",
+        "nickel"
       ],
-      "storage_facility_types": [
-        "waste dump"
-      ],
-      "project_status": [
-        "active"
-      ]
+      "storage_facility_types": [],
+      "project_status": []
     }
   },
   {
     "id": "TC-061",
-    "query": "Muestra escombreras de lithium en Spain",
-    "expected_intent": "filter_search",
+    "category": "technical_standards_and_qa",
+    "query": "¿Qué criterios establece el marco UNFC 2019 para la clasificación de recursos antropogénicos en escombreras?",
+    "expected_intent": "generic_qa",
     "expected_filters": {
-      "countries": [
-        "spain"
-      ],
-      "commodities": [
-        "lithium"
-      ],
-      "storage_facility_types": [
-        "waste dump"
-      ],
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
       "project_status": []
     }
   },
   {
     "id": "TC-062",
-    "query": "Find active cobalt tailings storage facilities in Portugal",
-    "expected_intent": "filter_search",
+    "category": "technical_standards_and_qa",
+    "query": "¿Cómo se reportan los recursos minerales en depósitos de relaves según los códigos JORC y NI 43-101?",
+    "expected_intent": "generic_qa",
     "expected_filters": {
-      "countries": [
-        "portugal"
-      ],
-      "commodities": [
-        "cobalt"
-      ],
-      "storage_facility_types": [
-        "tailings storage facility"
-      ],
-      "project_status": [
-        "active"
-      ]
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
     }
   },
   {
     "id": "TC-063",
-    "query": "Depósitos de tungsten y tin en Germany",
+    "category": "technical_standards_and_qa",
+    "query": "¿Qué diferencia técnica existe entre una balsa de decantación (tailings pond) y una escombrera de roca estéril (waste dump)?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-064",
+    "category": "technical_standards_and_qa",
+    "query": "¿Cuáles son los riesgos ambientales más críticos asociados a la licuefacción estática en presas de relaves aguas arriba?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-065",
+    "category": "technical_standards_and_qa",
+    "query": "Explícame qué es el drenaje ácido de mina (AMD) y qué medidas de restauración pasiva existen",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-066",
+    "category": "technical_standards_and_qa",
+    "query": "¿Cuál es la normativa europea sobre gestión de residuos de las industrias extractivas (Directiva 2006/21/CE)?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-067",
+    "category": "technical_standards_and_qa",
+    "query": "Hola, ¿cómo puede ayudarme esta plataforma a explorar el espacio de datos de materias primas críticas?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-068",
+    "category": "technical_standards_and_qa",
+    "query": "¿Qué significa la clasificación E1-F2-G1 en el sistema de las Naciones Unidas (UNFC)?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-069",
+    "category": "technical_standards_and_qa",
+    "query": "¿Cómo se calcula el balance hídrico y la estabilidad de taludes en balsas de lodos mineros?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-070",
+    "category": "technical_standards_and_qa",
+    "query": "What are the core reporting principles required under the JORC Code for secondary mineral reserves?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-071",
+    "category": "technical_standards_and_qa",
+    "query": "How does the UNFC Framework harmonize anthropogenic resource inventories across EU member states?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-072",
+    "category": "technical_standards_and_qa",
+    "query": "What is the technical distinction between upstream, downstream, and centerline tailings dam designs?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-073",
+    "category": "technical_standards_and_qa",
+    "query": "Can you explain the biogeochemical mechanisms of acid mine drainage generation in sulfidic waste dumps?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-074",
+    "category": "technical_standards_and_qa",
+    "query": "What environmental monitoring technologies are deployed for satellite InSAR tailings dam deformation?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-075",
+    "category": "technical_standards_and_qa",
+    "query": "Good morning, can you provide guidance on how to use this cartographic Data Space platform?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-076",
+    "category": "technical_standards_and_qa",
+    "query": "¿Qué directivas de la Ley Europea de Materias Primas Fundamentales (CRMA) regulan el reciclaje de residuos mineros?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-077",
+    "category": "technical_standards_and_qa",
+    "query": "¿Cómo evalúa el código SAMREC la viabilidad técnico-económica de retratar relaves antiguos?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-078",
+    "category": "technical_standards_and_qa",
+    "query": "¿Qué precauciones geotécnicas son necesarias antes de iniciar la restauración de una escombrera inerte?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-079",
+    "category": "technical_standards_and_qa",
+    "query": "Help me understand the spatial data architecture and Leaflet GIS integration used in this system",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-080",
+    "category": "technical_standards_and_qa",
+    "query": "What chemical processes are used in the hydrometallurgical recovery of cobalt and lithium from tailings?",
+    "expected_intent": "generic_qa",
+    "expected_filters": {
+      "countries": [],
+      "commodities": [],
+      "storage_facility_types": [],
+      "project_status": []
+    }
+  },
+  {
+    "id": "TC-081",
+    "category": "noisy_colloquial_multilingual",
+    "query": "hola buenas tardes, me gustaría saber si tenéis registrado algún depósito de W o Sn en Ourense",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "germany"
+        "spain"
       ],
       "commodities": [
         "tungsten",
@@ -1168,541 +1336,353 @@
     }
   },
   {
-    "id": "TC-064",
-    "query": "Balsas de rare earth elements inactivas en France y Poland",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "france",
-        "poland"
-      ],
-      "commodities": [
-        "rare earth elements"
-      ],
-      "storage_facility_types": [
-        "pond",
-        "tailings storage facility"
-      ],
-      "project_status": [
-        "inactive"
-      ]
-    }
-  },
-  {
-    "id": "TC-065",
-    "query": "Active nickel dumps in Sweden and Italy",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "sweden",
-        "italy"
-      ],
-      "commodities": [
-        "nickel"
-      ],
-      "storage_facility_types": [
-        "waste dump"
-      ],
-      "project_status": [
-        "active"
-      ]
-    }
-  },
-  {
-    "id": "TC-066",
-    "query": "Muestra escombreras de copper en Finland",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "finland"
-      ],
-      "commodities": [
-        "copper"
-      ],
-      "storage_facility_types": [
-        "waste dump"
-      ],
-      "project_status": []
-    }
-  },
-  {
-    "id": "TC-067",
-    "query": "Find active tin tailings storage facilities in Poland",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "poland"
-      ],
-      "commodities": [
-        "tin"
-      ],
-      "storage_facility_types": [
-        "tailings storage facility"
-      ],
-      "project_status": [
-        "active"
-      ]
-    }
-  },
-  {
-    "id": "TC-068",
-    "query": "Depósitos de tantalum y manganese en Italy",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "italy"
-      ],
-      "commodities": [
-        "tantalum",
-        "manganese"
-      ],
-      "storage_facility_types": [],
-      "project_status": []
-    }
-  },
-  {
-    "id": "TC-069",
-    "query": "Balsas de graphite inactivas en Greece y Czechia",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "greece",
-        "czechia"
-      ],
-      "commodities": [
-        "graphite"
-      ],
-      "storage_facility_types": [
-        "pond",
-        "tailings storage facility"
-      ],
-      "project_status": [
-        "inactive"
-      ]
-    }
-  },
-  {
-    "id": "TC-070",
-    "query": "Active titanium dumps in Ireland and Spain",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "ireland",
-        "spain"
-      ],
-      "commodities": [
-        "titanium"
-      ],
-      "storage_facility_types": [
-        "waste dump"
-      ],
-      "project_status": [
-        "active"
-      ]
-    }
-  },
-  {
-    "id": "TC-071",
-    "query": "Balsas sin restaurar en Spain con drenaje ácido",
+    "id": "TC-082",
+    "category": "noisy_colloquial_multilingual",
+    "query": "escombreras de golfranio y tántalo activas en galiza",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
         "spain"
       ],
-      "commodities": [],
-      "environmental_flags": [
-        "not restored",
-        "acid mine drainage potential"
+      "commodities": [
+        "tungsten",
+        "tantalum"
       ],
-      "restored": false
+      "storage_facility_types": [
+        "waste dump"
+      ],
+      "project_status": [
+        "active"
+      ]
     }
   },
   {
-    "id": "TC-072",
-    "query": "Unrestored cobalt tailings ponds in Portugal",
+    "id": "TC-083",
+    "category": "noisy_colloquial_multilingual",
+    "query": "hay balsas de decantacion operativas con Li y Co en portugal?",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
         "portugal"
       ],
       "commodities": [
+        "lithium",
         "cobalt"
       ],
-      "environmental_flags": [
-        "not restored"
+      "storage_facility_types": [
+        "pond",
+        "tailings storage facility"
       ],
-      "restored": false
+      "project_status": [
+        "active"
+      ]
     }
   },
   {
-    "id": "TC-073",
-    "query": "Escombreras de tungsten abandonadas o inactivas en Germany",
+    "id": "TC-084",
+    "category": "noisy_colloquial_multilingual",
+    "query": "proyectos mineros en salamanca que esten parados o en mantenimiento",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
-        "germany"
-      ],
-      "commodities": [
-        "tungsten"
-      ],
-      "environmental_flags": [],
-      "restored": null
-    }
-  },
-  {
-    "id": "TC-074",
-    "query": "Balsas sin restaurar en France con drenaje ácido",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "france"
+        "spain"
       ],
       "commodities": [],
-      "environmental_flags": [
-        "not restored",
-        "acid mine drainage potential"
-      ],
-      "restored": false
+      "storage_facility_types": [],
+      "project_status": [
+        "inactive",
+        "care and maintenance"
+      ]
     }
   },
   {
-    "id": "TC-075",
-    "query": "Unrestored nickel tailings ponds in Sweden",
+    "id": "TC-085",
+    "category": "noisy_colloquial_multilingual",
+    "query": "vertederos y acopios con nikel y manganeso en suecia",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
         "sweden"
       ],
       "commodities": [
-        "nickel"
-      ],
-      "environmental_flags": [
-        "not restored"
-      ],
-      "restored": false
-    }
-  },
-  {
-    "id": "TC-076",
-    "query": "Escombreras de copper abandonadas o inactivas en Finland",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "finland"
-      ],
-      "commodities": [
-        "copper"
-      ],
-      "environmental_flags": [],
-      "restored": null
-    }
-  },
-  {
-    "id": "TC-077",
-    "query": "Balsas sin restaurar en Poland con drenaje ácido",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "poland"
-      ],
-      "commodities": [],
-      "environmental_flags": [
-        "not restored",
-        "acid mine drainage potential"
-      ],
-      "restored": false
-    }
-  },
-  {
-    "id": "TC-078",
-    "query": "Unrestored tantalum tailings ponds in Italy",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "italy"
-      ],
-      "commodities": [
-        "tantalum"
-      ],
-      "environmental_flags": [
-        "not restored"
-      ],
-      "restored": false
-    }
-  },
-  {
-    "id": "TC-079",
-    "query": "Escombreras de graphite abandonadas o inactivas en Greece",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "greece"
-      ],
-      "commodities": [
-        "graphite"
-      ],
-      "environmental_flags": [],
-      "restored": null
-    }
-  },
-  {
-    "id": "TC-080",
-    "query": "Balsas sin restaurar en Ireland con drenaje ácido",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "ireland"
-      ],
-      "commodities": [],
-      "environmental_flags": [
-        "not restored",
-        "acid mine drainage potential"
-      ],
-      "restored": false
-    }
-  },
-  {
-    "id": "TC-081",
-    "query": "Unrestored pge tailings ponds in Austria",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "austria"
-      ],
-      "commodities": [
-        "pge"
-      ],
-      "environmental_flags": [
-        "not restored"
-      ],
-      "restored": false
-    }
-  },
-  {
-    "id": "TC-082",
-    "query": "Escombreras de manganese abandonadas o inactivas en Czechia",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "czechia"
-      ],
-      "commodities": [
+        "nickel",
         "manganese"
       ],
-      "environmental_flags": [],
-      "restored": null
+      "storage_facility_types": [
+        "waste dump",
+        "stockpile"
+      ],
+      "project_status": []
     }
   },
   {
-    "id": "TC-083",
-    "query": "Balsas sin restaurar en Spain con drenaje ácido",
+    "id": "TC-086",
+    "category": "noisy_colloquial_multilingual",
+    "query": "balsas de relave abandonadas en andalucia con presencia de cobre",
     "expected_intent": "filter_search",
     "expected_filters": {
       "countries": [
         "spain"
       ],
-      "commodities": [],
-      "environmental_flags": [
-        "not restored",
-        "acid mine drainage potential"
-      ],
-      "restored": false
-    }
-  },
-  {
-    "id": "TC-084",
-    "query": "Unrestored cobalt tailings ponds in Portugal",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "portugal"
-      ],
       "commodities": [
-        "cobalt"
+        "copper"
       ],
-      "environmental_flags": [
-        "not restored"
+      "storage_facility_types": [
+        "pond",
+        "tailings storage facility"
       ],
-      "restored": false
-    }
-  },
-  {
-    "id": "TC-085",
-    "query": "Escombreras de tungsten abandonadas o inactivas en Germany",
-    "expected_intent": "filter_search",
-    "expected_filters": {
-      "countries": [
-        "germany"
-      ],
-      "commodities": [
-        "tungsten"
-      ],
-      "environmental_flags": [],
-      "restored": null
-    }
-  },
-  {
-    "id": "TC-086",
-    "query": "Hola, ¿qué es el espacio de datos de materias primas críticas?",
-    "expected_intent": "generic_qa",
-    "expected_filters": {
-      "countries": [],
-      "commodities": [],
-      "storage_facility_types": [],
-      "project_status": []
+      "project_status": [
+        "inactive"
+      ]
     }
   },
   {
     "id": "TC-087",
-    "query": "Hello, how can this system help me analyze European tailings?",
-    "expected_intent": "generic_qa",
+    "category": "noisy_colloquial_multilingual",
+    "query": "quisiera consultar instalaciones de tierras raras (REE) en francia que no esten restauradas",
+    "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [],
-      "commodities": [],
+      "countries": [
+        "france"
+      ],
+      "commodities": [
+        "rare earth elements"
+      ],
       "storage_facility_types": [],
       "project_status": []
     }
   },
   {
     "id": "TC-088",
-    "query": "¿Quién ha desarrollado este software de visualización GIS?",
-    "expected_intent": "generic_qa",
+    "category": "noisy_colloquial_multilingual",
+    "query": "tailings impoundments in Ireland with acid water seepage",
+    "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [],
+      "countries": [
+        "ireland"
+      ],
       "commodities": [],
-      "storage_facility_types": [],
+      "storage_facility_types": [
+        "pond",
+        "tailings storage facility"
+      ],
       "project_status": []
     }
   },
   {
     "id": "TC-089",
-    "query": "What CRM elements are tracked in the database?",
-    "expected_intent": "generic_qa",
+    "category": "noisy_colloquial_multilingual",
+    "query": "acopios de mineral de titanio y niobio en italia",
+    "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [],
-      "commodities": [],
-      "storage_facility_types": [],
+      "countries": [
+        "italy"
+      ],
+      "commodities": [
+        "titanium",
+        "tantalum"
+      ],
+      "storage_facility_types": [
+        "stockpile"
+      ],
       "project_status": []
     }
   },
   {
     "id": "TC-090",
-    "query": "Buenos días, me gustaría conocer la ayuda disponible.",
-    "expected_intent": "generic_qa",
+    "category": "noisy_colloquial_multilingual",
+    "query": "dime todas las balsas de relaves en grecia y chequia",
+    "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [],
+      "countries": [
+        "greece",
+        "czechia"
+      ],
       "commodities": [],
-      "storage_facility_types": [],
+      "storage_facility_types": [
+        "pond",
+        "tailings storage facility"
+      ],
       "project_status": []
     }
   },
   {
     "id": "TC-091",
-    "query": "Help me understand how Solr queries are constructed.",
-    "expected_intent": "generic_qa",
+    "category": "noisy_colloquial_multilingual",
+    "query": "depósitos de W en Ourense y Zamora",
+    "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [],
-      "commodities": [],
+      "countries": [
+        "spain"
+      ],
+      "commodities": [
+        "tungsten"
+      ],
       "storage_facility_types": [],
       "project_status": []
     }
   },
   {
     "id": "TC-092",
-    "query": "¿Qué países europeos están incluidos en la base de datos?",
-    "expected_intent": "generic_qa",
+    "category": "noisy_colloquial_multilingual",
+    "query": "escombreras inertes de granito en galicia",
+    "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [],
+      "countries": [
+        "spain"
+      ],
       "commodities": [],
-      "storage_facility_types": [],
+      "storage_facility_types": [
+        "waste dump"
+      ],
       "project_status": []
     }
   },
   {
     "id": "TC-093",
-    "query": "Tell me about the software architecture and GIS map capabilities.",
-    "expected_intent": "generic_qa",
+    "category": "noisy_colloquial_multilingual",
+    "query": "balsas con lodos y barros de decantación en castilla y león",
+    "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [],
+      "countries": [
+        "spain"
+      ],
       "commodities": [],
-      "storage_facility_types": [],
+      "storage_facility_types": [
+        "pond",
+        "tailings storage facility"
+      ],
       "project_status": []
     }
   },
   {
     "id": "TC-094",
-    "query": "Hola buenas tardes.",
-    "expected_intent": "generic_qa",
+    "category": "noisy_colloquial_multilingual",
+    "query": "instalaciones mineras en el sur de la península con cobre",
+    "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [],
-      "commodities": [],
+      "countries": [
+        "spain"
+      ],
+      "commodities": [
+        "copper"
+      ],
       "storage_facility_types": [],
       "project_status": []
     }
   },
   {
     "id": "TC-095",
-    "query": "Good morning, what is the UNFC classification system?",
-    "expected_intent": "generic_qa",
+    "category": "noisy_colloquial_multilingual",
+    "query": "show me old inactive Cu and Ni tailings dumps in Sweden",
+    "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [],
-      "commodities": [],
-      "storage_facility_types": [],
-      "project_status": []
+      "countries": [
+        "sweden"
+      ],
+      "commodities": [
+        "copper",
+        "nickel"
+      ],
+      "storage_facility_types": [
+        "waste dump",
+        "tailings storage facility"
+      ],
+      "project_status": [
+        "inactive"
+      ]
     }
   },
   {
     "id": "TC-096",
-    "query": "¿Cómo funciona la extracción NLU con esquema JSON?",
-    "expected_intent": "generic_qa",
+    "category": "noisy_colloquial_multilingual",
+    "query": "are there any operating Li or Ta ponds in northern Portugal?",
+    "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [],
-      "commodities": [],
-      "storage_facility_types": [],
-      "project_status": []
+      "countries": [
+        "portugal"
+      ],
+      "commodities": [
+        "lithium",
+        "tantalum"
+      ],
+      "storage_facility_types": [
+        "pond",
+        "tailings storage facility"
+      ],
+      "project_status": [
+        "active"
+      ]
     }
   },
   {
     "id": "TC-097",
-    "query": "What are tailings storage facilities?",
-    "expected_intent": "generic_qa",
+    "category": "noisy_colloquial_multilingual",
+    "query": "escombreras sin restaurar de fluorita y barita en asturias",
+    "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [],
+      "countries": [
+        "spain"
+      ],
       "commodities": [],
-      "storage_facility_types": [],
+      "storage_facility_types": [
+        "waste dump"
+      ],
       "project_status": []
     }
   },
   {
     "id": "TC-098",
-    "query": "¿Puedo exportar los datos filtrados del mapa?",
-    "expected_intent": "generic_qa",
+    "category": "noisy_colloquial_multilingual",
+    "query": "recherche de dépôts de lithium et cobalt en France",
+    "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [],
-      "commodities": [],
+      "countries": [
+        "france"
+      ],
+      "commodities": [
+        "lithium",
+        "cobalt"
+      ],
       "storage_facility_types": [],
       "project_status": []
     }
   },
   {
     "id": "TC-099",
-    "query": "Hello, show me general information about critical raw materials in Europe.",
-    "expected_intent": "generic_qa",
+    "category": "noisy_colloquial_multilingual",
+    "query": "progetti attivi di rame e cobalto in Italia",
+    "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [],
-      "commodities": [],
+      "countries": [
+        "italy"
+      ],
+      "commodities": [
+        "copper",
+        "cobalt"
+      ],
       "storage_facility_types": [],
-      "project_status": []
+      "project_status": [
+        "active"
+      ]
     }
   },
   {
     "id": "TC-100",
-    "query": "¿Qué diferencia hay entre escombrera y balsa de decantación?",
-    "expected_intent": "generic_qa",
+    "category": "noisy_colloquial_multilingual",
+    "query": "unrestored tungsten and tin waste dumps in Germany with water emergence",
+    "expected_intent": "filter_search",
     "expected_filters": {
-      "countries": [],
-      "commodities": [],
-      "storage_facility_types": [],
+      "countries": [
+        "germany"
+      ],
+      "commodities": [
+        "tungsten",
+        "tin"
+      ],
+      "storage_facility_types": [
+        "waste dump"
+      ],
       "project_status": []
     }
   }

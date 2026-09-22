@@ -3,9 +3,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python: 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
 [![SoftwareX](https://img.shields.io/badge/Elsevier-SoftwareX-orange.svg)](https://www.sciencedirect.com/journal/softwarex)
-[![Tested on: NVIDIA A100](https://img.shields.io/badge/GPU-NVIDIA_A100_40GB-green.svg)]()
-[![Data Sovereignty: EU Compliant](https://img.shields.io/badge/Data_Sovereignty-100%25_On--Premises-blueviolet.svg)]()
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX)
 [![Reviewer Tests: 100% Passing](https://img.shields.io/badge/Reviewer_Tests-100%25_Passing-brightgreen.svg)]()
+[![Data Sovereignty: EU Compliant](https://img.shields.io/badge/Data_Sovereignty-100%25_On--Premises-blueviolet.svg)]()
 
 > **Reference software repository and replication package for the Elsevier *SoftwareX* journal article:**  
 > **"A Modular NLU-Solr Architecture with Dynamic GIS Visual Synchronization for Conversational Spatial Search"**  
@@ -27,54 +27,120 @@ As a primary real-world demonstrator, the architecture is instantiated within th
 | [1] Sovereign NLU Engine    --> [2] Deterministic Normalizer --> [3] Spatial Indexing  --> [4] Dynamic   |
 |     - Greedy (T=0.0) Few-Shot        - Pluggable Thesaurus           - Apache Solr Spatial      GIS UI  |
 |     - Strict OpenAPI JSON            - Spanish/EU Multilingual       - Bounding Box & Facets    - Leaflet|
-|     - Local GPU (A100/Slurm)         - Boolean Query Builder         - Grounded Evidence RAG    - Badges |
+|     - Local GPU / CPU Standalone     - Boolean Query Builder         - Grounded Evidence RAG    - Badges |
 +---------------------------------------------------------------------------------------------------------+
 ```
 
 ### Key Architectural Highlights
 - **Bidirectional Visual Synchronization**: Real-time rendering of active filter badges, dynamic glowing pulse rings on matching facilities, live site counters, and floating interactive filter controls.
 - **Zero Schema Hallucinations**: Combines Few-Shot domain exemplars with strict OpenAPI JSON Schema validation under greedy decoding ($T=0.0$).
-- **100% European Data Sovereignty**: Operates entirely on-premises using open-weight foundation models (Qwen 2.5 7B, Llama 3.2 3B, DeepSeek R1 7B, Phi-3 Mini 4K) on institutional GPU clusters under Slurm, preventing data leakage to external cloud APIs under EU Regulation 2024/1252.
-- **Immediate Reviewer Reproducibility**: Includes a standalone, zero-dependency Mock mode running in 1 command with standard Python 3.9+ and zero external API keys.
+- **Zero-Dependency Standalone Mode (Reviewer Ready)**: Runs entirely out-of-the-box on standard Python 3.9+ without needing GPU hardware, external cloud accounts, or third-party database servers.
+- **100% European Data Sovereignty**: Designed for institutional on-premises deployment using open-weight foundation models (Qwen 2.5 7B, Llama 3.2 3B, DeepSeek R1 7B, Phi-3 Mini 4K) under Slurm, preventing data leakage under EU Regulation 2024/1252.
 
 ---
 
-## 🚀 Quick Start for Reviewers
+## 🚀 Reviewer Access & Quick Start Guide
 
-### Option A: Standalone Mock Mode (Zero External Dependencies, Port 8080)
-For immediate verification of the architecture, user interface, Leaflet cartography, and query normalization without needing GPUs or cloud API keys:
+Reviewers can access and evaluate the web application through three complementary modalities:
+
+### Method 1: One-Click Cloud Execution (GitHub Codespaces — No Local Setup)
+Click the badge below to run the complete web application directly in your web browser with zero local installation:
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX)
+
+1. Click **Create codespace on main**.
+2. GitHub automatically builds the cloud environment and launches `python run_app.py --port 8080`.
+3. Codespaces detects port `8080` and displays a pop-up: click **Open in Browser** to interact with the full web dashboard.
+
+---
+
+### Method 2: Local Standalone Execution (Standard SoftwareX Review Mode)
+For reviewers running on their personal laptop or desktop (Windows, macOS, Linux) with standard Python 3.9+ and **no GPU required**:
 
 ```bash
-cd SoftwareX/code
+# 1. Clone the repository
+git clone https://github.com/felixdmv/CRMsDataSpace-SoftwareX.git
+cd CRMsDataSpace-SoftwareX
+
+# 2. Launch the standalone application (zero external dependencies)
 python run_app.py
 ```
-Open your browser at **`http://localhost:8080`**.
 
-### Option B: On-Premises Local GPU Ingestion (NVIDIA A100 / Slurm)
-To execute on high-performance compute nodes with local open-weight LLMs under CUDA:
+Open your web browser at:
+```
+http://localhost:8080
+```
+*(Alternatively, execute `python run_app.py` inside `SoftwareX/code/` for identical behavior).*
+
+---
+
+### Method 3: HPC Cluster with GPU Acceleration (NVIDIA A100 / Slurm)
+For institutional environments equipped with compute nodes and NVIDIA CUDA GPUs:
 
 ```bash
 cd SoftwareX/code
 chmod +x run_gpu.sh
 ./run_gpu.sh 8080
 ```
-This automatically allocates GPU resources via Slurm, loads the local Hugging Face model weights, activates real-time VRAM telemetry, and serves the web application.
+This automatically allocates a GPU node via Slurm inside Apptainer, exposes local open-weight LLMs (Qwen 2.5 7B, Llama 3.2 3B, etc.), and sets up reverse proxy routing.
 
 ---
 
-## 🧪 Empirical Evaluation & Benchmark Replication
+## 🖥️ Step-by-Step Manual Testing Instructions
 
-The repository includes reproducible evaluation suites corresponding to Section 3 of the paper:
+Once the web application is loaded in your browser at `http://localhost:8080`:
 
-### 1. Golden 100-Query Benchmark Suite
-Tests field-level extraction fidelity across 100 domain queries (`test_battery_100.json`):
+### 1. Test Preset Benchmark Queries (Reviewer Test Bench)
+At the top-left of the chat panel, click any of the preset test scenario buttons:
+- **Test 1 (`Test 1: Active Li & Co`)**:
+  - *Query*: *"Show active lithium and cobalt waste dumps in Spain and Finland"*
+  - *Observed Feedback*:
+    - Active Filter Badges: `[Countries: Spain, Finland]`, `[CRM Metal: Lithium, Cobalt]`, `[Status: Active]`.
+    - Map View: Automatically pans to Western and Northern Europe; matching facilities display **emerald glowing pulse rings**.
+    - Site Counter: Updates to show matching facilities (e.g., `Showing 1 / 100 European Sites`).
+    - Assistant Narrative: Generates a factual summary citing deposit names, locations, and operational status.
+    - PDF Evidence Cards: Shows grounded citations from technical reports with mineral and country tags.
+
+- **Test 2 (`Test 2: Tungsten Ponds`)**:
+  - *Query*: *"Unrestored tungsten tailings ponds in Germany"*
+  - *Observed Feedback*: Filters for German facilities containing Tungsten with `restored=false`.
+
+- **Test 3 (`Test 3: REE Deposits`)**:
+  - *Query*: *"Rare Earth Elements (REE) facilities in Sweden and France"*
+  - *Observed Feedback*: Synchronizes multi-country spatial filters for Critical Raw Materials across Sweden and France.
+
+### 2. Test Free-Text Natural Language Queries
+Type your own queries into the input bar at the bottom:
+- Try colloquial phrasing or typos: *"escombreras de golfranio en galiza"* $\to$ The thesaurus maps *golfranio* $\to$ *Tungsten* and *galiza* $\to$ *Galicia, Spain*.
+- Try negative constraints: *"balsas de mineral que no esten restauradas"* $\to$ maps to `restored=false`.
+
+### 3. Inspect Solr Engine & OpenAPI Schema Telemetry
+Click the bottom expandable bar **"Solr Engine Inspector & Telemetry"**:
+- **Solr Filter Query (`fq`)**: Displays the deterministic Boolean query generated for Apache Solr.
+- **Solr Dynamic Facets**: Real-time facet distributions calculated across the 100-site dataset.
+- **Extracted JSON Schema**: The strict OpenAPI JSON object validated by Stage 2.
+
+---
+
+## 🧪 Automated Verification & Benchmark Reproduction
+
+The repository includes fully automated test scripts corresponding to Section 3 of the manuscript:
+
+### 1. Automated API & Engine Verification Suite
+Validates request formatting, authentication handlers, and zero-crash fallbacks across Mock, Gemini, GPT-4o, and Claude:
+```bash
+python SoftwareX/code/test_apis.py
+```
+
+### 2. Golden 100-Query Benchmark Reproduction
+Evaluates intent classification accuracy and field-level F1-scores across all 100 ground-truth queries in `SoftwareX/code/evaluation/test_battery_100.json`:
 ```bash
 cd SoftwareX/code/evaluation
 python evaluate_100_tests.py
 ```
 
-### 2. Multi-Model Comparative GPU Benchmark (NVIDIA A100 Testbed)
-Evaluates latency, VRAM allocation, and field extraction (Intent Accuracy, Country F1, Commodity F1, Macro F1) across rule-based baselines and open-weight LLMs:
+### 3. Multi-Model Comparative Benchmark (NVIDIA A100 Testbed)
+Evaluates latency, VRAM footprint, and F1-score across local open-weight foundation models:
 ```bash
 cd SoftwareX/code/evaluation
 python benchmark_all_models.py
@@ -83,7 +149,7 @@ python benchmark_all_models.py
 #### Benchmark Summary on NVIDIA A100 (40GB VRAM)
 | Model Variant | Parameters | VRAM (GB) | Latency (s) | Intent Acc | Country F1 | CRM Metal F1 | Macro F1 | Data Sovereignty |
 |---|---|---|---|---|---|---|---|---|
-| **Deterministic Mock (Rule-based)** | N/A | < 0.1 GB | **0.002 s** | 100.0% | 100.0% | 100.0% | **94.6%** | 100% Sovereign (Local) |
+| **Deterministic Mock (Rule-based)** | N/A | < 0.1 GB | **0.002 s** | 100.0% | 100.0% | 100.0% | **94.6%** | 100% Sovereign (Local CPU) |
 | **Llama 3.2 3B Instruct** | 3.2 B | 6.8 GB | 1.48 s | 100.0% | 97.4% | 94.6% | **89.9%** | 100% Sovereign (Local GPU) |
 | **Phi-3 Mini 4K Instruct** | 3.8 B | 7.9 GB | 1.82 s | 100.0% | 98.1% | 96.0% | **91.8%** | 100% Sovereign (Local GPU) |
 | **Qwen 2.5 7B Instruct** | 7.6 B | 15.4 GB | 2.65 s | 100.0% | 100.0% | 97.8% | **93.4%** | 100% Sovereign (Local GPU) |
@@ -95,16 +161,25 @@ python benchmark_all_models.py
 
 ```
 CRMsDataSpace-SoftwareX/
-├── README.md                           # Main repository documentation & quickstart
+├── .devcontainer/
+│   └── devcontainer.json               # 1-Click GitHub Codespaces configuration
+├── docs/
+│   └── index.html                      # Standalone GitHub Pages web demonstrator
+├── README.md                           # Main documentation & quickstart
 ├── LICENSE                             # MIT Open-Source License
+├── run_app.py                          # Root standalone launcher (Port 8080)
+├── run_gpu_app.py                      # Slurm GPU launcher & reverse proxy
 ├── SoftwareX/
+│   ├── README.md                       # Package overview for reviewers
 │   ├── code/                           # Reference software implementation
 │   │   ├── agent.py                    # Orchestrator coordinating Stages 1-4
 │   │   ├── llm_client.py               # Multi-engine NLU client (Mock, Local Transformers, Cloud APIs)
 │   │   ├── mock_api.py                 # Apache Solr spatial simulator with facet engine
 │   │   ├── nlu_pipeline.py             # Normalization thesaurus, JSON validator, Solr builder
-│   │   ├── run_app.py                  # Standalone HTTP web server
-│   │   ├── run_gpu.sh                  # Slurm NVIDIA A100 execution script
+│   │   ├── run_app.py                  # Standalone HTTP web server (Port 8080)
+│   │   ├── run_gpu.sh                  # Slurm execution script
+│   │   ├── run_gpu_app.py              # Slurm launcher & reverse proxy
+│   │   ├── test_apis.py                # Automated verification suite for all engines
 │   │   ├── requirements.txt            # Python dependencies
 │   │   ├── data/
 │   │   │   └── synthetic_escombreras_europe.json # 100 European CRM waste facilities
@@ -114,33 +189,27 @@ CRMsDataSpace-SoftwareX/
 │   │   │   ├── benchmark_all_models.py # Multi-model comparative benchmark script
 │   │   │   └── benchmark_all_models_summary.txt # Raw empirical benchmark output
 │   │   └── static/
+│   │       ├── favicon.ico             # Application favicon
 │   │       └── index.html              # Dynamic Single-Page App (Leaflet.js + TailwindCSS)
 │   └── manuscript/                     # Elsevier SoftwareX LaTeX source & figures
 │       ├── main.tex                    # Primary LaTeX document wrapper
-│       ├── references.bib              # Complete BibTeX bibliography (24 references)
+│       ├── references.bib              # Complete BibTeX bibliography
 │       ├── graphical_abstract.png      # High-resolution Graphical Abstract (300 DPI)
 │       ├── architecture_diagram.png    # Figure 1: 4-Stage decoupled pipeline
-│       ├── component1_nlu.png          # Figure 2: Stage 1 NLU workflow
-│       ├── component2_solr_query.png   # Figure 3: Stage 2 Normalizer & Query Builder
-│       ├── component3_solr_search.png  # Figure 4: Stage 3 Solr spatial search & RAG
-│       ├── component4_gis_ui.png       # Figure 5: Stage 4 Annotated operational UI
+│       ├── component1_nlu_schema.png   # Figure 2: Stage 1 NLU workflow
+│       ├── component2_query_builder.png# Figure 3: Stage 2 Normalizer & Query Builder
+│       ├── component3_search_rag.png   # Figure 4: Stage 3 Solr spatial search & RAG
+│       ├── component4_gis_ui.png       # Figure 5: Stage 4 Operational GIS interface
 │       ├── benchmark_evaluation_metrics.png # Figure 6: Multi-model benchmark panels
-│       └── sections/                   # Modular LaTeX sections (elsarticle format)
-│           ├── motivation_significance.tex
-│           ├── software_description.tex
-│           ├── illustrative_examples.tex
-│           ├── impact.tex
-│           ├── conclusions.tex
-│           └── others.tex
+│       └── sections/                   # Modular LaTeX sections
 ```
 
 ---
 
 ## 🛠️ Domain Customization & Developer Guide
 
-The architecture is explicitly decoupled and domain-agnostic:
-- **New Cartographic Domains**: To adapt the system to urban cadastres, forestry, or water management, modify `DOMAIN_SYNONYMS` in [`SoftwareX/code/nlu_pipeline.py`](SoftwareX/code/nlu_pipeline.py).
-- **Production Solr / SolrCloud Cluster**: To connect to a live distributed SolrCloud collection or standalone Solr core, define the environment variable: `export SOLR_URL="http://your-solr-host:8983/solr/crms_collection"`. The search connector in [`SoftwareX/code/mock_api.py`](SoftwareX/code/mock_api.py) automatically routes queries via the Solr HTTP REST API (`/select`) with live faceting, while falling back gracefully to the embedded synthetic dataset if the variable is omitted.
+- **Adapting to Other Domains**: Update the canonical dictionary in [`SoftwareX/code/nlu_pipeline.py`](SoftwareX/code/nlu_pipeline.py) under `DOMAIN_SYNONYMS` for your domain (e.g., cadastres, environmental hazards, forestry).
+- **Connecting a Production Apache Solr / SolrCloud Cluster**: To connect to a live distributed SolrCloud collection or standalone Solr core, define the environment variable: `export SOLR_URL="http://your-solr-host:8983/solr/crms_collection"`. The search connector in [`SoftwareX/code/mock_api.py`](SoftwareX/code/mock_api.py) automatically routes queries via the Solr HTTP REST API (`/select`) with live faceting, falling back gracefully to the embedded synthetic dataset if omitted.
 
 ---
 

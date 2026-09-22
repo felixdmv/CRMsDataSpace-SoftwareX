@@ -4,9 +4,8 @@ import matplotlib.patches as patches
 from matplotlib.patches import FancyBboxPatch, Circle
 
 plt.rcParams['font.family'] = 'sans-serif'
-plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial', 'Helvetica']
-
-out_path = "/home/felix.demiguel/contenido_computo03_felix/CRMsDataSpace/SoftwareX/manuscript/component4_gis_ui.png"
+from pathlib import Path
+out_path = Path(__file__).resolve().parent / "component4_gis_ui.png"
 
 fig, ax = plt.subplots(figsize=(16, 9.8), dpi=300)
 ax.set_xlim(0, 160)

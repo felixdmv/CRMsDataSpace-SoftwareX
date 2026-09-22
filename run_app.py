@@ -17,7 +17,7 @@ from run_app import run_server, PORT
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Geo-RAG Explorer Web Application Server")
-    parser.add_argument("--port", type=int, default=7860, help="Port to listen on")
+    parser.add_argument("--port", type=int, default=8080, help="Port to listen on (default: 8080)")
     parser.add_argument("--host", type=str, default="0.0.0.0", help="Host interface to bind")
     args = parser.parse_args()
     

@@ -114,7 +114,8 @@ ax2.text(0.50, 0.88, "Testbed: 1x NVIDIA A100-PCIE-40GB\nPrecision: FP16 | Slurm
 
 plt.tight_layout()
 
-out_path = "/home/felix.demiguel/contenido_computo03_felix/CRMsDataSpace/SoftwareX/manuscript/benchmark_evaluation_metrics.png"
-plt.savefig(out_path, dpi=300, bbox_inches='tight')
+from pathlib import Path
+out_path = Path(__file__).resolve().parent / "benchmark_evaluation_metrics.png"
+plt.savefig(str(out_path), dpi=300, bbox_inches='tight')
 plt.close()
 print(f"Successfully generated {out_path}")

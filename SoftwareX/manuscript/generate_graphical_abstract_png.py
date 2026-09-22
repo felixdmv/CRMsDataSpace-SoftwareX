@@ -4,9 +4,8 @@ from matplotlib.patches import FancyBboxPatch, FancyArrowPatch, Circle, Polygon
 import numpy as np
 
 plt.rcParams['font.family'] = 'sans-serif'
-plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial', 'Helvetica']
-
-out_png = "/home/felix.demiguel/contenido_computo03_felix/CRMsDataSpace/SoftwareX/manuscript/graphical_abstract.png"
+from pathlib import Path
+out_png = Path(__file__).resolve().parent / "graphical_abstract.png"
 
 fig, ax = plt.subplots(figsize=(18, 10), dpi=300)
 ax.set_xlim(0, 180)

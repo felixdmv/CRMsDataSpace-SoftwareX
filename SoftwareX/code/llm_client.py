@@ -11,6 +11,24 @@ try:
 except ImportError:
     pass
 
+# Built-in fallback loader for .env without external dependencies
+def _load_env_fallback():
+    for p in [Path(__file__).resolve().parent / ".env", Path.cwd() / ".env"]:
+        if p.exists():
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith("#") and "=" in line:
+                            k, v = line.split("=", 1)
+                            k, v = k.strip(), v.strip().strip("'\"")
+                            if k and k not in os.environ:
+                                os.environ[k] = v
+            except Exception:
+                pass
+
+_load_env_fallback()
+
 def extract_json_block(text: str) -> Dict[str, Any]:
     """Extracts and parses JSON object from LLM raw output text robustly."""
     if not text:
@@ -49,10 +67,15 @@ def extract_json_block(text: str) -> Dict[str, Any]:
     return {}
 
 # Ensure Python.h and system headers are available for Triton JIT compilation
-for candidate in [
-    "/home/felix.demiguel/contenido_computo03_felix/anaconda3/include/python3.12",
+header_candidates = [
     os.path.expanduser("~/.local/include/python3.12"),
-]:
+    os.path.expanduser("~/anaconda3/include/python3.12"),
+    os.path.expanduser("~/miniconda3/include/python3.12"),
+]
+if "CONDA_PREFIX" in os.environ:
+    header_candidates.insert(0, os.path.join(os.environ["CONDA_PREFIX"], "include", "python3.12"))
+
+for candidate in header_candidates:
     if os.path.exists(candidate):
         cur_cpath = os.environ.get("CPATH", "")
         if candidate not in cur_cpath:
@@ -69,7 +92,7 @@ MODEL_STATE = {
     "status": "idle",  # "idle", "loading", "ready", "error"
     "current_model": "",
     "repo_id": "",
-    "message": "Ningún modelo local cargado en VRAM.",
+    "message": "No local model currently loaded in VRAM.",
     "vram_gb": 0.0,
     "vram_total_gb": 0.0,
     "error": ""
@@ -111,7 +134,7 @@ def unload_all_local_models():
     global LOCAL_MODELS_CACHE, LOCAL_TOKENIZERS_CACHE, MODEL_STATE
     import gc
     
-    print("[LLM Client] Liberando memoria VRAM de modelos anteriores...", flush=True)
+    print("[LLM Client] Releasing VRAM cache of previous models...", flush=True)
     for k in list(LOCAL_MODELS_CACHE.keys()):
         try:
             del LOCAL_MODELS_CACHE[k]
@@ -138,8 +161,49 @@ def unload_all_local_models():
     MODEL_STATE["current_model"] = ""
     MODEL_STATE["repo_id"] = ""
     MODEL_STATE["vram_gb"] = 0.0
-    MODEL_STATE["message"] = "Memoria VRAM liberada con éxito."
-    print("[LLM Client] VRAM liberada.", flush=True)
+    MODEL_STATE["message"] = "VRAM memory cache cleared successfully."
+    print("[LLM Client] VRAM cache cleared.", flush=True)
+
+def get_hf_cache_dir() -> Path:
+    """Resolves the best available Hugging Face model cache directory."""
+    os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
+    
+    if os.environ.get("HF_HOME"):
+        p = Path(os.environ["HF_HOME"])
+        if p.exists():
+            return p
+
+    def _has_models(p: Path) -> bool:
+        try:
+            if not p.exists() or not os.access(p, os.R_OK):
+                return False
+            if any(p.glob("models--*")):
+                return True
+            hub = p / "hub"
+            if hub.exists() and os.access(hub, os.R_OK) and any(hub.glob("models--*")):
+                return True
+        except Exception:
+            pass
+        return False
+            
+    candidate_dirs = [
+        # User's standard home cache
+        Path.home() / ".cache" / "huggingface",
+        # Local repository cache directories
+        Path(__file__).resolve().parent / ".cache" / "huggingface",
+        Path(__file__).resolve().parents[1] / ".cache" / "huggingface",
+        Path(__file__).resolve().parents[2] / ".cache" / "huggingface",
+        Path("/datasets/huggingface"),
+        Path("/opt/huggingface"),
+    ]
+    
+    for cand in candidate_dirs:
+        if _has_models(cand):
+            return cand
+        
+    user_cache = Path.home() / ".cache" / "huggingface"
+    user_cache.mkdir(parents=True, exist_ok=True)
+    return user_cache
 
 def load_local_model_weights(provider: str) -> bool:
     """Pre-loads local model weights into GPU VRAM with state tracking and VRAM eviction."""
@@ -151,7 +215,7 @@ def load_local_model_weights(provider: str) -> bool:
         MODEL_STATE["status"] = "ready"
         MODEL_STATE["current_model"] = prov
         MODEL_STATE["repo_id"] = repo_id
-        MODEL_STATE["message"] = f"Modelo {repo_id} ya reside en memoria GPU VRAM."
+        MODEL_STATE["message"] = f"Model {repo_id} is already loaded in GPU memory."
         return True
 
     # Evict previously loaded models to ensure VRAM is never saturated
@@ -161,16 +225,16 @@ def load_local_model_weights(provider: str) -> bool:
     MODEL_STATE["status"] = "loading"
     MODEL_STATE["current_model"] = prov
     MODEL_STATE["repo_id"] = repo_id
-    MODEL_STATE["message"] = f"Cargando pesos de {repo_id} en la GPU..."
+    MODEL_STATE["message"] = f"Loading weights of {repo_id} into GPU..."
     MODEL_STATE["error"] = ""
     
     try:
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer
         
-        cache_dir = Path.home() / ".cache" / "huggingface"
-        cache_dir.mkdir(parents=True, exist_ok=True)
+        cache_dir = get_hf_cache_dir()
         os.environ["HF_HOME"] = str(cache_dir)
+        print(f"[LLM Client] Using Hugging Face model cache directory: {cache_dir}")
         
         use_cuda = torch.cuda.is_available()
         dtype = torch.float16 if use_cuda else torch.float32
@@ -278,6 +342,7 @@ def call_llm(
     provider = provider.lower().strip()
     gemini_key = os.getenv("GEMINI_API_KEY")
     openai_key = os.getenv("OPENAI_API_KEY")
+    anthropic_key = os.getenv("ANTHROPIC_API_KEY")
     
     if provider in MODEL_REPO_MAP or "/" in provider:
         return call_local_gpu_model(system_prompt, user_prompt, provider=provider, json_mode=json_mode)
@@ -370,6 +435,82 @@ def call_llm(
                     return res_json["choices"][0]["message"]["content"]
             except Exception as rest_err:
                 print(f"[LLM Client Warning] OpenAI call failed: {rest_err}. Using intelligent mock parser.")
+
+    elif provider in ["claude", "anthropic", "claude-code"] or "claude" in provider:
+        import shutil
+        claude_cli = shutil.which("claude")
+        
+        # 1. Try Anthropic Python SDK if installed
+        if anthropic_key:
+            try:
+                import anthropic
+                client = anthropic.Anthropic(api_key=anthropic_key)
+                prompt_content = user_prompt
+                if json_mode:
+                    prompt_content += "\nRespond strictly with valid JSON without markdown codeblocks or explanation."
+                
+                resp = client.messages.create(
+                    model="claude-3-5-sonnet-20241022",
+                    max_tokens=1024,
+                    temperature=0.0,
+                    system=system_prompt,
+                    messages=[{"role": "user", "content": prompt_content}]
+                )
+                if resp.content and hasattr(resp.content[0], "text"):
+                    return resp.content[0].text
+            except ImportError:
+                pass
+            except Exception as e:
+                print(f"[LLM Client Warning] Anthropic SDK call failed: {e}. Trying REST API fallback.")
+                
+            # 2. Direct HTTP REST API via urllib (zero external dependencies)
+            try:
+                import urllib.request
+                api_url = "https://api.anthropic.com/v1/messages"
+                prompt_content = user_prompt
+                if json_mode:
+                    prompt_content += "\nRespond strictly with valid JSON without markdown codeblocks or explanation."
+                headers = {
+                    "Content-Type": "application/json",
+                    "x-api-key": anthropic_key,
+                    "anthropic-version": "2023-06-01"
+                }
+                body = {
+                    "model": "claude-3-5-sonnet-20241022",
+                    "max_tokens": 1024,
+                    "temperature": 0.0,
+                    "system": system_prompt,
+                    "messages": [{"role": "user", "content": prompt_content}]
+                }
+                req = urllib.request.Request(
+                    api_url,
+                    data=json.dumps(body).encode("utf-8"),
+                    headers=headers,
+                    method="POST"
+                )
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    res_json = json.loads(resp.read().decode("utf-8"))
+                    content_list = res_json.get("content", [])
+                    if content_list and "text" in content_list[0]:
+                        return content_list[0]["text"]
+            except Exception as rest_err:
+                print(f"[LLM Client Warning] Anthropic Claude call failed: {rest_err}. Using intelligent mock parser.")
+
+        # 3. Check for Claude Code CLI tool
+        if claude_cli and (provider == "claude-code" or not anthropic_key):
+            try:
+                import subprocess
+                full_prompt = f"{system_prompt}\n\n{user_prompt}\n\nRespond strictly with valid JSON."
+                res = subprocess.run(
+                    [claude_cli, "-p", full_prompt],
+                    capture_output=True,
+                    text=True,
+                    timeout=35
+                )
+                if res.returncode == 0 and res.stdout.strip():
+                    return res.stdout.strip()
+            except Exception as cli_err:
+                print(f"[LLM Client Warning] Claude Code CLI execution failed: {cli_err}.")
             
     # Intelligent, highly accurate NLU parser for standalone reviewer execution
     return mock_nlu_parse(user_prompt)

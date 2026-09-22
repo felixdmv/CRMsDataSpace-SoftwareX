@@ -8,14 +8,19 @@ import sys
 import json
 import webbrowser
 from pathlib import Path
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 import threading
 
 # Ensure Python.h and system headers are available for Triton JIT compilation
-for candidate in [
-    "/home/felix.demiguel/contenido_computo03_felix/anaconda3/include/python3.12",
+header_candidates = [
     os.path.expanduser("~/.local/include/python3.12"),
-]:
+    os.path.expanduser("~/anaconda3/include/python3.12"),
+    os.path.expanduser("~/miniconda3/include/python3.12"),
+]
+if "CONDA_PREFIX" in os.environ:
+    header_candidates.insert(0, os.path.join(os.environ["CONDA_PREFIX"], "include", "python3.12"))
+
+for candidate in header_candidates:
     if os.path.exists(candidate):
         cur_cpath = os.environ.get("CPATH", "")
         if candidate not in cur_cpath:
@@ -87,6 +92,8 @@ class SoftwareXHandler(SimpleHTTPRequestHandler):
                 if api_key:
                     if provider == "openai":
                         os.environ["OPENAI_API_KEY"] = api_key
+                    elif provider in ["claude", "anthropic", "claude-code"]:
+                        os.environ["ANTHROPIC_API_KEY"] = api_key
                     else:
                         os.environ["GEMINI_API_KEY"] = api_key
 
@@ -99,11 +106,11 @@ class SoftwareXHandler(SimpleHTTPRequestHandler):
                 
                 for doc in docs:
                     evidences.append({
-                        "title": f"Informe_Tecnico_{doc.get('id', 'site').upper()}.pdf",
+                        "title": f"Technical_Report_{doc.get('id', 'site').upper()}.pdf",
                         "page": 1,
                         "score": 0.95,
-                        "entities": [f"Mineral: {doc.get('commodities_label', doc.get('commodities', ['CRM'])[0])}", f"País: {doc.get('country_name', doc.get('country', 'Europe'))}"],
-                        "snippet": doc.get("description", "Descripción del depósito en la base de datos de SoftwareX."),
+                        "entities": [f"Mineral: {doc.get('commodities_label', doc.get('commodities', ['CRM'])[0])}", f"Country: {doc.get('country_name', doc.get('country', 'Europe'))}"],
+                        "snippet": doc.get("description", "Deposit description from SoftwareX CRM repository."),
                         "site_id": doc.get("id")
                     })
                 
@@ -207,42 +214,49 @@ class SoftwareXHandler(SimpleHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
 
-class SoftwareXHTTPServer(HTTPServer):
+class SoftwareXHTTPServer(ThreadingHTTPServer):
     allow_reuse_address = True
+    daemon_threads = True
 
 def run_server(port=PORT, host="0.0.0.0"):
-    import socket
-    try:
-        import torch
-        cuda_status = f"CUDA GPU ({torch.cuda.get_device_name(0)})" if torch.cuda.is_available() else "CPU Mode (WARNING: No GPU detected!)"
-    except Exception:
-        cuda_status = "CPU Mode (No GPU)"
-        
     current_port = port
+    httpd = None
     while current_port < port + 20:
         try:
             server_address = (host, current_port)
             httpd = SoftwareXHTTPServer(server_address, SoftwareXHandler)
-            url = f"http://{socket.gethostname()}:{current_port}"
-            print("=" * 60)
-            print("  CRMs Data Space - SoftwareX Architecture Demonstrator")
-            print(f"  [INFO] Servidor Híbrido iniciado con éxito en {url}")
-            print(f"  [INFO] Modo de Inferencia: {cuda_status}")
-            print(f"  [INFO] Endpoint API REST en: http://{socket.gethostname()}:{current_port}/api/chat")
-            print("  Press Ctrl+C to stop.")
-            print("=" * 60)
-            sys.stdout.flush()
-            
-            try:
-                webbrowser.open(f"http://localhost:{current_port}")
-            except Exception:
-                pass
-                
-            httpd.serve_forever()
             break
-        except OSError as e:
-            print(f"[WARN] Puerto {current_port} ocupado ({e}). Reintentando en puerto {current_port + 1}...")
+        except OSError:
             current_port += 1
+
+    if not httpd:
+        raise RuntimeError(f"Could not bind to any port in range {port}-{port + 20}")
+
+    engine_status = "Deterministic Standalone Engine (CPU - Zero Dependencies)"
+    try:
+        import torch
+        if torch.cuda.is_available():
+            engine_status = f"Local GPU Acceleration ({torch.cuda.get_device_name(0)})"
+    except Exception:
+        pass
+
+    print("=" * 68)
+    print("  CRMsDataSpace Explorer — Elsevier SoftwareX Reference WebApp")
+    print("=" * 68)
+    print(f"  [INFO] Web Application running at: http://localhost:{current_port}")
+    print(f"  [INFO] Execution Mode:             {engine_status}")
+    print(f"  [INFO] REST API Endpoint:          http://localhost:{current_port}/api/chat")
+    print("  Press Ctrl+C to stop the server.")
+    print("=" * 68)
+    sys.stdout.flush()
+    
+    if os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"):
+        try:
+            webbrowser.open(f"http://localhost:{current_port}")
+        except Exception:
+            pass
+        
+    httpd.serve_forever()
 
 if __name__ == "__main__":
     import argparse

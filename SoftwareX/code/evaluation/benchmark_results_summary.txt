@@ -6,13 +6,13 @@ Provider Evaluated: MOCK
 Total Test Queries: 100
 
 1. INTENT CLASSIFICATION ACCURACY:
-   - Intent Accuracy: 85.00% (85/100)
+   - Intent Accuracy: 80.00% (80/100)
 
 2. FIELD EXTRACTION METRICS (PRECISION / RECALL / F1-SCORE):
-   - Countries:         Precision: 100.00% | Recall: 100.00% | F1-Score: 100.00%
-   - Commodities (CRMs): Precision: 100.00% | Recall: 100.00% | F1-Score: 100.00%
-   - Facility Types:    Precision: 63.64% | Recall: 100.00% | F1-Score: 77.78%
-   - Project Status:    Precision: 63.64% | Recall: 100.00% | F1-Score: 77.78%
+   - Countries:         Precision: 91.89% | Recall: 71.58% | F1-Score: 80.47%
+   - Commodities (CRMs): Precision: 79.71% | Recall: 58.51% | F1-Score: 67.48%
+   - Facility Types:    Precision: 67.03% | Recall: 96.83% | F1-Score: 79.22%
+   - Project Status:    Precision: 65.62% | Recall: 80.77% | F1-Score: 72.41%
 
-OVERALL AVERAGE F1-SCORE: 88.89%
+OVERALL AVERAGE F1-SCORE: 74.90%
 ========================================================================

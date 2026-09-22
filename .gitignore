@@ -45,3 +45,10 @@ code/outputs/
 /geo-rag-explorer/
 BBDD_propuesta_LLM_WARM.xlsx
 4 Tasks UBU CRMS v2.png
+
+# Internal communications, diagnostics & cluster tools
+hilo_correos.txt
+iniciar_proyecto.ps1
+diagnose_cluster.py
+diagnose_gpu.sh
+SoftwareX/manuscript/Graphical_abstract_v3.png
