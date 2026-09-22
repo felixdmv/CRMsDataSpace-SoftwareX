@@ -10,7 +10,7 @@
     }
   },
   "postCreateCommand": "pip install -r SoftwareX/code/requirements.txt || true",
-  "postStartCommand": "python run_app.py --port 8080 &",
+  "postAttachCommand": "python run_app.py --port 8080",
   "customizations": {
     "vscode": {
       "settings": {
