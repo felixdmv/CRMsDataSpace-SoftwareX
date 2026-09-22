@@ -5,13 +5,17 @@
   "portsAttributes": {
     "8080": {
       "label": "CRMsDataSpace Web Application",
-      "onAutoForward": "openBrowser"
+      "onAutoForward": "openPreview",
+      "elevateIfNeeded": false
     }
   },
   "postCreateCommand": "pip install -r SoftwareX/code/requirements.txt || true",
   "postStartCommand": "python run_app.py --port 8080 &",
   "customizations": {
     "vscode": {
+      "settings": {
+        "workbench.startupEditor": "none"
+      },
       "extensions": [
         "ms-python.python"
       ]

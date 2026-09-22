@@ -49,8 +49,11 @@ Click the badge below to run the complete web application directly in your web b
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX)
 
 1. Click **Create codespace on main**.
-2. GitHub automatically builds the cloud environment and launches `python run_app.py --port 8080`.
-3. Codespaces detects port `8080` and displays a pop-up: click **Open in Browser** to interact with the full web dashboard.
+2. GitHub automatically provisions the cloud container and launches the web application server on port `8080`.
+3. The web application opens automatically as an interactive tab inside the workspace.
+4. *(Optional)* To view the application in a full standalone browser tab, click the **Open in Browser** icon (square with arrow) at the top-right of the preview tab, or click the globe icon next to Port `8080` in the **Ports** panel.
+
+> **Note on Direct Web Access**: If you prefer an instant zero-editor web preview without VS Code, you can also explore the static deployment directly at: **[https://felixdmv.github.io/CRMsDataSpace-SoftwareX/](https://felixdmv.github.io/CRMsDataSpace-SoftwareX/)**.
 
 ---
 
@@ -170,38 +173,26 @@ CRMsDataSpace-SoftwareX/
 ├── run_app.py                          # Root standalone launcher (Port 8080)
 ├── run_gpu_app.py                      # Slurm GPU launcher & reverse proxy
 ├── SoftwareX/
-│   ├── README.md                       # Package overview for reviewers
-│   ├── code/                           # Reference software implementation
-│   │   ├── agent.py                    # Orchestrator coordinating Stages 1-4
-│   │   ├── llm_client.py               # Multi-engine NLU client (Mock, Local Transformers, Cloud APIs)
-│   │   ├── mock_api.py                 # Apache Solr spatial simulator with facet engine
-│   │   ├── nlu_pipeline.py             # Normalization thesaurus, JSON validator, Solr builder
-│   │   ├── run_app.py                  # Standalone HTTP web server (Port 8080)
-│   │   ├── run_gpu.sh                  # Slurm execution script
-│   │   ├── run_gpu_app.py              # Slurm launcher & reverse proxy
-│   │   ├── test_apis.py                # Automated verification suite for all engines
-│   │   ├── requirements.txt            # Python dependencies
-│   │   ├── data/
-│   │   │   └── synthetic_escombreras_europe.json # 100 European CRM waste facilities
-│   │   ├── evaluation/
-│   │   │   ├── test_battery_100.json   # 100 golden test queries with ground truth
-│   │   │   ├── evaluate_100_tests.py   # Baseline evaluation script
-│   │   │   ├── benchmark_all_models.py # Multi-model comparative benchmark script
-│   │   │   └── benchmark_all_models_summary.txt # Raw empirical benchmark output
-│   │   └── static/
-│   │       ├── favicon.ico             # Application favicon
-│   │       └── index.html              # Dynamic Single-Page App (Leaflet.js + TailwindCSS)
-│   └── manuscript/                     # Elsevier SoftwareX LaTeX source & figures
-│       ├── main.tex                    # Primary LaTeX document wrapper
-│       ├── references.bib              # Complete BibTeX bibliography
-│       ├── graphical_abstract.png      # High-resolution Graphical Abstract (300 DPI)
-│       ├── architecture_diagram.png    # Figure 1: 4-Stage decoupled pipeline
-│       ├── component1_nlu_schema.png   # Figure 2: Stage 1 NLU workflow
-│       ├── component2_query_builder.png# Figure 3: Stage 2 Normalizer & Query Builder
-│       ├── component3_search_rag.png   # Figure 4: Stage 3 Solr spatial search & RAG
-│       ├── component4_gis_ui.png       # Figure 5: Stage 4 Operational GIS interface
-│       ├── benchmark_evaluation_metrics.png # Figure 6: Multi-model benchmark panels
-│       └── sections/                   # Modular LaTeX sections
+│   └── code/                           # Reference software implementation
+│       ├── agent.py                    # Orchestrator coordinating Stages 1-4
+│       ├── llm_client.py               # Multi-engine NLU client (Mock, Local Transformers, Cloud APIs)
+│       ├── mock_api.py                 # Apache Solr spatial simulator with facet engine
+│       ├── nlu_pipeline.py             # Normalization thesaurus, JSON validator, Solr builder
+│       ├── run_app.py                  # Standalone HTTP web server (Port 8080)
+│       ├── run_gpu.sh                  # Slurm execution script
+│       ├── run_gpu_app.py              # Slurm launcher & reverse proxy
+│       ├── test_apis.py                # Automated verification suite for all engines
+│       ├── requirements.txt            # Python dependencies
+│       ├── data/
+│       │   └── synthetic_escombreras_europe.json # 100 European CRM waste facilities
+│       ├── evaluation/
+│       │   ├── test_battery_100.json   # 100 golden test queries with ground truth
+│       │   ├── evaluate_100_tests.py   # Baseline evaluation script
+│       │   ├── benchmark_all_models.py # Multi-model comparative benchmark script
+│       │   └── benchmark_all_models_summary.txt # Raw empirical benchmark output
+│       └── static/
+│           ├── favicon.ico             # Application favicon
+│           └── index.html              # Dynamic Single-Page App (Leaflet.js + TailwindCSS)
 ```
 
 ---
