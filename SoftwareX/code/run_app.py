@@ -138,7 +138,7 @@ class SoftwareXHandler(SimpleHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json.dumps(formatted_response, ensure_ascii=False).encode("utf-8"))
             except Exception as e:
-                print(f"[API ERROR] Fallo al procesar /api/chat: {e}")
+                print(f"[API ERROR] Failed to process /api/chat: {e}")
                 self.send_response(500)
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()

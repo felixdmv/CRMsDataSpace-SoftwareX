@@ -261,14 +261,16 @@ def load_local_model_weights(provider: str) -> bool:
         alloc_gb = round(torch.cuda.memory_allocated(0) / (1024**3), 2) if use_cuda else 0.0
         MODEL_STATE["status"] = "ready"
         MODEL_STATE["vram_gb"] = alloc_gb
-        MODEL_STATE["message"] = f"Modelo '{repo_id}' cargado con éxito en GPU VRAM ({alloc_gb} GB)."
+        MODEL_STATE["message"] = f"Model '{repo_id}' successfully loaded into GPU VRAM ({alloc_gb} GB)."
         print(f"[LLM Client] {MODEL_STATE['message']}")
         return True
     except Exception as err:
         MODEL_STATE["status"] = "error"
+        MODEL_STATE["current_model"] = ""
+        MODEL_STATE["repo_id"] = ""
         MODEL_STATE["error"] = str(err)
-        MODEL_STATE["message"] = f"Fallo al cargar '{repo_id}': {err}"
-        print(f"[LLM Client Warning] {MODEL_STATE['message']}. Usando fallback inteligente.")
+        MODEL_STATE["message"] = f"Failed to load '{repo_id}': {err}"
+        print(f"[LLM Client Warning] {MODEL_STATE['message']}. Using intelligent standalone fallback.")
         return False
 
 def call_local_gpu_model(system_prompt: str, user_prompt: str, provider: str = "qwen", json_mode: bool = False) -> str:

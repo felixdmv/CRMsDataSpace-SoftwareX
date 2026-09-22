@@ -576,14 +576,23 @@
     </div>
 
     <!-- ==========================================
-        BOTTOM PANEL: APACHE SOLR ENGINE INSPECTOR
+        BOTTOM PANEL: APACHE SOLR ENGINE INSPECTOR (Resizable & Maximizable)
         ========================================== -->
-    <div id="bottom-panel" class="border-t border-geodark-border transition-all duration-300 relative bg-[#070a12] flex flex-col shrink-0 h-[250px]">
+    <div id="bottom-panel" class="border-t border-geodark-border transition-all duration-150 relative bg-[#070a12] flex flex-col shrink-0 h-[250px]">
       
+      <!-- Vertical Drag Resizer Bar -->
+      <div 
+        id="inspector-resizer" 
+        class="h-1.5 w-full bg-slate-800/90 hover:bg-emerald-500 active:bg-emerald-400 cursor-ns-resize transition-colors flex items-center justify-center select-none group shrink-0" 
+        title="Drag up or down to resize inspector height"
+      >
+        <div class="w-12 h-0.5 rounded-full bg-slate-600 group-hover:bg-white transition-colors"></div>
+      </div>
+
       <!-- Drawer Header Bar -->
       <div 
-        onclick="toggleBottomPanel()"
-        class="h-9 bg-[#0b0e1b] px-4 flex items-center justify-between cursor-pointer border-b border-geodark-border hover:bg-slate-900/80 transition-all select-none"
+        ondblclick="toggleMaximizeInspector(event)"
+        class="h-9 bg-[#0b0e1b] px-3 sm:px-4 flex items-center justify-between border-b border-geodark-border hover:bg-slate-900/70 transition-all select-none shrink-0"
       >
         <div class="flex items-center gap-2 text-xs">
           <span class="relative flex h-2 w-2">
@@ -592,28 +601,28 @@
           </span>
           <span class="font-bold text-slate-200 flex items-center gap-2">
             Apache Solr Engine Inspector 
-            <span class="text-[10px] font-normal text-slate-500 font-mono">
+            <span class="text-[10px] font-normal text-slate-500 font-mono hidden md:inline">
               (NLU Pipeline & Search Audit Drawer)
             </span>
           </span>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
           <!-- Inspector Tabs -->
           <div id="inspector-tabs" class="flex bg-slate-950 p-0.5 rounded border border-slate-800" onclick="event.stopPropagation()">
             <button 
               type="button"
               id="tab-query"
               onclick="switchInspectorTab('query')"
-              class="px-3 py-1 rounded text-[10px] font-semibold transition-all bg-slate-800 text-emerald-400"
+              class="px-2.5 py-1 rounded text-[10px] font-semibold transition-all bg-slate-800 text-emerald-400 cursor-pointer"
             >
-              Solr Query Syntax (q, fq)
+              Solr Query (q, fq)
             </button>
             <button 
               type="button"
               id="tab-facets"
               onclick="switchInspectorTab('facets')"
-              class="px-3 py-1 rounded text-[10px] font-semibold transition-all text-slate-400 hover:text-slate-200"
+              class="px-2.5 py-1 rounded text-[10px] font-semibold transition-all text-slate-400 hover:text-slate-200 cursor-pointer"
             >
               Facet Counts
             </button>
@@ -621,30 +630,64 @@
               type="button"
               id="tab-ner"
               onclick="switchInspectorTab('ner')"
-              class="px-3 py-1 rounded text-[10px] font-semibold transition-all text-slate-400 hover:text-slate-200"
+              class="px-2.5 py-1 rounded text-[10px] font-semibold transition-all text-slate-400 hover:text-slate-200 cursor-pointer"
             >
               NLU Extracted JSON
+            </button>
+          </div>
+
+          <!-- Quick Action Buttons: Copy, Maximize/Restore, Collapse -->
+          <div class="flex items-center gap-1.5" onclick="event.stopPropagation()">
+            <button 
+              type="button"
+              id="btn-copy-inspector"
+              onclick="copyInspectorContent()"
+              title="Copy active inspector JSON to clipboard"
+              class="px-2 py-1 rounded text-[10px] font-mono bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500 transition-all flex items-center gap-1 cursor-pointer"
+            >
+              <span>📋</span>
+              <span class="hidden sm:inline">Copy</span>
+            </button>
+
+            <button 
+              type="button"
+              id="btn-maximize-inspector"
+              onclick="toggleMaximizeInspector(event)"
+              title="Expand / restore inspector height to see full JSON content"
+              class="px-2.5 py-1 rounded text-[10px] font-mono bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-emerald-800/80 hover:border-emerald-500 transition-all flex items-center gap-1 cursor-pointer font-semibold shadow-sm"
+            >
+              <span>⤢</span>
+              <span>Maximize</span>
+            </button>
+
+            <button 
+              type="button"
+              onclick="toggleBottomPanel(event)"
+              title="Collapse / expand inspector drawer"
+              class="px-2 py-1 rounded text-[10px] font-mono bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition-all cursor-pointer"
+            >
+              ↕
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Drawer Content -->
-      <div class="flex-1 p-3 overflow-y-auto font-mono text-xs">
-        <div id="inspector-query-content" class="h-full">
-          <pre id="inspector-query-code" class="text-amber-300 text-[11px] leading-relaxed">{
+      <!-- Drawer Content: Full height with horizontal & vertical scrolling -->
+      <div id="inspector-content-container" class="flex-1 p-3 overflow-hidden flex flex-col font-mono text-xs min-h-0 bg-[#060811]">
+        <div id="inspector-query-content" class="h-full overflow-auto rounded-lg bg-slate-950/90 border border-slate-900 p-3">
+          <pre id="inspector-query-code" class="text-amber-300 text-[11.5px] leading-relaxed select-text whitespace-pre overflow-x-auto font-mono">{
   "info": "Submit a conversational query above or click a preset test case to inspect generated Apache Solr search parameters."
 }</pre>
         </div>
 
-        <div id="inspector-facets-content" class="h-full hidden">
-          <pre id="inspector-facets-code" class="text-emerald-300 text-[11px] leading-relaxed">{
+        <div id="inspector-facets-content" class="h-full overflow-auto rounded-lg bg-slate-950/90 border border-slate-900 p-3 hidden">
+          <pre id="inspector-facets-code" class="text-emerald-300 text-[11.5px] leading-relaxed select-text whitespace-pre overflow-x-auto font-mono">{
   "info": "Facet distributions (country counts, commodity breakdown, status) will be displayed here."
 }</pre>
         </div>
 
-        <div id="inspector-ner-content" class="h-full hidden">
-          <pre id="inspector-ner-code" class="text-blue-300 text-[11px] leading-relaxed">{
+        <div id="inspector-ner-content" class="h-full overflow-auto rounded-lg bg-slate-950/90 border border-slate-900 p-3 hidden">
+          <pre id="inspector-ner-code" class="text-blue-300 text-[11.5px] leading-relaxed select-text whitespace-pre overflow-x-auto font-mono">{
   "info": "Structured JSON contract extracted by Dual-Variant NLU Engine (v1 Few-Shot / v3 OpenAPI Schema)."
 }</pre>
         </div>
@@ -3492,7 +3535,8 @@
     let selectedSite = null;
     let markersMap = {};
     let mapInstance = null;
-    let currentProvider = "mock";
+    let currentProvider = "rules";
+    let lastWorkingProvider = "rules";
 
     // ==========================================
     // MULTI-SELECTION FILTERS & BIDIRECTIONAL SYNC
@@ -3793,7 +3837,10 @@
         });
       }
 
-      // 5. Setup Live Real-time GPU Telemetry Polling
+      // 5. Initialize Solr Engine Inspector Resizer
+      initInspectorResizer();
+
+      // 6. Setup Live Real-time GPU Telemetry Polling
       async function pollGPUStatus() {
         try {
           const res = await fetch('/api/gpu_status');
@@ -4006,6 +4053,7 @@
           const cur = (state.current_model || '').toLowerCase();
           const cached = state.cached_models || [];
           if (state.status === 'ready' && (cur === provider || cached.some(m => m.toLowerCase().includes(provider)))) {
+            lastWorkingProvider = provider;
             showModelReadyBanner(provider, state.vram_gb);
             return;
           }
@@ -4035,11 +4083,12 @@
           if (data.status === 'ready') {
             clearInterval(modelPollInterval);
             modelPollInterval = null;
+            lastWorkingProvider = provider;
             showModelReadyBanner(provider, data.vram_gb);
           } else if (data.status === 'error') {
             clearInterval(modelPollInterval);
             modelPollInterval = null;
-            showModelErrorBanner(data.message || data.error);
+            revertToLastValidEngine(provider, data.message || data.error);
           }
         } catch (e) {}
       }, 1000);
@@ -4144,6 +4193,7 @@
       const title = document.getElementById('model-loading-title');
       const subtitle = document.getElementById('model-loading-subtitle');
       const timer = document.getElementById('model-loading-timer');
+      const bar = document.getElementById('model-loading-progress-bar');
       const inputEl = document.getElementById('chat-input') || document.getElementById('custom-input');
       const sendBtn = document.querySelector('button[onclick="sendChatMessage()"]');
 
@@ -4157,13 +4207,55 @@
         if (b) b.disabled = false;
       });
 
-      if (title) title.innerHTML = `⚠️ Engine Notice: Model Load Status`;
+      if (title) title.innerHTML = `⚠️ Engine Fallback: Standalone Mode Active`;
       if (timer) timer.textContent = 'Fallback';
-      if (subtitle) subtitle.textContent = err || "Error loading weights. Using deterministic fallback.";
+      if (bar) {
+        bar.style.width = '100%';
+        bar.className = 'bg-amber-600 h-full rounded-full transition-all duration-300';
+      }
+      if (subtitle) {
+        subtitle.innerHTML = `<span class="text-amber-300 text-[10.5px] leading-tight select-text">${escapeHtml(err || "Failed to load model weights. Reverted to Standalone Deterministic Engine.")}</span>`;
+      }
 
       setTimeout(() => {
         if (banner && !isModelLoading) banner.classList.add('hidden');
-      }, 4000);
+      }, 5500);
+    }
+
+    function revertToLastValidEngine(failedProvider, rawError) {
+      currentProvider = lastWorkingProvider || 'rules';
+
+      const selectEl = document.getElementById('llm-provider-select');
+      if (selectEl) {
+        selectEl.value = currentProvider;
+      }
+
+      const indicator = document.getElementById('current-model-indicator');
+      if (indicator) {
+        if (currentProvider === 'gemini') {
+          indicator.textContent = 'Gemini 2.0 / 1.5 (Cloud API)';
+        } else if (currentProvider === 'openai') {
+          indicator.textContent = 'OpenAI GPT-4o (Cloud API)';
+        } else if (currentProvider === 'claude') {
+          indicator.textContent = 'Anthropic Claude 3.5 / 3.7 (Cloud API / Claude Code)';
+        } else {
+          indicator.textContent = 'Deterministic Engine (Standalone)';
+        }
+      }
+
+      const modelNames = {
+        'llama': 'Llama 3.2 3B',
+        'qwen': 'Qwen 2.5 7B',
+        'deepseek': 'DeepSeek R1 7B',
+        'phi3': 'Phi-3 Mini 4K',
+        'gemma': 'Gemma 2 2B'
+      };
+      const name = modelNames[failedProvider] || (failedProvider ? failedProvider.toUpperCase() : 'Local Model');
+      let friendlyError = `Failed to load ${name} weights: No CUDA GPU detected or PyTorch weights unavailable on host. System reverted to Standalone Deterministic Engine.`;
+      if (rawError && typeof rawError === 'string' && !rawError.toLowerCase().includes('traceback')) {
+        friendlyError = `Failed to load ${name}: ${rawError.trim()}. Reverted to Standalone Deterministic Engine.`;
+      }
+      showModelErrorBanner(friendlyError);
     }
 
     function hideModelLoadingBanner() {
@@ -4198,7 +4290,16 @@
       currentProvider = provider;
       if (provider === 'rules' || provider === 'mock') {
         unloadGPUModel();
+        lastWorkingProvider = 'rules';
+      } else if (['gemini', 'openai', 'claude'].includes(provider)) {
+        lastWorkingProvider = provider;
       }
+
+      const selectEl = document.getElementById('llm-provider-select');
+      if (selectEl && selectEl.value !== provider) {
+        selectEl.value = provider;
+      }
+
       const indicator = document.getElementById('current-model-indicator');
       if (indicator) {
         if (provider === 'gemini') {
@@ -4252,7 +4353,7 @@
       const getInput = () => document.getElementById('chat-input') || document.getElementById('custom-input');
       const inputEl = getInput();
       if (inputEl) {
-        inputEl.value = query;
+        inputEl.value = '';
       }
       sendChatMessage(query);
     }
@@ -4388,7 +4489,7 @@
       const query = overrideQuery || (inputEl ? inputEl.value.trim() : '');
       if (!query) return;
 
-      if (inputEl && !overrideQuery) inputEl.value = '';
+      if (inputEl) inputEl.value = '';
 
       const chatContainer = document.getElementById('chat-messages');
       if (!chatContainer) return;
@@ -4542,16 +4643,111 @@
       }
     }
 
-    function toggleBottomPanel() {
-      const panel = document.getElementById('bottom-inspector-panel');
+    let isInspectorMaximized = false;
+    let lastInspectorHeight = '250px';
+
+    function initInspectorResizer() {
+      const resizer = document.getElementById('inspector-resizer');
+      const panel = document.getElementById('bottom-panel');
+      if (!resizer || !panel) return;
+
+      let startY = 0;
+      let startH = 0;
+
+      const onMouseMove = (e) => {
+        const dy = startY - e.clientY;
+        let newH = startH + dy;
+        const minH = 36;
+        const maxH = Math.round(window.innerHeight * 0.85);
+        if (newH < minH) newH = minH;
+        if (newH > maxH) newH = maxH;
+        panel.style.height = `${newH}px`;
+        panel.classList.remove('h-[250px]');
+      };
+
+      const onMouseUp = () => {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        if (panel.offsetHeight > 45) {
+          lastInspectorHeight = `${panel.offsetHeight}px`;
+        }
+      };
+
+      resizer.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        startY = e.clientY;
+        startH = panel.offsetHeight;
+        document.body.style.cursor = 'ns-resize';
+        document.body.style.userSelect = 'none';
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      });
+    }
+
+    function toggleMaximizeInspector(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      const panel = document.getElementById('bottom-panel');
+      const btn = document.getElementById('btn-maximize-inspector');
       if (!panel) return;
-      if (panel.classList.contains('h-10')) {
-        panel.classList.remove('h-10');
-        panel.classList.add('h-64');
+
+      if (!isInspectorMaximized) {
+        lastInspectorHeight = panel.offsetHeight > 45 ? `${panel.offsetHeight}px` : '250px';
+        const targetH = Math.max(480, Math.round(window.innerHeight * 0.65));
+        panel.style.height = `${targetH}px`;
+        panel.classList.remove('h-[250px]');
+        isInspectorMaximized = true;
+        if (btn) btn.innerHTML = '<span>⤡</span><span>Restore</span>';
       } else {
-        panel.classList.remove('h-64');
-        panel.classList.add('h-10');
+        panel.style.height = lastInspectorHeight || '250px';
+        isInspectorMaximized = false;
+        if (btn) btn.innerHTML = '<span>⤢</span><span>Maximize</span>';
       }
+    }
+
+    function toggleBottomPanel(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      const panel = document.getElementById('bottom-panel');
+      const btn = document.getElementById('btn-maximize-inspector');
+      if (!panel) return;
+
+      if (panel.offsetHeight > 45) {
+        lastInspectorHeight = `${panel.offsetHeight}px`;
+        panel.style.height = '36px';
+        panel.classList.remove('h-[250px]');
+        if (btn) btn.innerHTML = '<span>⤢</span><span>Maximize</span>';
+        isInspectorMaximized = false;
+      } else {
+        panel.style.height = lastInspectorHeight || '250px';
+      }
+    }
+
+    function copyInspectorContent() {
+      const tabs = ['query', 'facets', 'ner'];
+      let activeText = '';
+      tabs.forEach(t => {
+        const content = document.getElementById(`inspector-${t}-content`);
+        const code = document.getElementById(`inspector-${t}-code`);
+        if (content && !content.classList.contains('hidden') && code) {
+          activeText = code.textContent || '';
+        }
+      });
+
+      if (!activeText) return;
+
+      const btn = document.getElementById('btn-copy-inspector');
+      navigator.clipboard.writeText(activeText).then(() => {
+        if (btn) {
+          const original = btn.innerHTML;
+          btn.innerHTML = '<span>✅</span><span class="text-emerald-400 font-semibold">Copied!</span>';
+          setTimeout(() => {
+            btn.innerHTML = original;
+          }, 2000);
+        }
+      }).catch(() => {
+        alert('Copied to clipboard');
+      });
     }
 
     function switchInspectorTab(tabName) {
