@@ -246,6 +246,8 @@ def run_server(port=PORT, host="0.0.0.0"):
     print(f"  [INFO] Web Application running at: http://localhost:{current_port}")
     print(f"  [INFO] Execution Mode:             {engine_status}")
     print(f"  [INFO] REST API Endpoint:          http://localhost:{current_port}/api/chat")
+    print(f"  [TIP]  Codespaces View: Click 'Open in New Tab ↗' in the header")
+    print(f"         or the globe icon in Ports tab for full-screen GIS layout.")
     print("  Press Ctrl+C to stop the server.")
     print("=" * 68)
     sys.stdout.flush()

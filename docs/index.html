@@ -67,6 +67,40 @@
 <body class="h-full flex flex-col font-sans text-slate-100 bg-[#060811] antialiased select-none">
 
   <!-- ==========================================
+      CODESPACES / EMBEDDED PREVIEW BANNER
+      ========================================== -->
+  <div id="codespaces-banner" class="hidden bg-gradient-to-r from-blue-950 via-slate-900 to-blue-950 border-b border-blue-500/30 px-4 py-2 flex items-center justify-between text-xs text-blue-200 z-30 shadow-lg shrink-0">
+    <div class="flex items-center gap-2.5">
+      <span class="flex h-2 w-2 relative">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+      </span>
+      <span>
+        <strong class="text-blue-100 font-semibold">Codespaces Preview:</strong>
+        For optimal full-screen GIS visualization and dual-pane interaction, open the dashboard in a dedicated browser tab.
+      </span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button 
+        type="button"
+        onclick="window.open(window.location.href, '_blank')" 
+        class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-3 py-1 rounded text-[11px] shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
+      >
+        <span>Open in New Tab</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      </button>
+      <button 
+        type="button"
+        onclick="document.getElementById('codespaces-banner').remove()" 
+        title="Dismiss notice"
+        class="text-slate-400 hover:text-white px-1.5 py-0.5 text-sm font-bold cursor-pointer"
+      >×</button>
+    </div>
+  </div>
+
+  <!-- ==========================================
       HEADER BAR
       ========================================== -->
   <header class="h-14 bg-[#0a0e1c] border-b border-geodark-border px-4 flex items-center justify-between shrink-0 shadow-md relative z-20">
@@ -124,6 +158,21 @@
         <span class="text-slate-400 text-[10px]">Status:</span>
         <span id="current-model-indicator" class="text-emerald-400 font-bold text-[10px] uppercase">Deterministic Engine</span>
       </div>
+
+      <!-- Open in Dedicated Browser Tab Button -->
+      <button 
+        type="button"
+        id="header-open-tab-btn" 
+        onclick="window.open(window.location.href, '_blank')"
+        title="Open application in a full separate browser tab"
+        class="flex items-center gap-1.5 bg-blue-900/40 hover:bg-blue-800/60 text-blue-300 hover:text-blue-100 border border-blue-600/40 hover:border-blue-400 px-2.5 py-1.5 rounded-md text-[10.5px] font-semibold transition-all shadow-sm cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+        <span class="hidden md:inline">Open in New Tab ↗</span>
+        <span class="md:hidden">New Tab ↗</span>
+      </button>
     </div>
   </header>
 
@@ -3665,6 +3714,18 @@
     // INITIALIZATION & EVENT LISTENERS
     // ==========================================
     window.addEventListener('DOMContentLoaded', async () => {
+      // 0. Detect if running inside Codespaces preview / iframe
+      try {
+        const isEmbedded = (window.self !== window.top) || (window.parent !== window);
+        if (isEmbedded) {
+          const banner = document.getElementById('codespaces-banner');
+          if (banner) banner.classList.remove('hidden');
+        }
+      } catch (err) {
+        const banner = document.getElementById('codespaces-banner');
+        if (banner) banner.classList.remove('hidden');
+      }
+
       // 1. Initialize Leaflet Map centered on Europe
       initMap();
       
