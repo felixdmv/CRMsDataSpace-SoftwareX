@@ -306,7 +306,6 @@
               <option value="llama">🦙 Llama 3.2 3B (Local GPU)</option>
               <option value="deepseek">🐋 DeepSeek R1 7B (Local GPU)</option>
               <option value="phi3">🔬 Phi-3 Mini 4K (Local GPU)</option>
-              <option value="gemma">💎 Gemma 2 2B (Local GPU)</option>
               <option value="gemini">✨ Gemini 2.0 / 1.5 (Cloud API)</option>
               <option value="openai">🤖 OpenAI GPT-4o (Cloud API)</option>
               <option value="claude">🎭 Anthropic Claude 3.5 / 3.7 (Cloud API / Claude Code)</option>
@@ -4040,7 +4039,7 @@
     let modelPollInterval = null;
 
     async function triggerModelPreload(provider) {
-      const localModels = ['qwen', 'llama', 'deepseek', 'phi3', 'gemma'];
+      const localModels = ['qwen', 'llama', 'deepseek', 'phi3'];
       if (!localModels.includes(provider)) {
         hideModelLoadingBanner();
         return;
@@ -4316,8 +4315,6 @@
           indicator.textContent = 'DeepSeek R1 7B (Local GPU)';
         } else if (provider === 'phi3') {
           indicator.textContent = 'Phi-3 Mini 4K (Local GPU)';
-        } else if (provider === 'gemma') {
-          indicator.textContent = 'Gemma 2 2B (Local GPU)';
         } else {
           indicator.textContent = 'Deterministic Engine (Standalone)';
         }
@@ -4360,6 +4357,61 @@
 
     function executeClientSideFallback(query) {
       const qLower = query.toLowerCase();
+
+      // 1. Detect greetings and help
+      const isGreeting = /\b(hola|hello|hi|hey|buenos d[ií]as|buenas tardes|buenas noches|buenas)\b/i.test(qLower);
+      const isHelp = /\b(ayuda|help|en qu[eé] me puedes ayudar|qu[eé] puedes hacer|c[oó]mo funciona|para qu[eé] sirves)\b/i.test(qLower);
+      const isConceptual = /\b(diferencia|qué es|que es|directiva|unfc|jorc|amd|drenaje [aá]cido)\b/i.test(qLower);
+
+      if (isGreeting || isHelp) {
+        const welcomeText = `👋 **¡Hola! Bienvenido al Asistente Inteligente de CRMsDataSpace.**\n\n` +
+          `Este espacio de datos te permite consultar y analizar **100 instalaciones y depósitos mineros** (balsas de relaves, escombreras y acopios) distribuidos en **12 países de la Unión Europea**.\n\n` +
+          `**¿En qué te puedo ayudar?**\n` +
+          `- 🌍 **Filtrar por país de la UE**: España, Portugal, Francia, Alemania, Suecia, Finlandia, Polonia, Italia, Grecia, Irlanda, Austria, Chequia.\n` +
+          `- 💎 **Materias Primas Críticas (CRMs)**: Litio, Cobalto, Níquel, Wolframio/Tungsteno, Tierras Raras (REE), Cobre, Estaño, Tántalo, etc.\n` +
+          `- 🏗️ **Tipos de depósito**: Balsas de decantación (*ponds*), escombreras de estériles (*waste dumps*), acopios (*stockpiles*).\n` +
+          `- ⚠️ **Estado operativo y ambiental**: Activo, inactivo, en mantenimiento, restaurado, no restaurado o con riesgo de drenaje ácido (AMD).\n\n` +
+          `**Ejemplos recomendados para probar:**\n` +
+          `1. *"Balsas de relaves de litio y cobalto activas en España y Finlandia"*\n` +
+          `2. *"Escombreras de wolframio sin restaurar en Alemania"*\n` +
+          `3. *"Tierras raras (REE) en Suecia y Francia"*`;
+        return {
+          query: query,
+          narrative: welcomeText,
+          response_text: welcomeText,
+          matched_ids: [],
+          active_map_filters: [],
+          filters: {},
+          extracted_json: { intent: 'generic_qa', filters: {} },
+          solr_query: { q: "*:*", fq: [] },
+          solr_facets: { facet_counts: { facet_fields: { country: [], commodities: [] } } },
+          evidences: []
+        };
+      }
+
+      if (isConceptual && (qLower.includes("diferencia") || qLower.includes("escombrera") || qLower.includes("balsa"))) {
+        const diffText = `🔬 **Diferencia técnica entre Balsa de Decantación (*Tailings Pond*) y Escombrera de Roca Estéril (*Waste Dump*):**\n\n` +
+          `1. **Balsa de Decantación (*Tailings Pond / TSF*)**:\n` +
+          `   - Almacena estériles finos (limos y arcillas) procedentes del tratamiento mineralógico suspendidos en agua.\n` +
+          `   - Requiere presas perimetrales continuas con riesgo de licuefacción estática o rotura hidráulica.\n\n` +
+          `2. **Escombrera (*Waste Dump*)**:\n` +
+          `   - Almacena roca encajante gruesa arrancada en mina sin tratamiento químico.\n` +
+          `   - Se vierte por gravedad en bancos sin contención hidráulica, con riesgo de deslizamiento de taludes y drenaje ácido (AMD).\n\n` +
+          `💡 *Puedes buscar: "balsas activas en España" o "escombreras sin restaurar en Alemania".*`;
+        return {
+          query: query,
+          narrative: diffText,
+          response_text: diffText,
+          matched_ids: [],
+          active_map_filters: [],
+          filters: {},
+          extracted_json: { intent: 'generic_qa', filters: {} },
+          solr_query: { q: "*:*", fq: [] },
+          solr_facets: { facet_counts: { facet_fields: { country: [], commodities: [] } } },
+          evidences: []
+        };
+      }
+
       let matched = MINING_SITES.slice();
       let activeFilters = [];
       let countries = [];
@@ -4379,11 +4431,15 @@
         if (qLower.includes(k) && !countries.includes(v)) countries.push(v);
       }
 
+      // Check for out-of-scope countries
+      const unsupportedList = ['albania', 'chile', 'china', 'uk', 'reino unido', 'estados unidos', 'usa', 'rusia', 'noruega', 'suiza'];
+      const unsupportedFound = unsupportedList.filter(u => qLower.includes(u));
+
       // Detect Critical Raw Materials (CRMs)
       const commMap = {
         'lithium': 'Lithium', 'litio': 'Lithium', 'cobalt': 'Cobalt', 'cobalto': 'Cobalt',
         'tungsten': 'Tungsten', 'wolframio': 'Tungsten', 'golfranio': 'Tungsten',
-        'nickel': 'Nickel', 'níquel': 'Nickel', 'ree': 'Rare Earth Elements (REE)',
+        'nickel': 'Nickel', 'níquel': 'Nickel', 'niquel': 'Nickel', 'ree': 'Rare Earth Elements (REE)',
         'rare earth': 'Rare Earth Elements (REE)', 'tierras raras': 'Rare Earth Elements (REE)',
         'graphite': 'Graphite', 'grafito': 'Graphite', 'copper': 'Copper', 'cobre': 'Copper'
       };
@@ -4416,6 +4472,40 @@
         facilityTypes.push('Waste Dump');
       }
 
+      // If only unsupported country was queried without supported countries
+      if (unsupportedFound.length > 0 && countries.length === 0) {
+        const outText = `⚠️ **País fuera de cobertura**: Has solicitado instalaciones en **${unsupportedFound.join(', ')}**, pero el espacio de datos europeo CRMsDataSpace está delimitado a **12 países de la Unión Europea** (España, Portugal, Francia, Alemania, Suecia, Finlandia, Polonia, Italia, Grecia, Irlanda, Austria y Chequia).\n\n💡 *Prueba a consultar instalaciones en países como España, Portugal, Alemania o Grecia.*`;
+        return {
+          query: query,
+          narrative: outText,
+          response_text: outText,
+          matched_ids: [],
+          active_map_filters: [],
+          filters: {},
+          extracted_json: { intent: 'filter_search', filters: {} },
+          solr_query: { q: "*:*", fq: [] },
+          solr_facets: { facet_counts: { facet_fields: { country: [], commodities: [] } } },
+          evidences: []
+        };
+      }
+
+      // If no search filter criteria found
+      if (countries.length === 0 && commodities.length === 0 && statuses.length === 0 && facilityTypes.length === 0 && restoredFilter === null) {
+        const noFilterText = `No se han detectado criterios específicos de búsqueda en tu consulta.\n\nPara consultar el espacio de datos europeo, especifica al menos un **país** (ej. *España, Alemania, Suecia*), un **mineral CRM** (ej. *litio, cobalto, wolframio, níquel*) o un **tipo de instalación** (ej. *balsas, escombreras*).\n\n**Ejemplos recomendados:**\n- *"Balsas de litio en Portugal"*\n- *"Escombreras inactivas con níquel en Suecia"*\n- *"Depósitos de wolframio en España y Alemania"*`;
+        return {
+          query: query,
+          narrative: noFilterText,
+          response_text: noFilterText,
+          matched_ids: [],
+          active_map_filters: [],
+          filters: {},
+          extracted_json: { intent: 'generic_qa', filters: {} },
+          solr_query: { q: "*:*", fq: [] },
+          solr_facets: { facet_counts: { facet_fields: { country: [], commodities: [] } } },
+          evidences: []
+        };
+      }
+
       // Filter sites
       if (countries.length > 0) {
         matched = matched.filter(s => countries.includes(s.country_name) || countries.includes(s.country));
@@ -4442,7 +4532,12 @@
       }
 
       const matchedIds = matched.map(s => s.id);
-      let narrative = `Located **${matched.length} European CRM facilities** matching your query filters.\n\n**Key Matching Sites:**\n`;
+      let prefixNotice = "";
+      if (unsupportedFound.length > 0) {
+        prefixNotice = `⚠️ **Aclaración sobre alcance geográfico**: Has consultado por **${unsupportedFound.join(', ')}**, país que no pertenece a este espacio de datos europeo (restringido a 12 países de la UE). Se muestran a continuación los resultados para los países cubiertos:\n\n`;
+      }
+
+      let narrative = prefixNotice + `Located **${matched.length} European CRM facilities** matching your query filters.\n\n**Key Matching Sites:**\n`;
       matched.slice(0, 3).forEach(s => {
         narrative += `- **${s.site_name}** (${s.country_name || s.country}): ${s.storage_facility_label || 'Facility'} containing ${s.commodities_label || 'CRMs'}. Status: *${s.project_status}*.\n`;
       });
@@ -4576,8 +4671,12 @@
 
         // 5. Update Map Markers & Highlighting
         const matchedIds = data.matched_ids || [];
-        const matchingSites = MINING_SITES.filter(s => matchedIds.includes(s.id));
-        renderMarkers(matchingSites.length > 0 ? matchingSites : MINING_SITES);
+        if (matchedIds.length > 0) {
+          const matchingSites = MINING_SITES.filter(s => matchedIds.includes(s.id));
+          renderMarkers(matchingSites);
+        } else {
+          renderMarkers([]);
+        }
 
         // 6. Update Active Map Filter Badges over Map Header
         updateActiveFilterBadges(data.active_map_filters || [], matchedIds.length);

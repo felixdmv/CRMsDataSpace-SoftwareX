@@ -3,7 +3,7 @@
 SoftwareX Slurm GPU Launcher & TCP Reverse Proxy:
 Automates execution on institutional cluster compute nodes equipped with NVIDIA GPUs (NVIDIA A100),
 running the Web Application backend inside an Apptainer container and establishing a transparent
-TCP reverse proxy on the login node (legio2) so cluster users can access http://localhost:<port>
+TCP reverse proxy on the cluster login node so users can access http://localhost:<port>
 with full hardware acceleration.
 """
 
@@ -17,14 +17,14 @@ import subprocess
 import threading
 from pathlib import Path
 
-LEGIO_DEFAULT_PORT = 8081
-COMPUTO_DEFAULT_PORT = 7870
+LOGIN_DEFAULT_PORT = 8081
+COMPUTE_DEFAULT_PORT = 7870
 
 backend_ready = threading.Event()
 
 proxy_target = {
     "host": "",
-    "port": COMPUTO_DEFAULT_PORT
+    "port": COMPUTE_DEFAULT_PORT
 }
 
 def find_free_port(start_port: int, max_tries: int = 50, host: str = "0.0.0.0") -> int:
@@ -38,6 +38,21 @@ def find_free_port(start_port: int, max_tries: int = 50, host: str = "0.0.0.0") 
             except OSError:
                 continue
     raise RuntimeError(f"No free port available in range {start_port}-{start_port + max_tries}")
+
+def get_slurm_node_for_user():
+    try:
+        user = os.environ.get("USER", "")
+        cmd = ["squeue", "-u", user, "-o", "%N", "-h"] if user else ["squeue", "-o", "%N", "-h"]
+        out = subprocess.check_output(cmd, text=True, timeout=5).strip().split()
+        for node in out:
+            node = node.strip()
+            if node and node not in ("(null)", "None", ""):
+                if "[" in node:
+                    node = node.split("[")[0] + node.split("[")[1].split("-")[0].split(",")[0].replace("]", "")
+                return node
+    except Exception:
+        pass
+    return None
 
 def handle_client(client_sock, client_addr):
     """Handles an individual client connection by forwarding bidirectionally to compute node."""
@@ -57,7 +72,8 @@ def handle_client(client_sock, client_addr):
         target_sock.settimeout(15.0)
         target_sock.connect((target_host, target_port))
         target_sock.settimeout(None)
-    except Exception:
+    except Exception as e:
+        print(f"  [Proxy WARNING] No se pudo conectar con el backend en {target_host}:{target_port}: {e}")
         try:
             client_sock.close()
         except Exception:
@@ -120,24 +136,25 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="CRMs Data Space - SoftwareX (Slurm GPU Launcher)")
-    parser.add_argument("--port", type=int, default=LEGIO_DEFAULT_PORT, help=f"Puerto en el nodo de login para el navegador (default: {LEGIO_DEFAULT_PORT})")
-    parser.add_argument("--compute-port", type=int, default=COMPUTO_DEFAULT_PORT, help=f"Puerto interno en nodo de computo (default: {COMPUTO_DEFAULT_PORT})")
+    parser.add_argument("--port", type=int, default=LOGIN_DEFAULT_PORT, help=f"Puerto en el nodo de login para el navegador (default: {LOGIN_DEFAULT_PORT})")
+    parser.add_argument("--compute-port", type=int, default=COMPUTE_DEFAULT_PORT, help=f"Puerto interno en nodo de computo (default: {COMPUTE_DEFAULT_PORT})")
     args = parser.parse_args()
 
     # 1. Dynamically find free port on login node
     try:
-        legio_port = find_free_port(args.port)
+        login_port = find_free_port(args.port)
     except Exception as e:
         print(f"[ERROR] {e}")
         sys.exit(1)
         
-    if legio_port != args.port:
-        print(f"  [INFO] El puerto solicitado {args.port} estaba ocupado. Asignado puerto libre: {legio_port}")
+    if login_port != args.port:
+        print(f"  [INFO] El puerto solicitado {args.port} estaba ocupado. Asignado puerto libre: {login_port}")
 
     compute_port = args.compute_port
     proxy_target["port"] = compute_port
 
-    code_dir = Path(__file__).resolve().parent
+    base_dir = Path(__file__).resolve().parent
+    code_dir = base_dir / "code" if (base_dir / "code" / "run_app.py").exists() else base_dir
     run_app_path = code_dir / "run_app.py"
 
     print("=" * 70)
@@ -146,11 +163,11 @@ def main():
     print("=" * 70)
     
     # Start proxy thread on the confirmed free port
-    proxy_thread = threading.Thread(target=start_proxy, args=(legio_port,), daemon=True)
+    proxy_thread = threading.Thread(target=start_proxy, args=(login_port,), daemon=True)
     proxy_thread.start()
     
     # 2. Universal bindings for any cluster user
-    user_home = str(Path.home())
+    user_home = os.environ.get("HOME") or str(Path.home())
     code_dir_str = str(code_dir)
     bind_dirs = set()
     
@@ -159,8 +176,22 @@ def main():
     if os.path.exists(code_dir_str):
         bind_dirs.add(f"{code_dir_str}:{code_dir_str}")
         
-    # Bind common shared cluster directories so cached models and containers work seamlessly
-    for shared_path in ["/home", "/home/ubu", "/datasets", "/opt"]:
+    try:
+        import pwd
+        passwd_home = pwd.getpwuid(os.getuid()).pw_dir
+        if passwd_home and passwd_home != user_home:
+            bind_dirs.add(f"{user_home}:{passwd_home}")
+    except Exception:
+        pass
+
+    # Mount parent directory of user home if located in a non-standard cluster path
+    if user_home:
+        parent_dir = str(Path(user_home).parent)
+        if parent_dir and parent_dir != "/home" and os.path.exists(parent_dir):
+            bind_dirs.add(f"{parent_dir}:{parent_dir}")
+        
+    # Bind standard institutional shared storage directories if present on host
+    for shared_path in ["/datasets", "/opt", "/scratch"]:
         if os.path.exists(shared_path):
             bind_dirs.add(f"{shared_path}:{shared_path}")
             
@@ -169,6 +200,7 @@ def main():
     slurm_cmd = [
         "srun", "-p", "computo", "--gres=gpu:1",
         "apptainer", "exec", "--nv",
+        "--home", user_home,
         "--bind", bind_arg,
         "/opt/ohpc/pub/containers/nvidia-pytorch-24.03-uv.sif",
         "python3", "-u", str(run_app_path),
@@ -176,7 +208,7 @@ def main():
     ]
     
     current_user = os.environ.get("USER", "usuario")
-    print(f"\n[1/3] Proxy TCP activo en puerto {legio_port}.")
+    print(f"\n[1/3] Proxy TCP activo en puerto {login_port}.")
     print("[2/3] Solicitando nodo con GPU NVIDIA A100 en Slurm (particion 'computo')...")
     
     env = dict(os.environ)
@@ -187,10 +219,10 @@ def main():
     
     print("[3/3] Conectando servicio y transmitiendo logs del cluster GPU...")
     print("=" * 70)
-    print(f"  URL DE ACCESO: http://localhost:{legio_port}")
+    print(f"  URL DE ACCESO: http://localhost:{login_port}")
     print("  INSTRUCCIONES DE CONEXION:")
-    print(f"  * En VS Code: Abre la pestaña 'PORTS' (abajo) -> Añade o conecta al puerto {legio_port}")
-    print(f"  * Desde tu PC local vía SSH: ssh -L {legio_port}:localhost:{legio_port} {current_user}@<cluster-login-host>")
+    print(f"  * En VS Code: Abre la pestaña 'PORTS' (abajo) -> Añade o conecta al puerto {login_port}")
+    print(f"  * Desde tu PC local vía SSH: ssh -L {login_port}:localhost:{login_port} {current_user}@<cluster-login-host>")
     print("=" * 70)
     sys.stdout.flush()
     
@@ -201,13 +233,22 @@ def main():
             
             # Parse target node & port from startup log (supports FQDN)
             match = re.search(r"http://([a-zA-Z0-9_\-\.]+):(\d+)", line_str)
-            if match:
-                proxy_target["host"] = match.group(1)
-                proxy_target["port"] = int(match.group(2))
+            if match and not backend_ready.is_set():
+                parsed_host = match.group(1)
+                parsed_port = int(match.group(2))
+
+                # If host was reported as localhost/0.0.0.0/127.0.0.1, detect the actual Slurm compute node
+                if parsed_host in ("localhost", "127.0.0.1", "0.0.0.0"):
+                    slurm_node = get_slurm_node_for_user()
+                    if slurm_node:
+                        parsed_host = slurm_node
+
+                proxy_target["host"] = parsed_host
+                proxy_target["port"] = parsed_port
                 backend_ready.set()
                 print("\n" + "=" * 70)
-                print(f"  >>> [REVERSE PROXY ACTIVO] Trafico reenviado: 0.0.0.0:{legio_port} -> {proxy_target['host']}:{proxy_target['port']}")
-                print(f"  >>> Aplicacion lista para usar en: http://localhost:{legio_port}")
+                print(f"  >>> [REVERSE PROXY ACTIVO] Trafico reenviado: 0.0.0.0:{login_port} -> {proxy_target['host']}:{proxy_target['port']}")
+                print(f"  >>> Aplicacion lista para usar en: http://localhost:{login_port}")
                 print("=" * 70 + "\n")
                 sys.stdout.flush()
                 
@@ -215,7 +256,7 @@ def main():
                 if os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"):
                     try:
                         import webbrowser
-                        webbrowser.open(f"http://localhost:{legio_port}")
+                        webbrowser.open(f"http://localhost:{login_port}")
                     except Exception:
                         pass
     except KeyboardInterrupt:

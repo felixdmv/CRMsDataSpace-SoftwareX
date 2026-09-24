@@ -240,12 +240,15 @@ def run_server(port=PORT, host="0.0.0.0"):
     except Exception:
         pass
 
+    import socket
+    node_hostname = os.environ.get("SLURMD_NODENAME") or socket.gethostname() or "localhost"
+
     print("=" * 68)
     print("  CRMsDataSpace Explorer — Elsevier SoftwareX Reference WebApp")
     print("=" * 68)
-    print(f"  [INFO] Web Application running at: http://localhost:{current_port}")
+    print(f"  [INFO] Web Application running at: http://{node_hostname}:{current_port}")
     print(f"  [INFO] Execution Mode:             {engine_status}")
-    print(f"  [INFO] REST API Endpoint:          http://localhost:{current_port}/api/chat")
+    print(f"  [INFO] REST API Endpoint:          http://{node_hostname}:{current_port}/api/chat")
     print(f"  [TIP]  Codespaces View: Click 'Open in New Tab ↗' in the header")
     print(f"         or the globe icon in Ports tab for full-screen GIS layout.")
     print("  Press Ctrl+C to stop the server.")

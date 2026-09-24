@@ -218,6 +218,15 @@ def load_local_model_weights(provider: str) -> bool:
         MODEL_STATE["message"] = f"Model {repo_id} is already loaded in GPU memory."
         return True
 
+    if "gemma" in prov:
+        MODEL_STATE["status"] = "error"
+        MODEL_STATE["current_model"] = ""
+        MODEL_STATE["repo_id"] = repo_id
+        MODEL_STATE["error"] = "Gemma 2 2B requires a Hugging Face Token (HF_TOKEN) with accepted gated terms on Hugging Face."
+        MODEL_STATE["message"] = "Gemma 2 2B es un modelo protegido ('gated repo') por Google que requiere token HF. Por favor, utiliza Qwen 2.5 7B, Llama 3.2 3B o DeepSeek R1 7B que están preinstalados en la GPU."
+        print(f"[LLM Client Warning] {MODEL_STATE['message']}")
+        return False
+
     # Evict previously loaded models to ensure VRAM is never saturated
     if LOCAL_MODELS_CACHE:
         unload_all_local_models()
@@ -522,7 +531,13 @@ def mock_nlu_parse(user_prompt: str) -> str:
     Advanced multi-entity NLU parser for offline reviewer execution.
     Supports comprehensive keyword dictionary matching across English and Spanish.
     """
-    prompt_lower = user_prompt.lower()
+    # Extract clean query if wrapped in prompt template
+    clean_query = user_prompt
+    m = re.search(r'User Query:\s*"([^"]+)"', user_prompt, re.IGNORECASE)
+    if m:
+        clean_query = m.group(1)
+    prompt_lower = clean_query.lower().strip()
+    clean_prefix = re.sub(r'^[¿¡"\'\s]+', '', prompt_lower)
     
     countries = []
     commodities = []
@@ -532,9 +547,12 @@ def mock_nlu_parse(user_prompt: str) -> str:
     env_flags = []
     restored = None
     
-    # 1. Multi-lingual Country Dictionary
+    # 1. Multi-lingual Country & Regional Dictionary
     country_map = {
         "spain": "spain", "españa": "spain", "espana": "spain", "spanish": "spain",
+        "ourense": "spain", "zamora": "spain", "galicia": "spain", "galiza": "spain",
+        "salamanca": "spain", "andalucia": "spain", "andalucía": "spain", "asturias": "spain",
+        "castilla": "spain", "peninsula": "spain", "península": "spain",
         "portugal": "portugal", "portugués": "portugal", "portuguese": "portugal",
         "germany": "germany", "alemania": "germany", "german": "germany",
         "france": "france", "francia": "france", "french": "france",
@@ -550,24 +568,47 @@ def mock_nlu_parse(user_prompt: str) -> str:
     for kw, val in country_map.items():
         if re.search(r'\b' + re.escape(kw) + r'\b', prompt_lower) and val not in countries:
             countries.append(val)
+
+    # Detect unsupported countries outside European dataset
+    unsupported_map = {
+        "albania": "Albania", "reino unido": "Reino Unido", "uk": "Reino Unido", "united kingdom": "Reino Unido",
+        "chile": "Chile", "china": "China", "estados unidos": "Estados Unidos", "usa": "Estados Unidos",
+        "russia": "Rusia", "rusia": "Rusia", "noruega": "Noruega", "norway": "Noruega",
+        "suiza": "Suiza", "switzerland": "Suiza", "serbia": "Serbia", "marruecos": "Marruecos", "morocco": "Marruecos",
+        "turquia": "Turquía", "turquía": "Turquía", "turkey": "Turquía"
+    }
+    unsupported_found = []
+    for ukw, ulabel in unsupported_map.items():
+        if re.search(r'\b' + re.escape(ukw) + r'\b', prompt_lower) and ulabel not in unsupported_found:
+            unsupported_found.append(ulabel)
+
+    # Macro-region geographic mappings
+    if any(k in prompt_lower for k in ["sur de europa", "europa del sur", "southern europe"]):
+        for sc in ["spain", "portugal", "italy", "greece"]:
+            if sc not in countries and not countries:
+                countries.append(sc)
+    if any(k in prompt_lower for k in ["norte de europa", "europa del norte", "northern europe", "nordic", "paises nordicos", "países nórdicos"]):
+        for nc in ["sweden", "finland"]:
+            if nc not in countries and not countries:
+                countries.append(nc)
             
-    # 2. Multi-lingual Commodity Dictionary
+    # 2. Multi-lingual Commodity Dictionary (including chemical symbols W, Sn, Li, Co, Ni, Cu, Ta)
     comm_map = {
-        "lithium": "lithium", "litio": "lithium",
-        "cobalt": "cobalt", "cobalto": "cobalt",
-        "tungsten": "tungsten", "wolframio": "tungsten", "wolfram": "tungsten", "tungsteno": "tungsten",
+        "lithium": "lithium", "litio": "lithium", "li": "lithium",
+        "cobalt": "cobalt", "cobalto": "cobalt", "co": "cobalt",
+        "tungsten": "tungsten", "wolframio": "tungsten", "wolfram": "tungsten", "tungsteno": "tungsten", "golfranio": "tungsten", "w": "tungsten",
         "rare earth": "rare earth elements", "rare earths": "rare earth elements", "rare earth elements": "rare earth elements",
         "tierras raras": "rare earth elements", "tierra rara": "rare earth elements",
         "elementos raros": "rare earth elements", "elemento raro": "rare earth elements", "minerales raros": "rare earth elements",
         "ree": "rare earth elements", "rees": "rare earth elements",
-        "nickel": "nickel", "niquel": "nickel", "níquel": "nickel",
-        "copper": "copper", "cobre": "copper",
-        "tin": "tin", "estaño": "tin", "estano": "tin",
-        "tantalum": "tantalum", "tántalo": "tantalum", "tantalo": "tantalum", "coltan": "tantalum", "coltán": "tantalum", "niobium": "tantalum",
+        "nickel": "nickel", "niquel": "nickel", "níquel": "nickel", "nikel": "nickel", "ni": "nickel",
+        "copper": "copper", "cobre": "copper", "cu": "copper",
+        "tin": "tin", "estaño": "tin", "estano": "tin", "sn": "tin",
+        "tantalum": "tantalum", "tántalo": "tantalum", "tantalo": "tantalum", "coltan": "tantalum", "coltán": "tantalum", "niobium": "tantalum", "ta": "tantalum",
         "graphite": "graphite", "grafito": "graphite",
-        "titanium": "titanium", "titanio": "titanium",
+        "titanium": "titanium", "titanio": "titanium", "ti": "titanium",
         "pge": "pge", "platino": "pge", "platinum": "pge",
-        "manganese": "manganese", "manganeso": "manganese"
+        "manganese": "manganese", "manganeso": "manganese", "mn": "manganese"
     }
     for kw, val in comm_map.items():
         if re.search(r'\b' + re.escape(kw) + r'\b', prompt_lower) and val not in commodities:
@@ -591,9 +632,9 @@ def mock_nlu_parse(user_prompt: str) -> str:
     facility_types = list(set(facility_types))
         
     # 4. Project Status
-    if any(k in prompt_lower for k in ["active", "activa", "activas", "activo", "activos"]):
+    if any(k in prompt_lower for k in ["active", "activa", "activas", "activo", "activos", "operativas", "operativos", "operativa"]):
         statuses.append("active")
-    if any(k in prompt_lower for k in ["inactive", "inactiva", "inactivas", "abandoned", "abandonada", "abandonadas"]):
+    if any(k in prompt_lower for k in ["inactive", "inactiva", "inactivas", "abandoned", "abandonada", "abandonadas", "parados"]):
         statuses.append("inactive")
     if any(k in prompt_lower for k in ["care and maintenance", "mantenimiento"]):
         statuses.append("care and maintenance")
@@ -601,7 +642,7 @@ def mock_nlu_parse(user_prompt: str) -> str:
         statuses.append("development")
 
     # 5. Restoration & Environmental Flags
-    if any(k in prompt_lower for k in ["sin restaurar", "unrestored", "not restored", "no restaurada"]):
+    if any(k in prompt_lower for k in ["sin restaurar", "unrestored", "not restored", "no restaurada", "no restauradas"]):
         restored = False
         env_flags.append("not restored")
     elif any(k in prompt_lower for k in ["restaurada", "restauradas", "restored"]):
@@ -610,7 +651,57 @@ def mock_nlu_parse(user_prompt: str) -> str:
     if any(k in prompt_lower for k in ["acid", "ácido", "acidez", "drainage", "drenaje"]):
         env_flags.append("acid mine drainage potential")
 
-    intent = "generic_qa" if len(prompt_lower) < 12 and any(k in prompt_lower for k in ["hola", "hello", "hi", "help"]) else "filter_search"
+    # 6. Comprehensive Intent Detection
+    greeting_patterns = [
+        r'\bhola\b', r'\bhello\b', r'\bhi\b', r'\bhey\b', 
+        r'\bbuenos d[ií]as\b', r'\bbuenas tardes\b', r'\bbuenas noches\b', r'\bbuenas\b',
+        r'\bgood morning\b', r'\bgood afternoon\b'
+    ]
+    is_greeting = any(re.search(pat, prompt_lower) for pat in greeting_patterns)
+
+    help_patterns = [
+        r'\bayuda\b', r'\bhelp\b', r'en qu[eé] me puedes ayudar', r'qu[eé] puedes hacer',
+        r'c[oó]mo funciona', r'para qu[eé] sirves', r'qui[eé]n eres', r'how can (you|this system) (help|assist)',
+        r'what can you do', r'how to use', r'provide guidance', r'help me understand'
+    ]
+    is_help = any(re.search(pat, prompt_lower) for pat in help_patterns)
+
+    conceptual_prefixes = [
+        "qué es", "que es", "qué son", "que son", "cuál es", "cual es", "cuáles son", "cuales son",
+        "cómo se", "como se", "explícame", "explicame", "explain", "what is", "what are", "what criteria",
+        "how does", "how do", "can you explain", "qué criterios", "que criterios", "cómo reportan", "como reportan",
+        "qué diferencia", "que diferencia", "cuáles riesgos", "cuales riesgos", "qué normativa", "que normativa",
+        "qué directivas", "que directivas", "cómo evalúa", "como evalua", "qué precauciones", "que precauciones",
+        "qué procesos", "que procesos", "what chemical processes"
+    ]
+    is_conceptual = any(clean_prefix.startswith(p) for p in conceptual_prefixes) or any(p in clean_prefix for p in [
+        "diferencia técnica", "diferencia tecnica", "diferencia entre", "difference between", "distinction between"
+    ])
+    is_framework = any(kw in prompt_lower for kw in ["unfc", "jorc", "ni 43-101", "samrec", "2006/21", "crma", "insar", "drenaje ácido", "drenaje acido", "acid mine drainage", "licuefacción", "licuefaccion"])
+
+    search_verbs = [
+        "mostrar", "muestra", "dime las", "dime los", "buscar", "busca", "filtrar", "filtra",
+        "show", "find", "locate", "list", "where are", "dónde hay", "donde hay", "hay balsas",
+        "hay escombreras", "are there", "unrestored", "sin restaurar", "tenéis registrado", "teneis registrado"
+    ]
+    has_search_action = any(v in prompt_lower for v in search_verbs)
+
+    # Conceptual questions take precedence
+    has_specific_data = bool(countries or commodities or facility_types or statuses or restored is not None or env_flags)
+    
+    if is_conceptual or (is_framework and not has_search_action):
+        intent = "generic_qa"
+        countries, commodities, facility_types, statuses, env_flags, restored = [], [], [], [], [], None
+    elif is_help:
+        intent = "generic_qa"
+        countries, commodities, facility_types, statuses, env_flags, restored = [], [], [], [], [], None
+    elif is_greeting and not has_specific_data:
+        intent = "generic_qa"
+        countries, commodities, facility_types, statuses, env_flags, restored = [], [], [], [], [], None
+    elif not has_specific_data and not has_search_action:
+        intent = "generic_qa"
+    else:
+        intent = "filter_search"
     
     mock_result = {
         "intent": intent,
@@ -623,7 +714,8 @@ def mock_nlu_parse(user_prompt: str) -> str:
             "environmental_flags": env_flags,
             "restored": restored
         },
-        "fulltext": [],
+        "fulltext": unsupported_found,
+        "unsupported_countries": unsupported_found,
         "needs_rag": False
     }
     return json.dumps(mock_result)

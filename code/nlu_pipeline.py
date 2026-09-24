@@ -14,7 +14,7 @@ NLU_RESPONSE_SCHEMA = {
     "properties": {
         "intent": {
             "type": "STRING",
-            "description": "Query intent: filter_search for database search, or generic_qa for general conversation",
+            "description": "Query intent: filter_search for database search, or generic_qa for general conversation, greetings, help, and conceptual definitions",
             "enum": ["filter_search", "generic_qa", "hybrid"]
         },
         "filters": {
@@ -31,6 +31,7 @@ NLU_RESPONSE_SCHEMA = {
             }
         },
         "fulltext": {"type": "ARRAY", "items": {"type": "STRING"}},
+        "unsupported_countries": {"type": "ARRAY", "items": {"type": "STRING"}},
         "needs_rag": {"type": "BOOLEAN"}
     },
     "required": ["intent", "filters", "fulltext", "needs_rag"]
@@ -40,24 +41,44 @@ NLU_RESPONSE_SCHEMA = {
 # 2. Variant 1: Few-Shot System Prompt
 # ----------------------------------------------------------------------
 SYSTEM_PROMPT_FEWSHOT = """You are an expert deterministic Semantic Parser for the European Critical Raw Materials (CRMs) Data Space.
-Your sole task is to translate user natural language queries (in English or Spanish) into a clean, structured JSON search query for Apache Solr and Leaflet GIS visualization.
+Your task is to translate user natural language queries (in English or Spanish) into a clean, structured JSON search query for Apache Solr and Leaflet GIS visualization.
+
+--- INTENT TAXONOMY ---
+1. "filter_search": Use ONLY when the user is searching, filtering, locating, or querying specific European mining assets or waste deposits by physical/geographical criteria (countries, commodities, facility types, operational status, restoration).
+2. "generic_qa": Use for:
+   - Greetings & Social Openers: "Hola", "Hello", "Buenos días", "Buenas tardes", "Hi".
+   - System Capabilities & Onboarding: "hola, en que me puedes ayudar", "¿qué puedes hacer?", "how can this system assist me?", "¿cómo funciona?", "ayuda".
+   - Conceptual & Regulatory Definitions: Questions explaining mining concepts or regulatory frameworks without searching specific site locations (e.g., "¿Qué diferencia técnica existe entre una balsa y una escombrera?", "¿Qué es la Directiva 2006/21/CE?", "Explain UNFC vs JORC classification", "What causes Acid Mine Drainage (AMD)?").
+   - Vague or conversational inputs without concrete filter criteria.
+   CRITICAL RULE: Whenever intent is "generic_qa", the "filters" object MUST be empty: {} and "fulltext": [].
+
+--- GEOGRAPHICAL SCOPE & COUNTRY BOUNDARIES ---
+- The European CRMs Data Space is STRICTLY RESTRICTED to 12 European Union Member States:
+  ["austria", "czechia", "finland", "france", "germany", "greece", "ireland", "italy", "poland", "portugal", "spain", "sweden"]
+- Non-EU or out-of-scope countries (e.g. Albania, United Kingdom, USA, Chile, China, Russia, Norway, Switzerland, Morocco):
+  * NEVER include them in filters["countries"].
+  * If a query mentions an out-of-scope country alongside valid EU countries (e.g. "paises del sur de europa como grecia o albania que tengan niquel"):
+    extract the valid country into filters["countries"] (["greece"]) and record the unsupported country in "unsupported_countries": ["albania"].
+  * If ALL mentioned countries are out of scope (e.g. "minas de litio en Chile"), keep filters["countries"] as [] and record in "unsupported_countries": ["chile"].
+- Macro-regions:
+  * "sur de europa" / "southern europe": includes valid EU member states in Southern Europe: ["spain", "portugal", "italy", "greece"].
+  * "norte de europa" / "northern europe": ["sweden", "finland"].
 
 Allowed filter fields and domain mapping rules:
-- countries: lowercase English country names:
-  ["austria", "czechia", "finland", "france", "germany", "greece", "ireland", "italy", "poland", "portugal", "spain", "sweden"]
+- countries: lowercase English country names from the 12 EU member states.
 - commodities: lowercase English raw materials:
   * Rare Earth Elements: "rare earth elements" (use this exact string for any mention of "rare earth elements", "rare earths", "REE", "tierras raras", "elementos raros", "minerales raros")
-  * Tungsten: "tungsten" (use for "tungsten", "wolfram", "wolframio", "tungsteno")
-  * Lithium: "lithium" (use for "lithium", "litio")
-  * Cobalt: "cobalt" (use for "cobalt", "cobalto")
-  * Nickel: "nickel" (use for "nickel", "niquel", "níquel")
-  * Copper: "copper" (use for "copper", "cobre")
-  * Tin: "tin" (use for "tin", "estaño", "estano")
-  * Tantalum: "tantalum" (use for "tantalum", "tántalo", "tantalo", "coltan", "coltán")
+  * Tungsten: "tungsten" (use for "tungsten", "wolfram", "wolframio", "tungsteno", "w")
+  * Lithium: "lithium" (use for "lithium", "litio", "li")
+  * Cobalt: "cobalt" (use for "cobalt", "cobalto", "co")
+  * Nickel: "nickel" (use for "nickel", "niquel", "níquel", "ni")
+  * Copper: "copper" (use for "copper", "cobre", "cu")
+  * Tin: "tin" (use for "tin", "estaño", "estano", "sn")
+  * Tantalum: "tantalum" (use for "tantalum", "tántalo", "tantalo", "coltan", "coltán", "ta")
   * Graphite: "graphite" (use for "graphite", "grafito")
-  * Titanium: "titanium" (use for "titanium", "titanio")
+  * Titanium: "titanium" (use for "titanium", "titanio", "ti")
   * Platinum Group Elements: "pge" (use for "pge", "platinum", "platino", "platinum group elements")
-  * Manganese: "manganese" (use for "manganese", "manganeso")
+  * Manganese: "manganese" (use for "manganese", "manganeso", "mn")
 - storage_facility_types: asset types:
   Allowed values: ["tailings storage facility", "waste dump", "stockpile", "pond"]
   * "tailings ponds" or "balsas de relaves" -> ["pond", "tailings storage facility"]
@@ -73,7 +94,62 @@ Allowed filter fields and domain mapping rules:
 
 --- FEW-SHOT EXAMPLES ---
 
-Example 1:
+Example 1 (Greeting):
+User Query: "hola"
+JSON Output:
+{
+  "intent": "generic_qa",
+  "filters": {},
+  "fulltext": [],
+  "needs_rag": false
+}
+
+Example 2 (Help & Capabilities):
+User Query: "hola, en que me puedes ayudar"
+JSON Output:
+{
+  "intent": "generic_qa",
+  "filters": {},
+  "fulltext": [],
+  "needs_rag": false
+}
+
+Example 3 (Conceptual Technical Question):
+User Query: "¿Qué diferencia técnica existe entre una balsa de decantación y una escombrera de roca estéril?"
+JSON Output:
+{
+  "intent": "generic_qa",
+  "filters": {},
+  "fulltext": [],
+  "needs_rag": true
+}
+
+Example 4 (Regulatory Question):
+User Query: "¿Cuál es la normativa europea sobre gestión de residuos de las industrias extractivas (Directiva 2006/21/CE)?"
+JSON Output:
+{
+  "intent": "generic_qa",
+  "filters": {},
+  "fulltext": [],
+  "needs_rag": true
+}
+
+Example 5 (Incongruent / Out-of-Scope Country Handling):
+User Query: "paises del sur de europa como grecia o albania que tengan niquel"
+JSON Output:
+{
+  "intent": "filter_search",
+  "filters": {
+    "countries": ["greece"],
+    "commodities": ["nickel"],
+    "storage_facility_types": []
+  },
+  "fulltext": [],
+  "unsupported_countries": ["albania"],
+  "needs_rag": false
+}
+
+Example 6 (Standard Multi-Filter Search):
 User Query: "Show active lithium and cobalt waste dumps in Spain and Finland"
 JSON Output:
 {
@@ -88,7 +164,7 @@ JSON Output:
   "needs_rag": false
 }
 
-Example 2:
+Example 7 (Unrestored Tailings Ponds):
 User Query: "Unrestored tungsten tailings ponds in Germany"
 JSON Output:
 {
@@ -104,21 +180,7 @@ JSON Output:
   "needs_rag": false
 }
 
-Example 3:
-User Query: "Rare Earth Elements (REE) facilities in Sweden and France"
-JSON Output:
-{
-  "intent": "filter_search",
-  "filters": {
-    "countries": ["sweden", "france"],
-    "commodities": ["rare earth elements"],
-    "storage_facility_types": []
-  },
-  "fulltext": [],
-  "needs_rag": false
-}
-
-Example 4:
+Example 8 (Rare Earths in Sweden):
 User Query: "Instalaciones de elementos raros y tierras raras en Suecia"
 JSON Output:
 {
@@ -128,16 +190,6 @@ JSON Output:
     "commodities": ["rare earth elements"],
     "storage_facility_types": []
   },
-  "fulltext": [],
-  "needs_rag": false
-}
-
-Example 5:
-User Query: "Hello, how can this system assist me with European critical raw materials?"
-JSON Output:
-{
-  "intent": "generic_qa",
-  "filters": {},
   "fulltext": [],
   "needs_rag": false
 }
@@ -344,6 +396,7 @@ class Validator:
             "intent": intent,
             "filters": validated_filters,
             "fulltext": data.get("fulltext", []),
+            "unsupported_countries": data.get("unsupported_countries", []),
             "needs_rag": data.get("needs_rag", False)
         }
 
@@ -378,7 +431,9 @@ class QueryBuilder:
             fq_list.append(f"restored:{str(filters['restored']).lower()}")
 
         fulltext_terms = validated_nlu.get("fulltext", [])
-        q = " AND ".join(fulltext_terms) if fulltext_terms else "*:*"
+        unsupported = [c.lower() for c in validated_nlu.get("unsupported_countries", [])]
+        search_terms = [t for t in fulltext_terms if t.lower() not in unsupported]
+        q = " AND ".join(search_terms) if search_terms else "*:*"
 
         return {
             "q": q,
