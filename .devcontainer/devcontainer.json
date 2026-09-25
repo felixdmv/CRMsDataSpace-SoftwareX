@@ -10,7 +10,7 @@
     },
     "8085": {
       "label": "General GIS Architecture Template Sandbox",
-      "onAutoForward": "notify",
+      "onAutoForward": "openPreview",
       "elevateIfNeeded": false
     }
   },

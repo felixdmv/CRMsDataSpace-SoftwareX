@@ -1,10 +1,15 @@
 {
   "name": "CRMsDataSpace — European Critical Raw Materials WebApp",
   "image": "mcr.microsoft.com/devcontainers/python:3.11",
-  "forwardPorts": [8080],
+  "forwardPorts": [8080, 8085],
   "portsAttributes": {
     "8080": {
       "label": "CRMsDataSpace Web Application (European CRMs)",
+      "onAutoForward": "openPreview",
+      "elevateIfNeeded": false
+    },
+    "8085": {
+      "label": "General GIS Architecture Template Sandbox",
       "onAutoForward": "openPreview",
       "elevateIfNeeded": false
     }

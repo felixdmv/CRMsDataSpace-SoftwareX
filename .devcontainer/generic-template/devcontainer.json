@@ -1,8 +1,13 @@
 {
   "name": "General-Purpose GIS Architecture Template (Customizable Sandbox)",
   "image": "mcr.microsoft.com/devcontainers/python:3.11",
-  "forwardPorts": [8085],
+  "forwardPorts": [8080, 8085],
   "portsAttributes": {
+    "8080": {
+      "label": "CRMsDataSpace Web Application (European CRMs)",
+      "onAutoForward": "openPreview",
+      "elevateIfNeeded": false
+    },
     "8085": {
       "label": "GIS Architecture Template Sandbox",
       "onAutoForward": "openPreview",

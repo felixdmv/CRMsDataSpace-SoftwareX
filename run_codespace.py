@@ -45,6 +45,9 @@ def main():
     else:
         print(" [✓] CRMsDataSpace WebApp is already active on port 8080.")
 
+    # Stagger slightly so VS Code detects and opens port 8080 preview tab first
+    time.sleep(1.2)
+
     # 2. Start General-Purpose GIS Architecture Template on Port 8085
     if not is_port_listening(8085):
         print(" [*] Launching General GIS Template Sandbox on port 8085 (background)...")
@@ -54,7 +57,7 @@ def main():
         print(" [✓] General GIS Template is already active on port 8085.")
 
     # Give a brief moment for binding
-    time.sleep(0.5)
+    time.sleep(0.8)
 
     print("\n [✓] Applications ready for evaluation:")
     print("     👉 [Port 8080] CRMsDataSpace European WebApp: http://localhost:8080")
