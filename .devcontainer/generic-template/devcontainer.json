@@ -9,8 +9,8 @@
       "elevateIfNeeded": false
     }
   },
-  "postCreateCommand": "echo 'General GIS Architecture Template ready (zero external dependencies)'",
-  "postAttachCommand": "python run_template.py --port 8085",
+  "postCreateCommand": "echo 'General GIS Template ready (zero external dependencies)'",
+  "postAttachCommand": "python run_codespace.py",
   "customizations": {
     "vscode": {
       "settings": {
