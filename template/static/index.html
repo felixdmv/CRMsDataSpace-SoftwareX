@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>General-Purpose GIS Architecture Template — Elsevier SoftwareX</title>
+  <meta name="description" content="Elsevier SoftwareX Demonstrator: General-purpose decoupled NLU-Solr-GIS architecture template for conversational spatial search and dynamic cartographic synchronization.">
+
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Leaflet.js CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0b0f19; }
+    ::-webkit-scrollbar-thumb { background: #1f293d; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #374151; }
+
+    @keyframes marker-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.75); }
+      70% { box-shadow: 0 0 0 14px rgba(59, 130, 246, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+    }
+    .marker-pulse-active { animation: marker-pulse 2s infinite; }
+    .leaflet-popup-content-wrapper {
+      background: #0f172a !important;
+      color: #f1f5f9 !important;
+      border: 1px solid #334155 !important;
+      border-radius: 8px !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+    }
+    .leaflet-popup-tip {
+      background: #0f172a !important;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-100 bg-[#070b14] antialiased select-none overflow-hidden">
+
+  <!-- =========================================================================
+       TOP NAVIGATION BAR
+       ========================================================================= -->
+  <header class="h-14 bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 flex items-center justify-between z-30 shrink-0 shadow-md">
+    <div class="flex items-center gap-3">
+      <div class="h-8 w-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20 text-white font-bold text-sm">
+        GIS
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-bold text-sm text-white tracking-wide">General-Purpose GIS Architecture Template</h1>
+          <span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[10px] px-2 py-0.5 rounded-full font-mono font-medium">Elsevier SoftwareX</span>
+        </div>
+        <p class="text-[11px] text-slate-400 hidden sm:block">Modular Decoupled Framework: Conversational NLU $\to$ Solr Spatial Engine $\to$ Dynamic Leaflet Sync</p>
+      </div>
+    </div>
+
+    <!-- Quick Switcher & Codespaces Navigation -->
+    <div class="flex items-center gap-2.5">
+      <span class="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded flex items-center gap-1.5 hidden md:flex font-mono text-[11px]">
+        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Zero External Dependencies
+      </span>
+      <button 
+        type="button"
+        onclick="window.open(window.location.protocol + '//' + window.location.hostname + ':8080', '_blank')"
+        class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs px-2.5 py-1.5 rounded transition flex items-center gap-1.5 cursor-pointer"
+        title="Open the real European Critical Raw Materials demonstrator on Port 8080"
+      >
+        <span>🇪🇺 CRMsDataSpace (Port 8080)</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      </button>
+      <button 
+        type="button" 
+        onclick="resetApp()" 
+        class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs px-2.5 py-1.5 rounded transition cursor-pointer"
+        title="Reset filters and restore defaults"
+      >
+        Reset
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN WORKSPACE (SIDEBAR + MAP)
+       ========================================================================= -->
+  <div class="flex-1 flex overflow-hidden relative">
+
+    <!-- LEFT SIDEBAR: FILTERS, STUDIO & DATASET -->
+    <aside class="w-96 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0 z-20 shadow-xl">
+      
+      <!-- TAB NAVIGATION -->
+      <div class="flex border-b border-slate-800 bg-slate-950/60 p-1 gap-1 shrink-0 text-xs">
+        <button id="tab-btn-filters" onclick="switchTab('filters')" class="flex-1 py-1.5 px-2 rounded font-medium text-center transition bg-blue-600 text-white cursor-pointer">
+          🔍 Search & Filters
+        </button>
+        <button id="tab-btn-studio" onclick="switchTab('studio')" class="flex-1 py-1.5 px-2 rounded font-medium text-center transition text-slate-400 hover:text-slate-200 hover:bg-slate-800 cursor-pointer">
+          🛠️ Filter Studio
+        </button>
+        <button id="tab-btn-table" onclick="switchTab('table')" class="flex-1 py-1.5 px-2 rounded font-medium text-center transition text-slate-400 hover:text-slate-200 hover:bg-slate-800 cursor-pointer">
+          📋 Facilities (<span id="table-count-badge">0</span>)
+        </button>
+      </div>
+
+      <!-- TAB 1: CONVERSATIONAL SEARCH & MANUAL FILTERS -->
+      <div id="tab-content-filters" class="flex-1 flex flex-col overflow-y-auto p-4 space-y-5">
+        
+        <!-- Conversational Search Bar -->
+        <div class="space-y-2">
+          <label class="block text-xs font-semibold text-slate-300 tracking-wider uppercase">
+            Conversational Spatial Search
+          </label>
+          <div class="relative">
+            <input 
+              id="query-input" 
+              type="text" 
+              placeholder="e.g. Solar in Spain > 50 MW..." 
+              onkeydown="if(event.key === 'Enter') submitQuery()"
+              class="w-full bg-slate-950 border border-slate-700 rounded-lg pl-3 pr-20 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 shadow-inner"
+            />
+            <button 
+              type="button" 
+              onclick="submitQuery()" 
+              class="absolute right-1 top-1 bottom-1 px-3 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-medium transition cursor-pointer flex items-center gap-1"
+            >
+              <span>Search</span>
+            </button>
+          </div>
+
+          <!-- Suggested query chips -->
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            <button onclick="setQuery('Solar and wind in Spain')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-2 py-0.5 rounded transition cursor-pointer">
+              ☀️ Solar & Wind in Spain
+            </button>
+            <button onclick="setQuery('Facilities with capacity > 500 MW')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-2 py-0.5 rounded transition cursor-pointer">
+              ⚡ Capacity > 500 MW
+            </button>
+            <button onclick="setQuery('Operational battery storage in United States and Australia')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-2 py-0.5 rounded transition cursor-pointer">
+              🔋 Battery Storage in US & AU
+            </button>
+            <button onclick="setQuery('Hydro dams in France and Norway')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-2 py-0.5 rounded transition cursor-pointer">
+              💧 Hydro in France & Norway
+            </button>
+            <button onclick="setQuery('Under construction or planned')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-2 py-0.5 rounded transition cursor-pointer">
+              🏗️ Under Construction
+            </button>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="border-t border-slate-800 pt-3">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-semibold text-slate-300 tracking-wider uppercase">Manual Filter Controls</span>
+            <button onclick="clearManualFilters()" class="text-[11px] text-blue-400 hover:underline cursor-pointer">Clear filters</button>
+          </div>
+
+          <!-- Dynamic Filter Controls Container -->
+          <div id="dynamic-filters-container" class="space-y-4 text-xs">
+            <!-- Populated via JS based on filters_config.json -->
+          </div>
+        </div>
+
+        <!-- Quick Summary Box -->
+        <div class="bg-slate-950/70 border border-slate-800 rounded-lg p-3 space-y-1.5 text-xs">
+          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Live Synchronized Status</div>
+          <div class="flex justify-between items-center text-slate-200">
+            <span>Matching Facilities:</span>
+            <span id="sidebar-match-stat" class="font-mono font-bold text-blue-400">30 / 30</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-200">
+            <span>Active Filters:</span>
+            <span id="sidebar-filter-count" class="font-mono text-emerald-400">0</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TAB 2: REVIEWER FILTER & SCHEMA TINKERING STUDIO -->
+      <div id="tab-content-studio" class="hidden flex-1 flex flex-col overflow-y-auto p-4 space-y-4">
+        <div class="bg-blue-950/30 border border-blue-500/20 rounded p-2.5 text-xs text-blue-200">
+          <strong class="text-blue-300 font-semibold block mb-1">🛠️ Reviewer Tinkering Studio:</strong>
+          This panel allows you to customize the GIS architecture for <em>any</em> domain by defining new filter fields, changing facet keys, or adding multilingual synonyms in real time.
+        </div>
+
+        <!-- Add Field Form Accordion -->
+        <div class="border border-slate-700 rounded-lg p-3 bg-slate-950/60 space-y-3">
+          <div class="font-semibold text-xs text-slate-200 flex items-center justify-between">
+            <span>➕ Add New Custom Filter Field</span>
+          </div>
+          <div class="space-y-2 text-xs">
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Field Key (JSON property in dataset):</label>
+              <input id="new-field-key" type="text" placeholder="e.g. operator, environmental_rating" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-white text-xs focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Field Label (Display title):</label>
+              <input id="new-field-label" type="text" placeholder="e.g. Facility Operator" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-white text-xs focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Filter Type:</label>
+              <select id="new-field-type" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-white text-xs focus:border-blue-500">
+                <option value="multiselect">Multi-select (Tags / Checkboxes)</option>
+                <option value="select">Single Select (Dropdown)</option>
+                <option value="range">Numeric Range (Slider / Min-Max)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Options (comma-separated):</label>
+              <input id="new-field-options" type="text" placeholder="e.g. Iberdrola, EDF, NextEra, Statkraft" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-white text-xs focus:border-blue-500">
+            </div>
+            <button 
+              type="button" 
+              onclick="addNewFieldToSchema()" 
+              class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-1.5 rounded transition text-xs cursor-pointer"
+            >
+              Add Field to Live Configuration
+            </button>
+          </div>
+        </div>
+
+        <!-- Raw Schema JSON Editor -->
+        <div class="space-y-2 flex-1 flex flex-col">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Raw Configuration Editor</span>
+            <button onclick="reloadSchemaFromDisk()" class="text-[11px] text-slate-400 hover:text-white cursor-pointer">Reload file</button>
+          </div>
+          <textarea 
+            id="raw-schema-textarea" 
+            rows="12"
+            spellcheck="false"
+            class="w-full bg-slate-950 font-mono text-[11px] p-2.5 text-slate-200 border border-slate-700 rounded-lg focus:outline-none focus:border-blue-500 leading-relaxed"
+          ></textarea>
+          <div class="flex gap-2">
+            <button 
+              type="button" 
+              onclick="saveRawSchema()" 
+              class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-1.5 rounded text-xs font-medium transition cursor-pointer"
+            >
+              💾 Save & Apply Schema
+            </button>
+            <button 
+              type="button" 
+              onclick="restoreDefaultSchema()" 
+              class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded text-xs transition cursor-pointer"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: FACILITIES DATA TABLE -->
+      <div id="tab-content-table" class="hidden flex-1 flex flex-col overflow-y-auto p-2">
+        <div class="text-[11px] text-slate-400 px-2 py-1 flex justify-between">
+          <span>Click facility to locate on map</span>
+          <span id="table-filter-indicator" class="text-blue-400">All facilities</span>
+        </div>
+        <div class="space-y-1.5" id="facility-cards-list">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- RIGHT MAIN AREA: LEAFLET MAP & 4-STAGE PIPELINE INSPECTOR -->
+    <main class="flex-1 flex flex-col overflow-hidden relative">
+      
+      <!-- FLOATING TOP BAR: ACTIVE FILTER BADGES & COUNTER -->
+      <div class="absolute top-3 left-4 right-4 z-[1000] flex items-center justify-between pointer-events-none">
+        
+        <!-- Active Filter Badges Container -->
+        <div id="map-active-badges" class="flex flex-wrap gap-2 pointer-events-auto max-w-[75%]">
+          <!-- Dynamic badges injected here -->
+        </div>
+
+        <!-- Match Counter Pill -->
+        <div class="bg-slate-900/90 backdrop-blur border border-slate-700 px-3.5 py-1.5 rounded-full shadow-xl pointer-events-auto flex items-center gap-2 text-xs">
+          <span class="flex h-2 w-2 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+          </span>
+          <span class="text-slate-300">Showing <strong id="map-count-badge" class="text-blue-400">30</strong> of <span id="map-total-badge">30</span> facilities</span>
+        </div>
+      </div>
+
+      <!-- LEAFLET MAP CONTAINER -->
+      <div id="map" class="flex-1 bg-slate-950 w-full h-full"></div>
+
+      <!-- BOTTOM COLLAPSIBLE DRAWER: 4-STAGE ARCHITECTURE INSPECTOR -->
+      <div id="inspector-drawer" class="bg-slate-900 border-t border-slate-800 shrink-0 z-20 flex flex-col transition-all duration-300 h-64 shadow-2xl">
+        
+        <!-- Drawer Header -->
+        <div class="h-9 px-4 bg-slate-950 flex items-center justify-between border-b border-slate-800 text-xs shrink-0">
+          <div class="flex items-center gap-3">
+            <span class="font-bold text-slate-200 flex items-center gap-1.5">
+              <span>🔬 4-Stage Architecture Pipeline Inspector</span>
+            </span>
+            <!-- Pipeline stage step buttons -->
+            <div class="flex gap-1">
+              <button onclick="setInspectorTab('stage1')" id="insp-btn-stage1" class="px-2 py-0.5 rounded text-[11px] font-mono bg-blue-600 text-white cursor-pointer">[1] NLU Parsing</button>
+              <button onclick="setInspectorTab('stage2')" id="insp-btn-stage2" class="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400 hover:text-white cursor-pointer">[2] Schema Validation</button>
+              <button onclick="setInspectorTab('stage3')" id="insp-btn-stage3" class="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400 hover:text-white cursor-pointer">[3] Solr Query & Facets</button>
+              <button onclick="setInspectorTab('stage4')" id="insp-btn-stage4" class="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400 hover:text-white cursor-pointer">[4] Dynamic GIS Sync</button>
+              <button onclick="setInspectorTab('narrative')" id="insp-btn-narrative" class="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400 hover:text-white cursor-pointer">💬 Narrative</button>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="toggleDrawerHeight()" class="text-slate-400 hover:text-white text-xs px-2 py-0.5 rounded bg-slate-800 cursor-pointer" title="Toggle compact/expanded view">
+              <span id="drawer-toggle-icon">↕ Expand</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Drawer Content Tabs -->
+        <div class="flex-1 overflow-y-auto p-3 font-mono text-xs text-slate-300">
+          
+          <!-- Stage 1 View: Conversational NLU & Tokens -->
+          <div id="insp-stage1" class="space-y-2">
+            <div class="text-[11px] text-slate-400">Stage 1: Raw user prompt tokenization, intent classification, and vocabulary matching:</div>
+            <pre id="insp-stage1-pre" class="bg-slate-950 p-2.5 rounded border border-slate-800 text-blue-300 overflow-x-auto text-[11px] leading-relaxed"></pre>
+          </div>
+
+          <!-- Stage 2 View: Normalizer & Validated JSON -->
+          <div id="insp-stage2" class="hidden space-y-2">
+            <div class="text-[11px] text-slate-400">Stage 2: Deterministic Thesaurus normalization and JSON Schema alignment:</div>
+            <pre id="insp-stage2-pre" class="bg-slate-950 p-2.5 rounded border border-slate-800 text-emerald-300 overflow-x-auto text-[11px] leading-relaxed"></pre>
+          </div>
+
+          <!-- Stage 3 View: Solr Query & Live Facets -->
+          <div id="insp-stage3" class="hidden space-y-2">
+            <div class="text-[11px] text-slate-400">Stage 3: Generated Apache Solr Boolean Filter rules (fq) & dynamic multidimensional facet distributions:</div>
+            <pre id="insp-stage3-pre" class="bg-slate-950 p-2.5 rounded border border-slate-800 text-amber-300 overflow-x-auto text-[11px] leading-relaxed"></pre>
+          </div>
+
+          <!-- Stage 4 View: Dynamic GIS Sync & Matching IDs -->
+          <div id="insp-stage4" class="hidden space-y-2">
+            <div class="text-[11px] text-slate-400">Stage 4: Leaflet cartographic synchronization, pulsating ring assignment, and badge generation:</div>
+            <pre id="insp-stage4-pre" class="bg-slate-950 p-2.5 rounded border border-slate-800 text-purple-300 overflow-x-auto text-[11px] leading-relaxed"></pre>
+          </div>
+
+          <!-- Narrative View: Natural Language Response -->
+          <div id="insp-narrative" class="hidden space-y-2 font-sans">
+            <div class="text-[11px] text-slate-400 font-mono">Synthesized Natural Language Grounded Narrative:</div>
+            <div id="insp-narrative-div" class="bg-slate-950 p-3 rounded border border-slate-800 text-slate-200 text-xs leading-relaxed"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- =========================================================================
+       CLIENT-SIDE JAVASCRIPT LOGIC
+       ========================================================================= -->
+  <script>
+    // Global Application State
+    let allFacilities = [];
+    let activeMatchedIds = [];
+    let currentConfig = {};
+    let manualFilterState = {};
+    let leafletMap = null;
+    let markerLayerGroup = null;
+    let markersMap = {};
+    let lastPipelineResult = null;
+    let drawerExpanded = false;
+
+    const CATEGORY_COLORS = {
+      "Solar": "#f59e0b",
+      "Wind": "#06b6d4",
+      "Hydro": "#3b82f6",
+      "Geothermal": "#10b981",
+      "Storage": "#a855f7",
+      "Biomass": "#84cc16",
+      "Default": "#94a3b8"
+    };
+
+    // Initialize Map and Load Application Data
+    window.addEventListener('DOMContentLoaded', async () => {
+      initMap();
+      await loadAppConfig();
+      await loadFacilitiesData();
+      // Run initial query to sync UI
+      submitManualFilters();
+    });
+
+    function initMap() {
+      leafletMap = L.map('map', {
+        center: [30.0, 10.0],
+        zoom: 3,
+        zoomControl: false,
+        attributionControl: false
+      });
+
+      L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
+
+      // CartoDB Dark Matter tiles
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19,
+        subdomains: 'abcd'
+      }).addTo(leafletMap);
+
+      markerLayerGroup = L.layerGroup().addTo(leafletMap);
+    }
+
+    async function loadAppConfig() {
+      try {
+        const resp = await fetch('/api/config');
+        currentConfig = await resp.json();
+        document.getElementById('raw-schema-textarea').value = JSON.stringify(currentConfig, null, 2);
+        renderDynamicFilterControls();
+      } catch (e) {
+        console.error("Failed to load schema configuration:", e);
+      }
+    }
+
+    async function loadFacilitiesData() {
+      try {
+        const resp = await fetch('/api/facilities');
+        allFacilities = await resp.json();
+        activeMatchedIds = allFacilities.map(f => f.id);
+        renderMapMarkers();
+        updateCounterBadges(allFacilities.length, allFacilities.length);
+        renderFacilityCardsList(allFacilities);
+      } catch (e) {
+        console.error("Failed to load facilities dataset:", e);
+      }
+    }
+
+    // Render Markers on Leaflet Map
+    function renderMapMarkers() {
+      markerLayerGroup.clearLayers();
+      markersMap = {};
+
+      allFacilities.forEach(facility => {
+        const isMatched = activeMatchedIds.includes(facility.id);
+        const color = CATEGORY_COLORS[facility.category] || CATEGORY_COLORS.Default;
+
+        // Custom Leaflet Circle Marker with CSS Pulse animation
+        const pulseClass = isMatched && activeMatchedIds.length < allFacilities.length ? 'marker-pulse-active' : '';
+        const opacity = isMatched ? 1.0 : 0.2;
+        const fillOpacity = isMatched ? 0.85 : 0.15;
+        const radius = isMatched ? 9 : 5;
+
+        const markerHtml = `
+          <div style="
+            width: ${radius * 2}px; 
+            height: ${radius * 2}px; 
+            background: ${color}; 
+            border: 2px solid #ffffff; 
+            border-radius: 50%;
+            opacity: ${opacity};
+            cursor: pointer;
+          " class="${pulseClass}"></div>
+        `;
+
+        const customIcon = L.divIcon({
+          className: 'custom-facility-pin',
+          html: markerHtml,
+          iconSize: [radius * 2, radius * 2],
+          iconAnchor: [radius, radius]
+        });
+
+        const marker = L.marker([facility.latitude, facility.longitude], { icon: customIcon });
+
+        // Popup with facility details
+        const popupContent = `
+          <div class="p-1 space-y-1.5 text-xs font-sans min-w-[200px]">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-1">
+              <span class="font-bold text-white text-sm">${facility.name}</span>
+              <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold" style="background: ${color}25; color: ${color}; border: 1px solid ${color}40;">
+                ${facility.category}
+              </span>
+            </div>
+            <div class="text-slate-300 text-[11px] leading-tight">${facility.description}</div>
+            <div class="grid grid-cols-2 gap-1 text-[10px] text-slate-400 pt-1">
+              <div><strong>Country:</strong> ${facility.country}</div>
+              <div><strong>Status:</strong> ${facility.status}</div>
+              <div><strong>Capacity:</strong> ${facility.capacity_mw} MW</div>
+              <div><strong>Operator:</strong> ${facility.operator || 'N/A'}</div>
+            </div>
+          </div>
+        `;
+
+        marker.bindPopup(popupContent);
+        markerLayerGroup.addLayer(marker);
+        markersMap[facility.id] = marker;
+      });
+    }
+
+    // Render Dynamic Filter Controls on Left Sidebar
+    function renderDynamicFilterControls() {
+      const container = document.getElementById('dynamic-filters-container');
+      container.innerHTML = '';
+
+      (currentConfig.filter_fields || []).forEach(field => {
+        const fieldCard = document.createElement('div');
+        fieldCard.className = 'space-y-1.5 bg-slate-950/40 p-2.5 rounded-lg border border-slate-800';
+
+        const labelRow = document.createElement('div');
+        labelRow.className = 'flex items-center justify-between text-[11px] font-semibold text-slate-300';
+        labelRow.innerHTML = `<span>${field.label}</span><span class="text-[10px] text-slate-500 font-mono">${field.type}</span>`;
+        fieldCard.appendChild(labelRow);
+
+        if (field.type === 'multiselect') {
+          const pillsWrap = document.createElement('div');
+          pillsWrap.className = 'flex flex-wrap gap-1 pt-1';
+
+          (field.options || []).forEach(opt => {
+            const isSelected = (manualFilterState[field.key] || []).includes(opt);
+            const pill = document.createElement('button');
+            pill.type = 'button';
+            pill.className = `text-[10px] px-2 py-0.5 rounded border transition cursor-pointer flex items-center gap-1 ${
+              isSelected 
+                ? 'bg-blue-600 text-white border-blue-500' 
+                : 'bg-slate-900 text-slate-300 border-slate-700 hover:border-slate-600'
+            }`;
+            pill.innerHTML = `<span>${opt}</span><span id="facet-${field.key}-${opt}" class="text-[9px] opacity-70 font-mono"></span>`;
+            pill.onclick = () => toggleMultiSelectFilter(field.key, opt);
+            pillsWrap.appendChild(pill);
+          });
+          fieldCard.appendChild(pillsWrap);
+        } else if (field.type === 'select') {
+          const select = document.createElement('select');
+          select.className = 'w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-slate-200 text-xs focus:border-blue-500';
+          select.innerHTML = `<option value="">All ${field.label}</option>` + 
+            (field.options || []).map(opt => `<option value="${opt}" ${manualFilterState[field.key] === opt ? 'selected' : ''}>${opt}</option>`).join('');
+          select.onchange = (e) => {
+            if (e.target.value) {
+              manualFilterState[field.key] = e.target.value;
+            } else {
+              delete manualFilterState[field.key];
+            }
+            submitManualFilters();
+          };
+          fieldCard.appendChild(select);
+        } else if (field.type === 'range') {
+          const rangeWrap = document.createElement('div');
+          rangeWrap.className = 'space-y-1 pt-1';
+
+          const minVal = (manualFilterState[field.key] && manualFilterState[field.key].min) || field.min || 0;
+          rangeWrap.innerHTML = `
+            <div class="flex justify-between text-[10px] text-slate-400">
+              <span>Min: <strong id="slider-label-${field.key}" class="text-blue-400">${minVal}</strong> ${field.unit || ''}</span>
+              <span>Max: ${field.max || 4000} ${field.unit || ''}</span>
+            </div>
+            <input 
+              type="range" 
+              min="${field.min || 0}" 
+              max="${field.max || 4000}" 
+              step="${field.step || 50}" 
+              value="${minVal}"
+              oninput="document.getElementById('slider-label-${field.key}').innerText = this.value"
+              onchange="setRangeFilter('${field.key}', this.value)"
+              class="w-full accent-blue-500 cursor-pointer"
+            />
+          `;
+          fieldCard.appendChild(rangeWrap);
+        }
+
+        container.appendChild(fieldCard);
+      });
+    }
+
+    function toggleMultiSelectFilter(fieldKey, optionVal) {
+      if (!manualFilterState[fieldKey]) {
+        manualFilterState[fieldKey] = [];
+      }
+      const idx = manualFilterState[fieldKey].indexOf(optionVal);
+      if (idx > -1) {
+        manualFilterState[fieldKey].splice(idx, 1);
+        if (manualFilterState[fieldKey].length === 0) {
+          delete manualFilterState[fieldKey];
+        }
+      } else {
+        manualFilterState[fieldKey].push(optionVal);
+      }
+      submitManualFilters();
+    }
+
+    function setRangeFilter(fieldKey, val) {
+      const num = parseFloat(val);
+      if (num > 0) {
+        manualFilterState[fieldKey] = { min: num };
+      } else {
+        delete manualFilterState[fieldKey];
+      }
+      submitManualFilters();
+    }
+
+    function clearManualFilters() {
+      manualFilterState = {};
+      document.getElementById('query-input').value = '';
+      submitManualFilters();
+    }
+
+    // Submit Conversational Natural Language Query
+    async function submitQuery() {
+      const query = document.getElementById('query-input').value.trim();
+      if (!query) {
+        clearManualFilters();
+        return;
+      }
+
+      try {
+        const resp = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: query })
+        });
+        const data = await resp.json();
+        handlePipelineResponse(data);
+        
+        // Sync manual filter state to the extracted filters
+        manualFilterState = data.filters || {};
+        renderDynamicFilterControls();
+      } catch (e) {
+        console.error("Query processing failed:", e);
+      }
+    }
+
+    // Submit Structured Manual Filters
+    async function submitManualFilters() {
+      renderDynamicFilterControls();
+      try {
+        const resp = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ manual_filters: manualFilterState })
+        });
+        const data = await resp.json();
+        handlePipelineResponse(data);
+      } catch (e) {
+        console.error("Filter submission failed:", e);
+      }
+    }
+
+    function setQuery(text) {
+      document.getElementById('query-input').value = text;
+      submitQuery();
+    }
+
+    // Handle Pipeline Response & Synchronize GIS Map
+    function handlePipelineResponse(data) {
+      lastPipelineResult = data;
+      activeMatchedIds = data.matched_ids || [];
+
+      // Update counters
+      updateCounterBadges(data.num_found, data.total_dataset);
+
+      // Re-render markers with pulsing rings on matched points
+      renderMapMarkers();
+
+      // Render Floating Badges on map
+      renderActiveBadgesOnMap(data.active_map_filters || []);
+
+      // Fit map bounds to matched facilities if subset
+      if (data.matched_ids && data.matched_ids.length > 0 && data.matched_ids.length < allFacilities.length) {
+        const matchedCoords = allFacilities
+          .filter(f => data.matched_ids.includes(f.id))
+          .map(f => [f.latitude, f.longitude]);
+        if (matchedCoords.length > 0) {
+          leafletMap.flyToBounds(matchedCoords, { padding: [60, 60], maxZoom: 8, duration: 1.2 });
+        }
+      }
+
+      // Update Facet counts in sidebar
+      updateFacetLabels(data.solr_facets || {});
+
+      // Update Facility cards list
+      renderFacilityCardsList(data.docs || allFacilities);
+
+      // Populate Inspector Drawer
+      updateInspectorViews(data);
+    }
+
+    function updateCounterBadges(numFound, total) {
+      document.getElementById('map-count-badge').innerText = numFound;
+      document.getElementById('map-total-badge').innerText = total;
+      document.getElementById('sidebar-match-stat').innerText = `${numFound} / ${total}`;
+      document.getElementById('table-count-badge').innerText = numFound;
+      
+      const filterCount = Object.keys(manualFilterState).length;
+      document.getElementById('sidebar-filter-count').innerText = filterCount;
+    }
+
+    function renderActiveBadgesOnMap(badges) {
+      const container = document.getElementById('map-active-badges');
+      container.innerHTML = '';
+
+      if (!badges || badges.length === 0) {
+        return;
+      }
+
+      badges.forEach(b => {
+        const badge = document.createElement('div');
+        badge.className = 'bg-slate-900/90 backdrop-blur border border-blue-500/40 text-blue-200 px-2.5 py-1 rounded-full text-xs shadow-lg flex items-center gap-1.5';
+        const valsStr = Array.isArray(b.values) ? b.values.join(', ') : b.values;
+        badge.innerHTML = `
+          <strong class="text-blue-400">${b.label}:</strong>
+          <span>${valsStr}</span>
+          <button onclick="removeFilterKey('${b.key}')" class="text-slate-400 hover:text-white ml-0.5 font-bold cursor-pointer">×</button>
+        `;
+        container.appendChild(badge);
+      });
+    }
+
+    function removeFilterKey(key) {
+      delete manualFilterState[key];
+      submitManualFilters();
+    }
+
+    function updateFacetLabels(facets) {
+      for (const fieldKey in facets) {
+        for (const optVal in facets[fieldKey]) {
+          const count = facets[fieldKey][optVal];
+          const span = document.getElementById(`facet-${fieldKey}-${optVal}`);
+          if (span) {
+            span.innerText = `(${count})`;
+          }
+        }
+      }
+    }
+
+    function renderFacilityCardsList(facilities) {
+      const list = document.getElementById('facility-cards-list');
+      list.innerHTML = '';
+
+      facilities.forEach(fac => {
+        const card = document.createElement('div');
+        const color = CATEGORY_COLORS[fac.category] || CATEGORY_COLORS.Default;
+        card.className = 'bg-slate-950/70 border border-slate-800 hover:border-blue-500/50 p-2.5 rounded-lg transition cursor-pointer text-xs space-y-1';
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="font-semibold text-white">${fac.name}</span>
+            <span class="text-[9px] px-1.5 py-0.2 rounded font-mono font-semibold" style="color: ${color}; border: 1px solid ${color}40">
+              ${fac.category}
+            </span>
+          </div>
+          <div class="text-[11px] text-slate-400 flex justify-between">
+            <span>${fac.country}</span>
+            <span class="font-mono text-blue-400">${fac.capacity_mw} MW</span>
+          </div>
+        `;
+        card.onclick = () => {
+          leafletMap.flyTo([fac.latitude, fac.longitude], 9, { duration: 1.0 });
+          if (markersMap[fac.id]) {
+            markersMap[fac.id].openPopup();
+          }
+        };
+        list.appendChild(card);
+      });
+    }
+
+    // Inspector Views Population
+    function updateInspectorViews(data) {
+      // Stage 1
+      const stage1Data = {
+        user_query: data.query || "(Manual filter interaction)",
+        detected_intent: data.intent,
+        matched_tokens: data.matched_tokens || []
+      };
+      document.getElementById('insp-stage1-pre').innerText = JSON.stringify(stage1Data, null, 2);
+
+      // Stage 2
+      document.getElementById('insp-stage2-pre').innerText = JSON.stringify({
+        validated_filters: data.filters || {},
+        active_badges: data.active_map_filters || []
+      }, null, 2);
+
+      // Stage 3
+      document.getElementById('insp-stage3-pre').innerText = JSON.stringify({
+        solr_query_parameters: data.solr_query || {},
+        solr_facet_distributions: data.solr_facets || {}
+      }, null, 2);
+
+      // Stage 4
+      document.getElementById('insp-stage4-pre').innerText = JSON.stringify({
+        matched_facility_count: data.num_found,
+        total_in_dataset: data.total_dataset,
+        matching_facility_ids: data.matched_ids || []
+      }, null, 2);
+
+      // Narrative
+      document.getElementById('insp-narrative-div').innerHTML = (data.narrative || '').replace(/\n/g, '<br>');
+    }
+
+    function setInspectorTab(tabId) {
+      ['stage1', 'stage2', 'stage3', 'stage4', 'narrative'].forEach(t => {
+        document.getElementById(`insp-${t}`).classList.add('hidden');
+        document.getElementById(`insp-btn-${t}`).className = 'px-2 py-0.5 rounded text-[11px] font-mono text-slate-400 hover:text-white cursor-pointer';
+      });
+      document.getElementById(`insp-${tabId}`).classList.remove('hidden');
+      document.getElementById(`insp-btn-${tabId}`).className = 'px-2 py-0.5 rounded text-[11px] font-mono bg-blue-600 text-white cursor-pointer';
+    }
+
+    function toggleDrawerHeight() {
+      const drawer = document.getElementById('inspector-drawer');
+      const icon = document.getElementById('drawer-toggle-icon');
+      if (drawerExpanded) {
+        drawer.style.height = '16rem'; // 64
+        icon.innerText = '↕ Expand';
+      } else {
+        drawer.style.height = '28rem'; // expanded
+        icon.innerText = '↕ Compact';
+      }
+      drawerExpanded = !drawerExpanded;
+      setTimeout(() => leafletMap.invalidateSize(), 350);
+    }
+
+    function switchTab(tab) {
+      ['filters', 'studio', 'table'].forEach(t => {
+        document.getElementById(`tab-content-${t}`).classList.add('hidden');
+        document.getElementById(`tab-btn-${t}`).className = 'flex-1 py-1.5 px-2 rounded font-medium text-center transition text-slate-400 hover:text-slate-200 hover:bg-slate-800 cursor-pointer';
+      });
+      document.getElementById(`tab-content-${tab}`).classList.remove('hidden');
+      document.getElementById(`tab-btn-${tab}`).className = 'flex-1 py-1.5 px-2 rounded font-medium text-center transition bg-blue-600 text-white cursor-pointer';
+    }
+
+    // Studio Schema Customization Functions
+    async function saveRawSchema() {
+      try {
+        const text = document.getElementById('raw-schema-textarea').value;
+        const parsed = JSON.parse(text);
+        const resp = await fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(parsed)
+        });
+        const res = await resp.json();
+        if (res.status === 'saved') {
+          currentConfig = parsed;
+          renderDynamicFilterControls();
+          alert('Schema configuration updated successfully! The GIS application and NLU thesaurus are now using your custom filters.');
+          switchTab('filters');
+          submitManualFilters();
+        } else {
+          alert('Error saving schema: ' + JSON.stringify(res));
+        }
+      } catch (e) {
+        alert('Invalid JSON syntax: ' + e.message);
+      }
+    }
+
+    async function addNewFieldToSchema() {
+      const key = document.getElementById('new-field-key').value.trim();
+      const label = document.getElementById('new-field-label').value.trim();
+      const type = document.getElementById('new-field-type').value;
+      const optionsRaw = document.getElementById('new-field-options').value.trim();
+
+      if (!key || !label) {
+        alert('Please provide both a Field Key and a Field Label.');
+        return;
+      }
+
+      const options = optionsRaw ? optionsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+      const newField = {
+        key: key,
+        label: label,
+        type: type,
+        description: `Custom reviewer filter for ${label}`,
+        options: options
+      };
+
+      if (!currentConfig.filter_fields) {
+        currentConfig.filter_fields = [];
+      }
+      currentConfig.filter_fields.push(newField);
+
+      document.getElementById('raw-schema-textarea').value = JSON.stringify(currentConfig, null, 2);
+      await saveRawSchema();
+    }
+
+    async function restoreDefaultSchema() {
+      if (confirm('Reset schema to initial defaults?')) {
+        await fetch('/api/reset', { method: 'POST' });
+        await loadAppConfig();
+        alert('Defaults restored.');
+      }
+    }
+
+    async function reloadSchemaFromDisk() {
+      await loadAppConfig();
+    }
+
+    async function resetApp() {
+      clearManualFilters();
+      leafletMap.flyTo([30.0, 10.0], 3, { duration: 1.0 });
+    }
+  </script>
+</body>
+</html>

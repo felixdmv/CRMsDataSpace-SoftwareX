@@ -1,16 +1,16 @@
 {
-  "name": "CRMsDataSpace SoftwareX Demonstrator",
+  "name": "General-Purpose GIS Architecture Template (Customizable Sandbox)",
   "image": "mcr.microsoft.com/devcontainers/python:3.11",
-  "forwardPorts": [8080],
+  "forwardPorts": [8085],
   "portsAttributes": {
-    "8080": {
-      "label": "CRMsDataSpace Web Application",
+    "8085": {
+      "label": "GIS Architecture Template Sandbox",
       "onAutoForward": "openPreview",
       "elevateIfNeeded": false
     }
   },
-  "postCreateCommand": "pip install -r code/requirements.txt || true",
-  "postAttachCommand": "python run_app.py --port 8080",
+  "postCreateCommand": "echo 'General GIS Architecture Template ready (zero external dependencies)'",
+  "postAttachCommand": "python run_template.py --port 8085",
   "customizations": {
     "vscode": {
       "settings": {

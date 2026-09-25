@@ -1,0 +1,239 @@
+{
+  "title": "General-Purpose GIS Filter & Facet Configuration",
+  "description": "Declarative filter fields, thesaurus synonyms, and facet definitions. Reviewers can edit this file directly or use the in-browser studio to adapt the architecture to any GIS domain.",
+  "filter_fields": [
+    {
+      "key": "category",
+      "label": "Facility Category",
+      "type": "multiselect",
+      "description": "Primary domain category of the spatial point",
+      "colors": {
+        "Solar": "#f59e0b",
+        "Wind": "#06b6d4",
+        "Hydro": "#3b82f6",
+        "Geothermal": "#10b981",
+        "Storage": "#a855f7",
+        "Biomass": "#84cc16"
+      },
+      "synonyms": {
+        "solar": [
+          "solar",
+          "photovoltaic",
+          "pv",
+          "fotovoltaica",
+          "parque solar",
+          "sun"
+        ],
+        "wind": [
+          "wind",
+          "eolica",
+          "eólica",
+          "wind farm",
+          "turbines",
+          "aerogeneradores",
+          "offshore wind",
+          "onshore wind"
+        ],
+        "hydro": [
+          "hydro",
+          "hydroelectric",
+          "dam",
+          "hidroelectrica",
+          "hidroeléctrica",
+          "presa",
+          "embalse",
+          "pumped hydro"
+        ],
+        "geothermal": [
+          "geothermal",
+          "geotermica",
+          "geotérmica",
+          "terrestre"
+        ],
+        "storage": [
+          "storage",
+          "battery",
+          "baterias",
+          "baterías",
+          "almacenamiento",
+          "bess"
+        ],
+        "biomass": [
+          "biomass",
+          "biomasa",
+          "bioenergy",
+          "biocombustible"
+        ]
+      },
+      "options": [
+        "Solar",
+        "Wind",
+        "Hydro",
+        "Geothermal",
+        "Storage",
+        "Biomass"
+      ]
+    },
+    {
+      "key": "country",
+      "label": "Country / Location",
+      "type": "multiselect",
+      "description": "Geographical territory filter",
+      "synonyms": {
+        "spain": [
+          "spain",
+          "españa",
+          "espana",
+          "spanish"
+        ],
+        "germany": [
+          "germany",
+          "alemania",
+          "deutschland",
+          "german"
+        ],
+        "france": [
+          "france",
+          "francia",
+          "french"
+        ],
+        "norway": [
+          "norway",
+          "noruega",
+          "norwegian"
+        ],
+        "united states": [
+          "united states",
+          "usa",
+          "eeuu",
+          "estados unidos",
+          "america",
+          "us",
+          "california",
+          "texas"
+        ],
+        "japan": [
+          "japan",
+          "japon",
+          "japón",
+          "japanese"
+        ],
+        "australia": [
+          "australia",
+          "australian"
+        ],
+        "chile": [
+          "chile",
+          "chileno"
+        ]
+      },
+      "options": [
+        "Spain",
+        "Germany",
+        "France",
+        "Norway",
+        "United States",
+        "Japan",
+        "Australia",
+        "Chile"
+      ]
+    },
+    {
+      "key": "status",
+      "label": "Operational Status",
+      "type": "select",
+      "description": "Project lifecycle phase",
+      "synonyms": {
+        "operational": [
+          "operational",
+          "active",
+          "operating",
+          "operativa",
+          "activo",
+          "funcionando",
+          "en servicio"
+        ],
+        "under construction": [
+          "under construction",
+          "construction",
+          "en construccion",
+          "en construcción",
+          "en obras"
+        ],
+        "planned": [
+          "planned",
+          "projected",
+          "planeado",
+          "planificado",
+          "proyecto"
+        ],
+        "decommissioned": [
+          "decommissioned",
+          "closed",
+          "cerrado",
+          "clausurado",
+          "desmantelado"
+        ]
+      },
+      "options": [
+        "Operational",
+        "Under Construction",
+        "Planned",
+        "Decommissioned"
+      ]
+    },
+    {
+      "key": "capacity_mw",
+      "label": "Capacity (MW)",
+      "type": "range",
+      "description": "Generation or storage capacity in Megawatts",
+      "min": 0,
+      "max": 4000,
+      "step": 25,
+      "unit": "MW"
+    },
+    {
+      "key": "environmental_rating",
+      "label": "Environmental Rating (ESG)",
+      "type": "select",
+      "description": "Environmental/ESG compliance grade",
+      "synonyms": {
+        "a": [
+          "grade a",
+          "clase a",
+          "categoria a",
+          "rating a",
+          "a"
+        ],
+        "b": [
+          "grade b",
+          "clase b",
+          "categoria b",
+          "rating b",
+          "b"
+        ],
+        "c": [
+          "grade c",
+          "clase c",
+          "categoria c",
+          "rating c",
+          "c"
+        ]
+      },
+      "options": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    {
+      "key": "test_field",
+      "label": "Test Custom Dimension",
+      "type": "select",
+      "options": [
+        "OptionA",
+        "OptionB"
+      ]
+    }
+  ]
+}

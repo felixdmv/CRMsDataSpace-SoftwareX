@@ -1,0 +1,9 @@
+# General-Purpose GIS Architecture Template Dependencies
+# Zero external packages required!
+# This template runs entirely out-of-the-box using the Python 3.9+ Standard Library:
+# - http.server (ThreadingHTTPServer)
+# - json
+# - re
+# - urllib
+# - argparse
+# - pathlib

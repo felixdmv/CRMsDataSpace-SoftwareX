@@ -3,7 +3,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python: 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
 [![SoftwareX](https://img.shields.io/badge/Elsevier-SoftwareX-orange.svg)](https://www.sciencedirect.com/journal/softwarex)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX)
+[![Codespace: CRMsDataSpace WebApp](https://img.shields.io/badge/Codespace-CRMs%20WebApp%20(Port%208080)-blue.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX?devcontainer_path=.devcontainer/crm-webapp/devcontainer.json)
+[![Codespace: GIS Template Sandbox](https://img.shields.io/badge/Codespace-GIS%20Template%20Sandbox%20(Port%208085)-emerald.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX?devcontainer_path=.devcontainer/generic-template/devcontainer.json)
 [![Reviewer Tests: 100% Passing](https://img.shields.io/badge/Reviewer_Tests-100%25_Passing-brightgreen.svg)]()
 [![Data Sovereignty: EU Compliant](https://img.shields.io/badge/Data_Sovereignty-100%25_On--Premises-blueviolet.svg)]()
 
@@ -19,6 +20,8 @@
 This repository presents an open-source, modular, domain-agnostic software architecture that bridges conversational Natural Language Understanding (NLU), Apache Solr spatial indexing, and dynamic cartographic Geographic Information System (GIS) visualization.
 
 As a primary real-world demonstrator, the architecture is instantiated within the European research initiative **CRMsDataSpace** (*Building a Common European Data Space on Critical Raw Materials for the Green Deal*, EU Research Fund for Coal and Steel, Grant Agreement No. 101216677). The platform maps, filters, and analyzes 100 strategic extractive waste facilities (tailings dams and waste dumps) containing Critical Raw Materials (Lithium, Cobalt, Tungsten, Nickel, Rare Earth Elements, etc.) across 15 European countries.
+
+Additionally, to allow reviewers and developers to test the **generality and reusability** of the framework beyond European mining, this repository includes a **General-Purpose GIS Template Sandbox** ([`template/`](template/)), featuring a domain-agnostic renewable infrastructure dataset and an in-browser **Filter Studio** to create custom filters by hand.
 
 ```
 +---------------------------------------------------------------------------------------------------------+
@@ -41,23 +44,37 @@ As a primary real-world demonstrator, the architecture is instantiated within th
 
 ## 🚀 Reviewer Access & Quick Start Guide
 
-Reviewers can access and evaluate the web application through three complementary modalities:
+Reviewers can access and evaluate the software through three complementary modalities:
 
-### Method 1: One-Click Cloud Execution (GitHub Codespaces — No Local Setup)
-Click the badge below to run the complete web application directly in your web browser with zero local installation:
+### Method 1: One-Click Cloud Execution (Two Dedicated GitHub Codespaces)
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX)
+Reviewers can choose between two dedicated cloud environments configured in [`.devcontainer/`](.devcontainer/):
 
-1. Click **Create codespace on main**.
-2. GitHub automatically provisions the cloud container and launches the web application server on port `8080`.
-3. The web application opens automatically as an interactive tab inside the workspace.
-4. *(Optional)* To view the application in a full standalone browser tab, click the **Open in Browser** icon (square with arrow) at the top-right of the preview tab, or click the globe icon next to Port `8080` in the **Ports** panel.
+| Environment | Description | Direct 1-Click Launch | Auto-Opened Port |
+|---|---|---|---|
+| **Option A: CRMsDataSpace WebApp** | Official European Critical Raw Materials demonstrator (100 facilities across 15 countries, multi-model NLU). | [![Open CRMsDataSpace WebApp](https://img.shields.io/badge/Launch-CRMsDataSpace%20WebApp-blue.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX?devcontainer_path=.devcontainer/crm-webapp/devcontainer.json) | **`8080`** |
+| **Option B: General GIS Template** | Domain-agnostic sandbox with in-browser **Filter Studio** to create custom filters by hand and test framework generality. | [![Open GIS Template Sandbox](https://img.shields.io/badge/Launch-GIS%20Template%20Sandbox-emerald.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX?devcontainer_path=.devcontainer/generic-template/devcontainer.json) | **`8085`** |
 
+> **Note on GitHub UI**: If you navigate via **Code $\to$ Codespaces $\to$ New with options...**, GitHub will prompt you with a dropdown to select either `CRMsDataSpace — European Critical Raw Materials WebApp` or `General-Purpose GIS Architecture Template (Customizable Sandbox)`.
+>
 > **Note on Direct Web Access**: If you prefer an instant zero-editor web preview without VS Code, you can also explore the static deployment directly at: **[https://felixdmv.github.io/CRMsDataSpace-SoftwareX/](https://felixdmv.github.io/CRMsDataSpace-SoftwareX/)**.
 
 ---
 
-### Method 2: Local Standalone Execution (Standard SoftwareX Review Mode)
+### Method 2: Local Standalone Execution (Zero Setup, No GPU Required)
+
+Both applications run locally on any machine with standard Python 3.9+:
+
+```bash
+# Option A: Launch European Critical Raw Materials Demonstrator (Port 8080)
+python run_app.py --port 8080
+# Open: http://localhost:8080
+
+# Option B: Launch General-Purpose GIS Architecture Template (Port 8085)
+python run_template.py --port 8085
+# Open: http://localhost:8085
+```
+
 For reviewers running on their personal laptop or desktop (Windows, macOS, Linux) with standard Python 3.9+ and **no GPU required**:
 
 ```bash
@@ -165,8 +182,11 @@ python benchmark_all_models.py
 ```
 CRMsDataSpace-SoftwareX/
 ├── .devcontainer/
-│   └── devcontainer.json               # 1-Click GitHub Codespaces configuration
-├── code/                               # Reference software implementation
+│   ├── crm-webapp/
+│   │   └── devcontainer.json           # Codespaces config for European CRMs WebApp (Port 8080)
+│   └── generic-template/
+│       └── devcontainer.json           # Codespaces config for General GIS Template Sandbox (Port 8085)
+├── code/                               # Reference software implementation (European CRMs)
 │   ├── agent.py                        # Orchestrator coordinating Stages 1-4
 │   ├── llm_client.py                   # Multi-engine NLU client (Mock, Local Transformers, Cloud APIs)
 │   ├── mock_api.py                     # Apache Solr spatial simulator with facet engine
@@ -186,21 +206,54 @@ CRMsDataSpace-SoftwareX/
 │   └── static/
 │       ├── favicon.ico                 # Application favicon
 │       └── index.html                  # Dynamic Single-Page App (Leaflet.js + TailwindCSS)
+├── template/                           # General-Purpose GIS Architecture Template & Sandbox
+│   ├── README.md                       # Architectural guide & 3-step adaptation recipe
+│   ├── filters_config.json             # Declarative filter definitions & thesaurus mapping
+│   ├── run_template.py                 # Zero-dependency HTTP server & 4-stage orchestrator
+│   ├── run_template.sh                 # Convenient shell launcher
+│   ├── requirements.txt                # Zero-dependency specification (Python stdlib)
+│   ├── data/
+│   │   └── facilities.json             # 30-facility domain-agnostic GIS dataset
+│   └── static/
+│       ├── favicon.ico                 # App icon
+│       └── index.html                  # Reactive Leaflet GIS UI with Live Filter Studio
 ├── docs/
 │   └── index.html                      # Standalone GitHub Pages web demonstrator
 ├── .gitignore                          # Git exclude rules
 ├── LICENSE                             # MIT Open-Source License
 ├── README.md                           # Main documentation & quickstart
-├── run_app.py                          # Root standalone launcher (Port 8080)
-├── run_demo.sh                         # 1-Click shell quickstart launcher
+├── run_app.py                          # Root standalone launcher for CRMs WebApp (Port 8080)
+├── run_demo.sh                         # 1-Click shell launcher for CRMs WebApp
+├── run_template.py                     # Root standalone launcher for GIS Template (Port 8085)
+├── run_template.sh                     # 1-Click shell launcher for GIS Template
 └── run_gpu_app.py                      # Slurm GPU launcher & reverse proxy
 ```
 
 ---
 
-## 🛠️ Domain Customization & Developer Guide
+## 🛠️ General-Purpose GIS Template & Filter Customization Studio
+
+The package in [`template/`](template/) (also mirrored at [`SoftwareX/template/`](SoftwareX/template/)) allows reviewers to evaluate the framework's adaptability to **any geospatial domain**:
+
+1. **Interactive In-Browser Filter Studio**:
+   - Launch `python run_template.py --port 8085` and open the **"🛠️ Filter Studio"** tab.
+   - Add new filter fields (multiselect, select, or numeric range) and define synonyms live.
+   - The changes are instantly applied to the running application and reflected on the Leaflet map without restarting the server!
+
+2. **Declarative Configuration ([`filters_config.json`](template/filters_config.json))**:
+   - Define custom facets, validation types, and thesaurus synonyms declaratively in JSON.
+
+3. **Adapting to Custom Datasets in 3 Steps**:
+   - Replace or edit [`template/data/facilities.json`](template/data/facilities.json) with your own GeoJSON/JSON spatial records containing `latitude`, `longitude`, and your domain attributes.
+   - Declare your filter fields in [`template/filters_config.json`](template/filters_config.json).
+   - Run `python run_template.py` to explore your new GIS dashboard with conversational search and dynamic facet badges.
+
+---
+
+## 🛠️ Domain Customization & Developer Guide (CRMs Demonstrator)
 
 - **Adapting to Other Domains**: Update the canonical dictionary in [`code/nlu_pipeline.py`](code/nlu_pipeline.py) under `DOMAIN_SYNONYMS` for your domain (e.g., cadastres, environmental hazards, forestry).
+
 - **Connecting a Production Apache Solr / SolrCloud Cluster**: To connect to a live distributed SolrCloud collection or standalone Solr core, define the environment variable: `export SOLR_URL="http://your-solr-host:8983/solr/crms_collection"`. The search connector in [`code/mock_api.py`](code/mock_api.py) automatically routes queries via the Solr HTTP REST API (`/select`) with live faceting, falling back gracefully to the embedded synthetic dataset if omitted.
 
 ---

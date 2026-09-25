@@ -55,8 +55,8 @@ SoftwareX/manuscript/Graphical_abstract_v3.png
 
 # Legacy code & local working directories
 /legacy_code/
-/SoftwareX/
-SoftwareX/
+SoftwareX/*
+!SoftwareX/template/
 
 architecture_comparison_report.md
 architecture_tracking.md

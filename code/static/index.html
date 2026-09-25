@@ -123,6 +123,19 @@
 
     <!-- Right-side status and telemetry controls -->
     <div class="flex items-center gap-3 shrink-0">
+      <!-- Link to Generic GIS Template Sandbox -->
+      <button 
+        type="button"
+        onclick="window.open(window.location.protocol + '//' + window.location.hostname + ':8085', '_blank')"
+        class="bg-blue-950/60 hover:bg-blue-900/80 text-blue-300 hover:text-white border border-blue-800/80 text-[10.5px] px-2.5 py-1.5 rounded-md transition flex items-center gap-1.5 cursor-pointer shadow-sm"
+        title="Open General-Purpose GIS Architecture Template on Port 8085"
+      >
+        <span>🌍 GIS Template (Port 8085)</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      </button>
+
       <!-- Live Hardware / Engine Telemetry Badge -->
       <div id="gpu-telemetry-badge" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-md shadow-sm" title="Real-time Execution Engine Status">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

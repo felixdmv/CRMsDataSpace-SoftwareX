@@ -1,0 +1,24 @@
+{
+  "name": "CRMsDataSpace — European Critical Raw Materials WebApp",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": {
+      "label": "CRMsDataSpace Web Application (European CRMs)",
+      "onAutoForward": "openPreview",
+      "elevateIfNeeded": false
+    }
+  },
+  "postCreateCommand": "pip install -r code/requirements.txt || true",
+  "postAttachCommand": "python run_app.py --port 8080",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "workbench.startupEditor": "none"
+      },
+      "extensions": [
+        "ms-python.python"
+      ]
+    }
+  }
+}
