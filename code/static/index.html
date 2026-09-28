@@ -126,7 +126,7 @@
       <!-- Link to Generic GIS Template Sandbox -->
       <button 
         type="button"
-        onclick="window.open(window.location.protocol + '//' + window.location.hostname + ':8085', '_blank')"
+        onclick="openSiblingApp(8085)"
         class="bg-blue-950/60 hover:bg-blue-900/80 text-blue-300 hover:text-white border border-blue-800/80 text-[10.5px] px-2.5 py-1.5 rounded-md transition flex items-center gap-1.5 cursor-pointer shadow-sm"
         title="Open General-Purpose GIS Architecture Template on Port 8085"
       >
@@ -716,6 +716,18 @@
       JAVASCRIPT LOGIC (PURE VANILLA)
       ========================================== -->
   <script>
+    function openSiblingApp(targetPort) {
+      const loc = window.location;
+      let targetUrl;
+      if (loc.hostname.includes('.app.github.dev') || loc.hostname.includes('.githubpreview.dev')) {
+        const newHostname = loc.hostname.replace(/-\d+(\.(?:preview\.)?app\.github\.dev|\.githubpreview\.dev)/, `-${targetPort}$1`);
+        targetUrl = `${loc.protocol}//${newHostname}/`;
+      } else {
+        targetUrl = `${loc.protocol}//${loc.hostname}:${targetPort}/`;
+      }
+      window.open(targetUrl, '_blank');
+    }
+
     // ==========================================
     // DATASET: 100 Synthetic European CRM Facilities
     // ==========================================

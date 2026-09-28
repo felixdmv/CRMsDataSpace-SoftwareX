@@ -59,9 +59,19 @@ def main():
     # Give a brief moment for binding
     time.sleep(0.8)
 
+    import os
+    codespace_name = os.environ.get("CODESPACE_NAME")
+    domain = os.environ.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN", "app.github.dev")
+    if codespace_name:
+        url_8080 = f"https://{codespace_name}-8080.{domain}"
+        url_8085 = f"https://{codespace_name}-8085.{domain}"
+    else:
+        url_8080 = "http://localhost:8080"
+        url_8085 = "http://localhost:8085"
+
     print("\n [✓] Applications ready for evaluation:")
-    print("     👉 [Port 8080] CRMsDataSpace European WebApp: http://localhost:8080")
-    print("     👉 [Port 8085] General GIS Template Sandbox:  http://localhost:8085")
+    print(f"     👉 [Port 8080] CRMsDataSpace European WebApp: {url_8080}")
+    print(f"     👉 [Port 8085] General GIS Template Sandbox:  {url_8085}")
     print("==========================================================================")
 
 if __name__ == "__main__":

@@ -1,239 +1,226 @@
 {
-  "title": "General-Purpose GIS Filter & Facet Configuration",
-  "description": "Declarative filter fields, thesaurus synonyms, and facet definitions. Reviewers can edit this file directly or use the in-browser studio to adapt the architecture to any GIS domain.",
+  "title": "Archipiélago Avalon — Plantilla GIS de Dominio Abierto",
+  "description": "Plantilla interactiva para evaluar la generalidad y reutilización del framework desacoplado (NLU -> Solr -> GIS) en cualquier dominio cartográfico.",
+  "active_preset": "adventure",
+  "territory": {
+    "name": "Archipiélago Avalon",
+    "description": "Región insular experimental con 5 sectores biogeográficos diferenciados.",
+    "center": [
+      28.28,
+      -16.48
+    ],
+    "zoom": 10.5,
+    "zones": [
+      {
+        "name": "Costa Norte",
+        "lat": 28.44,
+        "lon": -16.42,
+        "color": "#06b6d4",
+        "desc": "Litoral con acantilados y puertos pesqueros"
+      },
+      {
+        "name": "Tierras Altas",
+        "lat": 28.3,
+        "lon": -16.52,
+        "color": "#8b5cf6",
+        "desc": "Mesetas y macizos montañosos centrales"
+      },
+      {
+        "name": "Bahía Sur",
+        "lat": 28.17,
+        "lon": -16.62,
+        "color": "#f59e0b",
+        "desc": "Aguas calmas, playas y ensenadas abrigadas"
+      },
+      {
+        "name": "Valle Esmeralda",
+        "lat": 28.32,
+        "lon": -16.7,
+        "color": "#10b981",
+        "desc": "Cuenca fértil con densa vegetación y manantiales"
+      },
+      {
+        "name": "Sector Oriental",
+        "lat": 28.26,
+        "lon": -16.25,
+        "color": "#ec4899",
+        "desc": "Archipiélago de islotes rocosos y arrecifes"
+      }
+    ]
+  },
   "filter_fields": [
     {
-      "key": "category",
-      "label": "Facility Category",
+      "key": "tipo",
+      "label": "Tipo de Lugar",
       "type": "multiselect",
-      "description": "Primary domain category of the spatial point",
+      "options": [
+        "Castillo",
+        "Mina abandonada",
+        "Templo místico",
+        "Puerto pirata",
+        "Refugio"
+      ],
       "colors": {
-        "Solar": "#f59e0b",
-        "Wind": "#06b6d4",
-        "Hydro": "#3b82f6",
-        "Geothermal": "#10b981",
-        "Storage": "#a855f7",
-        "Biomass": "#84cc16"
+        "Castillo": "#3b82f6",
+        "Mina abandonada": "#f59e0b",
+        "Templo místico": "#8b5cf6",
+        "Puerto pirata": "#06b6d4",
+        "Refugio": "#10b981"
       },
       "synonyms": {
-        "solar": [
-          "solar",
-          "photovoltaic",
-          "pv",
-          "fotovoltaica",
-          "parque solar",
-          "sun"
+        "castillo": [
+          "castillo",
+          "castillos",
+          "fortaleza",
+          "torre",
+          "castle",
+          "castles",
+          "fortress"
         ],
-        "wind": [
-          "wind",
-          "eolica",
-          "eólica",
-          "wind farm",
-          "turbines",
-          "aerogeneradores",
-          "offshore wind",
-          "onshore wind"
+        "mina abandonada": [
+          "mina",
+          "minas",
+          "mina abandonada",
+          "cantera",
+          "mine",
+          "mines"
         ],
-        "hydro": [
-          "hydro",
-          "hydroelectric",
-          "dam",
-          "hidroelectrica",
-          "hidroeléctrica",
-          "presa",
-          "embalse",
-          "pumped hydro"
+        "templo místico": [
+          "templo",
+          "templos",
+          "santuario",
+          "templo mistico",
+          "shrine",
+          "temple",
+          "temples"
         ],
-        "geothermal": [
-          "geothermal",
-          "geotermica",
-          "geotérmica",
-          "terrestre"
+        "puerto pirata": [
+          "puerto",
+          "puertos",
+          "muelle",
+          "embarcadero",
+          "port",
+          "harbor"
         ],
-        "storage": [
-          "storage",
-          "battery",
-          "baterias",
-          "baterías",
-          "almacenamiento",
-          "bess"
-        ],
-        "biomass": [
-          "biomass",
-          "biomasa",
-          "bioenergy",
-          "biocombustible"
+        "refugio": [
+          "refugio",
+          "refugios",
+          "albergue",
+          "campamento",
+          "shelter",
+          "refuge",
+          "camp"
         ]
-      },
-      "options": [
-        "Solar",
-        "Wind",
-        "Hydro",
-        "Geothermal",
-        "Storage",
-        "Biomass"
-      ]
+      }
     },
     {
-      "key": "country",
-      "label": "Country / Location",
-      "type": "multiselect",
-      "description": "Geographical territory filter",
-      "synonyms": {
-        "spain": [
-          "spain",
-          "españa",
-          "espana",
-          "spanish"
-        ],
-        "germany": [
-          "germany",
-          "alemania",
-          "deutschland",
-          "german"
-        ],
-        "france": [
-          "france",
-          "francia",
-          "french"
-        ],
-        "norway": [
-          "norway",
-          "noruega",
-          "norwegian"
-        ],
-        "united states": [
-          "united states",
-          "usa",
-          "eeuu",
-          "estados unidos",
-          "america",
-          "us",
-          "california",
-          "texas"
-        ],
-        "japan": [
-          "japan",
-          "japon",
-          "japón",
-          "japanese"
-        ],
-        "australia": [
-          "australia",
-          "australian"
-        ],
-        "chile": [
-          "chile",
-          "chileno"
-        ]
-      },
-      "options": [
-        "Spain",
-        "Germany",
-        "France",
-        "Norway",
-        "United States",
-        "Japan",
-        "Australia",
-        "Chile"
-      ]
-    },
-    {
-      "key": "status",
-      "label": "Operational Status",
-      "type": "select",
-      "description": "Project lifecycle phase",
-      "synonyms": {
-        "operational": [
-          "operational",
-          "active",
-          "operating",
-          "operativa",
-          "activo",
-          "funcionando",
-          "en servicio"
-        ],
-        "under construction": [
-          "under construction",
-          "construction",
-          "en construccion",
-          "en construcción",
-          "en obras"
-        ],
-        "planned": [
-          "planned",
-          "projected",
-          "planeado",
-          "planificado",
-          "proyecto"
-        ],
-        "decommissioned": [
-          "decommissioned",
-          "closed",
-          "cerrado",
-          "clausurado",
-          "desmantelado"
-        ]
-      },
-      "options": [
-        "Operational",
-        "Under Construction",
-        "Planned",
-        "Decommissioned"
-      ]
-    },
-    {
-      "key": "capacity_mw",
-      "label": "Capacity (MW)",
-      "type": "range",
-      "description": "Generation or storage capacity in Megawatts",
-      "min": 0,
-      "max": 4000,
-      "step": 25,
-      "unit": "MW"
-    },
-    {
-      "key": "environmental_rating",
-      "label": "Environmental Rating (ESG)",
-      "type": "select",
-      "description": "Environmental/ESG compliance grade",
-      "synonyms": {
-        "a": [
-          "grade a",
-          "clase a",
-          "categoria a",
-          "rating a",
-          "a"
-        ],
-        "b": [
-          "grade b",
-          "clase b",
-          "categoria b",
-          "rating b",
-          "b"
-        ],
-        "c": [
-          "grade c",
-          "clase c",
-          "categoria c",
-          "rating c",
-          "c"
-        ]
-      },
-      "options": [
-        "A",
-        "B",
-        "C"
-      ]
-    },
-    {
-      "key": "test_field",
-      "label": "Test Custom Dimension",
+      "key": "faccion",
+      "label": "Facción Dominante",
       "type": "select",
       "options": [
-        "OptionA",
-        "OptionB"
-      ]
+        "Guardianes",
+        "Mercaderes",
+        "Exploradores",
+        "Rebeldes"
+      ],
+      "colors": {
+        "Guardianes": "#3b82f6",
+        "Mercaderes": "#10b981",
+        "Exploradores": "#f59e0b",
+        "Rebeldes": "#ef4444"
+      },
+      "synonyms": {
+        "guardianes": [
+          "guardianes",
+          "guardian",
+          "guardianes del reino",
+          "guardians"
+        ],
+        "mercaderes": [
+          "mercaderes",
+          "mercader",
+          "comerciantes",
+          "merchants",
+          "traders"
+        ],
+        "exploradores": [
+          "exploradores",
+          "explorador",
+          "rastreadores",
+          "explorers",
+          "scouts"
+        ],
+        "rebeldes": [
+          "rebeldes",
+          "rebelde",
+          "insurgentes",
+          "rebels"
+        ]
+      }
+    },
+    {
+      "key": "peligro",
+      "label": "Nivel de Peligro",
+      "type": "select",
+      "options": [
+        "Seguro",
+        "Moderado",
+        "Peligroso",
+        "Crítico"
+      ],
+      "colors": {
+        "Seguro": "#10b981",
+        "Moderado": "#f59e0b",
+        "Peligroso": "#f97316",
+        "Crítico": "#ef4444"
+      },
+      "synonyms": {
+        "seguro": [
+          "seguro",
+          "segura",
+          "tranquilo",
+          "pacifico",
+          "safe",
+          "secure"
+        ],
+        "moderado": [
+          "moderado",
+          "medio",
+          "alerta",
+          "moderate"
+        ],
+        "peligroso": [
+          "peligroso",
+          "alto peligro",
+          "amenaza",
+          "dangerous",
+          "perilous"
+        ],
+        "crítico": [
+          "critico",
+          "crítico",
+          "extremo",
+          "mortal",
+          "critical",
+          "extreme"
+        ]
+      }
+    },
+    {
+      "key": "clima_insular",
+      "label": "Clima Insular",
+      "type": "select",
+      "options": [
+        "Soleado",
+        "Tormenta",
+        "Bruma"
+      ],
+      "colors": {
+        "Soleado": "#3b82f6",
+        "Tormenta": "#10b981",
+        "Bruma": "#f59e0b"
+      },
+      "synonyms": {}
     }
   ]
 }

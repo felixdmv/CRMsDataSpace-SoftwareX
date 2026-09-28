@@ -5,12 +5,12 @@
   "portsAttributes": {
     "8080": {
       "label": "CRMsDataSpace Web Application (European CRMs)",
-      "onAutoForward": "openPreview",
+      "onAutoForward": "openBrowser",
       "elevateIfNeeded": false
     },
     "8085": {
       "label": "General GIS Architecture Template Sandbox",
-      "onAutoForward": "openPreview",
+      "onAutoForward": "openBrowser",
       "elevateIfNeeded": false
     }
   },
