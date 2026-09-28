@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """
 General-Purpose GIS Architecture Template Server:
-Elsevier SoftwareX Demonstrator — Domain-Agnostic Conversational Spatial Search.
+Elsevier SoftwareX Demonstrator — Domain-Agnostic Conversational Spatial Search Sandbox.
 
 Features:
-- Zero external dependencies: Runs on Python 3.9+ standard library.
-- Dynamic Sandbox: Users create their own custom filters and categories freely.
-- Procedural Point Generator: Distributes random points with dynamic attributes across the geographic zone.
+- Zero external dependencies: Runs on standard Python 3.9+ (stdlib).
+- 100% Offline Vector Map: Uses custom stylized cartographic GeoJSON (Land & Sea) with zero external tile server API keys.
+- User-Driven Dynamic Schema: Users define custom filter dimensions, or select presets (Renewable Energy, Smart City, Custom).
+- Procedural Spatial Generation: Points are only generated on demand when the user triggers population.
 - Decoupled 4-Stage Architecture Pipeline:
     Stage 1: Dynamic Conversational NLU & Token Extraction
-    Stage 2: Deterministic Schema Validation & Normalization
-    Stage 3: Apache Solr-Style Boolean Filter Builder & Live Facet Indexer
-    Stage 4: Leaflet Cartographic Dynamic Synchronization
+    Stage 2: Deterministic Schema Normalization & Validation
+    Stage 3: Apache Solr-Style Boolean Query Builder ($q, fq$) & Live Facet Indexer
+    Stage 4: Dynamic Cartographic Leaflet Synchronization
 """
 
 import os
@@ -33,241 +34,224 @@ STATIC_DIR = TEMPLATE_DIR / "static"
 _DATASET: List[Dict[str, Any]] = []
 _CONFIG: Dict[str, Any] = {}
 
-# Built-in Presets for 1-click domain switching
+# Built-in Domain Presets (1-Click Switching)
 PRESETS: Dict[str, Dict[str, Any]] = {
-    "adventure": {
-        "title": "Archipiélago Avalon — Aventura y Rol",
-        "description": "Exploración de santuarios, castillos y enclaves insulares.",
-        "active_preset": "adventure",
+    "energy": {
+        "title": "Avalon Republic — Renewable Energy & Power Grid",
+        "description": "Exploration of utility-scale renewable generation, storage assets, and grid compliance.",
+        "active_preset": "energy",
         "territory": {
-            "name": "Archipiélago Avalon",
-            "description": "Territorio insular con costas escarpadas, valles y cordilleras.",
-            "center": [28.28, -16.48],
+            "name": "Avalon Republic",
+            "description": "Fictional island archipelago nation with 5 distinct regional sectors.",
+            "center": [20.0, 30.0],
             "zoom": 10.5,
             "zones": [
-                {"name": "Costa Norte", "lat": 28.44, "lon": -16.42, "color": "#06b6d4", "desc": "Litoral con acantilados y puertos pesqueros"},
-                {"name": "Tierras Altas", "lat": 28.30, "lon": -16.52, "color": "#8b5cf6", "desc": "Mesetas y macizos montañosos centrales"},
-                {"name": "Bahía Sur", "lat": 28.17, "lon": -16.62, "color": "#f59e0b", "desc": "Aguas calmas, playas y ensenadas abrigadas"},
-                {"name": "Valle Esmeralda", "lat": 28.32, "lon": -16.70, "color": "#10b981", "desc": "Cuenca fértil con densa vegetación y manantiales"},
-                {"name": "Sector Oriental", "lat": 28.26, "lon": -16.25, "color": "#ec4899", "desc": "Archipiélago de islotes rocosos y arrecifes"}
+                {"name": "North Coast", "lat": 20.17, "lon": 30.00, "color": "#06b6d4", "desc": "Deepwater maritime harbor and offshore energy shelf"},
+                {"name": "Central Highlands", "lat": 20.02, "lon": 29.98, "color": "#8b5cf6", "desc": "Elevated mountain ridges and hydroelectric storage basin"},
+                {"name": "South Bay", "lat": 19.84, "lon": 29.94, "color": "#f59e0b", "desc": "Sheltered coastal estuaries, municipal districts and solar plains"},
+                {"name": "Emerald Valley", "lat": 20.00, "lon": 29.75, "color": "#10b981", "desc": "Western river basin and distributed utility corridor"},
+                {"name": "Eastern Archipelago", "lat": 20.05, "lon": 30.34, "color": "#ec4899", "desc": "Offshore satellite islands and subsea transmission hub"}
             ]
         },
         "filter_fields": [
             {
-                "key": "tipo",
-                "label": "Tipo de Lugar",
+                "key": "energy_type",
+                "label": "Generation Technology",
                 "type": "multiselect",
-                "options": ["Castillo", "Mina abandonada", "Templo místico", "Puerto pirata", "Refugio"],
+                "options": [
+                    "Solar Photovoltaic",
+                    "Onshore Wind",
+                    "Offshore Wind",
+                    "Hydroelectric Dam",
+                    "Battery Storage (BESS)",
+                    "Geothermal Plant"
+                ],
                 "colors": {
-                    "Castillo": "#3b82f6",
-                    "Mina abandonada": "#f59e0b",
-                    "Templo místico": "#8b5cf6",
-                    "Puerto pirata": "#06b6d4",
-                    "Refugio": "#10b981"
+                    "Solar Photovoltaic": "#f59e0b",
+                    "Onshore Wind": "#06b6d4",
+                    "Offshore Wind": "#38bdf8",
+                    "Hydroelectric Dam": "#3b82f6",
+                    "Battery Storage (BESS)": "#8b5cf6",
+                    "Geothermal Plant": "#10b981"
                 },
                 "synonyms": {
-                    "castillo": ["castillo", "castillos", "fortaleza", "torre", "castle", "castles", "fortress"],
-                    "mina abandonada": ["mina", "minas", "mina abandonada", "cantera", "mine", "mines"],
-                    "templo místico": ["templo", "templos", "santuario", "templo mistico", "shrine", "temple", "temples"],
-                    "puerto pirata": ["puerto", "puertos", "muelle", "embarcadero", "port", "harbor"],
-                    "refugio": ["refugio", "refugios", "albergue", "campamento", "shelter", "refuge", "camp"]
+                    "solar photovoltaic": ["solar", "photovoltaic", "pv", "solar farm", "solar plant", "sun"],
+                    "onshore wind": ["onshore wind", "wind turbines", "wind farm", "wind", "turbines"],
+                    "offshore wind": ["offshore wind", "marine wind", "sea wind", "coastal wind"],
+                    "hydroelectric dam": ["hydro", "hydroelectric", "dam", "reservoir", "water power"],
+                    "battery storage (bess)": ["battery", "storage", "bess", "battery storage", "energy storage"],
+                    "geothermal plant": ["geothermal", "thermal power", "geo", "hot springs"]
                 }
             },
             {
-                "key": "faccion",
-                "label": "Facción Dominante",
+                "key": "status",
+                "label": "Operational Status",
                 "type": "select",
-                "options": ["Guardianes", "Mercaderes", "Exploradores", "Rebeldes"],
+                "options": [
+                    "Operational",
+                    "Under Construction",
+                    "Permitting & Planned",
+                    "Decommissioned"
+                ],
                 "colors": {
-                    "Guardianes": "#3b82f6",
-                    "Mercaderes": "#10b981",
-                    "Exploradores": "#f59e0b",
-                    "Rebeldes": "#ef4444"
+                    "Operational": "#10b981",
+                    "Under Construction": "#f59e0b",
+                    "Permitting & Planned": "#3b82f6",
+                    "Decommissioned": "#64748b"
                 },
                 "synonyms": {
-                    "guardianes": ["guardianes", "guardian", "guardianes del reino", "guardians"],
-                    "mercaderes": ["mercaderes", "mercader", "comerciantes", "merchants", "traders"],
-                    "exploradores": ["exploradores", "explorador", "rastreadores", "explorers", "scouts"],
-                    "rebeldes": ["rebeldes", "rebelde", "insurgentes", "rebels"]
+                    "operational": ["operational", "active", "online", "running", "producing", "commissioned"],
+                    "under construction": ["under construction", "construction", "building", "in progress"],
+                    "permitting & planned": ["planned", "projected", "permitting", "proposed", "pipeline"],
+                    "decommissioned": ["decommissioned", "retired", "closed", "offline", "shut down"]
                 }
             },
             {
-                "key": "peligro",
-                "label": "Nivel de Peligro",
+                "key": "capacity_tier",
+                "label": "Capacity Scale",
                 "type": "select",
-                "options": ["Seguro", "Moderado", "Peligroso", "Crítico"],
+                "options": [
+                    "Utility Scale (> 100 MW)",
+                    "Medium Scale (20-100 MW)",
+                    "Distributed (< 20 MW)"
+                ],
                 "colors": {
-                    "Seguro": "#10b981",
-                    "Moderado": "#f59e0b",
-                    "Peligroso": "#f97316",
-                    "Crítico": "#ef4444"
+                    "Utility Scale (> 100 MW)": "#ec4899",
+                    "Medium Scale (20-100 MW)": "#f97316",
+                    "Distributed (< 20 MW)": "#14b8a6"
                 },
                 "synonyms": {
-                    "seguro": ["seguro", "segura", "tranquilo", "pacifico", "safe", "secure"],
-                    "moderado": ["moderado", "medio", "alerta", "moderate"],
-                    "peligroso": ["peligroso", "alto peligro", "amenaza", "dangerous", "perilous"],
-                    "crítico": ["critico", "crítico", "extremo", "mortal", "critical", "extreme"]
+                    "utility scale (> 100 mw)": ["utility scale", "large scale", "major", "over 100", "> 100", "high capacity"],
+                    "medium scale (20-100 mw)": ["medium scale", "mid scale", "20-100", "medium"],
+                    "distributed (< 20 mw)": ["distributed", "small scale", "local", "under 20", "< 20", "micro"]
+                }
+            },
+            {
+                "key": "esg_rating",
+                "label": "ESG Compliance Grade",
+                "type": "select",
+                "options": [
+                    "Grade A (Exemplary)",
+                    "Grade B (Compliant)",
+                    "Grade C (Under Review)"
+                ],
+                "colors": {
+                    "Grade A (Exemplary)": "#10b981",
+                    "Grade B (Compliant)": "#f59e0b",
+                    "Grade C (Under Review)": "#ef4444"
+                },
+                "synonyms": {
+                    "grade a (exemplary)": ["grade a", "esg a", "top esg", "exemplary", "tier a", "a"],
+                    "grade b (compliant)": ["grade b", "esg b", "compliant", "tier b", "b"],
+                    "grade c (under review)": ["grade c", "esg c", "under review", "tier c", "c"]
                 }
             }
         ]
     },
     "smartcity": {
-        "title": "Distrito Metropolitano Nova — Smart City",
-        "description": "Gestión de infraestructuras públicas, servicios urbanos y movilidad.",
+        "title": "Avalon Metropolitan Area — Smart City & Public Services",
+        "description": "Urban planning dashboard monitoring municipal facilities, response priorities, and transit hubs.",
         "active_preset": "smartcity",
         "territory": {
-            "name": "Distrito Metropolitano Nova",
-            "description": "Área urbana y metropolitana dividida en 5 sectores de servicio.",
-            "center": [28.28, -16.48],
+            "name": "Avalon Metropolitan Area",
+            "description": "Metropolitan archipelago divided into 5 civic districts.",
+            "center": [20.0, 30.0],
             "zoom": 10.5,
             "zones": [
-                {"name": "Sector Norte", "lat": 28.44, "lon": -16.42, "color": "#06b6d4", "desc": "Distrito financiero y campus universitario"},
-                {"name": "Sector Central", "lat": 28.30, "lon": -16.52, "color": "#8b5cf6", "desc": "Casco histórico y eje administrativo"},
-                {"name": "Sector Sur", "lat": 28.17, "lon": -16.62, "color": "#f59e0b", "desc": "Área residencial y corredor comercial costero"},
-                {"name": "Sector Oeste", "lat": 28.32, "lon": -16.70, "color": "#10b981", "desc": "Parque tecnológico y pulmón verde metropolitano"},
-                {"name": "Sector Este", "lat": 28.26, "lon": -16.25, "color": "#ec4899", "desc": "Polígono logístico e intermodal portuario"}
+                {"name": "North Coast", "lat": 20.17, "lon": 30.00, "color": "#06b6d4", "desc": "Port maritime district and university campus"},
+                {"name": "Central Highlands", "lat": 20.02, "lon": 29.98, "color": "#8b5cf6", "desc": "Civic core, administrative axis, and central boulevard"},
+                {"name": "South Bay", "lat": 19.84, "lon": 29.94, "color": "#f59e0b", "desc": "Coastal residential suburbs and commercial waterfront"},
+                {"name": "Emerald Valley", "lat": 20.00, "lon": 29.75, "color": "#10b981", "desc": "Western technology park and green belt"},
+                {"name": "Eastern Archipelago", "lat": 20.05, "lon": 30.34, "color": "#ec4899", "desc": "Intermodal transit logistics and industrial district"}
             ]
         },
         "filter_fields": [
             {
-                "key": "equipamiento",
-                "label": "Tipo de Equipamiento",
+                "key": "facility_type",
+                "label": "Municipal Infrastructure",
                 "type": "multiselect",
-                "options": ["Hospital", "Parque Verde", "Estación de Metro", "Escuela Pública", "Comisaría"],
+                "options": [
+                    "General Hospital",
+                    "Public School",
+                    "Metro Transit Hub",
+                    "Urban Green Park",
+                    "Police Station",
+                    "Fire & Rescue"
+                ],
                 "colors": {
-                    "Hospital": "#ef4444",
-                    "Parque Verde": "#10b981",
-                    "Estación de Metro": "#3b82f6",
-                    "Escuela Pública": "#f59e0b",
-                    "Comisaría": "#8b5cf6"
+                    "General Hospital": "#ef4444",
+                    "Public School": "#f59e0b",
+                    "Metro Transit Hub": "#3b82f6",
+                    "Urban Green Park": "#10b981",
+                    "Police Station": "#8b5cf6",
+                    "Fire & Rescue": "#f97316"
                 },
                 "synonyms": {
-                    "hospital": ["hospital", "hospitales", "clinica", "salud", "sanitario"],
-                    "parque verde": ["parque", "parques", "jardin", "area verde", "zona verde"],
-                    "estación de metro": ["metro", "estacion", "transporte", "parada", "intercambiador"],
-                    "escuela pública": ["escuela", "colegio", "instituto", "educacion"],
-                    "comisaría": ["comisaria", "comisaría", "policia", "seguridad"]
+                    "general hospital": ["hospital", "clinic", "health", "medical center", "emergency room", "care"],
+                    "public school": ["school", "education", "college", "academy", "high school"],
+                    "metro transit hub": ["metro", "transit", "station", "bus", "transport hub", "subway", "train"],
+                    "urban green park": ["park", "green space", "garden", "urban park", "recreation"],
+                    "police station": ["police", "patrol", "precinct", "law enforcement", "station"],
+                    "fire & rescue": ["fire", "fire station", "rescue", "emergency services"]
                 }
             },
             {
-                "key": "estado",
-                "label": "Estado del Servicio",
+                "key": "status",
+                "label": "Operational Status",
                 "type": "select",
-                "options": ["Operativo", "En Mantenimiento", "Planificado"],
+                "options": [
+                    "Operational",
+                    "Under Maintenance",
+                    "Capital Project / Planned"
+                ],
                 "colors": {
-                    "Operativo": "#10b981",
-                    "En Mantenimiento": "#f59e0b",
-                    "Planificado": "#3b82f6"
+                    "Operational": "#10b981",
+                    "Under Maintenance": "#f59e0b",
+                    "Capital Project / Planned": "#3b82f6"
                 },
                 "synonyms": {
-                    "operativo": ["operativo", "activo", "abierto", "funcionando"],
-                    "en mantenimiento": ["mantenimiento", "obras", "reparacion", "cerrado temporalmente"],
-                    "planificado": ["planificado", "proyecto", "futuro", "en construccion"]
+                    "operational": ["operational", "active", "open", "in service", "functioning"],
+                    "under maintenance": ["maintenance", "repairs", "renovation", "closed temporarily"],
+                    "capital project / planned": ["planned", "projected", "in development", "pipeline", "scheduled"]
                 }
             },
             {
-                "key": "prioridad",
-                "label": "Nivel de Prioridad",
+                "key": "priority",
+                "label": "Response Priority",
                 "type": "select",
-                "options": ["Urgente", "Normal", "Baja"],
+                "options": [
+                    "Critical Tier 1",
+                    "Standard Tier 2",
+                    "Secondary Tier 3"
+                ],
                 "colors": {
-                    "Urgente": "#ef4444",
-                    "Normal": "#3b82f6",
-                    "Baja": "#64748b"
+                    "Critical Tier 1": "#ef4444",
+                    "Standard Tier 2": "#3b82f6",
+                    "Secondary Tier 3": "#64748b"
                 },
                 "synonyms": {
-                    "urgente": ["urgente", "alta", "prioritario", "critico"],
-                    "normal": ["normal", "estandar", "media"],
-                    "baja": ["baja", "secundaria", "opcional"]
+                    "critical tier 1": ["critical", "tier 1", "urgent", "priority", "essential"],
+                    "standard tier 2": ["standard", "tier 2", "normal", "routine"],
+                    "secondary tier 3": ["secondary", "tier 3", "low priority", "optional"]
                 }
             }
         ]
     },
-    "infrastructure": {
-        "title": "Cuenca Energética Avalon — Infraestructura",
-        "description": "Monitorización de activos energéticos, red eléctrica y calificaciones ESG.",
-        "active_preset": "infrastructure",
+    "custom": {
+        "title": "Avalon Republic — Custom Blank Canvas",
+        "description": "Start completely from scratch by designing your own filter attributes and category values.",
+        "active_preset": "custom",
         "territory": {
-            "name": "Cuenca Energética Avalon",
-            "description": "Red de generación distribuida insular en 5 nodos de evacuación.",
-            "center": [28.28, -16.48],
+            "name": "Avalon Republic",
+            "description": "Customizable spatial territory ready for user-defined schema properties.",
+            "center": [20.0, 30.0],
             "zoom": 10.5,
             "zones": [
-                {"name": "Costa Norte", "lat": 28.44, "lon": -16.42, "color": "#06b6d4", "desc": "Corredor eólico marítimo"},
-                {"name": "Tierras Altas", "lat": 28.30, "lon": -16.52, "color": "#8b5cf6", "desc": "Saltos hidroeléctricos y bombeo"},
-                {"name": "Bahía Sur", "lat": 28.17, "lon": -16.62, "color": "#f59e0b", "desc": "Plantas fotovoltaicas de gran escala"},
-                {"name": "Valle Esmeralda", "lat": 28.32, "lon": -16.70, "color": "#10b981", "desc": "Instalaciones de biomasa y microrredes"},
-                {"name": "Sector Oriental", "lat": 28.26, "lon": -16.25, "color": "#ec4899", "desc": "Complejo de baterías y almacenamiento"}
-            ]
-        },
-        "filter_fields": [
-            {
-                "key": "tecnologia",
-                "label": "Tecnología de Generación",
-                "type": "multiselect",
-                "options": ["Parque Solar", "Parque Eólico", "Presa Hidroeléctrica", "Batería BESS"],
-                "colors": {
-                    "Parque Solar": "#f59e0b",
-                    "Parque Eólico": "#06b6d4",
-                    "Presa Hidroeléctrica": "#3b82f6",
-                    "Batería BESS": "#8b5cf6"
-                },
-                "synonyms": {
-                    "parque solar": ["solar", "fotovoltaica", "pv", "paneles solares"],
-                    "parque eólico": ["eolica", "eólica", "aerogeneradores", "viento", "wind"],
-                    "presa hidroeléctrica": ["hidro", "hidroelectrica", "presa", "embalse", "hydro"],
-                    "batería bess": ["bateria", "batería", "almacenamiento", "bess", "battery"]
-                }
-            },
-            {
-                "key": "estado_red",
-                "label": "Conexión a Red",
-                "type": "select",
-                "options": ["Sincronizada", "Aislada / Isla", "En Pruebas"],
-                "colors": {
-                    "Sincronizada": "#10b981",
-                    "Aislada / Isla": "#f59e0b",
-                    "En Pruebas": "#3b82f6"
-                },
-                "synonyms": {
-                    "sincronizada": ["sincronizada", "conectada", "en servicio", "activa"],
-                    "aislada / isla": ["aislada", "isla", "autonoma", "desconectada"],
-                    "en pruebas": ["pruebas", "comisionado", "testing"]
-                }
-            },
-            {
-                "key": "esg",
-                "label": "Calificación ESG",
-                "type": "select",
-                "options": ["Clase A", "Clase B", "Clase C"],
-                "colors": {
-                    "Clase A": "#10b981",
-                    "Clase B": "#f59e0b",
-                    "Clase C": "#ef4444"
-                },
-                "synonyms": {
-                    "clase a": ["clase a", "grado a", "a", "excelente"],
-                    "clase b": ["clase b", "grado b", "b", "medio"],
-                    "clase c": ["clase c", "grado c", "c", "bajo"]
-                }
-            }
-        ]
-    },
-    "empty": {
-        "title": "Territorio Abierto — Plantilla en Blanco",
-        "description": "Crea tus propios filtros desde cero usando el panel interactivo.",
-        "active_preset": "empty",
-        "territory": {
-            "name": "Archipiélago Avalon",
-            "description": "Territorio libre para definir tus propios filtros y categorías.",
-            "center": [28.28, -16.48],
-            "zoom": 10.5,
-            "zones": [
-                {"name": "Costa Norte", "lat": 28.44, "lon": -16.42, "color": "#06b6d4", "desc": "Sector Septentrional"},
-                {"name": "Tierras Altas", "lat": 28.30, "lon": -16.52, "color": "#8b5cf6", "desc": "Macizo Central"},
-                {"name": "Bahía Sur", "lat": 28.17, "lon": -16.62, "color": "#f59e0b", "desc": "Sector Meridional"},
-                {"name": "Valle Esmeralda", "lat": 28.32, "lon": -16.70, "color": "#10b981", "desc": "Sector Occidental"},
-                {"name": "Sector Oriental", "lat": 28.26, "lon": -16.25, "color": "#ec4899", "desc": "Sector Oriental"}
+                {"name": "North Coast", "lat": 20.17, "lon": 30.00, "color": "#06b6d4", "desc": "Northern maritime sector"},
+                {"name": "Central Highlands", "lat": 20.02, "lon": 29.98, "color": "#8b5cf6", "desc": "Central mountainous sector"},
+                {"name": "South Bay", "lat": 19.84, "lon": 29.94, "color": "#f59e0b", "desc": "Southern coastal sector"},
+                {"name": "Emerald Valley", "lat": 20.00, "lon": 29.75, "color": "#10b981", "desc": "Western river valley sector"},
+                {"name": "Eastern Archipelago", "lat": 20.05, "lon": 30.34, "color": "#ec4899", "desc": "Eastern islands sector"}
             ]
         },
         "filter_fields": []
@@ -280,7 +264,7 @@ COLOR_PALETTE = [
 ]
 
 def strip_accents(text: str) -> str:
-    accents = {'á':'a', 'é':'e', 'í':'i', 'ó':'o', 'ú':'u', 'ü':'u', 'ñ':'n'}
+    accents = {'á':'a', 'é':'e', 'í':'i', 'ó':'o', 'ú':'u', 'ñ':'n'}
     for k, v in accents.items():
         text = text.replace(k, v)
     return text
@@ -290,14 +274,11 @@ def get_word_variants(word: str) -> List[str]:
     variants = {w, strip_accents(w)}
     if w.endswith('es'):
         variants.add(w[:-2])
-        variants.add(strip_accents(w[:-2]))
     elif w.endswith('s'):
         variants.add(w[:-1])
-        variants.add(strip_accents(w[:-1]))
     else:
         variants.add(w + 's')
         variants.add(w + 'es')
-        variants.add(strip_accents(w + 's'))
     return [v for v in variants if len(v) >= 3]
 
 
@@ -307,16 +288,16 @@ def get_word_variants(word: str) -> List[str]:
 
 def generate_procedural_points(count: int, config: Dict[str, Any]) -> List[Dict[str, Any]]:
     """
-    Procedurally generates spatial points distributed across the geographic zone
-    using random combinations of the active user-defined filter dimensions.
+    Procedurally generates spatial facilities placed strictly within the landmass
+    zones using random combinations of current active filter dimensions.
     """
     territory = config.get("territory", {})
     zones = territory.get("zones", [
-        {"name": "Costa Norte", "lat": 28.44, "lon": -16.42},
-        {"name": "Tierras Altas", "lat": 28.30, "lon": -16.52},
-        {"name": "Bahía Sur", "lat": 28.17, "lon": -16.62},
-        {"name": "Valle Esmeralda", "lat": 28.32, "lon": -16.70},
-        {"name": "Sector Oriental", "lat": 28.26, "lon": -16.25}
+        {"name": "North Coast", "lat": 20.17, "lon": 30.00},
+        {"name": "Central Highlands", "lat": 20.02, "lon": 29.98},
+        {"name": "South Bay", "lat": 19.84, "lon": 29.94},
+        {"name": "Emerald Valley", "lat": 20.00, "lon": 29.75},
+        {"name": "Eastern Archipelago", "lat": 20.05, "lon": 30.34}
     ])
     filter_fields = config.get("filter_fields", [])
 
@@ -324,9 +305,9 @@ def generate_procedural_points(count: int, config: Dict[str, Any]) -> List[Dict[
 
     for i in range(1, count + 1):
         zone = random.choice(zones)
-        # Jitter coordinates inside zone landmass
-        lat = round(zone["lat"] + random.uniform(-0.045, 0.045), 5)
-        lon = round(zone["lon"] + random.uniform(-0.055, 0.055), 5)
+        # Jitter coordinates inside the land bounds of this specific zone
+        lat = round(zone["lat"] + random.uniform(-0.035, 0.035), 5)
+        lon = round(zone["lon"] + random.uniform(-0.045, 0.045), 5)
 
         props: Dict[str, Any] = {}
         for f in filter_fields:
@@ -340,21 +321,21 @@ def generate_procedural_points(count: int, config: Dict[str, Any]) -> List[Dict[
                     props[key] = random.choice(opts)
 
         first_field = filter_fields[0] if filter_fields else None
-        first_val = props.get(first_field["key"]) if first_field else "Punto"
+        first_val = props.get(first_field["key"]) if first_field else "Facility"
         if isinstance(first_val, list):
             first_val = first_val[0]
 
-        name = f"{first_val} de {zone['name']} #{i:02d}"
+        name = f"{first_val} - {zone['name']} #{i:02d}"
 
-        # Generate descriptive sentence reflecting all assigned properties
+        # Generate descriptive sentence reflecting assigned attributes
         desc_parts = [f"{f.get('label', f.get('key'))}: {props.get(f.get('key'))}" for f in filter_fields if f.get("key") in props]
         if desc_parts:
-            description = f"Ubicado en {zone['name']}. Atributos: {'; '.join(desc_parts)}."
+            description = f"Located in {zone['name']}. Key attributes: {'; '.join(desc_parts)}."
         else:
-            description = f"Punto georreferenciado en {zone['name']}."
+            description = f"Spatial asset georeferenced in {zone['name']}."
 
         point = {
-            "id": f"OBJ-{i:03d}",
+            "id": f"FAC-{i:03d}",
             "name": name,
             "latitude": lat,
             "longitude": lon,
@@ -376,10 +357,8 @@ def load_dataset() -> List[Dict[str, Any]]:
                     _DATASET = json.load(f)
             except Exception:
                 _DATASET = []
-        if not _DATASET:
-            cfg = load_config()
-            _DATASET = generate_procedural_points(40, cfg)
-            save_dataset(_DATASET)
+        else:
+            _DATASET = []
     return _DATASET
 
 def save_dataset(dataset: List[Dict[str, Any]]) -> None:
@@ -399,7 +378,7 @@ def load_config() -> Dict[str, Any]:
             except Exception:
                 _CONFIG = {}
         if not _CONFIG:
-            _CONFIG = PRESETS["adventure"]
+            _CONFIG = PRESETS["energy"]
             save_config(_CONFIG)
     return _CONFIG
 
@@ -412,12 +391,12 @@ def save_config(new_config: Dict[str, Any]) -> None:
 
 
 # ==============================================================================
-# STAGE 1 & 2: DYNAMIC CONVERSATIONAL NLU & SCHEMA NORMALIZER
+# STAGE 1 & 2: DYNAMIC CONVERSATIONAL NLU & DETERMINISTIC NORMALIZER
 # ==============================================================================
 
 def parse_conversational_query(query: str, config: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Translates raw conversational user input into a validated filter dictionary
+    Translates raw conversational natural language into a validated filter dictionary
     based on the current dynamic filter dimensions, options, synonyms, and territory zones.
     """
     q_lower = query.lower()
@@ -426,12 +405,12 @@ def parse_conversational_query(query: str, config: Dict[str, Any]) -> Dict[str, 
     matched_tokens: List[str] = []
 
     # Greeting / Help intent patterns
-    greeting_patterns = [r'\bhola\b', r'\bhello\b', r'\bhi\b', r'\bbuenos d[ií]as\b', r'\bbuenas\b']
-    help_patterns = [r'ayuda\b', r'help\b', r'c[oó]mo funciona', r'qu[eé] puedes hacer', r'qu[eé] es esto']
+    greeting_patterns = [r'\bhello\b', r'\bhi\b', r'\bhey\b', r'\bgood morning\b', r'\bgreetings\b']
+    help_patterns = [r'\bhelp\b', r'how (?:does it|to) work', r'what can you do', r'what is this']
     is_greeting = any(re.search(pat, q_lower) for pat in greeting_patterns)
     is_help = any(re.search(pat, q_lower) for pat in help_patterns)
 
-    # 1. Check territory zones
+    # 1. Match territory zones
     zones = config.get("territory", {}).get("zones", [])
     for z in zones:
         z_name = z["name"]
@@ -442,7 +421,7 @@ def parse_conversational_query(query: str, config: Dict[str, Any]) -> Dict[str, 
             matched_tokens.append(z_name)
             break
 
-    # 2. Check each dynamic filter field defined by user
+    # 2. Match each dynamic filter field defined by user
     filter_fields = config.get("filter_fields", [])
     for field in filter_fields:
         f_key = field.get("key")
@@ -458,14 +437,13 @@ def parse_conversational_query(query: str, config: Dict[str, Any]) -> Dict[str, 
                 s_norm = strip_accents(syn.lower())
                 pattern = r'\b' + re.escape(s_norm) + r'\b'
                 if re.search(pattern, q_norm):
-                    # Find actual option casing
                     matched_opt = next((opt for opt in options if strip_accents(opt.lower()) == strip_accents(canon_opt.lower())), canon_opt)
                     if matched_opt not in field_matches:
                         field_matches.append(matched_opt)
                     matched_tokens.append(syn)
                     break
 
-        # Check options directly with morphological plural/accent variants
+        # Check literal option words and morphological variants
         for opt in options:
             if opt in field_matches:
                 continue
@@ -494,7 +472,7 @@ def parse_conversational_query(query: str, config: Dict[str, Any]) -> Dict[str, 
     elif extracted_filters:
         intent = "filter_search"
     else:
-        if any(w in q_lower for w in ["todo", "todos", "todas", "all", "dataset", "mostrar todo", "show all"]):
+        if any(w in q_lower for w in ["all", "everything", "dataset", "show all", "list all"]):
             intent = "filter_search"
         else:
             intent = "generic_qa"
@@ -570,7 +548,7 @@ def execute_spatial_filtering(filters: Dict[str, Any], dataset: List[Dict[str, A
             site_copy["score"] = 0.98 if filters else 0.85
             matched_sites.append(site_copy)
 
-    # Compute live Solr facets for all user filter fields + zone
+    # Compute live Solr facets for all user filter fields + territory zones
     facets: Dict[str, Dict[str, int]] = {}
 
     # 1. Territory Zones Facets
@@ -618,37 +596,45 @@ def generate_natural_narrative(
     config: Dict[str, Any]
 ) -> str:
     """
-    Synthesizes a grounded natural language response explaining the spatial query results.
+    Synthesizes a grounded natural language response in English explaining spatial query results.
     """
     num_found = results.get("num_found", 0)
     total = results.get("total_dataset", len(load_dataset()))
     docs = results.get("matched_docs", [])
-    territory_name = config.get("territory", {}).get("name", "la región")
+    territory_name = config.get("territory", {}).get("name", "the territory")
+
+    if total == 0:
+        return (
+            f"👋 **Welcome to the General-Purpose GIS Architecture Template (SoftwareX).**\n\n"
+            f"The map of **{territory_name}** currently has **0 spatial points**.\n\n"
+            f"### 🚀 Getting Started (3-Step Walkthrough):\n"
+            f"1. **Step 1 — Review or Create Filters**: Use the presets on the left (*Renewable Energy*, *Smart City*) or click *\"➕ Add Custom Filter\"* to define your own domain attributes.\n"
+            f"2. **Step 2 — Populate the Map**: Choose the number of points and click *\"🎲 Generate Points\"*. The procedural generator will scatter objects across {territory_name} combining your active filters.\n"
+            f"3. **Step 3 — Conversational Spatial Search**: Query the map using conversational phrases (e.g. *\"solar and wind with grade a\"*, *\"operational battery storage\"*) to see the 4-stage pipeline synchronize Leaflet with pulsing rings."
+        )
 
     if intent == "generic_qa" and not filters:
         filter_count = len(config.get("filter_fields", []))
         return (
-            f"👋 **Bienvenido a la Plantilla GIS de Propósito General (SoftwareX).**\n\n"
-            f"Este entorno experimental demuestra cómo la **arquitectura desacoplada de 4 etapas (NLU $\\to$ Solr $\\to$ GIS)** "
-            f"funciona sobre **cualquier dominio cartográfico**, adaptándose en tiempo real a los filtros que tú crees.\n\n"
-            f"### 🚀 Flujo Interactivo de la Plantilla:\n"
-            f"1. **Paso 1: Define tus filtros**: Crea dimensiones personalizadas o carga un preset (Aventura, Smart City, Energía).\n"
-            f"2. **Paso 2: Genera puntos aleatorios**: Haz clic en *\"🎲 Generar Puntos en el Mapa\"* para poblar **{territory_name}** con objetos combinando tus filtros.\n"
-            f"3. **Paso 3: Busca de forma conversacional**: Escribe consultas libres como *\"castillos con peligro crítico\"* o usa los filtros manuales.\n"
-            f"4. **Inspecciona las 4 etapas**: Observa en el panel inferior la tokenización NLU, la consulta booleana Solr ($fq$) y la sincronización dinámica en Leaflet."
+            f"👋 **{territory_name} GIS Sandbox Ready ({total} facilities loaded).**\n\n"
+            f"This environment demonstrates how our decoupled 4-stage architecture (**Conversational NLU $\\to$ Solr Boolean Builder $\\to$ Leaflet GIS Visual Sync**) "
+            f"adapts dynamically to any geospatial domain without code modifications.\n\n"
+            f"### 💡 Things you can try right now:\n"
+            f"- **Conversational Search**: Type queries such as *\"Solar farms with Grade A rating\"* or *\"Facilities in North Coast\"*.\n"
+            f"- **Manual Facet Pills**: Click any badge on the sidebar to toggle Solr filter rules.\n"
+            f"- **Inspector Drawer**: Expand the bottom panel to inspect NLU tokens, validated JSON schema, Solr `$fq` rules, and cartographic sync."
         )
 
     if num_found == 0:
         return (
-            f"🔍 **Sin coincidencias para los criterios activos:**\n"
-            f"Ningún punto en **{territory_name}** cumple simultáneamente todas las restricciones seleccionadas.\n\n"
-            f"💡 *Sugerencia: Haz clic en una etiqueta de filtro para relajarla o prueba a buscar otra categoría.*"
+            f"🔍 **No spatial facilities matched your active criteria:**\n"
+            f"No objects in **{territory_name}** satisfy all active filter rules simultaneously.\n\n"
+            f"💡 *Suggestion: Click on an active filter badge to relax criteria or try searching for another technology/sector.*"
         )
 
-    # Summarize matched items by first filter and by zone
     fields = config.get("filter_fields", [])
     primary_field = fields[0]["key"] if fields else "zone"
-    field_label = fields[0].get("label", primary_field) if fields else "Zona"
+    field_label = fields[0].get("label", primary_field) if fields else "Zone"
 
     summary: Dict[str, int] = {}
     zone_summary: Dict[str, int] = {}
@@ -657,7 +643,7 @@ def generate_natural_narrative(
         if isinstance(val, list):
             val = ", ".join(val)
         summary[str(val)] = summary.get(str(val), 0) + 1
-        z = d.get("zone", "Territorio")
+        z = d.get("zone", "Territory")
         zone_summary[z] = zone_summary.get(z, 0) + 1
 
     summary_str = ", ".join([f"{k} ({v})" for k, v in summary.items()])
@@ -666,11 +652,11 @@ def generate_natural_narrative(
 
     pct = round(num_found / total * 100, 1) if total else 100
     narrative = (
-        f"✅ **Se han identificado {num_found} de {total} objetos ({pct}%) en {territory_name}:**\n\n"
-        f"- 📌 **Desglose por {field_label}**: {summary_str}.\n"
-        f"- 🗺️ **Sectores biogeográficos**: {zones_str}.\n"
-        f"- 🌟 **Punto destacado**: **{featured.get('name')}** (Zona: *{featured.get('zone')}*).\n\n"
-        f"*(Los marcadores coincidentes se han resaltado en Leaflet con anillos de pulso luminosos y etiquetas sincronizadas).* "
+        f"✅ **Identified {num_found} of {total} facilities ({pct}%) in {territory_name}:**\n\n"
+        f"- 📌 **Breakdown by {field_label}**: {summary_str}.\n"
+        f"- 🗺️ **Geographic Sectors**: {zones_str}.\n"
+        f"- 🌟 **Featured Facility**: **{featured.get('name')}** (Sector: *{featured.get('zone')}*).\n\n"
+        f"*(Matching facilities are highlighted on the offline vector map with pulsing radar rings and active filter tags).* "
     )
     return narrative
 
@@ -710,7 +696,7 @@ def process_query_pipeline(payload: Dict[str, Any]) -> Dict[str, Any]:
         if not v:
             continue
         if k == "zone":
-            label = "Sector / Zona"
+            label = "Geographic Sector"
         else:
             f_def = fields_dict.get(k, {})
             label = f_def.get("label", k.title())
@@ -777,16 +763,17 @@ class GenericGISHandler(SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps(cfg, ensure_ascii=False).encode("utf-8"))
             return
 
-        # API: Return available presets list
-        elif self.path == "/api/presets":
+        # API: Return territory GeoJSON vector map (Land & Sea)
+        elif self.path == "/api/territory_geojson":
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
-            presets_summary = [
-                {"id": k, "title": v.get("title"), "description": v.get("description"), "fields_count": len(v.get("filter_fields", []))}
-                for k, v in PRESETS.items()
-            ]
-            self.wfile.write(json.dumps(presets_summary, ensure_ascii=False).encode("utf-8"))
+            geo_file = STATIC_DIR / "territory.geojson"
+            if geo_file.exists():
+                with open(geo_file, "rb") as f:
+                    self.wfile.write(f.read())
+            else:
+                self.wfile.write(b'{"type":"FeatureCollection","features":[]}')
             return
 
         # API: Health check
@@ -850,27 +837,41 @@ class GenericGISHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
             return
 
+        # API: Clear all points from the map
+        elif self.path == "/api/clear_points":
+            try:
+                save_dataset([])
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success", "count": 0}, ensure_ascii=False).encode("utf-8"))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+            return
+
         # API: Add new user-defined filter field
         elif self.path == "/api/add_filter":
             try:
                 payload = json.loads(post_data)
                 label = payload.get("label", "").strip()
                 if not label:
-                    raise ValueError("El nombre del filtro no puede estar vacío.")
+                    raise ValueError("Filter name cannot be empty.")
 
                 raw_key = payload.get("key") or label.lower()
                 key = re.sub(r'[^a-zA-Z0-9_]', '_', strip_accents(raw_key.lower()))
 
                 options = [opt.strip() for opt in payload.get("options", []) if opt.strip()]
                 if not options:
-                    options = ["Opción A", "Opción B", "Opción C"]
+                    options = ["Option A", "Option B", "Option C"]
 
                 colors = {}
                 for idx, opt in enumerate(options):
                     colors[opt] = COLOR_PALETTE[idx % len(COLOR_PALETTE)]
 
                 cfg = load_config()
-                # Check if field key exists; update or append
                 existing = next((f for f in cfg.get("filter_fields", []) if f["key"] == key), None)
                 field_entry = {
                     "key": key,
@@ -888,7 +889,7 @@ class GenericGISHandler(SimpleHTTPRequestHandler):
 
                 save_config(cfg)
 
-                # Assign random values for this new property to current points if any
+                # Populate property on existing points if any
                 dataset = load_dataset()
                 for pt in dataset:
                     if key not in pt or not pt[key]:
@@ -906,7 +907,7 @@ class GenericGISHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
             return
 
-        # API: Delete user-defined filter field
+        # API: Delete filter field
         elif self.path == "/api/delete_filter":
             try:
                 payload = json.loads(post_data)
@@ -915,7 +916,6 @@ class GenericGISHandler(SimpleHTTPRequestHandler):
                 cfg["filter_fields"] = [f for f in cfg.get("filter_fields", []) if f["key"] != key]
                 save_config(cfg)
 
-                # Clean up property in dataset
                 dataset = load_dataset()
                 for pt in dataset:
                     pt.pop(key, None)
@@ -939,12 +939,12 @@ class GenericGISHandler(SimpleHTTPRequestHandler):
                 key = payload.get("key")
                 option = payload.get("option", "").strip()
                 if not option:
-                    raise ValueError("La opción no puede estar vacía.")
+                    raise ValueError("Option value cannot be empty.")
 
                 cfg = load_config()
                 field = next((f for f in cfg.get("filter_fields", []) if f["key"] == key), None)
                 if not field:
-                    raise ValueError(f"Filtro con clave '{key}' no encontrado.")
+                    raise ValueError(f"Filter with key '{key}' not found.")
 
                 if option not in field["options"]:
                     field["options"].append(option)
@@ -964,20 +964,26 @@ class GenericGISHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
             return
 
-        # API: Load preset (adventure, smartcity, infrastructure, empty)
+        # API: Switch Preset (energy, smartcity, custom) without auto-generating points
         elif self.path == "/api/preset":
             try:
                 payload = json.loads(post_data)
-                preset_id = payload.get("preset", "adventure")
+                preset_id = payload.get("preset", "energy")
+                generate = payload.get("generate", False)
                 count = int(payload.get("count", 40))
+
                 if preset_id not in PRESETS:
-                    raise ValueError(f"Preset desconocido: {preset_id}")
+                    raise ValueError(f"Unknown preset: {preset_id}")
 
                 new_cfg = json.loads(json.dumps(PRESETS[preset_id]))
                 save_config(new_cfg)
 
-                new_points = generate_procedural_points(count, new_cfg)
-                save_dataset(new_points)
+                if generate:
+                    new_points = generate_procedural_points(count, new_cfg)
+                    save_dataset(new_points)
+                else:
+                    new_points = []
+                    save_dataset(new_points)
 
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
@@ -1011,13 +1017,12 @@ class GenericGISHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
             return
 
-        # API: Reset to factory defaults
+        # API: Reset to factory defaults (empty map)
         elif self.path == "/api/reset":
             try:
-                new_cfg = json.loads(json.dumps(PRESETS["adventure"]))
+                new_cfg = json.loads(json.dumps(PRESETS["energy"]))
                 save_config(new_cfg)
-                new_points = generate_procedural_points(40, new_cfg)
-                save_dataset(new_points)
+                save_dataset([])
 
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
@@ -1025,7 +1030,7 @@ class GenericGISHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({
                     "status": "reset_successful",
                     "config": new_cfg,
-                    "points": new_points
+                    "points": []
                 }, ensure_ascii=False).encode("utf-8"))
             except Exception as e:
                 self.send_response(500)
@@ -1046,14 +1051,15 @@ def run_server(port: int = 8085, host: str = "0.0.0.0"):
     server = ThreadingHTTPServer((host, port), GenericGISHandler)
     print("=" * 76)
     print(" 🌍 Elsevier SoftwareX — General-Purpose GIS Architecture Template")
-    print(" 🛠️  Domain-Agnostic Conversational Spatial Search & Procedural Sandbox")
+    print(" 🛠️  Domain-Agnostic Conversational Spatial Search Sandbox (100% Offline)")
     print("=" * 76)
     print(f" [*] HTTP Server active on: http://{host}:{port}/")
     print(f" [*] Local access URL:     http://localhost:{port}/")
     print(f" [*] Active territory:     {load_config().get('territory', {}).get('name')}")
-    print(f" [*] Dataset objects:      {len(load_dataset())} points distributed")
+    print(f" [*] Dataset objects:      {len(load_dataset())} points (On-demand population)")
     print(f" [*] Active filter fields: {len(load_config().get('filter_fields', []))} dimensions")
-    print(f" [*] Zero external dependencies. Press Ctrl+C to terminate.")
+    print(f" [*] Map tiles engine:     Custom Vector GeoJSON (No external API keys)")
+    print(f" [*] Zero external dependencies required. Press Ctrl+C to terminate.")
     print("=" * 76)
 
     try:

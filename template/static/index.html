@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-950">
+<html lang="en" class="h-full bg-slate-950">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plantilla GIS de Propósito General — Sandbox Desacoplado (SoftwareX)</title>
-  <meta name="description" content="Elsevier SoftwareX: Demostrador interactivo y sandbox para evaluar la arquitectura desacoplada (NLU -> Solr -> GIS) con filtros personalizados y generación procedural en cualquier dominio.">
+  <title>Domain-Agnostic GIS Architecture Template — Elsevier SoftwareX</title>
+  <meta name="description" content="Elsevier SoftwareX Demonstrator: General-purpose decoupled NLU-Solr-GIS architecture template for conversational spatial search and dynamic cartographic synchronization.">
 
   <!-- Favicon -->
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
-  <!-- Fonts: Inter & JetBrains Mono -->
+  <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Leaflet CSS & JS -->
+  <!-- Leaflet CSS & JS (Vector-only mode: Zero external tile server dependencies) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
@@ -48,8 +48,18 @@
     ::-webkit-scrollbar-thumb { background: #1f293d; border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: #374151; }
 
+    /* Map oceanic canvas with tactical grid (No external tile server needed) */
+    #map {
+      background-color: #060b17 !important;
+      background-image: 
+        radial-gradient(#152642 1px, transparent 1px),
+        linear-gradient(to right, rgba(21, 38, 66, 0.25) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(21, 38, 66, 0.25) 1px, transparent 1px);
+      background-size: 40px 40px, 40px 40px, 40px 40px;
+    }
+
     @keyframes marker-pulse {
-      0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.8); }
+      0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.85); }
       70% { box-shadow: 0 0 0 16px rgba(59, 130, 246, 0); }
       100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
     }
@@ -63,7 +73,7 @@
       color: #f1f5f9 !important;
       border: 1px solid #334155 !important;
       border-radius: 8px !important;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7) !important;
     }
     .leaflet-popup-tip {
       background: #0f172a !important;
@@ -71,12 +81,12 @@
     .zone-label-icon {
       background: transparent !important;
       border: none !important;
-      color: rgba(148, 163, 184, 0.7);
+      color: rgba(148, 163, 184, 0.8);
       font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
+      font-weight: 700;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      text-shadow: 0 0 4px #000;
+      text-shadow: 0 0 6px #000, 0 0 2px #000;
       white-space: nowrap;
       pointer-events: none;
     }
@@ -94,11 +104,11 @@
       </div>
       <div>
         <div class="flex items-center gap-2">
-          <h1 class="font-bold text-sm text-white tracking-wide">Plantilla GIS de Dominio Abierto</h1>
+          <h1 class="font-bold text-sm text-white tracking-wide">General-Purpose GIS Architecture Template</h1>
           <span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[10px] px-2 py-0.5 rounded-full font-mono font-medium">SoftwareX</span>
         </div>
         <p class="text-[11px] text-slate-400 hidden sm:block">
-          Sandbox Desacoplado: Diseña tus filtros $\to$ Genera objetos procedurales $\to$ Búsqueda Conversacional
+          Domain-Agnostic Sandbox: Dynamic Schema $\to$ Procedural Population $\to$ Conversational Spatial Search
         </p>
       </div>
     </div>
@@ -107,8 +117,14 @@
     <div class="flex items-center gap-2.5">
       <!-- Territory Badge -->
       <span class="text-xs text-cyan-300 bg-cyan-950/60 border border-cyan-800/80 px-2.5 py-1 rounded-md hidden lg:flex items-center gap-1.5 font-mono text-[11px]">
-        <span>🏝️</span>
-        <span id="territory-header-name">Archipiélago Avalon</span>
+        <span>🗺️</span>
+        <span id="territory-header-name">Avalon Republic</span>
+      </span>
+
+      <!-- 100% Offline Badge -->
+      <span class="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 rounded-md hidden md:flex items-center gap-1.5 font-mono text-[11px]">
+        <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        Zero Tile API Keys (100% Offline)
       </span>
 
       <!-- Switcher to CRMsDataSpace (Port 8080) -->
@@ -116,7 +132,7 @@
         type="button"
         onclick="openSiblingApp(8080)"
         class="bg-blue-950/60 hover:bg-blue-900/80 text-blue-300 hover:text-white border border-blue-800/80 text-xs px-2.5 py-1.5 rounded-md transition flex items-center gap-1.5 cursor-pointer shadow-sm"
-        title="Abrir el demostrador real de materias primas críticas europeas en el Puerto 8080"
+        title="Open real European Critical Raw Materials demonstrator on Port 8080"
       >
         <span>🇪🇺 CRMsDataSpace (Port 8080)</span>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -129,9 +145,9 @@
         type="button" 
         onclick="resetToDefaults()" 
         class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs px-2.5 py-1.5 rounded-md transition cursor-pointer"
-        title="Restablecer plantilla y generar nuevo archipiélago"
+        title="Reset template and clear facilities"
       >
-        Reiniciar
+        Reset
       </button>
     </div>
   </header>
@@ -147,13 +163,13 @@
       <!-- TAB NAVIGATION -->
       <div class="flex border-b border-slate-800 bg-slate-950/70 p-1 gap-1 shrink-0 text-xs">
         <button id="tab-btn-sandbox" onclick="switchTab('sandbox')" class="flex-1 py-1.5 px-2 rounded font-medium text-center transition bg-blue-600 text-white cursor-pointer">
-          🎮 Sandbox & Filtros
+          🎮 Sandbox & Schema
         </button>
         <button id="tab-btn-objects" onclick="switchTab('objects')" class="flex-1 py-1.5 px-2 rounded font-medium text-center transition text-slate-400 hover:text-slate-200 hover:bg-slate-800 cursor-pointer">
-          📋 Objetos (<span id="objects-count-badge">0</span>)
+          📋 Facilities (<span id="objects-count-badge">0</span>)
         </button>
         <button id="tab-btn-schema" onclick="switchTab('schema')" class="flex-1 py-1.5 px-2 rounded font-medium text-center transition text-slate-400 hover:text-slate-200 hover:bg-slate-800 cursor-pointer">
-          ⚙️ Esquema JSON
+          ⚙️ JSON Config
         </button>
       </div>
 
@@ -165,26 +181,23 @@
           <div class="flex items-center justify-between">
             <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
               <span class="h-4 w-4 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px]">1</span>
-              <span>Define tus Filtros (Sin restricciones)</span>
+              <span>Define Filter Dimensions</span>
             </span>
-            <span class="text-[10px] text-slate-400" id="filters-summary-count">3 filtros activos</span>
+            <span class="text-[10px] text-slate-400 font-mono" id="filters-summary-count">4 active dimensions</span>
           </div>
 
           <!-- Quick Presets Bar -->
           <div class="bg-slate-950/60 border border-slate-800 p-2 rounded-lg space-y-1.5">
-            <div class="text-[10px] text-slate-400 font-medium">Ejemplos rápidos (1-clic):</div>
-            <div class="grid grid-cols-4 gap-1 text-[10px]">
-              <button onclick="loadPreset('adventure')" class="bg-slate-800 hover:bg-blue-600/40 hover:border-blue-500 text-slate-200 border border-slate-700 py-1 px-1 rounded transition text-center truncate cursor-pointer" title="Castillos, templos, minas, facciones, peligro">
-                🏰 Aventura
+            <div class="text-[10px] text-slate-400 font-medium">Domain Presets (1-Click):</div>
+            <div class="grid grid-cols-3 gap-1.5 text-[11px]">
+              <button onclick="loadPreset('energy')" id="btn-preset-energy" class="bg-slate-800 hover:bg-blue-600/40 hover:border-blue-500 text-slate-200 border border-slate-700 py-1.5 px-2 rounded transition text-center truncate cursor-pointer font-medium" title="Renewable Energy (Solar, Wind, Hydro, Storage, ESG)">
+                ⚡ Energy
               </button>
-              <button onclick="loadPreset('smartcity')" class="bg-slate-800 hover:bg-blue-600/40 hover:border-blue-500 text-slate-200 border border-slate-700 py-1 px-1 rounded transition text-center truncate cursor-pointer" title="Hospitales, parques, estaciones, estado, prioridad">
+              <button onclick="loadPreset('smartcity')" id="btn-preset-smartcity" class="bg-slate-800 hover:bg-blue-600/40 hover:border-blue-500 text-slate-200 border border-slate-700 py-1.5 px-2 rounded transition text-center truncate cursor-pointer font-medium" title="Smart City (Hospitals, Parks, Transit, Schools, Priority)">
                 🏙️ Smart City
               </button>
-              <button onclick="loadPreset('infrastructure')" class="bg-slate-800 hover:bg-blue-600/40 hover:border-blue-500 text-slate-200 border border-slate-700 py-1 px-1 rounded transition text-center truncate cursor-pointer" title="Plantas solares, eólicas, red, ESG">
-                ⚡ Energía
-              </button>
-              <button onclick="loadPreset('empty')" class="bg-slate-800 hover:bg-rose-600/40 hover:border-rose-500 text-slate-200 border border-slate-700 py-1 px-1 rounded transition text-center truncate cursor-pointer" title="Empezar desde cero">
-                ✨ En blanco
+              <button onclick="loadPreset('custom')" id="btn-preset-custom" class="bg-slate-800 hover:bg-rose-600/40 hover:border-rose-500 text-slate-200 border border-slate-700 py-1.5 px-2 rounded transition text-center truncate cursor-pointer font-medium" title="Start from scratch with custom dimensions">
+                ✨ Blank / Custom
               </button>
             </div>
           </div>
@@ -197,27 +210,27 @@
           <!-- Add Filter Button / Form -->
           <div id="new-filter-box" class="bg-slate-950/80 border border-dashed border-slate-700 rounded-lg p-2.5">
             <div id="new-filter-collapsed" class="flex justify-between items-center">
-              <span class="text-xs text-slate-400">¿Quieres añadir otra dimensión?</span>
+              <span class="text-xs text-slate-400">Need another custom dimension?</span>
               <button onclick="toggleNewFilterForm(true)" class="text-xs text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1 cursor-pointer">
-                <span>➕ Añadir Filtro</span>
+                <span>➕ Add Custom Filter</span>
               </button>
             </div>
 
             <div id="new-filter-expanded" class="hidden space-y-2 text-xs pt-1">
               <div class="font-semibold text-slate-200 text-xs flex justify-between items-center">
-                <span>Nuevo Filtro Personalizado</span>
+                <span>New Filter Dimension</span>
                 <button onclick="toggleNewFilterForm(false)" class="text-slate-400 hover:text-white text-xs cursor-pointer">✕</button>
               </div>
               <div>
-                <label class="block text-[10.5px] text-slate-400 mb-0.5">Nombre del Filtro (ej. Clima, Acceso, Vegetación):</label>
-                <input id="input-new-filter-label" type="text" placeholder="ej. Estado de Conservación" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-blue-500">
+                <label class="block text-[10.5px] text-slate-400 mb-0.5">Filter Label (e.g. Asset Condition, Access Level):</label>
+                <input id="input-new-filter-label" type="text" placeholder="e.g. Infrastructure Condition" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-blue-500">
               </div>
               <div>
-                <label class="block text-[10.5px] text-slate-400 mb-0.5">Categorías / Valores (separados por coma):</label>
-                <input id="input-new-filter-options" type="text" placeholder="ej. Excelente, Bueno, En Ruinas" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-blue-500">
+                <label class="block text-[10.5px] text-slate-400 mb-0.5">Category Options (comma-separated):</label>
+                <input id="input-new-filter-options" type="text" placeholder="e.g. Excellent, Good, Fair, Critical" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-blue-500">
               </div>
               <button onclick="submitNewFilter()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-1.5 rounded transition text-xs cursor-pointer shadow">
-                Guardar y Aplicar al Esquema
+                Save & Apply to Schema
               </button>
             </div>
           </div>
@@ -228,27 +241,32 @@
           <div class="flex items-center justify-between">
             <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
               <span class="h-4 w-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">2</span>
-              <span>Poblar el Territorio Geográfico</span>
+              <span>Populate Territory on Map</span>
             </span>
           </div>
 
-          <div class="bg-gradient-to-br from-emerald-950/40 to-slate-950 border border-emerald-500/20 rounded-lg p-3 space-y-2.5">
+          <div class="bg-gradient-to-br from-emerald-950/40 to-slate-950 border border-emerald-500/30 rounded-lg p-3 space-y-2.5">
             <p class="text-[11px] text-slate-300 leading-snug">
-              Genera objetos espaciales distribuidos por el archipiélago combinando los filtros activos:
+              Procedurally scatter spatial facilities across the island territory combining the active filter dimensions:
             </p>
             
             <div class="flex items-center gap-2">
               <select id="generate-count-select" class="bg-slate-900 border border-slate-700 rounded text-xs text-white px-2 py-1.5 focus:border-emerald-500">
-                <option value="25">25 puntos</option>
-                <option value="40" selected>40 puntos</option>
-                <option value="80">80 puntos</option>
+                <option value="25">25 facilities</option>
+                <option value="40" selected>40 facilities</option>
+                <option value="80">80 facilities</option>
               </select>
               <button 
                 onclick="triggerGeneratePoints()" 
+                id="btn-generate-points"
                 class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold py-1.5 px-3 rounded transition flex items-center justify-center gap-1.5 shadow-md cursor-pointer"
               >
-                <span>🎲 Generar Puntos en el Mapa</span>
+                <span>🎲 Generate Points</span>
               </button>
+            </div>
+
+            <div id="dataset-status-msg" class="text-[10px] text-slate-400 italic">
+              Map currently has 0 points. Click above to populate.
             </div>
           </div>
         </div>
@@ -258,9 +276,9 @@
           <div class="flex items-center justify-between">
             <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
               <span class="h-4 w-4 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px]">3</span>
-              <span>Búsqueda Conversacional y Filtros</span>
+              <span>Conversational Spatial Search</span>
             </span>
-            <button onclick="clearAllFilters()" class="text-[11px] text-blue-400 hover:underline cursor-pointer">Limpiar</button>
+            <button onclick="clearAllFilters()" class="text-[11px] text-blue-400 hover:underline cursor-pointer">Clear filters</button>
           </div>
 
           <!-- Conversational Input -->
@@ -268,7 +286,7 @@
             <input 
               id="conversational-input" 
               type="text" 
-              placeholder="ej. castillos con peligro critico..." 
+              placeholder="e.g. solar and wind farms with grade a..." 
               onkeydown="if(event.key === 'Enter') submitConversationalQuery()"
               class="w-full bg-slate-950 border border-slate-700 rounded-lg pl-3 pr-20 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 shadow-inner"
             />
@@ -277,13 +295,13 @@
               onclick="submitConversationalQuery()" 
               class="absolute right-1 top-1 bottom-1 px-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs font-medium transition cursor-pointer flex items-center gap-1"
             >
-              <span>Buscar</span>
+              <span>Search</span>
             </button>
           </div>
 
           <!-- Dynamic Suggestions Chips -->
           <div class="space-y-1">
-            <div class="text-[10px] text-slate-400">Sugerencias dinámicas:</div>
+            <div class="text-[10px] text-slate-400 font-medium">Suggested queries:</div>
             <div id="dynamic-query-chips" class="flex flex-wrap gap-1">
               <!-- Injected dynamically based on active filters -->
             </div>
@@ -291,7 +309,7 @@
 
           <!-- Manual Interactive Filter Pills (Live Facet Counts) -->
           <div class="space-y-2 pt-1">
-            <div class="text-[10.5px] font-semibold text-slate-400 uppercase tracking-wider">Filtros manuales rápidos:</div>
+            <div class="text-[10.5px] font-semibold text-slate-400 uppercase tracking-wider">Manual Facet Controls:</div>
             <div id="manual-facet-groups" class="space-y-2 text-xs">
               <!-- Injected dynamically -->
             </div>
@@ -304,8 +322,8 @@
       <!-- TAB 2: OBJECTS LIST -->
       <div id="tab-content-objects" class="hidden flex-1 flex flex-col overflow-y-auto p-2">
         <div class="text-[11px] text-slate-400 px-2 py-1.5 flex justify-between border-b border-slate-800 mb-2">
-          <span>Haz clic para enfocar en el mapa</span>
-          <span id="objects-filtered-label" class="text-blue-400 font-medium">Todos</span>
+          <span>Click to focus on map</span>
+          <span id="objects-filtered-label" class="text-blue-400 font-medium">0 visible</span>
         </div>
         <div class="space-y-1.5" id="objects-cards-list">
           <!-- Rendered via JS -->
@@ -315,7 +333,7 @@
       <!-- TAB 3: JSON SCHEMA CONFIG EDITOR -->
       <div id="tab-content-schema" class="hidden flex-1 flex flex-col overflow-y-auto p-3 space-y-2">
         <div class="text-xs text-slate-400">
-          Esquema declarativo activo. Puedes inspeccionar o editar la configuración directamente:
+          Declarative schema configuration. Reviewers can inspect or edit JSON definitions directly:
         </div>
         <textarea 
           id="raw-schema-textarea" 
@@ -328,13 +346,13 @@
           onclick="saveRawSchema()" 
           class="w-full bg-blue-600 hover:bg-blue-500 text-white py-1.5 rounded text-xs font-medium transition cursor-pointer"
         >
-          💾 Guardar y Aplicar Esquema JSON
+          💾 Save & Apply JSON Schema
         </button>
       </div>
 
     </aside>
 
-    <!-- RIGHT MAIN AREA: LEAFLET MAP & 4-STAGE PIPELINE INSPECTOR -->
+    <!-- RIGHT MAIN AREA: OFFLINE VECTOR MAP & 4-STAGE PIPELINE INSPECTOR -->
     <main class="flex-1 flex flex-col overflow-hidden relative">
       
       <!-- FLOATING TOP BAR: ACTIVE FILTER BADGES & COUNTER -->
@@ -353,9 +371,9 @@
             onclick="toggleFilterVisibilityMode()" 
             id="btn-vis-mode"
             class="bg-slate-900/90 backdrop-blur border border-slate-700 text-slate-300 hover:text-white px-2.5 py-1.5 rounded-full text-xs transition cursor-pointer shadow-lg flex items-center gap-1"
-            title="Cambiar entre atenuar o esconder marcadores no coincidentes"
+            title="Toggle between dimming or hiding non-matching markers"
           >
-            <span>👁️ Atenuar no coincidentes</span>
+            <span>👁️ Dim Non-Matching</span>
           </button>
 
           <!-- Match Counter Badge -->
@@ -364,14 +382,35 @@
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
             </span>
-            <span class="text-slate-300">Coinciden <strong id="map-count-badge" class="text-blue-400">40</strong> de <span id="map-total-badge">40</span></span>
+            <span class="text-slate-300">Showing <strong id="map-count-badge" class="text-blue-400">0</strong> of <span id="map-total-badge">0</span> facilities</span>
           </div>
         </div>
 
       </div>
 
-      <!-- LEAFLET MAP CANVAS -->
-      <div id="map" class="flex-1 bg-slate-950 w-full h-full"></div>
+      <!-- INITIAL EMPTY STATE GUIDE CALLOUT -->
+      <div id="initial-guide-overlay" class="absolute top-16 left-1/2 -translate-x-1/2 z-[999] pointer-events-none transition-all duration-300">
+        <div class="bg-slate-900/95 backdrop-blur-md border border-cyan-500/40 px-5 py-3 rounded-xl shadow-2xl pointer-events-auto max-w-lg text-center space-y-1.5">
+          <div class="flex items-center justify-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider">
+            <span>🗺️ Custom Vector Map: Land & Sea (100% Offline)</span>
+          </div>
+          <p class="text-xs text-slate-200 leading-relaxed">
+            The territory of <strong>Avalon Republic</strong> currently has <strong>0 facilities</strong> on the map.
+          </p>
+          <div class="text-[11px] text-slate-400 flex items-center justify-center gap-2 pt-1 font-mono">
+            <span>👉 1. Review filters</span>
+            <span>·</span>
+            <button onclick="triggerGeneratePoints()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-sans px-2.5 py-0.5 rounded text-[11px] font-semibold cursor-pointer shadow">
+              🎲 Click Generate Points
+            </button>
+            <span>·</span>
+            <span>👉 3. Search</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEAFLET MAP CANVAS (CUSTOM OFFLINE VECTOR BASEMAP) -->
+      <div id="map" class="flex-1 w-full h-full"></div>
 
       <!-- BOTTOM COLLAPSIBLE DRAWER: 4-STAGE ARCHITECTURE INSPECTOR -->
       <div id="inspector-drawer" class="bg-slate-900 border-t border-slate-800 shrink-0 z-20 flex flex-col transition-all duration-300 h-56 shadow-2xl">
@@ -380,20 +419,20 @@
         <div class="h-9 px-4 bg-slate-950 flex items-center justify-between border-b border-slate-800 text-xs shrink-0">
           <div class="flex items-center gap-3">
             <span class="font-bold text-slate-200 flex items-center gap-1.5">
-              <span>🔬 Inspector de Arquitectura Desacoplada (4 Etapas)</span>
+              <span>🔬 4-Stage Decoupled Pipeline Inspector</span>
             </span>
             <!-- Stage Tabs -->
             <div class="flex gap-1">
               <button onclick="setInspectorTab('stage1')" id="insp-btn-stage1" class="px-2 py-0.5 rounded text-[11px] font-mono bg-blue-600 text-white cursor-pointer">[1] NLU & Tokens</button>
-              <button onclick="setInspectorTab('stage2')" id="insp-btn-stage2" class="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400 hover:text-white cursor-pointer">[2] Esquema Validado</button>
-              <button onclick="setInspectorTab('stage3')" id="insp-btn-stage3" class="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400 hover:text-white cursor-pointer">[3] Motor Solr ($fq)</button>
-              <button onclick="setInspectorTab('stage4')" id="insp-btn-stage4" class="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400 hover:text-white cursor-pointer">[4] Sync Cartográfico</button>
-              <button onclick="setInspectorTab('narrative')" id="insp-btn-narrative" class="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400 hover:text-white cursor-pointer">💬 Explicación Natural</button>
+              <button onclick="setInspectorTab('stage2')" id="insp-btn-stage2" class="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400 hover:text-white cursor-pointer">[2] Schema Validation</button>
+              <button onclick="setInspectorTab('stage3')" id="insp-btn-stage3" class="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400 hover:text-white cursor-pointer">[3] Solr Engine ($fq)</button>
+              <button onclick="setInspectorTab('stage4')" id="insp-btn-stage4" class="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400 hover:text-white cursor-pointer">[4] Dynamic GIS Sync</button>
+              <button onclick="setInspectorTab('narrative')" id="insp-btn-narrative" class="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400 hover:text-white cursor-pointer">💬 Narrative</button>
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <button onclick="toggleDrawerHeight()" class="text-slate-400 hover:text-white text-xs px-2 py-0.5 rounded bg-slate-800 cursor-pointer" title="Expandir o compactar panel">
-              <span id="drawer-toggle-icon">↕ Expandir</span>
+            <button onclick="toggleDrawerHeight()" class="text-slate-400 hover:text-white text-xs px-2 py-0.5 rounded bg-slate-800 cursor-pointer" title="Expand or compact drawer">
+              <span id="drawer-toggle-icon">↕ Expand</span>
             </button>
           </div>
         </div>
@@ -403,31 +442,31 @@
           
           <!-- Stage 1: NLU & Tokens -->
           <div id="insp-stage1" class="space-y-1.5">
-            <div class="text-[11px] text-slate-400">Etapa 1: Tokenización de lenguaje natural contra el esquema dinámico de filtros activos:</div>
+            <div class="text-[11px] text-slate-400">Stage 1: Conversational query tokenization, entity extraction, and synonym mapping:</div>
             <pre id="insp-stage1-pre" class="bg-slate-950 p-2.5 rounded border border-slate-800 text-blue-300 overflow-x-auto text-[11px] leading-relaxed"></pre>
           </div>
 
           <!-- Stage 2: Schema Normalizer -->
           <div id="insp-stage2" class="hidden space-y-1.5">
-            <div class="text-[11px] text-slate-400">Etapa 2: Normalización determinista y diccionario validado contra las dimensiones definidas por el usuario:</div>
+            <div class="text-[11px] text-slate-400">Stage 2: Deterministic Thesaurus normalization and JSON Schema alignment against active dimensions:</div>
             <pre id="insp-stage2-pre" class="bg-slate-950 p-2.5 rounded border border-slate-800 text-emerald-300 overflow-x-auto text-[11px] leading-relaxed"></pre>
           </div>
 
           <!-- Stage 3: Solr Rules & Facets -->
           <div id="insp-stage3" class="hidden space-y-1.5">
-            <div class="text-[11px] text-slate-400">Etapa 3: Reglas booleanas de filtro generadas (fq) y distribución de facetas multidimensionales:</div>
+            <div class="text-[11px] text-slate-400">Stage 3: Generated Apache Solr Boolean Filter rules (fq) and dynamic multidimensional facet distributions:</div>
             <pre id="insp-stage3-pre" class="bg-slate-950 p-2.5 rounded border border-slate-800 text-amber-300 overflow-x-auto text-[11px] leading-relaxed"></pre>
           </div>
 
           <!-- Stage 4: Dynamic GIS Sync -->
           <div id="insp-stage4" class="hidden space-y-1.5">
-            <div class="text-[11px] text-slate-400">Etapa 4: Sincronización Leaflet, activación de anillos de pulso luminoso y asignación de opacidad:</div>
+            <div class="text-[11px] text-slate-400">Stage 4: Leaflet cartographic synchronization, pulsating ring assignment, and badge generation:</div>
             <pre id="insp-stage4-pre" class="bg-slate-950 p-2.5 rounded border border-slate-800 text-purple-300 overflow-x-auto text-[11px] leading-relaxed"></pre>
           </div>
 
           <!-- Grounded Narrative -->
           <div id="insp-narrative" class="hidden space-y-1.5 font-sans">
-            <div class="text-[11px] text-slate-400 font-mono">Respuesta estructurada en lenguaje natural fundamentada en las evidencias espaciales:</div>
+            <div class="text-[11px] text-slate-400 font-mono">Synthesized Natural Language Grounded Narrative:</div>
             <div id="insp-narrative-div" class="bg-slate-950 p-3 rounded border border-slate-800 text-slate-200 text-xs leading-relaxed"></div>
           </div>
 
@@ -443,7 +482,7 @@
        CLIENT-SIDE APPLICATION JAVASCRIPT
        ========================================================================= -->
   <script>
-    // Sibling Port Navigation Helper (Works seamlessly in Codespaces and Localhost)
+    // Codespaces & Localhost Cross-App Navigation Helper
     function openSiblingApp(targetPort) {
       const loc = window.location;
       let targetUrl;
@@ -462,6 +501,7 @@
     let currentConfig = {};
     let manualFilterState = {};
     let leafletMap = null;
+    let territoryVectorLayer = null;
     let markersLayer = null;
     let zoneMarkersLayer = null;
     let markersById = {};
@@ -475,58 +515,105 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
       initMap();
+      await loadTerritoryGeoJSON();
       await loadAppConfig();
       await loadPointsData();
       submitManualFilters();
     });
 
     // --------------------------------------------------------------------------
-    // MAP INITIALIZATION
+    // 100% OFFLINE VECTOR MAP INITIALIZATION (NO TILE SERVER / NO API KEY)
     // --------------------------------------------------------------------------
     function initMap() {
-      const center = [28.28, -16.48];
+      // Center on fictional nation of Avalon Republic
+      const center = [20.0, 30.0];
       leafletMap = L.map('map', {
         center: center,
         zoom: 10.5,
+        minZoom: 9,
+        maxZoom: 13,
         zoomControl: false,
-        attributionControl: false
+        attributionControl: false,
+        maxBounds: [[19.3, 29.1], [20.7, 30.9]]
       });
 
       L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
 
-      // CartoDB Dark Matter Basemap
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19,
-        subdomains: 'abcd'
-      }).addTo(leafletMap);
-
+      territoryVectorLayer = L.layerGroup().addTo(leafletMap);
       zoneMarkersLayer = L.layerGroup().addTo(leafletMap);
       markersLayer = L.layerGroup().addTo(leafletMap);
+    }
+
+    async function loadTerritoryGeoJSON() {
+      try {
+        const resp = await fetch('/api/territory_geojson');
+        const geojson = await resp.json();
+
+        L.geoJSON(geojson, {
+          style: function(feature) {
+            const layer = feature.properties?.layer;
+            if (layer === 'shelf') {
+              return {
+                fillColor: '#0c1a33',
+                fillOpacity: 0.8,
+                color: '#152f59',
+                weight: 1.5,
+                dashArray: '3, 4'
+              };
+            } else if (layer === 'main_land') {
+              return {
+                fillColor: '#13213a',
+                fillOpacity: 1.0,
+                color: '#284673',
+                weight: 2
+              };
+            } else if (layer === 'highlands') {
+              return {
+                fillColor: '#1b2d4e',
+                fillOpacity: 0.95,
+                color: '#385d94',
+                weight: 1.2
+              };
+            } else if (layer === 'satellite') {
+              return {
+                fillColor: '#13213a',
+                fillOpacity: 1.0,
+                color: '#284673',
+                weight: 1.5
+              };
+            }
+            return { fillColor: '#13213a', color: '#284673', weight: 1 };
+          }
+        }).addTo(territoryVectorLayer);
+
+      } catch (e) {
+        console.error("Error loading territory GeoJSON:", e);
+      }
     }
 
     function renderZoneLabels() {
       zoneMarkersLayer.clearLayers();
       const zones = currentConfig.territory?.zones || [];
       zones.forEach(z => {
-        // Soft pulsing area circle
+        // Soft zone boundary circle
         L.circle([z.lat, z.lon], {
-          radius: 4000,
+          radius: 3800,
           color: z.color || '#3b82f6',
           weight: 1,
           dashArray: '4, 4',
           fillColor: z.color || '#3b82f6',
-          fillOpacity: 0.05,
+          fillOpacity: 0.04,
           interactive: false
         }).addTo(zoneMarkersLayer);
 
-        // Zone text label
+        // Zone text banner
         const icon = L.divIcon({
           className: 'zone-label-icon',
           html: `<div style="color: ${z.color || '#94a3b8'};">${z.name}</div>`,
-          iconSize: [120, 20],
-          iconAnchor: [60, 10]
+          iconSize: [140, 20],
+          iconAnchor: [70, 10]
         });
-        L.marker([z.lat + 0.035, z.lon], { icon: icon, interactive: false }).addTo(zoneMarkersLayer);
+        L.marker([z.lat + 0.032, z.lon], { icon: icon, interactive: false }).addTo(zoneMarkersLayer);
       });
     }
 
@@ -538,12 +625,13 @@
         const resp = await fetch('/api/config');
         currentConfig = await resp.json();
         
-        document.getElementById('territory-header-name').textContent = currentConfig.territory?.name || 'Archipiélago';
+        document.getElementById('territory-header-name').textContent = currentConfig.territory?.name || 'Avalon Republic';
         document.getElementById('raw-schema-textarea').value = JSON.stringify(currentConfig, null, 2);
         
         renderActiveFilterCards();
         renderZoneLabels();
         renderDynamicSuggestions();
+        updatePresetButtonStyles();
       } catch (e) {
         console.error("Error loading config:", e);
       }
@@ -555,13 +643,29 @@
         allPoints = await resp.json();
         activeMatchedIds = allPoints.map(p => p.id);
         
-        document.getElementById('objects-count-badge').textContent = allPoints.length;
-        document.getElementById('map-total-badge').textContent = allPoints.length;
-        
+        updateMapCountsUI();
         renderMapMarkers();
         renderObjectsList();
       } catch (e) {
-        console.error("Error loading points:", e);
+        console.error("Error loading facilities data:", e);
+      }
+    }
+
+    function updateMapCountsUI() {
+      const count = allPoints.length;
+      document.getElementById('objects-count-badge').textContent = count;
+      document.getElementById('map-total-badge').textContent = count;
+      document.getElementById('map-count-badge').textContent = activeMatchedIds.length;
+
+      const overlay = document.getElementById('initial-guide-overlay');
+      const statusMsg = document.getElementById('dataset-status-msg');
+
+      if (count === 0) {
+        if (overlay) overlay.classList.remove('hidden', 'opacity-0');
+        if (statusMsg) statusMsg.textContent = "Map currently has 0 points. Click above to populate.";
+      } else {
+        if (overlay) overlay.classList.add('hidden', 'opacity-0');
+        if (statusMsg) statusMsg.textContent = `${count} facilities scattered across ${currentConfig.territory?.name || 'territory'}.`;
       }
     }
 
@@ -580,14 +684,13 @@
         if (data.status === 'success') {
           allPoints = data.points;
           activeMatchedIds = allPoints.map(p => p.id);
-          document.getElementById('objects-count-badge').textContent = allPoints.length;
-          document.getElementById('map-total-badge').textContent = allPoints.length;
+          updateMapCountsUI();
           renderMapMarkers();
           renderObjectsList();
           submitManualFilters();
         }
       } catch (e) {
-        console.error("Error generating points:", e);
+        console.error("Error generating facilities:", e);
       }
     }
 
@@ -596,22 +699,24 @@
         const resp = await fetch('/api/preset', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ preset: presetId, count: 40 })
+          body: JSON.stringify({ preset: presetId, generate: false })
         });
         const data = await resp.json();
         if (data.status === 'success') {
           manualFilterState = {};
           currentConfig = data.config;
-          allPoints = data.points;
-          activeMatchedIds = allPoints.map(p => p.id);
+          allPoints = [];
+          activeMatchedIds = [];
 
-          document.getElementById('territory-header-name').textContent = currentConfig.territory?.name || 'Archipiélago';
+          document.getElementById('territory-header-name').textContent = currentConfig.territory?.name || 'Avalon Republic';
           document.getElementById('raw-schema-textarea').value = JSON.stringify(currentConfig, null, 2);
           document.getElementById('conversational-input').value = '';
 
           renderActiveFilterCards();
           renderZoneLabels();
           renderDynamicSuggestions();
+          updatePresetButtonStyles();
+          updateMapCountsUI();
           renderMapMarkers();
           renderObjectsList();
           submitManualFilters();
@@ -619,6 +724,21 @@
       } catch (e) {
         console.error("Error loading preset:", e);
       }
+    }
+
+    function updatePresetButtonStyles() {
+      const active = currentConfig.active_preset || 'energy';
+      ['energy', 'smartcity', 'custom'].forEach(p => {
+        const btn = document.getElementById(`btn-preset-${p}`);
+        if (!btn) return;
+        if (p === active) {
+          btn.classList.add('bg-blue-600', 'text-white', 'border-blue-400');
+          btn.classList.remove('bg-slate-800', 'text-slate-200', 'border-slate-700');
+        } else {
+          btn.classList.remove('bg-blue-600', 'text-white', 'border-blue-400');
+          btn.classList.add('bg-slate-800', 'text-slate-200', 'border-slate-700');
+        }
+      });
     }
 
     async function resetToDefaults() {
@@ -632,7 +752,7 @@
           submitManualFilters();
         }
       } catch (e) {
-        console.error("Error resetting:", e);
+        console.error("Error resetting sandbox:", e);
       }
     }
 
@@ -643,12 +763,12 @@
       const container = document.getElementById('active-filters-container');
       container.innerHTML = '';
       const fields = currentConfig.filter_fields || [];
-      document.getElementById('filters-summary-count').textContent = `${fields.length} filtros activos`;
+      document.getElementById('filters-summary-count').textContent = `${fields.length} dimensions`;
 
       if (fields.length === 0) {
         container.innerHTML = `
           <div class="text-xs text-slate-400 bg-slate-950/40 p-3 rounded border border-dashed border-slate-800 text-center">
-            No hay filtros definidos. ¡Crea el primer filtro abajo o selecciona un preset!
+            No filter dimensions defined yet. Choose a preset above or click '+ Add Custom Filter' below!
           </div>
         `;
         return;
@@ -666,7 +786,7 @@
             <span class="font-semibold text-xs text-white">${f.label}</span>
             <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-400">${f.key}</span>
           </div>
-          <button onclick="deleteFilter('${f.key}')" class="text-slate-500 hover:text-rose-400 text-xs cursor-pointer p-0.5" title="Eliminar este filtro">
+          <button onclick="deleteFilter('${f.key}')" class="text-slate-500 hover:text-rose-400 text-xs cursor-pointer p-0.5" title="Remove this dimension">
             🗑️
           </button>
         `;
@@ -692,8 +812,8 @@
         const adder = document.createElement('div');
         adder.className = "flex gap-1 pt-1";
         adder.innerHTML = `
-          <input id="opt-input-${f.key}" type="text" placeholder="+ Añadir valor..." onkeydown="if(event.key==='Enter') addOptionToFilter('${f.key}')" class="flex-1 bg-slate-900 border border-slate-800 rounded px-2 py-0.5 text-[10.5px] text-white focus:outline-none focus:border-blue-500">
-          <button onclick="addOptionToFilter('${f.key}')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10.5px] px-2 py-0.5 rounded cursor-pointer">Añadir</button>
+          <input id="opt-input-${f.key}" type="text" placeholder="+ Add value..." onkeydown="if(event.key==='Enter') addOptionToFilter('${f.key}')" class="flex-1 bg-slate-900 border border-slate-800 rounded px-2 py-0.5 text-[10.5px] text-white focus:outline-none focus:border-blue-500">
+          <button onclick="addOptionToFilter('${f.key}')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10.5px] px-2 py-0.5 rounded cursor-pointer">Add</button>
         `;
         card.appendChild(adder);
 
@@ -710,7 +830,7 @@
     async function submitNewFilter() {
       const label = document.getElementById('input-new-filter-label').value.trim();
       const rawOpts = document.getElementById('input-new-filter-options').value.trim();
-      if (!label) return alert("Por favor escribe un nombre para el filtro.");
+      if (!label) return alert("Please provide a filter name.");
       const options = rawOpts.split(',').map(s => s.trim()).filter(Boolean);
 
       try {
@@ -756,7 +876,7 @@
     }
 
     async function deleteFilter(key) {
-      if (!confirm(`¿Eliminar el filtro '${key}'?`)) return;
+      if (!confirm(`Remove filter dimension '${key}'?`)) return;
       try {
         const resp = await fetch('/api/delete_filter', {
           method: 'POST',
@@ -786,18 +906,18 @@
 
       const suggestions = [];
       if (fields.length > 0 && fields[0].options?.length > 0) {
-        suggestions.push(`muestra ${fields[0].options[0].toLowerCase()}`);
+        suggestions.push(`${fields[0].options[0].toLowerCase()}`);
         if (fields[0].options.length > 1) {
-          suggestions.push(`${fields[0].options[0].toLowerCase()} y ${fields[0].options[1].toLowerCase()}`);
+          suggestions.push(`${fields[0].options[0].toLowerCase()} and ${fields[0].options[1].toLowerCase()}`);
         }
       }
       if (fields.length > 1 && fields[1].options?.length > 0 && fields[0].options?.length > 0) {
-        suggestions.push(`${fields[0].options[0].toLowerCase()} con ${fields[1].options[0].toLowerCase()}`);
+        suggestions.push(`${fields[0].options[0].toLowerCase()} with ${fields[1].options[0].toLowerCase()}`);
       }
       if (zones.length > 0 && fields.length > 0 && fields[0].options?.length > 0) {
-        suggestions.push(`${fields[0].options[0].toLowerCase()} en ${zones[0].name.toLowerCase()}`);
+        suggestions.push(`${fields[0].options[0].toLowerCase()} in ${zones[0].name.toLowerCase()}`);
       }
-      suggestions.push("mostrar todo");
+      suggestions.push("show all facilities");
 
       suggestions.forEach(s => {
         const btn = document.createElement('button');
@@ -930,7 +1050,7 @@
       if (zones.length > 0) {
         const zoneGroup = document.createElement('div');
         zoneGroup.className = "space-y-1";
-        zoneGroup.innerHTML = `<div class="text-[10px] text-slate-400 uppercase font-mono">Sector / Zona</div>`;
+        zoneGroup.innerHTML = `<div class="text-[10px] text-slate-400 uppercase font-mono">Geographic Sector</div>`;
         const pillsDiv = document.createElement('div');
         pillsDiv.className = "flex flex-wrap gap-1";
         zones.forEach(z => {
@@ -1015,7 +1135,7 @@
         });
 
         const popupContent = `
-          <div class="p-1 space-y-1.5 font-sans min-w-[200px]">
+          <div class="p-1 space-y-1.5 font-sans min-w-[210px]">
             <div class="border-b border-slate-700 pb-1">
               <div class="text-[10px] font-mono text-cyan-400">${pt.id} · ${pt.zone}</div>
               <div class="font-bold text-xs text-white">${pt.name}</div>
@@ -1033,7 +1153,7 @@
     }
 
     function syncMapMarkers() {
-      const isFiltered = activeMatchedIds.length < allPoints.length;
+      const isFiltered = activeMatchedIds.length < allPoints.length && allPoints.length > 0;
 
       allPoints.forEach(pt => {
         const marker = markersById[pt.id];
@@ -1073,12 +1193,12 @@
 
     function toggleFilterVisibilityMode() {
       hideNonMatching = !hideNonMatching;
-      document.getElementById('btn-vis-mode').innerHTML = hideNonMatching ? '<span>🚫 Ocultar no coincidentes</span>' : '<span>👁️ Atenuar no coincidentes</span>';
+      document.getElementById('btn-vis-mode').innerHTML = hideNonMatching ? '<span>🚫 Hide Non-Matching</span>' : '<span>👁️ Dim Non-Matching</span>';
       syncMapMarkers();
     }
 
     function zoomToPoint(lat, lon, id) {
-      leafletMap.flyTo([lat, lon], 13, { duration: 0.8 });
+      leafletMap.flyTo([lat, lon], 12, { duration: 0.7 });
       const marker = markersById[id];
       if (marker) marker.openPopup();
     }
@@ -1093,7 +1213,16 @@
       const primaryField = fields[0] || null;
 
       const filtered = allPoints.filter(p => activeMatchedIds.includes(p.id));
-      document.getElementById('objects-filtered-label').textContent = `${filtered.length} visibles`;
+      document.getElementById('objects-filtered-label').textContent = `${filtered.length} visible`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="text-xs text-slate-500 p-4 text-center">
+            ${allPoints.length === 0 ? 'No facilities generated yet. Click "Generate Points" in Tab 1.' : 'No facilities match the active filter criteria.'}
+          </div>
+        `;
+        return;
+      }
 
       filtered.forEach(pt => {
         let tagVal = primaryField ? pt[primaryField.key] : pt.zone;
@@ -1120,7 +1249,7 @@
     // --------------------------------------------------------------------------
     function updateInspectorTrace(result) {
       document.getElementById('insp-stage1-pre').textContent = JSON.stringify({
-        input_query: result.query || "(Consulta manual / todo)",
+        input_query: result.query || "(Manual filter / all)",
         detected_intent: result.intent,
         matched_tokens: result.matched_tokens
       }, null, 2);
@@ -1162,7 +1291,7 @@
       drawerExpanded = !drawerExpanded;
       const drawer = document.getElementById('inspector-drawer');
       drawer.style.height = drawerExpanded ? '380px' : '224px';
-      document.getElementById('drawer-toggle-icon').textContent = drawerExpanded ? '↕ Compactar' : '↕ Expandir';
+      document.getElementById('drawer-toggle-icon').textContent = drawerExpanded ? '↕ Compact' : '↕ Expand';
     }
 
     function switchTab(tabId) {
@@ -1189,13 +1318,13 @@
         });
         const data = await resp.json();
         if (data.status === 'saved') {
-          alert("Esquema guardado y aplicado correctamente.");
+          alert("Schema saved and applied successfully.");
           await loadAppConfig();
           await loadPointsData();
           submitManualFilters();
         }
       } catch (e) {
-        alert("JSON inválido: " + e.message);
+        alert("Invalid JSON: " + e.message);
       }
     }
   </script>

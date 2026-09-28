@@ -1,226 +1,242 @@
 {
-  "title": "Archipiélago Avalon — Plantilla GIS de Dominio Abierto",
-  "description": "Plantilla interactiva para evaluar la generalidad y reutilización del framework desacoplado (NLU -> Solr -> GIS) en cualquier dominio cartográfico.",
-  "active_preset": "adventure",
+  "title": "Avalon Republic — Renewable Energy & Power Grid",
+  "description": "Exploration of utility-scale renewable generation, storage assets, and grid compliance.",
+  "active_preset": "energy",
   "territory": {
-    "name": "Archipiélago Avalon",
-    "description": "Región insular experimental con 5 sectores biogeográficos diferenciados.",
+    "name": "Avalon Republic",
+    "description": "Fictional island archipelago nation with 5 distinct regional sectors.",
     "center": [
-      28.28,
-      -16.48
+      20.0,
+      30.0
     ],
     "zoom": 10.5,
     "zones": [
       {
-        "name": "Costa Norte",
-        "lat": 28.44,
-        "lon": -16.42,
+        "name": "North Coast",
+        "lat": 20.17,
+        "lon": 30.0,
         "color": "#06b6d4",
-        "desc": "Litoral con acantilados y puertos pesqueros"
+        "desc": "Deepwater maritime harbor and offshore energy shelf"
       },
       {
-        "name": "Tierras Altas",
-        "lat": 28.3,
-        "lon": -16.52,
+        "name": "Central Highlands",
+        "lat": 20.02,
+        "lon": 29.98,
         "color": "#8b5cf6",
-        "desc": "Mesetas y macizos montañosos centrales"
+        "desc": "Elevated mountain ridges and hydroelectric storage basin"
       },
       {
-        "name": "Bahía Sur",
-        "lat": 28.17,
-        "lon": -16.62,
+        "name": "South Bay",
+        "lat": 19.84,
+        "lon": 29.94,
         "color": "#f59e0b",
-        "desc": "Aguas calmas, playas y ensenadas abrigadas"
+        "desc": "Sheltered coastal estuaries, municipal districts and solar plains"
       },
       {
-        "name": "Valle Esmeralda",
-        "lat": 28.32,
-        "lon": -16.7,
+        "name": "Emerald Valley",
+        "lat": 20.0,
+        "lon": 29.75,
         "color": "#10b981",
-        "desc": "Cuenca fértil con densa vegetación y manantiales"
+        "desc": "Western river basin and distributed utility corridor"
       },
       {
-        "name": "Sector Oriental",
-        "lat": 28.26,
-        "lon": -16.25,
+        "name": "Eastern Archipelago",
+        "lat": 20.05,
+        "lon": 30.34,
         "color": "#ec4899",
-        "desc": "Archipiélago de islotes rocosos y arrecifes"
+        "desc": "Offshore satellite islands and subsea transmission hub"
       }
     ]
   },
   "filter_fields": [
     {
-      "key": "tipo",
-      "label": "Tipo de Lugar",
+      "key": "energy_type",
+      "label": "Generation Technology",
       "type": "multiselect",
       "options": [
-        "Castillo",
-        "Mina abandonada",
-        "Templo místico",
-        "Puerto pirata",
-        "Refugio"
+        "Solar Photovoltaic",
+        "Onshore Wind",
+        "Offshore Wind",
+        "Hydroelectric Dam",
+        "Battery Storage (BESS)",
+        "Geothermal Plant"
       ],
       "colors": {
-        "Castillo": "#3b82f6",
-        "Mina abandonada": "#f59e0b",
-        "Templo místico": "#8b5cf6",
-        "Puerto pirata": "#06b6d4",
-        "Refugio": "#10b981"
+        "Solar Photovoltaic": "#f59e0b",
+        "Onshore Wind": "#06b6d4",
+        "Offshore Wind": "#38bdf8",
+        "Hydroelectric Dam": "#3b82f6",
+        "Battery Storage (BESS)": "#8b5cf6",
+        "Geothermal Plant": "#10b981"
       },
       "synonyms": {
-        "castillo": [
-          "castillo",
-          "castillos",
-          "fortaleza",
-          "torre",
-          "castle",
-          "castles",
-          "fortress"
+        "solar photovoltaic": [
+          "solar",
+          "photovoltaic",
+          "pv",
+          "solar farm",
+          "solar plant",
+          "sun"
         ],
-        "mina abandonada": [
-          "mina",
-          "minas",
-          "mina abandonada",
-          "cantera",
-          "mine",
-          "mines"
+        "onshore wind": [
+          "onshore wind",
+          "wind turbines",
+          "wind farm",
+          "wind",
+          "turbines"
         ],
-        "templo místico": [
-          "templo",
-          "templos",
-          "santuario",
-          "templo mistico",
-          "shrine",
-          "temple",
-          "temples"
+        "offshore wind": [
+          "offshore wind",
+          "marine wind",
+          "sea wind",
+          "coastal wind"
         ],
-        "puerto pirata": [
-          "puerto",
-          "puertos",
-          "muelle",
-          "embarcadero",
-          "port",
-          "harbor"
+        "hydroelectric dam": [
+          "hydro",
+          "hydroelectric",
+          "dam",
+          "reservoir",
+          "water power"
         ],
-        "refugio": [
-          "refugio",
-          "refugios",
-          "albergue",
-          "campamento",
-          "shelter",
-          "refuge",
-          "camp"
+        "battery storage (bess)": [
+          "battery",
+          "storage",
+          "bess",
+          "battery storage",
+          "energy storage"
+        ],
+        "geothermal plant": [
+          "geothermal",
+          "thermal power",
+          "geo",
+          "hot springs"
         ]
       }
     },
     {
-      "key": "faccion",
-      "label": "Facción Dominante",
+      "key": "status",
+      "label": "Operational Status",
       "type": "select",
       "options": [
-        "Guardianes",
-        "Mercaderes",
-        "Exploradores",
-        "Rebeldes"
+        "Operational",
+        "Under Construction",
+        "Permitting & Planned",
+        "Decommissioned"
       ],
       "colors": {
-        "Guardianes": "#3b82f6",
-        "Mercaderes": "#10b981",
-        "Exploradores": "#f59e0b",
-        "Rebeldes": "#ef4444"
+        "Operational": "#10b981",
+        "Under Construction": "#f59e0b",
+        "Permitting & Planned": "#3b82f6",
+        "Decommissioned": "#64748b"
       },
       "synonyms": {
-        "guardianes": [
-          "guardianes",
-          "guardian",
-          "guardianes del reino",
-          "guardians"
+        "operational": [
+          "operational",
+          "active",
+          "online",
+          "running",
+          "producing",
+          "commissioned"
         ],
-        "mercaderes": [
-          "mercaderes",
-          "mercader",
-          "comerciantes",
-          "merchants",
-          "traders"
+        "under construction": [
+          "under construction",
+          "construction",
+          "building",
+          "in progress"
         ],
-        "exploradores": [
-          "exploradores",
-          "explorador",
-          "rastreadores",
-          "explorers",
-          "scouts"
+        "permitting & planned": [
+          "planned",
+          "projected",
+          "permitting",
+          "proposed",
+          "pipeline"
         ],
-        "rebeldes": [
-          "rebeldes",
-          "rebelde",
-          "insurgentes",
-          "rebels"
+        "decommissioned": [
+          "decommissioned",
+          "retired",
+          "closed",
+          "offline",
+          "shut down"
         ]
       }
     },
     {
-      "key": "peligro",
-      "label": "Nivel de Peligro",
+      "key": "capacity_tier",
+      "label": "Capacity Scale",
       "type": "select",
       "options": [
-        "Seguro",
-        "Moderado",
-        "Peligroso",
-        "Crítico"
+        "Utility Scale (> 100 MW)",
+        "Medium Scale (20-100 MW)",
+        "Distributed (< 20 MW)"
       ],
       "colors": {
-        "Seguro": "#10b981",
-        "Moderado": "#f59e0b",
-        "Peligroso": "#f97316",
-        "Crítico": "#ef4444"
+        "Utility Scale (> 100 MW)": "#ec4899",
+        "Medium Scale (20-100 MW)": "#f97316",
+        "Distributed (< 20 MW)": "#14b8a6"
       },
       "synonyms": {
-        "seguro": [
-          "seguro",
-          "segura",
-          "tranquilo",
-          "pacifico",
-          "safe",
-          "secure"
+        "utility scale (> 100 mw)": [
+          "utility scale",
+          "large scale",
+          "major",
+          "over 100",
+          "> 100",
+          "high capacity"
         ],
-        "moderado": [
-          "moderado",
-          "medio",
-          "alerta",
-          "moderate"
+        "medium scale (20-100 mw)": [
+          "medium scale",
+          "mid scale",
+          "20-100",
+          "medium"
         ],
-        "peligroso": [
-          "peligroso",
-          "alto peligro",
-          "amenaza",
-          "dangerous",
-          "perilous"
-        ],
-        "crítico": [
-          "critico",
-          "crítico",
-          "extremo",
-          "mortal",
-          "critical",
-          "extreme"
+        "distributed (< 20 mw)": [
+          "distributed",
+          "small scale",
+          "local",
+          "under 20",
+          "< 20",
+          "micro"
         ]
       }
     },
     {
-      "key": "clima_insular",
-      "label": "Clima Insular",
+      "key": "esg_rating",
+      "label": "ESG Compliance Grade",
       "type": "select",
       "options": [
-        "Soleado",
-        "Tormenta",
-        "Bruma"
+        "Grade A (Exemplary)",
+        "Grade B (Compliant)",
+        "Grade C (Under Review)"
       ],
       "colors": {
-        "Soleado": "#3b82f6",
-        "Tormenta": "#10b981",
-        "Bruma": "#f59e0b"
+        "Grade A (Exemplary)": "#10b981",
+        "Grade B (Compliant)": "#f59e0b",
+        "Grade C (Under Review)": "#ef4444"
       },
-      "synonyms": {}
+      "synonyms": {
+        "grade a (exemplary)": [
+          "grade a",
+          "esg a",
+          "top esg",
+          "exemplary",
+          "tier a",
+          "a"
+        ],
+        "grade b (compliant)": [
+          "grade b",
+          "esg b",
+          "compliant",
+          "tier b",
+          "b"
+        ],
+        "grade c (under review)": [
+          "grade c",
+          "esg c",
+          "under review",
+          "tier c",
+          "c"
+        ]
+      }
     }
   ]
 }
