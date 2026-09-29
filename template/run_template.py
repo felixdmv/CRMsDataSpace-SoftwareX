@@ -36,14 +36,14 @@ _CONFIG: Dict[str, Any] = {}
 
 TERRITORY_AVALON: Dict[str, Any] = {
     "name": "Avalon Island",
-    "description": "Archipelago island featuring 4 distinct biomes: Desert (Orange), Nature Reserve (Green), Metropolitan City (Grayish-Red), and Mountains (White), surrounded by a vibrant blue ocean.",
+    "description": "Archipelago island featuring 4 distinct biomes: Desert, Nature Reserve, Metropolitan City, and Mountains, surrounded by a vibrant blue ocean.",
     "center": [20.0, 30.0],
     "zoom": 10.5,
     "zones": [
-        {"name": "Metropolitan City District", "lat": 20.10, "lon": 30.12, "color": "#9b4d4d", "desc": "Civic harbor, commercial waterfront, and urban center (Grayish-Red)"},
-        {"name": "Emerald Nature Reserve", "lat": 20.00, "lon": 29.75, "color": "#16a34a", "desc": "Lush river basin, temperate woodlands, and wildlife reserve (Green)"},
-        {"name": "White Mountain Ridge", "lat": 20.02, "lon": 29.98, "color": "#f1f5f9", "desc": "Alpine peaks, rocky ridges, and snowcapped summits (White)"},
-        {"name": "Avalon Desert Dunes", "lat": 19.84, "lon": 29.98, "color": "#ea580c", "desc": "Sun-drenched arid plains and coastal dunes (Orange)"},
+        {"name": "Metropolitan City District", "lat": 20.10, "lon": 30.12, "color": "#9b4d4d", "desc": "Civic harbor, commercial waterfront, and urban center"},
+        {"name": "Emerald Nature Reserve", "lat": 20.00, "lon": 29.75, "color": "#16a34a", "desc": "Lush river basin, temperate woodlands, and wildlife reserve"},
+        {"name": "White Mountain Ridge", "lat": 20.02, "lon": 29.98, "color": "#f1f5f9", "desc": "Alpine peaks, rocky ridges, and snowcapped summits"},
+        {"name": "Avalon Desert Dunes", "lat": 19.84, "lon": 29.98, "color": "#ea580c", "desc": "Sun-drenched arid plains and coastal dunes"},
         {"name": "Eastern Archipelago", "lat": 20.05, "lon": 30.34, "color": "#06b6d4", "desc": "Offshore maritime satellite islands"}
     ]
 }
@@ -610,7 +610,7 @@ def generate_natural_narrative(
             f"#### 🚀 Getting Started:\n"
             f"1. **Select a domain** on the left panel (*⚡ Renewable Energy*, *🏙️ Smart City*, or *✨ Custom*).\n"
             f"2. The **domain filters** will activate in the right-hand panel next to the interactive map.\n"
-            f"3. Click **🎲 Generate Points** to scatter facilities across the 4 island biomes: **Desert (Orange)**, **Nature Reserve (Green)**, **City (Grayish-Red)**, and **Mountains (White)**, surrounded by the blue ocean.\n"
+            f"3. Click **🎲 Generate Points** to scatter facilities across the 4 island biomes: **Desert**, **Nature Reserve**, **City**, and **Mountains**, surrounded by the blue ocean.\n"
             f"4. Perform **conversational searches** or interact with facet pills to synchronize the cartographic map."
         )
 

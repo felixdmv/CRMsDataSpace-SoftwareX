@@ -442,36 +442,39 @@
         </div>
       </div>
 
-      <!-- FLOATING BIOMES MAP LEGEND -->
-      <div class="absolute bottom-4 left-4 z-[999] pointer-events-none">
-        <div class="bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-lg p-2.5 shadow-2xl pointer-events-auto text-[10.5px] text-slate-300 space-y-1.5 min-w-[210px]">
-          <div class="flex items-center justify-between border-b border-slate-800 pb-1">
-            <span class="font-bold text-[10px] uppercase tracking-wider text-slate-400 font-mono">🏝️ Island Biomes</span>
-            <span class="text-[9px] text-cyan-400 font-mono">Blue Ocean</span>
-          </div>
-          <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[10.5px]">
-            <div class="flex items-center gap-1.5">
-              <span class="w-3 h-3 rounded-sm bg-[#ea580c] border border-orange-300/40"></span>
-              <span class="truncate">Desert (Orange)</span>
+      <!-- WRAPPER FOR MAP CANVAS & FLOATING LEGEND (CONFINED TO MAP VIEWPORT ONLY) -->
+      <div class="flex-1 w-full h-full relative overflow-hidden min-h-0">
+        <!-- LEAFLET MAP CANVAS (CUSTOM OFFLINE VECTOR BASEMAP) -->
+        <div id="map" class="w-full h-full"></div>
+
+        <!-- FLOATING BIOMES MAP LEGEND (ANCHORED TO BOTTOM-LEFT OF MAP, NEVER OVERLAPS INSPECTOR) -->
+        <div class="absolute bottom-3 left-3 z-[500] pointer-events-none">
+          <div class="bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-lg p-2.5 shadow-2xl pointer-events-auto text-[10.5px] text-slate-300 space-y-1.5 min-w-[190px]">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-1">
+              <span class="font-bold text-[10px] uppercase tracking-wider text-slate-400 font-mono">🏝️ Island Biomes</span>
+              <span class="text-[9px] text-cyan-400 font-mono">Ocean</span>
             </div>
-            <div class="flex items-center gap-1.5">
-              <span class="w-3 h-3 rounded-sm bg-[#16a34a] border border-emerald-300/40"></span>
-              <span class="truncate">Nature Reserve (Green)</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <span class="w-3 h-3 rounded-sm bg-[#9b4d4d] border border-red-300/40"></span>
-              <span class="truncate">City (Grayish-Red)</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <span class="w-3 h-3 rounded-sm bg-[#ffffff] border border-slate-300"></span>
-              <span class="truncate font-medium text-white">Mountains (White)</span>
+            <div class="grid grid-cols-2 gap-x-2.5 gap-y-1 text-[10.5px]">
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-sm bg-[#ea580c] border border-orange-300/40"></span>
+                <span class="truncate">Desert</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-sm bg-[#16a34a] border border-emerald-300/40"></span>
+                <span class="truncate">Nature Reserve</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-sm bg-[#9b4d4d] border border-red-300/40"></span>
+                <span class="truncate">City</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-sm bg-[#ffffff] border border-slate-300"></span>
+                <span class="truncate font-medium text-white">Mountains</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- LEAFLET MAP CANVAS (CUSTOM OFFLINE VECTOR BASEMAP) -->
-      <div id="map" class="flex-1 w-full h-full"></div>
 
       <!-- =====================================================================
            BOTTOM 4-STAGE PIPELINE INSPECTOR (FREELY RESIZABLE & EXPANDABLE)
@@ -800,7 +803,7 @@
                 opacity: 0.85
               };
             }
-            // 3. Biome: Desert (Orange)
+            // 3. Biome: Desert
             if (layer === 'biome_desert' || biome === 'desert') {
               return {
                 fillColor: '#ea580c',
@@ -809,7 +812,7 @@
                 weight: 1.5
               };
             }
-            // 4. Biome: Nature Reserve (Green)
+            // 4. Biome: Nature Reserve
             if (layer === 'biome_park' || biome === 'park') {
               return {
                 fillColor: '#16a34a',
@@ -818,7 +821,7 @@
                 weight: 1.5
               };
             }
-            // 5. Biome: Metropolitan City (Grayish-Red)
+            // 5. Biome: Metropolitan City
             if (layer === 'biome_city' || biome === 'city') {
               return {
                 fillColor: '#9b4d4d',
@@ -827,7 +830,7 @@
                 weight: 1.5
               };
             }
-            // 6. Biome: Mountains (White)
+            // 6. Biome: Mountains
             if (layer === 'biome_mountains' || biome === 'mountains') {
               return {
                 fillColor: '#ffffff',

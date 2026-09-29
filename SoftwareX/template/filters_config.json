@@ -4,7 +4,7 @@
   "active_preset": null,
   "territory": {
     "name": "Avalon Island",
-    "description": "Archipelago island featuring 4 distinct biomes: Desert (Orange), Nature Reserve (Green), Metropolitan City (Grayish-Red), and Mountains (White), surrounded by a vibrant blue ocean.",
+    "description": "Archipelago island featuring 4 distinct biomes: Desert, Nature Reserve, Metropolitan City, and Mountains, surrounded by a vibrant blue ocean.",
     "center": [
       20.0,
       30.0
@@ -13,31 +13,31 @@
     "zones": [
       {
         "name": "Metropolitan City District",
-        "lat": 20.10,
+        "lat": 20.1,
         "lon": 30.12,
         "color": "#9b4d4d",
-        "desc": "Civic harbor, commercial waterfront, and urban center (Grayish-Red)"
+        "desc": "Civic harbor, commercial waterfront, and urban center"
       },
       {
         "name": "Emerald Nature Reserve",
-        "lat": 20.00,
+        "lat": 20.0,
         "lon": 29.75,
         "color": "#16a34a",
-        "desc": "Lush river basin, temperate woodlands, and wildlife reserve (Green)"
+        "desc": "Lush river basin, temperate woodlands, and wildlife reserve"
       },
       {
         "name": "White Mountain Ridge",
         "lat": 20.02,
         "lon": 29.98,
         "color": "#f1f5f9",
-        "desc": "Alpine peaks, rocky ridges, and snowcapped summits (White)"
+        "desc": "Alpine peaks, rocky ridges, and snowcapped summits"
       },
       {
         "name": "Avalon Desert Dunes",
         "lat": 19.84,
         "lon": 29.98,
         "color": "#ea580c",
-        "desc": "Sun-drenched arid plains and coastal dunes (Orange)"
+        "desc": "Sun-drenched arid plains and coastal dunes"
       },
       {
         "name": "Eastern Archipelago",

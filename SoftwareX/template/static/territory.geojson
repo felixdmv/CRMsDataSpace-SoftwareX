@@ -334,7 +334,7 @@
         "biome": "park",
         "name": "Emerald Nature Reserve",
         "color": "#16a34a",
-        "desc": "Lush river basin, temperate woodlands, and wildlife reserve (Green)"
+        "desc": "Lush river basin, temperate woodlands, and wildlife reserve"
       },
       "geometry": {
         "type": "Polygon",
@@ -435,7 +435,7 @@
         "biome": "city",
         "name": "Metropolitan City District",
         "color": "#9b4d4d",
-        "desc": "Civic harbor, commercial waterfront, and urban center (Grayish-Red)"
+        "desc": "Civic harbor, commercial waterfront, and urban center"
       },
       "geometry": {
         "type": "Polygon",
@@ -548,7 +548,7 @@
         "biome": "desert",
         "name": "Avalon Desert Dunes",
         "color": "#ea580c",
-        "desc": "Sun-drenched arid plains and coastal dunes (Orange)"
+        "desc": "Sun-drenched arid plains and coastal dunes"
       },
       "geometry": {
         "type": "Polygon",
@@ -661,7 +661,7 @@
         "biome": "mountains",
         "name": "White Mountain Ridge",
         "color": "#ffffff",
-        "desc": "Alpine peaks, rocky ridges, and snowcapped summits (White)"
+        "desc": "Alpine peaks, rocky ridges, and snowcapped summits"
       },
       "geometry": {
         "type": "Polygon",
