@@ -1,10 +1,10 @@
 {
-  "title": "Avalon Republic — Renewable Energy & Power Grid",
-  "description": "Exploration of utility-scale renewable generation, storage assets, and grid compliance.",
-  "active_preset": "energy",
+  "title": "General-Purpose GIS Architecture Template — Elsevier SoftwareX",
+  "description": "Domain-Agnostic Conversational Spatial Search Sandbox. Select a domain preset to begin.",
+  "active_preset": null,
   "territory": {
-    "name": "Avalon Republic",
-    "description": "Fictional island archipelago nation with 5 distinct regional sectors.",
+    "name": "Avalon Island",
+    "description": "Archipelago island featuring 4 distinct biomes: Desert (Orange), Nature Reserve (Green), Metropolitan City (Grayish-Red), and Mountains (White), surrounded by a vibrant blue ocean.",
     "center": [
       20.0,
       30.0
@@ -12,231 +12,41 @@
     "zoom": 10.5,
     "zones": [
       {
-        "name": "North Coast",
-        "lat": 20.17,
-        "lon": 30.0,
-        "color": "#06b6d4",
-        "desc": "Deepwater maritime harbor and offshore energy shelf"
+        "name": "Metropolitan City District",
+        "lat": 20.10,
+        "lon": 30.12,
+        "color": "#9b4d4d",
+        "desc": "Civic harbor, commercial waterfront, and urban center (Grayish-Red)"
       },
       {
-        "name": "Central Highlands",
+        "name": "Emerald Nature Reserve",
+        "lat": 20.00,
+        "lon": 29.75,
+        "color": "#16a34a",
+        "desc": "Lush river basin, temperate woodlands, and wildlife reserve (Green)"
+      },
+      {
+        "name": "White Mountain Ridge",
         "lat": 20.02,
         "lon": 29.98,
-        "color": "#8b5cf6",
-        "desc": "Elevated mountain ridges and hydroelectric storage basin"
+        "color": "#f1f5f9",
+        "desc": "Alpine peaks, rocky ridges, and snowcapped summits (White)"
       },
       {
-        "name": "South Bay",
+        "name": "Avalon Desert Dunes",
         "lat": 19.84,
-        "lon": 29.94,
-        "color": "#f59e0b",
-        "desc": "Sheltered coastal estuaries, municipal districts and solar plains"
-      },
-      {
-        "name": "Emerald Valley",
-        "lat": 20.0,
-        "lon": 29.75,
-        "color": "#10b981",
-        "desc": "Western river basin and distributed utility corridor"
+        "lon": 29.98,
+        "color": "#ea580c",
+        "desc": "Sun-drenched arid plains and coastal dunes (Orange)"
       },
       {
         "name": "Eastern Archipelago",
         "lat": 20.05,
         "lon": 30.34,
-        "color": "#ec4899",
-        "desc": "Offshore satellite islands and subsea transmission hub"
+        "color": "#06b6d4",
+        "desc": "Offshore maritime satellite islands"
       }
     ]
   },
-  "filter_fields": [
-    {
-      "key": "energy_type",
-      "label": "Generation Technology",
-      "type": "multiselect",
-      "options": [
-        "Solar Photovoltaic",
-        "Onshore Wind",
-        "Offshore Wind",
-        "Hydroelectric Dam",
-        "Battery Storage (BESS)",
-        "Geothermal Plant"
-      ],
-      "colors": {
-        "Solar Photovoltaic": "#f59e0b",
-        "Onshore Wind": "#06b6d4",
-        "Offshore Wind": "#38bdf8",
-        "Hydroelectric Dam": "#3b82f6",
-        "Battery Storage (BESS)": "#8b5cf6",
-        "Geothermal Plant": "#10b981"
-      },
-      "synonyms": {
-        "solar photovoltaic": [
-          "solar",
-          "photovoltaic",
-          "pv",
-          "solar farm",
-          "solar plant",
-          "sun"
-        ],
-        "onshore wind": [
-          "onshore wind",
-          "wind turbines",
-          "wind farm",
-          "wind",
-          "turbines"
-        ],
-        "offshore wind": [
-          "offshore wind",
-          "marine wind",
-          "sea wind",
-          "coastal wind"
-        ],
-        "hydroelectric dam": [
-          "hydro",
-          "hydroelectric",
-          "dam",
-          "reservoir",
-          "water power"
-        ],
-        "battery storage (bess)": [
-          "battery",
-          "storage",
-          "bess",
-          "battery storage",
-          "energy storage"
-        ],
-        "geothermal plant": [
-          "geothermal",
-          "thermal power",
-          "geo",
-          "hot springs"
-        ]
-      }
-    },
-    {
-      "key": "status",
-      "label": "Operational Status",
-      "type": "select",
-      "options": [
-        "Operational",
-        "Under Construction",
-        "Permitting & Planned",
-        "Decommissioned"
-      ],
-      "colors": {
-        "Operational": "#10b981",
-        "Under Construction": "#f59e0b",
-        "Permitting & Planned": "#3b82f6",
-        "Decommissioned": "#64748b"
-      },
-      "synonyms": {
-        "operational": [
-          "operational",
-          "active",
-          "online",
-          "running",
-          "producing",
-          "commissioned"
-        ],
-        "under construction": [
-          "under construction",
-          "construction",
-          "building",
-          "in progress"
-        ],
-        "permitting & planned": [
-          "planned",
-          "projected",
-          "permitting",
-          "proposed",
-          "pipeline"
-        ],
-        "decommissioned": [
-          "decommissioned",
-          "retired",
-          "closed",
-          "offline",
-          "shut down"
-        ]
-      }
-    },
-    {
-      "key": "capacity_tier",
-      "label": "Capacity Scale",
-      "type": "select",
-      "options": [
-        "Utility Scale (> 100 MW)",
-        "Medium Scale (20-100 MW)",
-        "Distributed (< 20 MW)"
-      ],
-      "colors": {
-        "Utility Scale (> 100 MW)": "#ec4899",
-        "Medium Scale (20-100 MW)": "#f97316",
-        "Distributed (< 20 MW)": "#14b8a6"
-      },
-      "synonyms": {
-        "utility scale (> 100 mw)": [
-          "utility scale",
-          "large scale",
-          "major",
-          "over 100",
-          "> 100",
-          "high capacity"
-        ],
-        "medium scale (20-100 mw)": [
-          "medium scale",
-          "mid scale",
-          "20-100",
-          "medium"
-        ],
-        "distributed (< 20 mw)": [
-          "distributed",
-          "small scale",
-          "local",
-          "under 20",
-          "< 20",
-          "micro"
-        ]
-      }
-    },
-    {
-      "key": "esg_rating",
-      "label": "ESG Compliance Grade",
-      "type": "select",
-      "options": [
-        "Grade A (Exemplary)",
-        "Grade B (Compliant)",
-        "Grade C (Under Review)"
-      ],
-      "colors": {
-        "Grade A (Exemplary)": "#10b981",
-        "Grade B (Compliant)": "#f59e0b",
-        "Grade C (Under Review)": "#ef4444"
-      },
-      "synonyms": {
-        "grade a (exemplary)": [
-          "grade a",
-          "esg a",
-          "top esg",
-          "exemplary",
-          "tier a",
-          "a"
-        ],
-        "grade b (compliant)": [
-          "grade b",
-          "esg b",
-          "compliant",
-          "tier b",
-          "b"
-        ],
-        "grade c (under review)": [
-          "grade c",
-          "esg c",
-          "under review",
-          "tier c",
-          "c"
-        ]
-      }
-    }
-  ]
+  "filter_fields": []
 }

@@ -34,25 +34,43 @@ STATIC_DIR = TEMPLATE_DIR / "static"
 _DATASET: List[Dict[str, Any]] = []
 _CONFIG: Dict[str, Any] = {}
 
+TERRITORY_AVALON: Dict[str, Any] = {
+    "name": "Avalon Island",
+    "description": "Archipelago island featuring 4 distinct biomes: Desert (Orange), Nature Reserve (Green), Metropolitan City (Grayish-Red), and Mountains (White), surrounded by a vibrant blue ocean.",
+    "center": [20.0, 30.0],
+    "zoom": 10.5,
+    "zones": [
+        {"name": "Metropolitan City District", "lat": 20.10, "lon": 30.12, "color": "#9b4d4d", "desc": "Civic harbor, commercial waterfront, and urban center (Grayish-Red)"},
+        {"name": "Emerald Nature Reserve", "lat": 20.00, "lon": 29.75, "color": "#16a34a", "desc": "Lush river basin, temperate woodlands, and wildlife reserve (Green)"},
+        {"name": "White Mountain Ridge", "lat": 20.02, "lon": 29.98, "color": "#f1f5f9", "desc": "Alpine peaks, rocky ridges, and snowcapped summits (White)"},
+        {"name": "Avalon Desert Dunes", "lat": 19.84, "lon": 29.98, "color": "#ea580c", "desc": "Sun-drenched arid plains and coastal dunes (Orange)"},
+        {"name": "Eastern Archipelago", "lat": 20.05, "lon": 30.34, "color": "#06b6d4", "desc": "Offshore maritime satellite islands"}
+    ]
+}
+
+EMPTY_CONFIG: Dict[str, Any] = {
+    "title": "General-Purpose GIS Architecture Template — Elsevier SoftwareX",
+    "description": "Domain-Agnostic Conversational Spatial Search Sandbox. Select a domain preset to begin.",
+    "active_preset": None,
+    "territory": TERRITORY_AVALON,
+    "filter_fields": []
+}
+
+ZONE_ALIASES: Dict[str, List[str]] = {
+    "Metropolitan City District": ["metropolitan city district", "metropolitan city", "city district", "city", "metropolis", "urban", "harbor", "port", "ciudad metropolitana", "ciudad"],
+    "Emerald Nature Reserve": ["emerald nature reserve", "nature reserve", "emerald park", "emerald reserve", "park", "reserve", "forest", "valley", "parque natural", "reserva", "esmeralda"],
+    "White Mountain Ridge": ["white mountain ridge", "white mountains", "mountain ridge", "white peaks", "mountains", "peaks", "highlands", "alpine", "montanas", "picos"],
+    "Avalon Desert Dunes": ["avalon desert dunes", "desert dunes", "avalon desert", "desert", "dunes", "arid", "south plains", "desierto", "dunas"],
+    "Eastern Archipelago": ["eastern archipelago", "archipelago", "islands", "isles", "eastern isles", "satellite isles", "archipielago", "islas"]
+}
+
 # Built-in Domain Presets (1-Click Switching)
 PRESETS: Dict[str, Dict[str, Any]] = {
     "energy": {
-        "title": "Avalon Republic — Renewable Energy & Power Grid",
+        "title": "Avalon Island — Renewable Energy & Power Grid",
         "description": "Exploration of utility-scale renewable generation, storage assets, and grid compliance.",
         "active_preset": "energy",
-        "territory": {
-            "name": "Avalon Republic",
-            "description": "Fictional island archipelago nation with 5 distinct regional sectors.",
-            "center": [20.0, 30.0],
-            "zoom": 10.5,
-            "zones": [
-                {"name": "North Coast", "lat": 20.17, "lon": 30.00, "color": "#06b6d4", "desc": "Deepwater maritime harbor and offshore energy shelf"},
-                {"name": "Central Highlands", "lat": 20.02, "lon": 29.98, "color": "#8b5cf6", "desc": "Elevated mountain ridges and hydroelectric storage basin"},
-                {"name": "South Bay", "lat": 19.84, "lon": 29.94, "color": "#f59e0b", "desc": "Sheltered coastal estuaries, municipal districts and solar plains"},
-                {"name": "Emerald Valley", "lat": 20.00, "lon": 29.75, "color": "#10b981", "desc": "Western river basin and distributed utility corridor"},
-                {"name": "Eastern Archipelago", "lat": 20.05, "lon": 30.34, "color": "#ec4899", "desc": "Offshore satellite islands and subsea transmission hub"}
-            ]
-        },
+        "territory": TERRITORY_AVALON,
         "filter_fields": [
             {
                 "key": "energy_type",
@@ -152,19 +170,7 @@ PRESETS: Dict[str, Dict[str, Any]] = {
         "title": "Avalon Metropolitan Area — Smart City & Public Services",
         "description": "Urban planning dashboard monitoring municipal facilities, response priorities, and transit hubs.",
         "active_preset": "smartcity",
-        "territory": {
-            "name": "Avalon Metropolitan Area",
-            "description": "Metropolitan archipelago divided into 5 civic districts.",
-            "center": [20.0, 30.0],
-            "zoom": 10.5,
-            "zones": [
-                {"name": "North Coast", "lat": 20.17, "lon": 30.00, "color": "#06b6d4", "desc": "Port maritime district and university campus"},
-                {"name": "Central Highlands", "lat": 20.02, "lon": 29.98, "color": "#8b5cf6", "desc": "Civic core, administrative axis, and central boulevard"},
-                {"name": "South Bay", "lat": 19.84, "lon": 29.94, "color": "#f59e0b", "desc": "Coastal residential suburbs and commercial waterfront"},
-                {"name": "Emerald Valley", "lat": 20.00, "lon": 29.75, "color": "#10b981", "desc": "Western technology park and green belt"},
-                {"name": "Eastern Archipelago", "lat": 20.05, "lon": 30.34, "color": "#ec4899", "desc": "Intermodal transit logistics and industrial district"}
-            ]
-        },
+        "territory": TERRITORY_AVALON,
         "filter_fields": [
             {
                 "key": "facility_type",
@@ -241,19 +247,7 @@ PRESETS: Dict[str, Dict[str, Any]] = {
         "title": "Avalon Republic — Custom Blank Canvas",
         "description": "Start completely from scratch by designing your own filter attributes and category values.",
         "active_preset": "custom",
-        "territory": {
-            "name": "Avalon Republic",
-            "description": "Customizable spatial territory ready for user-defined schema properties.",
-            "center": [20.0, 30.0],
-            "zoom": 10.5,
-            "zones": [
-                {"name": "North Coast", "lat": 20.17, "lon": 30.00, "color": "#06b6d4", "desc": "Northern maritime sector"},
-                {"name": "Central Highlands", "lat": 20.02, "lon": 29.98, "color": "#8b5cf6", "desc": "Central mountainous sector"},
-                {"name": "South Bay", "lat": 19.84, "lon": 29.94, "color": "#f59e0b", "desc": "Southern coastal sector"},
-                {"name": "Emerald Valley", "lat": 20.00, "lon": 29.75, "color": "#10b981", "desc": "Western river valley sector"},
-                {"name": "Eastern Archipelago", "lat": 20.05, "lon": 30.34, "color": "#ec4899", "desc": "Eastern islands sector"}
-            ]
-        },
+        "territory": TERRITORY_AVALON,
         "filter_fields": []
     }
 }
@@ -378,7 +372,7 @@ def load_config() -> Dict[str, Any]:
             except Exception:
                 _CONFIG = {}
         if not _CONFIG:
-            _CONFIG = PRESETS["energy"]
+            _CONFIG = json.loads(json.dumps(EMPTY_CONFIG))
             save_config(_CONFIG)
     return _CONFIG
 
@@ -405,20 +399,26 @@ def parse_conversational_query(query: str, config: Dict[str, Any]) -> Dict[str, 
     matched_tokens: List[str] = []
 
     # Greeting / Help intent patterns
-    greeting_patterns = [r'\bhello\b', r'\bhi\b', r'\bhey\b', r'\bgood morning\b', r'\bgreetings\b']
-    help_patterns = [r'\bhelp\b', r'how (?:does it|to) work', r'what can you do', r'what is this']
+    greeting_patterns = [r'\bhello\b', r'\bhi\b', r'\bhey\b', r'\bgood morning\b', r'\bgreetings\b', r'\bhola\b', r'\bbuenos dias\b', r'\bayuda\b']
+    help_patterns = [r'\bhelp\b', r'how (?:does it|to) work', r'what can you do', r'what is this', r'como funciona']
     is_greeting = any(re.search(pat, q_lower) for pat in greeting_patterns)
     is_help = any(re.search(pat, q_lower) for pat in help_patterns)
 
-    # 1. Match territory zones
+    # 1. Match territory zones (including bilingual aliases)
     zones = config.get("territory", {}).get("zones", [])
     for z in zones:
         z_name = z["name"]
-        z_norm = strip_accents(z_name.lower())
-        pattern = r'\b' + re.escape(z_norm) + r'\b'
-        if re.search(pattern, q_norm):
-            extracted_filters["zone"] = z_name
-            matched_tokens.append(z_name)
+        alias_list = ZONE_ALIASES.get(z_name, []) + [z_name]
+        matched_zone = False
+        for alias in alias_list:
+            a_norm = strip_accents(alias.lower())
+            pattern = r'\b' + re.escape(a_norm) + r'\b'
+            if re.search(pattern, q_norm):
+                extracted_filters["zone"] = z_name
+                matched_tokens.append(alias)
+                matched_zone = True
+                break
+        if matched_zone:
             break
 
     # 2. Match each dynamic filter field defined by user
@@ -603,14 +603,25 @@ def generate_natural_narrative(
     docs = results.get("matched_docs", [])
     territory_name = config.get("territory", {}).get("name", "the territory")
 
+    if not config.get("active_preset"):
+        return (
+            f"### 👋 Welcome to the Decoupled GIS Architecture Sandbox\n\n"
+            f"Currently, **no domain is selected**.\n\n"
+            f"#### 🚀 Getting Started:\n"
+            f"1. **Select a domain** on the left panel (*⚡ Renewable Energy*, *🏙️ Smart City*, or *✨ Custom*).\n"
+            f"2. The **domain filters** will activate in the right-hand panel next to the interactive map.\n"
+            f"3. Click **🎲 Generate Points** to scatter facilities across the 4 island biomes: **Desert (Orange)**, **Nature Reserve (Green)**, **City (Grayish-Red)**, and **Mountains (White)**, surrounded by the blue ocean.\n"
+            f"4. Perform **conversational searches** or interact with facet pills to synchronize the cartographic map."
+        )
+
     if total == 0:
         return (
             f"👋 **Welcome to the General-Purpose GIS Architecture Template (SoftwareX).**\n\n"
             f"The map of **{territory_name}** currently has **0 spatial points**.\n\n"
             f"### 🚀 Getting Started (3-Step Walkthrough):\n"
-            f"1. **Step 1 — Review or Create Filters**: Use the presets on the left (*Renewable Energy*, *Smart City*) or click *\"➕ Add Custom Filter\"* to define your own domain attributes.\n"
+            f"1. **Step 1 — Review Filters**: Filters are available in the right panel.\n"
             f"2. **Step 2 — Populate the Map**: Choose the number of points and click *\"🎲 Generate Points\"*. The procedural generator will scatter objects across {territory_name} combining your active filters.\n"
-            f"3. **Step 3 — Conversational Spatial Search**: Query the map using conversational phrases (e.g. *\"solar and wind with grade a\"*, *\"operational battery storage\"*) to see the 4-stage pipeline synchronize Leaflet with pulsing rings."
+            f"3. **Step 3 — Conversational Spatial Search**: Query the map using conversational phrases (e.g. *\"solar and wind with grade a\"*, *\"nature reserve\"*) to see the 4-stage pipeline synchronize Leaflet with pulsing rings."
         )
 
     if intent == "generic_qa" and not filters:
@@ -1017,10 +1028,10 @@ class GenericGISHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
             return
 
-        # API: Reset to factory defaults (empty map)
+        # API: Reset to factory defaults (empty map and no domain selected)
         elif self.path == "/api/reset":
             try:
-                new_cfg = json.loads(json.dumps(PRESETS["energy"]))
+                new_cfg = json.loads(json.dumps(EMPTY_CONFIG))
                 save_config(new_cfg)
                 save_dataset([])
 
