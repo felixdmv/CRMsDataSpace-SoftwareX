@@ -3,7 +3,7 @@
 
 [![Python: 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
-[![Codespaces: Template Sandbox](https://img.shields.io/badge/Codespaces-GIS%20Template%20Sandbox-success.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX?devcontainer_path=.devcontainer/generic-template/devcontainer.json)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX)
 [![Zero External Dependencies](https://img.shields.io/badge/Dependencies-Zero%20External%20(Stdlib)-brightgreen.svg)]()
 
 > **Companion Template for the SoftwareX Article:**  
@@ -37,7 +37,9 @@ This `/template` package provides a **clean, lightweight sandbox** designed for 
 ## 🚀 Quick Start for Reviewers
 
 ### Option 1: 1-Click Cloud Execution (GitHub Codespaces)
-Click the badge above or navigate to the repository on GitHub and select the **GIS Architecture Template Sandbox** dev container configuration. Port `8085` opens automatically in your browser.
+Click the badge above to launch the unified GitHub Codespaces environment. Both applications are orchestrated automatically in parallel in separate browser tabs:
+- 🇪🇺 **Port 8080**: CRMsDataSpace European Demonstrator (`http://localhost:8080`)
+- 🌍 **Port 8085**: General GIS Architecture Template Sandbox (`http://localhost:8085`)
 
 ### Option 2: Local Standalone Execution (Zero Setup)
 Runs out-of-the-box on standard Python 3.9+ without installing any pip packages:

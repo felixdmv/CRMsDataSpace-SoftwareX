@@ -282,7 +282,14 @@ def load_local_model_weights(provider: str) -> bool:
         print(f"[LLM Client Warning] {MODEL_STATE['message']}. Using intelligent standalone fallback.")
         return False
 
-def call_local_gpu_model(system_prompt: str, user_prompt: str, provider: str = "qwen", json_mode: bool = False) -> str:
+def call_local_gpu_model(
+    system_prompt: str, 
+    user_prompt: str, 
+    provider: str = "qwen", 
+    json_mode: bool = False,
+    conversation_history: Optional[list] = None,
+    current_filters: Optional[Dict[str, Any]] = None
+) -> str:
     """
     Executes local inference on available CUDA GPUs using Hugging Face Transformers.
     """
@@ -290,7 +297,7 @@ def call_local_gpu_model(system_prompt: str, user_prompt: str, provider: str = "
         import torch
     except ImportError:
         print("[LLM Client Warning] PyTorch not installed. Falling back to mock NLU parse.")
-        return mock_nlu_parse(user_prompt)
+        return mock_nlu_parse(user_prompt, current_filters=current_filters, conversation_history=conversation_history)
         
     prov = provider.lower().strip()
     repo_id = MODEL_REPO_MAP.get(prov, prov)
@@ -298,7 +305,7 @@ def call_local_gpu_model(system_prompt: str, user_prompt: str, provider: str = "
     if repo_id not in LOCAL_MODELS_CACHE:
         success = load_local_model_weights(prov)
         if not success:
-            return mock_nlu_parse(user_prompt)
+            return mock_nlu_parse(user_prompt, current_filters=current_filters, conversation_history=conversation_history)
             
     try:
         model = LOCAL_MODELS_CACHE[repo_id]
@@ -307,6 +314,12 @@ def call_local_gpu_model(system_prompt: str, user_prompt: str, provider: str = "
         messages = []
         if system_prompt:
             messages.append({"role": "system", "content": system_prompt})
+        if conversation_history:
+            for turn in conversation_history[-6:]:
+                r = turn.get("role", "user")
+                c = turn.get("content", "")
+                if r in ["user", "assistant"] and c:
+                    messages.append({"role": r, "content": c})
         messages.append({"role": "user", "content": user_prompt})
         
         try:
@@ -337,18 +350,20 @@ def call_local_gpu_model(system_prompt: str, user_prompt: str, provider: str = "
         return response_text
     except Exception as err:
         print(f"[LLM Client Warning] GPU Inference failed for model '{repo_id}': {err}. Using intelligent mock parser.")
-        return mock_nlu_parse(user_prompt)
+        return mock_nlu_parse(user_prompt, current_filters=current_filters, conversation_history=conversation_history)
 
 def call_llm(
     system_prompt: str, 
     user_prompt: str, 
     provider: str = "mock", 
     json_mode: bool = False,
-    response_schema: Optional[Dict[str, Any]] = None
+    response_schema: Optional[Dict[str, Any]] = None,
+    conversation_history: Optional[list] = None,
+    current_filters: Optional[Dict[str, Any]] = None
 ) -> str:
     """
     Unified LLM call supporting local GPU models (Qwen, Llama, DeepSeek, Phi3, Gemma),
-    Gemini (v3 responseSchema), OpenAI, or Standalone Mock mode.
+    Gemini (v3 responseSchema), OpenAI, Anthropic, or Standalone Mock mode.
     """
     provider = provider.lower().strip()
     gemini_key = os.getenv("GEMINI_API_KEY")
@@ -356,7 +371,14 @@ def call_llm(
     anthropic_key = os.getenv("ANTHROPIC_API_KEY")
     
     if provider in MODEL_REPO_MAP or "/" in provider:
-        return call_local_gpu_model(system_prompt, user_prompt, provider=provider, json_mode=json_mode)
+        return call_local_gpu_model(
+            system_prompt, 
+            user_prompt, 
+            provider=provider, 
+            json_mode=json_mode,
+            conversation_history=conversation_history,
+            current_filters=current_filters
+        )
     
     if "gemini" in provider and gemini_key:
         try:
@@ -524,11 +546,15 @@ def call_llm(
                 print(f"[LLM Client Warning] Claude Code CLI execution failed: {cli_err}.")
             
     # Intelligent, highly accurate NLU parser for standalone reviewer execution
-    return mock_nlu_parse(user_prompt)
+    return mock_nlu_parse(user_prompt, current_filters=current_filters, conversation_history=conversation_history)
 
-def mock_nlu_parse(user_prompt: str) -> str:
+def mock_nlu_parse(
+    user_prompt: str, 
+    current_filters: Optional[Dict[str, Any]] = None, 
+    conversation_history: Optional[list] = None
+) -> str:
     """
-    Advanced multi-entity NLU parser for offline reviewer execution.
+    Advanced multi-entity NLU parser for offline reviewer execution with Conversational State Tracking.
     Supports comprehensive keyword dictionary matching across English and Spanish.
     """
     # Extract clean query if wrapped in prompt template
@@ -547,23 +573,36 @@ def mock_nlu_parse(user_prompt: str) -> str:
     env_flags = []
     restored = None
     
-    # 1. Multi-lingual Country & Regional Dictionary
+    # 1. Multi-lingual Country & Regional Dictionary + European Major Cities
     country_map = {
+        # Countries
         "spain": "spain", "españa": "spain", "espana": "spain", "spanish": "spain",
         "ourense": "spain", "zamora": "spain", "galicia": "spain", "galiza": "spain",
         "salamanca": "spain", "andalucia": "spain", "andalucía": "spain", "asturias": "spain",
         "castilla": "spain", "peninsula": "spain", "península": "spain",
+        "madrid": "spain", "barcelona": "spain", "sevilla": "spain", "valencia": "spain", "huelva": "spain",
         "portugal": "portugal", "portugués": "portugal", "portuguese": "portugal",
+        "lisboa": "portugal", "lisbon": "portugal", "porto": "portugal", "oporto": "portugal",
         "germany": "germany", "alemania": "germany", "german": "germany",
+        "berlin": "germany", "berlín": "germany", "munich": "germany", "múnich": "germany", "frankfurt": "germany", "hamburg": "germany",
         "france": "france", "francia": "france", "french": "france",
+        "paris": "france", "parís": "france", "lyon": "france", "marseille": "france", "marsella": "france",
         "sweden": "sweden", "suecia": "sweden", "swedish": "sweden",
+        "stockholm": "sweden", "estocolmo": "sweden", "kiruna": "sweden",
         "finland": "finland", "finlandia": "finland", "finnish": "finland",
+        "helsinki": "finland", "espoo": "finland",
         "poland": "poland", "polonia": "poland", "polish": "poland",
+        "warsaw": "poland", "varsovia": "poland", "krakow": "poland", "katowice": "poland", "lubin": "poland",
         "italy": "italy", "italia": "italy", "italian": "italy",
+        "roma": "italy", "rome": "italy", "milan": "italy", "milán": "italy",
         "greece": "greece", "grecia": "greece", "greek": "greece",
+        "athens": "greece", "atenas": "greece",
         "ireland": "ireland", "irlanda": "ireland", "irish": "ireland",
+        "dublin": "ireland", "dublín": "ireland",
         "austria": "austria", "austriaco": "austria",
-        "czechia": "czechia", "chequia": "czechia", "czech": "czechia"
+        "vienna": "austria", "viena": "austria",
+        "czechia": "czechia", "chequia": "czechia", "czech": "czechia",
+        "prague": "czechia", "praga": "czechia"
     }
     for kw, val in country_map.items():
         if re.search(r'\b' + re.escape(kw) + r'\b', prompt_lower) and val not in countries:
@@ -621,7 +660,7 @@ def mock_nlu_parse(user_prompt: str) -> str:
         if "waste dump" not in facility_types:
             facility_types.append("waste dump")
     if "escombrera" in prompt_lower or "escombreras" in prompt_lower:
-        if not any(k in prompt_lower for k in ["dime", "abandonadas", "inactivas", "diferencia", " y ", " and "]):
+        if not any(k in prompt_lower for k in ["abandonadas", "inactivas", "diferencia"]):
             if "waste dump" not in facility_types:
                 facility_types.append("waste dump")
     if any(k in prompt_lower for k in ["stockpile", "stockpiles", "acopio", "acopios"]):
@@ -680,13 +719,56 @@ def mock_nlu_parse(user_prompt: str) -> str:
     is_framework = any(kw in prompt_lower for kw in ["unfc", "jorc", "ni 43-101", "samrec", "2006/21", "crma", "insar", "drenaje ácido", "drenaje acido", "acid mine drainage", "licuefacción", "licuefaccion"])
 
     search_verbs = [
-        "mostrar", "muestra", "dime las", "dime los", "buscar", "busca", "filtrar", "filtra",
+        "mostrar", "muestra", "dime las", "dime los", "dime", "buscar", "busca", "filtrar", "filtra",
         "show", "find", "locate", "list", "where are", "dónde hay", "donde hay", "hay balsas",
         "hay escombreras", "are there", "unrestored", "sin restaurar", "tenéis registrado", "teneis registrado"
     ]
     has_search_action = any(v in prompt_lower for v in search_verbs)
 
-    # Conceptual questions take precedence
+    # 7. Dialogue Action Detection (DST)
+    dialogue_action = "new_search"
+    reset_cues = [
+        r'\breset\b', r'\breiniciar\b', r'\blimpiar\b', r'\bempezar de nuevo\b',
+        r'\bnueva b[uú]squeda\b', r'\bolvida lo anterior\b', r'\bolvida todo\b',
+        r'\bborrar filtros\b', r'\bclear\b', r'\bstart over\b', r'\bnew search\b'
+    ]
+    if any(re.search(pat, prompt_lower) for pat in reset_cues):
+        dialogue_action = "reset"
+    else:
+        has_existing = False
+        if current_filters:
+            for k in ["countries", "commodities", "storage_facility_types", "project_status", "environmental_flags"]:
+                if current_filters.get(k):
+                    has_existing = True
+                    break
+            if current_filters.get("restored") is not None:
+                has_existing = True
+
+        if has_existing:
+            remove_cues = [
+                r'\bquita\b', r'\bquitar\b', r'\belimina\b', r'\beliminar\b', r'\bdescarta\b',
+                r'\bsin\b', r'\bexcepto\b', r'\bmenos\b', r'\bya no quiero\b', r'\bborra\b',
+                r'\bremove\b', r'\bexclude\b', r'\bdrop\b', r'\bwithout\b', r'\bexcept\b', r'\bdelete\b'
+            ]
+            refine_cues = [
+                r'\bde es[ao]s\b', r'\bde est[ao]s\b', r'\bde ell[ao]s\b', r'\bde los anteriores\b',
+                r'\bsolo las que\b', r'\bsolo los que\b', r'\b[uú]nicamente\b', r'\bunicamente\b',
+                r'\bque contengan\b', r'\bque tengan\b', r'\bpero solo\b', r'\bde ah[ií] solo\b',
+                r'\bacota\b', r'\bfiltra por\b', r'\bfiltradas por\b', r'\bof those\b', r'\bfrom these\b',
+                r'\bonly (those|that)\b', r'\bnarrow down\b', r'\bjust the ones\b'
+            ]
+            expand_cues = [
+                r'\by adem[aá]s\b', r'\btambi[eé]n\b', r'\ba[ñn]ade\b', r'\bagrega\b', r'\bsuma\b',
+                r'\by en\b', r'\by las de\b', r'\by los de\b', r'\by cerca de\b', r'\bo en\b',
+                r'\band also\b', r'\badditionally\b', r'\bas well as\b', r'\bplus\b', r'\binclude\b'
+            ]
+            if any(re.search(pat, prompt_lower) for pat in remove_cues):
+                dialogue_action = "remove"
+            elif any(re.search(pat, prompt_lower) for pat in refine_cues):
+                dialogue_action = "refine"
+            elif any(re.search(pat, prompt_lower) for pat in expand_cues):
+                dialogue_action = "expand"
+
     has_specific_data = bool(countries or commodities or facility_types or statuses or restored is not None or env_flags)
     
     if is_conceptual or (is_framework and not has_search_action):
@@ -698,13 +780,24 @@ def mock_nlu_parse(user_prompt: str) -> str:
     elif is_greeting and not has_specific_data:
         intent = "generic_qa"
         countries, commodities, facility_types, statuses, env_flags, restored = [], [], [], [], [], None
-    elif not has_specific_data and not has_search_action:
+    elif not has_specific_data and not has_search_action and dialogue_action not in ["remove", "reset"]:
         intent = "generic_qa"
     else:
         intent = "filter_search"
     
+    remove_filters = {}
+    if dialogue_action == "remove":
+        remove_filters = {
+            "commodities": list(commodities),
+            "countries": list(countries),
+            "storage_facility_types": list(facility_types)
+        }
+    elif dialogue_action == "reset":
+        countries, commodities, facility_types, statuses, env_flags, restored = [], [], [], [], [], None
+
     mock_result = {
         "intent": intent,
+        "dialogue_action": dialogue_action,
         "filters": {
             "countries": countries,
             "regions": regions,
@@ -714,6 +807,7 @@ def mock_nlu_parse(user_prompt: str) -> str:
             "environmental_flags": env_flags,
             "restored": restored
         },
+        "remove_filters": remove_filters,
         "fulltext": unsupported_found,
         "unsupported_countries": unsupported_found,
         "needs_rag": False

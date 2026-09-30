@@ -97,7 +97,15 @@ class SoftwareXHandler(SimpleHTTPRequestHandler):
                     else:
                         os.environ["GEMINI_API_KEY"] = api_key
 
-                result = process_chat_message(query, provider=provider)
+                conversation_history = payload.get("conversation_history", [])
+                current_filters = payload.get("current_filters", payload.get("filters", {}))
+
+                result = process_chat_message(
+                    query, 
+                    provider=provider,
+                    conversation_history=conversation_history,
+                    current_filters=current_filters
+                )
                 
                 # Format evidences from matched docs for frontend visualization
                 docs = result.get("docs", [])
@@ -125,10 +133,14 @@ class SoftwareXHandler(SimpleHTTPRequestHandler):
                     "solr_facets": {"facet_counts": {"facet_fields": result.get("facets", {})}},
                     "ner_entities": {"ner_extraction": {"text": query, "entities": result.get("active_map_filters", [])}},
                     "active_map_filters": result.get("active_map_filters", []),
-                    "filters": result.get("extracted_json", {}).get("filters", {}),
+                    "filters": result.get("filters", {}),
+                    "current_filters": result.get("current_filters", {}),
+                    "conversation_history": result.get("conversation_history", []),
+                    "dialogue_action": result.get("dialogue_action", "new_search"),
                     "extracted_json": result.get("extracted_json", {}),
                     "matched_ids": result.get("matched_ids", []),
                     "docs": docs,
+                    "num_found": result.get("num_found", len(docs)),
                     "llm1_prompt": f"Executing process_chat_message(query='{query}', provider='{provider}')"
                 }
                 

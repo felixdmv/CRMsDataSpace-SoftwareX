@@ -4,7 +4,8 @@ Combines Variant 1 (Few-Shot Intent & Filter Extraction) with Variant 3 (Strict 
 """
 
 import json
-from typing import Dict, Any, List
+import re
+from typing import Dict, Any, List, Optional, Tuple
 
 # ----------------------------------------------------------------------
 # 1. Variant 3: OpenAPI / Gemini Structured JSON Schemas
@@ -16,6 +17,11 @@ NLU_RESPONSE_SCHEMA = {
             "type": "STRING",
             "description": "Query intent: filter_search for database search, or generic_qa for general conversation, greetings, help, and conceptual definitions",
             "enum": ["filter_search", "generic_qa", "hybrid"]
+        },
+        "dialogue_action": {
+            "type": "STRING",
+            "description": "Dialogue state action: new_search (default), expand (additive OR), refine (narrowing AND), remove (exclusion), or reset",
+            "enum": ["new_search", "expand", "refine", "remove", "reset"]
         },
         "filters": {
             "type": "OBJECT",
@@ -30,6 +36,16 @@ NLU_RESPONSE_SCHEMA = {
                 "restored": {"type": "BOOLEAN"}
             }
         },
+        "remove_filters": {
+            "type": "OBJECT",
+            "properties": {
+                "countries": {"type": "ARRAY", "items": {"type": "STRING"}},
+                "commodities": {"type": "ARRAY", "items": {"type": "STRING"}},
+                "storage_facility_types": {"type": "ARRAY", "items": {"type": "STRING"}},
+                "project_status": {"type": "ARRAY", "items": {"type": "STRING"}},
+                "environmental_flags": {"type": "ARRAY", "items": {"type": "STRING"}}
+            }
+        },
         "fulltext": {"type": "ARRAY", "items": {"type": "STRING"}},
         "unsupported_countries": {"type": "ARRAY", "items": {"type": "STRING"}},
         "needs_rag": {"type": "BOOLEAN"}
@@ -38,7 +54,7 @@ NLU_RESPONSE_SCHEMA = {
 }
 
 # ----------------------------------------------------------------------
-# 2. Variant 1: Few-Shot System Prompt
+# 2. Variant 1: Few-Shot System Prompt with Conversational Memory (DST)
 # ----------------------------------------------------------------------
 SYSTEM_PROMPT_FEWSHOT = """You are an expert deterministic Semantic Parser for the European Critical Raw Materials (CRMs) Data Space.
 Your task is to translate user natural language queries (in English or Spanish) into a clean, structured JSON search query for Apache Solr and Leaflet GIS visualization.
@@ -52,9 +68,35 @@ Your task is to translate user natural language queries (in English or Spanish) 
    - Vague or conversational inputs without concrete filter criteria.
    CRITICAL RULE: Whenever intent is "generic_qa", the "filters" object MUST be empty: {} and "fulltext": [].
 
---- GEOGRAPHICAL SCOPE & COUNTRY BOUNDARIES ---
+--- CONVERSATIONAL MEMORY & DIALOGUE STATE TRACKING (DST) ---
+When previous conversation context and active filters are present, determine the "dialogue_action":
+- "new_search": Default for independent search queries that establish new criteria from scratch.
+- "expand": Additive expansion (OR). Used when the user adds more items to an existing dimension without dropping previous ones.
+  Triggers: "y además", "y ademas", "también", "y en", "y las de", "añade", "agrega", "and also", "additionally", "as well as", "plus".
+- "refine": Progressive narrowing (AND). Used when the user filters down previous results by specifying constraints on new dimensions.
+  Triggers: "de esas, solo las que...", "de estas", "de los anteriores", "solo las que contengan", "únicamente", "acota a", "of those", "from these", "only those with".
+- "remove": Exclusion / subtraction. Used when the user explicitly requests to drop or exclude specific entities from the active filters.
+  Triggers: "ahora quita...", "elimina las de...", "descarta...", "sin...", "excepto...", "remove", "drop", "without", "exclude".
+  In this case, put the targets to drop in "remove_filters" or "filters".
+- "reset": Clearing conversation memory and starting over from scratch.
+  Triggers: "empezar de nuevo", "nueva búsqueda", "limpiar", "borrar filtros", "reset", "start over", "clear".
+
+--- GEOGRAPHICAL SCOPE & GEO-ENTITY GROUNDING ---
 - The European CRMs Data Space is STRICTLY RESTRICTED to 12 European Union Member States:
   ["austria", "czechia", "finland", "france", "germany", "greece", "ireland", "italy", "poland", "portugal", "spain", "sweden"]
+- Cities and regions must be resolved to their canonical EU Member State:
+  * "paris" / "parís" -> "france"
+  * "berlin" / "berlín" / "munich" / "frankfurt" -> "germany"
+  * "madrid" / "barcelona" / "sevilla" / "galicia" -> "spain"
+  * "lisboa" / "lisbon" / "porto" -> "portugal"
+  * "roma" / "rome" / "milano" -> "italy"
+  * "stockholm" / "estocolmo" / "kiruna" -> "sweden"
+  * "helsinki" / "espoo" -> "finland"
+  * "warsaw" / "varsovia" / "krakow" -> "poland"
+  * "vienna" / "viena" -> "austria"
+  * "athens" / "atenas" -> "greece"
+  * "dublin" / "dublín" -> "ireland"
+  * "prague" / "praga" -> "czechia"
 - Non-EU or out-of-scope countries (e.g. Albania, United Kingdom, USA, Chile, China, Russia, Norway, Switzerland, Morocco):
   * NEVER include them in filters["countries"].
   * If a query mentions an out-of-scope country alongside valid EU countries (e.g. "paises del sur de europa como grecia o albania que tengan niquel"):
@@ -67,7 +109,7 @@ Your task is to translate user natural language queries (in English or Spanish) 
 Allowed filter fields and domain mapping rules:
 - countries: lowercase English country names from the 12 EU member states.
 - commodities: lowercase English raw materials:
-  * Rare Earth Elements: "rare earth elements" (use this exact string for any mention of "rare earth elements", "rare earths", "REE", "tierras raras", "elementos raros", "minerales raros")
+  * Rare Earth Elements: "rare earth elements" (use for "rare earth elements", "rare earths", "REE", "tierras raras", "elementos raros", "minerales raros")
   * Tungsten: "tungsten" (use for "tungsten", "wolfram", "wolframio", "tungsteno", "w")
   * Lithium: "lithium" (use for "lithium", "litio", "li")
   * Cobalt: "cobalt" (use for "cobalt", "cobalto", "co")
@@ -85,7 +127,7 @@ Allowed filter fields and domain mapping rules:
   * "ponds" / "balsas" -> ["pond"]
   * "waste dumps" / "escombreras" -> ["waste dump"]
   * "stockpiles" / "acopios" -> ["stockpile"]
-  * IMPORTANT: Words like "facilities", "sites", "instalaciones", "plantas", "minas", "mines" are generic and MUST NOT be added to storage_facility_types (leave storage_facility_types as []).
+  * IMPORTANT: Words like "facilities", "sites", "instalaciones", "plantas", "minas", "mines" are generic and MUST NOT be added to storage_facility_types.
 - project_status: status e.g. ["active", "inactive", "care and maintenance", "development"]
 - restored: true | false
 - environmental_flags: e.g. ["acid mine drainage potential", "water emergence", "social opposition", "not restored"]
@@ -99,6 +141,7 @@ User Query: "hola"
 JSON Output:
 {
   "intent": "generic_qa",
+  "dialogue_action": "new_search",
   "filters": {},
   "fulltext": [],
   "needs_rag": false
@@ -109,36 +152,89 @@ User Query: "hola, en que me puedes ayudar"
 JSON Output:
 {
   "intent": "generic_qa",
+  "dialogue_action": "new_search",
   "filters": {},
   "fulltext": [],
   "needs_rag": false
 }
 
-Example 3 (Conceptual Technical Question):
-User Query: "¿Qué diferencia técnica existe entre una balsa de decantación y una escombrera de roca estéril?"
+Example 3 (Multi-turn Sequence - Turn 1 Initial City Grounding):
+User Query: "dime escombreras cerca de paris"
 JSON Output:
 {
-  "intent": "generic_qa",
-  "filters": {},
+  "intent": "filter_search",
+  "dialogue_action": "new_search",
+  "filters": {
+    "countries": ["france"],
+    "commodities": [],
+    "storage_facility_types": ["waste dump"]
+  },
   "fulltext": [],
-  "needs_rag": true
+  "needs_rag": false
 }
 
-Example 4 (Regulatory Question):
-User Query: "¿Cuál es la normativa europea sobre gestión de residuos de las industrias extractivas (Directiva 2006/21/CE)?"
+Example 4 (Multi-turn Sequence - Turn 2 Additive Expansion):
+Active Filters: {"countries": ["france"], "storage_facility_types": ["waste dump"]}
+User Query: "y ademas las que esten cerca de berlin"
 JSON Output:
 {
-  "intent": "generic_qa",
-  "filters": {},
+  "intent": "filter_search",
+  "dialogue_action": "expand",
+  "filters": {
+    "countries": ["germany"]
+  },
   "fulltext": [],
-  "needs_rag": true
+  "needs_rag": false
 }
 
-Example 5 (Incongruent / Out-of-Scope Country Handling):
+Example 5 (Multi-turn Sequence - Turn 3 Progressive Refinement):
+Active Filters: {"countries": ["france", "germany"], "storage_facility_types": ["waste dump"]}
+User Query: "de esas, solo las que contengan litio y cobalto"
+JSON Output:
+{
+  "intent": "filter_search",
+  "dialogue_action": "refine",
+  "filters": {
+    "commodities": ["lithium", "cobalt"]
+  },
+  "fulltext": [],
+  "needs_rag": false
+}
+
+Example 6 (Multi-turn Sequence - Turn 4 Subtraction / Removal):
+Active Filters: {"countries": ["france", "germany"], "commodities": ["lithium", "cobalt"], "storage_facility_types": ["waste dump"]}
+User Query: "ahora quita las de cobalto"
+JSON Output:
+{
+  "intent": "filter_search",
+  "dialogue_action": "remove",
+  "filters": {
+    "commodities": ["cobalt"]
+  },
+  "remove_filters": {
+    "commodities": ["cobalt"]
+  },
+  "fulltext": [],
+  "needs_rag": false
+}
+
+Example 7 (Multi-turn Sequence - Turn 5 Reset):
+User Query: "empezar de nuevo"
+JSON Output:
+{
+  "intent": "filter_search",
+  "dialogue_action": "reset",
+  "filters": {},
+  "fulltext": [],
+  "needs_rag": false
+}
+
+Example 8 (Incongruent / Out-of-Scope Country Handling):
 User Query: "paises del sur de europa como grecia o albania que tengan niquel"
 JSON Output:
 {
   "intent": "filter_search",
+  "dialogue_action": "new_search",
   "filters": {
     "countries": ["greece"],
     "commodities": ["nickel"],
@@ -149,46 +245,18 @@ JSON Output:
   "needs_rag": false
 }
 
-Example 6 (Standard Multi-Filter Search):
-User Query: "Show active lithium and cobalt waste dumps in Spain and Finland"
-JSON Output:
-{
-  "intent": "filter_search",
-  "filters": {
-    "countries": ["spain", "finland"],
-    "commodities": ["lithium", "cobalt"],
-    "storage_facility_types": ["waste dump"],
-    "project_status": ["active"]
-  },
-  "fulltext": [],
-  "needs_rag": false
-}
-
-Example 7 (Unrestored Tailings Ponds):
+Example 9 (Unrestored Tailings Ponds):
 User Query: "Unrestored tungsten tailings ponds in Germany"
 JSON Output:
 {
   "intent": "filter_search",
+  "dialogue_action": "new_search",
   "filters": {
     "countries": ["germany"],
     "commodities": ["tungsten"],
     "storage_facility_types": ["pond", "tailings storage facility"],
     "restored": false,
     "environmental_flags": ["not restored"]
-  },
-  "fulltext": [],
-  "needs_rag": false
-}
-
-Example 8 (Rare Earths in Sweden):
-User Query: "Instalaciones de elementos raros y tierras raras en Suecia"
-JSON Output:
-{
-  "intent": "filter_search",
-  "filters": {
-    "countries": ["sweden"],
-    "commodities": ["rare earth elements"],
-    "storage_facility_types": []
   },
   "fulltext": [],
   "needs_rag": false
@@ -233,6 +301,40 @@ class Normalizer:
         "pge": "pge", "platino": "pge", "platinum": "pge", "platinum group elements": "pge"
     }
 
+    CITY_COUNTRY_MAP = {
+        # France
+        "paris": "france", "parís": "france", "lyon": "france", "marseille": "france", "marsella": "france",
+        "toulouse": "france", "bordeaux": "france", "burdeos": "france", "nantes": "france", "lille": "france",
+        # Germany
+        "berlin": "germany", "berlín": "germany", "munich": "germany", "múnich": "germany", "muenchen": "germany",
+        "frankfurt": "germany", "hamburg": "germany", "hamburgo": "germany", "cologne": "germany", "colonia": "germany",
+        "stuttgart": "germany", "dresden": "germany", "dusseldorf": "germany", "düsseldorf": "germany",
+        "hannover": "germany", "leipzig": "germany", "nuremberg": "germany",
+        # Spain
+        "madrid": "spain", "barcelona": "spain", "sevilla": "spain", "valencia": "spain", "ourense": "spain",
+        "zamora": "spain", "salamanca": "spain", "huelva": "spain", "asturias": "spain", "oviedo": "spain",
+        "leon": "spain", "león": "spain", "bilbao": "spain", "zaragoza": "spain", "caceres": "spain", "cáceres": "spain",
+        "badajoz": "spain", "andalucia": "spain", "andalucía": "spain", "galicia": "spain",
+        # Portugal
+        "lisboa": "portugal", "lisbon": "portugal", "porto": "portugal", "oporto": "portugal", "braga": "portugal", "coimbra": "portugal",
+        # Italy
+        "roma": "italy", "rome": "italy", "milan": "italy", "milán": "italy", "milano": "italy", "turin": "italy", "turín": "italy", "torino": "italy", "napoli": "italy", "napoles": "italy", "nápoles": "italy", "sardinia": "italy", "cerdeña": "italy",
+        # Sweden
+        "stockholm": "sweden", "estocolmo": "sweden", "kiruna": "sweden", "gothenburg": "sweden", "gotemburgo": "sweden", "malmo": "sweden", "malmö": "sweden",
+        # Finland
+        "helsinki": "finland", "espoo": "finland", "tampere": "finland", "oulu": "finland", "turku": "finland",
+        # Poland
+        "warsaw": "poland", "varsovia": "poland", "krakow": "poland", "cracovia": "poland", "wroclaw": "poland", "katowice": "poland", "lubin": "poland", "gdansk": "poland", "poznan": "poland",
+        # Austria
+        "vienna": "austria", "viena": "austria", "salzburg": "austria", "salzburgo": "austria", "graz": "austria", "innsbruck": "austria",
+        # Greece
+        "athens": "greece", "atenas": "greece", "thessaloniki": "greece", "tesalonica": "greece", "tesalónica": "greece",
+        # Ireland
+        "dublin": "ireland", "dublín": "ireland", "cork": "ireland", "galway": "ireland",
+        # Czechia
+        "prague": "czechia", "praga": "czechia", "brno": "czechia", "ostrava": "czechia"
+    }
+
     COUNTRY_MAP = {
         "españa": "spain", "espana": "spain", "spain": "spain", "spanish": "spain",
         "alemania": "germany", "germany": "germany", "german": "germany",
@@ -245,7 +347,8 @@ class Normalizer:
         "irlanda": "ireland", "ireland": "ireland", "irish": "ireland",
         "austria": "austria", "austrian": "austria",
         "portugal": "portugal", "portuguese": "portugal", "portugués": "portugal",
-        "chequia": "czechia", "república checa": "czechia", "republica checa": "czechia", "czechia": "czechia", "czech": "czechia"
+        "chequia": "czechia", "república checa": "czechia", "republica checa": "czechia", "czechia": "czechia", "czech": "czechia",
+        **CITY_COUNTRY_MAP
     }
 
     GENERIC_FACILITY_TERMS = {
@@ -370,6 +473,41 @@ class Normalizer:
         filters["environmental_flags"] = env_flags
 
         raw_json["filters"] = filters
+
+        # 5. Dialogue action normalization
+        action = str(raw_json.get("dialogue_action", "new_search")).lower().strip()
+        if action not in ["new_search", "expand", "refine", "remove", "reset"]:
+            action = "new_search"
+        raw_json["dialogue_action"] = action
+
+        # 6. Normalize remove_filters if present
+        rem_raw = raw_json.get("remove_filters", {})
+        if isinstance(rem_raw, dict) and rem_raw:
+            norm_rem = {}
+            if "commodities" in rem_raw:
+                norm_c = []
+                for c in rem_raw["commodities"]:
+                    cc = self.COMMODITY_MAP.get(str(c).lower().strip(), str(c).lower().strip())
+                    if cc not in norm_c: norm_c.append(cc)
+                norm_rem["commodities"] = norm_c
+            if "countries" in rem_raw:
+                norm_co = []
+                for co in rem_raw["countries"]:
+                    coc = self.COUNTRY_MAP.get(str(co).lower().strip(), str(co).lower().strip())
+                    if coc not in norm_co: norm_co.append(coc)
+                norm_rem["countries"] = norm_co
+            if "storage_facility_types" in rem_raw:
+                norm_f = []
+                for f in rem_raw["storage_facility_types"]:
+                    fc = str(f).lower().strip()
+                    mapped = self.FACILITY_MAP.get(fc, [fc])
+                    for m in mapped:
+                        if m not in norm_f: norm_f.append(m)
+                norm_rem["storage_facility_types"] = norm_f
+            raw_json["remove_filters"] = norm_rem
+        else:
+            raw_json["remove_filters"] = {}
+
         return raw_json
 
 class Validator:
@@ -394,7 +532,9 @@ class Validator:
         
         return {
             "intent": intent,
+            "dialogue_action": data.get("dialogue_action", "new_search"),
             "filters": validated_filters,
+            "remove_filters": data.get("remove_filters", {}),
             "fulltext": data.get("fulltext", []),
             "unsupported_countries": data.get("unsupported_countries", []),
             "needs_rag": data.get("needs_rag", False)
@@ -443,3 +583,177 @@ class QueryBuilder:
             "fl": "id,site_name,country,region,commodities,storage_facility_type,location,project_status",
             "rows": 100
         }
+
+class DialogueStateTracker:
+    """
+    Dialogue State Tracking (DST) engine for SoftwareX conversational search.
+    Maintains accumulative filter memory, resolves conversational actions
+    (new_search, expand, refine, remove, reset), and synthesizes contextual narrative notices.
+    """
+    
+    @staticmethod
+    def detect_dialogue_action(query: str, current_filters: Optional[Dict[str, Any]] = None) -> str:
+        q = (query or "").lower().strip()
+        
+        # 1. Reset
+        reset_cues = [
+            r'\breset\b', r'\breiniciar\b', r'\blimpiar\b', r'\bempezar de nuevo\b',
+            r'\bnueva b[uú]squeda\b', r'\bolvida lo anterior\b', r'\bolvida todo\b',
+            r'\bborrar filtros\b', r'\bclear\b', r'\bstart over\b', r'\bnew search\b'
+        ]
+        if any(re.search(pat, q) for pat in reset_cues):
+            return "reset"
+            
+        has_existing = False
+        if current_filters:
+            for k in ["countries", "commodities", "storage_facility_types", "project_status", "environmental_flags"]:
+                if current_filters.get(k):
+                    has_existing = True
+                    break
+            if current_filters.get("restored") is not None:
+                has_existing = True
+                
+        if not has_existing:
+            return "new_search"
+            
+        # 2. Removal / Exclusion
+        remove_cues = [
+            r'\bquita\b', r'\bquitar\b', r'\belimina\b', r'\beliminar\b', r'\bdescarta\b',
+            r'\bsin\b', r'\bexcepto\b', r'\bmenos\b', r'\bya no quiero\b', r'\bborra\b',
+            r'\bremove\b', r'\bexclude\b', r'\bdrop\b', r'\bwithout\b', r'\bexcept\b', r'\bdelete\b'
+        ]
+        if any(re.search(pat, q) for pat in remove_cues):
+            return "remove"
+            
+        # 3. Refinement / Narrowing (AND constraint on existing set)
+        refine_cues = [
+            r'\bde es[ao]s\b', r'\bde est[ao]s\b', r'\bde ell[ao]s\b', r'\bde los anteriores\b',
+            r'\bsolo las que\b', r'\bsolo los que\b', r'\b[uú]nicamente\b', r'\bunicamente\b',
+            r'\bque contengan\b', r'\bque tengan\b', r'\bpero solo\b', r'\bde ah[ií] solo\b',
+            r'\bacota\b', r'\bfiltra por\b', r'\bfiltradas por\b', r'\bof those\b', r'\bfrom these\b',
+            r'\bonly (those|that)\b', r'\bnarrow down\b', r'\bjust the ones\b'
+        ]
+        if any(re.search(pat, q) for pat in refine_cues):
+            return "refine"
+            
+        # 4. Expansion / Additive (OR expansion)
+        expand_cues = [
+            r'\by adem[aá]s\b', r'\btambi[eé]n\b', r'\ba[ñn]ade\b', r'\bagrega\b', r'\bsuma\b',
+            r'\by en\b', r'\by las de\b', r'\by los de\b', r'\by cerca de\b', r'\bo en\b',
+            r'\band also\b', r'\badditionally\b', r'\bas well as\b', r'\bplus\b', r'\binclude\b'
+        ]
+        if any(re.search(pat, q) for pat in expand_cues):
+            return "expand"
+            
+        return "new_search"
+
+    @staticmethod
+    def update_state(
+        current_filters: Dict[str, Any], 
+        extracted_filters: Dict[str, Any], 
+        action: str,
+        remove_filters: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Reconciles previous state with new extracted filters based on dialogue action.
+        """
+        keys_list = ["countries", "regions", "commodities", "storage_facility_types", "material_types", "project_status", "environmental_flags"]
+        
+        state = {
+            k: list(current_filters.get(k, [])) if current_filters else [] for k in keys_list
+        }
+        state["restored"] = current_filters.get("restored", None) if current_filters else None
+
+        if action == "reset":
+            return {k: ([] if k != "restored" else None) for k in state}
+
+        if action == "new_search":
+            for k in keys_list:
+                state[k] = list(extracted_filters.get(k, []))
+            state["restored"] = extracted_filters.get("restored", None)
+            return state
+
+        if action == "expand":
+            # Additive / OR expansion: merge new entities into each category without duplicates
+            for k in keys_list:
+                for val in extracted_filters.get(k, []):
+                    if val not in state[k]:
+                        state[k].append(val)
+            if extracted_filters.get("restored") is not None:
+                state["restored"] = extracted_filters.get("restored")
+            return state
+
+        if action == "refine":
+            # Progressive narrowing (AND): keep dimensions not specified, override dimensions that were specified
+            for k in keys_list:
+                extracted_vals = extracted_filters.get(k, [])
+                if extracted_vals:
+                    state[k] = list(extracted_vals)
+            if extracted_filters.get("restored") is not None:
+                state["restored"] = extracted_filters.get("restored")
+            return state
+
+        if action == "remove":
+            # Subtraction: remove targets from current state
+            removals = remove_filters if remove_filters else extracted_filters
+            for k in keys_list:
+                to_drop = set(removals.get(k, []))
+                state[k] = [v for v in state[k] if v not in to_drop]
+            return state
+
+        return state
+
+    @staticmethod
+    def format_transition_notice(
+        action: str, 
+        current_filters: Dict[str, Any], 
+        updated_filters: Dict[str, Any], 
+        is_spanish: bool = True
+    ) -> str:
+        """Generates a conversational prefix explaining the state transition."""
+        if action == "reset":
+            return "🧹 **Filtros de conversación reiniciados** (mostrando el catálogo completo europeo).\n\n" if is_spanish else "🧹 **Conversation filters reset** (showing full European data space).\n\n"
+            
+        if action == "expand":
+            added_countries = [c for c in updated_filters.get("countries", []) if c not in (current_filters or {}).get("countries", [])]
+            added_comms = [c for c in updated_filters.get("commodities", []) if c not in (current_filters or {}).get("commodities", [])]
+            details = []
+            if added_countries:
+                details.append(f"países: {', '.join(added_countries).title()}" if is_spanish else f"countries: {', '.join(added_countries).title()}")
+            if added_comms:
+                details.append(f"materias primas: {', '.join(added_comms).title()}" if is_spanish else f"commodities: {', '.join(added_comms).title()}")
+            detail_str = f" ({'; '.join(details)})" if details else ""
+            
+            if is_spanish:
+                return f"🔄 **Ampliando la búsqueda (OR)**{detail_str} y manteniendo los criterios anteriores:\n\n"
+            return f"🔄 **Expanding search criteria (OR)**{detail_str} while preserving prior context:\n\n"
+
+        if action == "refine":
+            new_comms = updated_filters.get("commodities", [])
+            new_status = updated_filters.get("project_status", [])
+            details = []
+            if new_comms:
+                details.append(f"minerales: {', '.join(new_comms).title()}" if is_spanish else f"commodities: {', '.join(new_comms).title()}")
+            if new_status:
+                details.append(f"estado: {', '.join(new_status)}" if is_spanish else f"status: {', '.join(new_status)}")
+            detail_str = f" a {'; '.join(details)}" if details else ""
+
+            if is_spanish:
+                return f"🎯 **Refinando sobre los resultados anteriores (AND)**{detail_str}:\n\n"
+            return f"🎯 **Refining previous results (AND)**{detail_str}:\n\n"
+
+        if action == "remove":
+            dropped_countries = [c for c in (current_filters or {}).get("countries", []) if c not in updated_filters.get("countries", [])]
+            dropped_comms = [c for c in (current_filters or {}).get("commodities", []) if c not in updated_filters.get("commodities", [])]
+            dropped_fac = [c for c in (current_filters or {}).get("storage_facility_types", []) if c not in updated_filters.get("storage_facility_types", [])]
+            dropped = []
+            if dropped_countries: dropped.extend(dropped_countries)
+            if dropped_comms: dropped.extend(dropped_comms)
+            if dropped_fac: dropped.extend(dropped_fac)
+            dropped_str = f" **{', '.join(dropped).title()}**" if dropped else ""
+
+            if is_spanish:
+                return f"✂️ **Excluyendo{dropped_str}** de los criterios activos y conservando el resto de filtros:\n\n"
+            return f"✂️ **Removing{dropped_str}** from active filters while preserving the remaining criteria:\n\n"
+
+        return ""

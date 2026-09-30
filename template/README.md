@@ -3,9 +3,8 @@
 
 [![Python: 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
-[![Codespaces: Template Sandbox](https://img.shields.io/badge/Codespaces-GIS%20Template%20Sandbox-success.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX?devcontainer_path=.devcontainer/generic-template/devcontainer.json)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX)
 [![Zero External Dependencies](https://img.shields.io/badge/Dependencies-Zero%20External%20(Stdlib)-brightgreen.svg)]()
-[![100% Offline Map](https://img.shields.io/badge/Map%20Tiles-100%25%20Offline%20Vector-success.svg)]()
 
 > **Companion Template for the SoftwareX Article:**  
 > *"A Modular NLU-Solr Architecture with Dynamic GIS Visual Synchronization for Conversational Spatial Search"*  
@@ -13,103 +12,134 @@
 
 ---
 
-## 📌 Purpose & Role in the SoftwareX Paper
+## 📌 Purpose & Generality Overview
 
-While our primary real-world demonstrator maps European Critical Raw Materials (CRMs) waste deposits ([`../code/`](../code/)), the **underlying 4-stage architecture is completely domain-agnostic**.
+While our primary real-world demonstrator maps European Critical Raw Materials (CRMs) waste deposits ([`../code/`](../code/)), the **underlying 4-stage architecture is domain-agnostic**.
 
-This `/template` package provides an **interactive, pedagogical sandbox** designed for reviewers, researchers, and developers to experience firsthand how conversational spatial search adapts dynamically to **any GIS domain**:
-
-1. **Custom Vector Basemap (Zero External Tile Server / Zero API Keys)**: The sandbox renders a stylized fictional island nation (**Avalon Republic**) with distinct landmass, continental shelf, and 5 regional sectors (*North Coast*, *Central Highlands*, *South Bay*, *Emerald Valley*, *Eastern Archipelago*). It runs 100% offline without third-party tile APIs.
-2. **Empty Initial State & On-Demand Population**: On startup, the map starts with **0 facilities**. The user is guided to choose a preset or customize filter dimensions first, and only when clicking **"🎲 Generate Points"** are facilities procedurally scattered across the territory.
-3. **Open User-Defined Filters (Zero Hardcoded Restrictions)**: The user has full freedom to create whatever filter dimensions they want (*Generation Technology*, *Operational Status*, *Capacity Scale*, *Priority Tier*, etc.), or choose from 1-click domain presets (**Renewable Energy**, **Smart City**, or **Custom Blank Canvas**).
-4. **Conversational Search & Dynamic Cartographic Sync**: Users query the map in free natural language (*"solar and wind farms with grade a"*, *"operational battery storage in North Coast"*, *"hospitals with critical tier 1"*). The dynamic NLU tokenizer, Solr Boolean filter builder ($fq$), and Leaflet visual engine synchronize in real time.
+This `/template` package provides a **clean, lightweight sandbox** designed for reviewers, researchers, and developers who wish to:
+1. **Verify Architectural Generality**: Test the 4-stage pipeline on a completely distinct spatial domain (e.g., Global Renewable Energy & Environmental Infrastructure).
+2. **Create & Customize Filters by Hand**: Dynamically add new filter dimensions, change facet types, or define multilingual thesaurus synonyms either via `filters_config.json` or live in the in-browser **Filter Studio**.
+3. **Adapt to Custom GIS Problems**: Follow a 3-step recipe to instantiate the architecture on any geospatial dataset (urban sensors, biodiversity, wildfire monitoring, logistics, smart agriculture).
 
 ```
 +--------------------------------------------------------------------------------------------------------+
 |                                4-STAGE DOMAIN-AGNOSTIC PIPELINE                                        |
 +--------------------------------------------------------------------------------------------------------+
-| [1] Dynamic NLU Parser     --> [2] Schema Normalizer    --> [3] Boolean Solr Engine --> [4] Dynamic    |
+| [1] Query & Intent Parser  --> [2] Schema Normalizer    --> [3] Boolean Solr Engine --> [4] Dynamic    |
 |     - Free text / Prompts      - Declarative Thesaurus      - Range & In-List Rules     GIS UI         |
-|     - Dynamic Word Stemming    - User Filter Attributes     - Live Multidim. Facets     - Leaflet Sync |
-|     - Spatial Zone Matching    - JSON Schema Validation     - Bounding Box & fq         - Pulse Rings  |
+|     - Numeric Comparisons      - Synonyms Mapping           - Live Multidim. Facets     - Leaflet Sync |
+|     - Intent Classification    - OpenAPI JSON Validation    - Spatial Bounding Box      - Pulse Rings  |
 +--------------------------------------------------------------------------------------------------------+
 ```
-
----
-
-## ❓ Architectural Design: Rule-Based NLU vs. LLM
-
-### What is the purpose of the template?
-In our research paper, the central contribution is the **decoupling of the conversational layer from the spatial index**:
-`Conversational Input -> Structured JSON Schema -> Apache Solr Search -> Dynamic Cartographic Sync`.
-
-In the main demonstrator (`code/`), we demonstrate this architecture with full multi-LLM backends (Gemini, OpenAI, Claude, Qwen) for European mining deposits.
-
-In this **template package**, the purpose is **portability, instant evaluation, and inspectability**:
-1. **Zero External Dependencies / 100% Reproducibility**: Runs on Python 3.9+ standard library (`http.server`, `re`, `json`, `random`). A reviewer or adopter does not need GPUs, CUDA drivers, Ollama daemons, or paid API keys.
-2. **Transparent 4-Stage Traceability**: The declarative rule-based NLU engine builds dynamic tokenizers directly from the active user-defined schema. Reviewers can open the bottom **4-Stage Inspector** to observe deterministically how natural language queries map to the JSON schema, Solr `$fq` rules, and Leaflet marker animations.
-3. **Plug-and-Play LLM Extension**: Because Stage 1 has a standard interface (outputting a validated JSON filter dictionary), any LLM prompt can be substituted in place of the rule parser, while Stages 2, 3, and 4 function identically.
 
 ---
 
 ## 🚀 Quick Start for Reviewers
 
 ### Option 1: 1-Click Cloud Execution (GitHub Codespaces)
-Click the badge above or launch the devcontainer in GitHub Codespaces.
-Both applications are orchestrated automatically in parallel in separate browser tabs:
+Click the badge above to launch the unified GitHub Codespaces environment. Both applications are orchestrated automatically in parallel in separate browser tabs:
 - 🇪🇺 **Port 8080**: CRMsDataSpace European Demonstrator (`http://localhost:8080`)
 - 🌍 **Port 8085**: General GIS Architecture Template Sandbox (`http://localhost:8085`)
 
 ### Option 2: Local Standalone Execution (Zero Setup)
-Runs out-of-the-box on standard Python 3.9+ without installing any external packages:
+Runs out-of-the-box on standard Python 3.9+ without installing any pip packages:
 
 ```bash
 # From within the template directory:
 python run_template.py --port 8085
 
-# Or using the root launcher:
-python run_template.py --port 8085
+# Or using the bash launcher:
+./run_template.sh
 ```
 
-Open your browser at: **`http://localhost:8085`**.
+Then open your browser at: **`http://localhost:8085`**.
 
 ---
 
-## 🎮 How the Sandbox Demonstrator Works (3 Steps)
+## 🛠️ How to Experiment & "Tinker" with Filters
 
-### Step 1: Choose a Domain Preset or Define Custom Filters
-- **1-Click Domain Presets**:
-  - ⚡ **Renewable Energy & Power Grid**: *Generation Technology* (Solar Photovoltaic, Onshore Wind, Offshore Wind, Hydroelectric Dam, Battery Storage BESS, Geothermal Plant), *Operational Status*, *Capacity Scale*, *ESG Grade*.
-  - 🏙️ **Smart City & Municipal Services**: *Municipal Infrastructure* (General Hospital, Public School, Metro Transit Hub, Urban Green Park, Police Station, Fire & Rescue), *Service Status*, *Response Priority*.
-  - ✨ **Blank / Custom**: Start from scratch by adding your own custom dimensions and categories.
-- **Open Filter Creator**: Click **"➕ Add Custom Filter"**, specify the dimension name and comma-separated options. The system automatically assigns distinct color palettes and morphological stemming variants.
+The template offers two complementary ways to create and modify filters:
 
-### Step 2: Populate the Geographic Territory
-- Select the desired quantity (25, 40, or 80 facilities).
-- Click **"🎲 Generate Points"**.
-- The procedural generator scatters points across the 5 sectors of Avalon Republic (*North Coast*, *Central Highlands*, *South Bay*, *Emerald Valley*, *Eastern Archipelago*), assigning random combinations of the active filter dimensions.
+### Method A: Live In-Browser "Filter Studio" (No Code Editing)
+1. Open the web interface at `http://localhost:8085`.
+2. Click the **"🛠️ Filter Studio"** tab on the left sidebar.
+3. Fill in the **"➕ Add New Custom Filter Field"** form (e.g., Key: `operator`, Label: `Operator`, Type: `multiselect`, Options: `Iberdrola, EDF, NextEra, Statkraft`).
+4. Click **"Add Field to Live Configuration"** $\to$ the schema is saved, and the manual filter controls and NLU thesaurus update immediately!
 
-### Step 3: Conversational Spatial Search & GIS Synchronization
-- Type free-form natural language queries in the search bar:
-  - *"solar and wind farms with grade a"*
-  - *"operational battery storage in North Coast"*
-  - *"hospitals with critical tier 1"*
-  - *"show all facilities"*
-- Or click directly on the manual facet pill badges in the sidebar.
-- Observe real-time synchronization:
-  - Matching markers highlight with **pulsing radar rings** (`marker-pulse-active`).
-  - Non-matching markers dim or hide based on the visibility toggle (*Dim / Hide*).
-  - The top floating bar displays active filter tags with live counters.
-  - The **4-Stage Inspector Drawer** at the bottom reveals the complete pipeline trace (NLU tokenization $\to$ Validated Schema $\to$ Solr Boolean query $\to$ Grounded narrative).
+### Method B: Declarative Schema (`filters_config.json`)
+The filter architecture is configured declaratively in [`filters_config.json`](filters_config.json):
+
+```json
+{
+  "key": "category",
+  "label": "Facility Category",
+  "type": "multiselect",
+  "synonyms": {
+    "solar": ["solar", "photovoltaic", "pv", "fotovoltaica", "sun"],
+    "wind": ["wind", "eolica", "turbines", "aerogeneradores"],
+    "hydro": ["hydro", "hydroelectric", "dam", "presa"]
+  },
+  "options": ["Solar", "Wind", "Hydro", "Geothermal", "Storage", "Biomass"]
+}
+```
+
+Supported field types:
+- `multiselect`: Multi-choice category tags with real-time facet counters and Solr `OR` clauses (`fq=category:("Solar" OR "Wind")`).
+- `select`: Single-choice dropdown filter (`fq=status:"Operational"`).
+- `range`: Numeric slider / min-max threshold with comparative parsing (`fq=capacity_mw:[100 TO *]`).
 
 ---
 
-## 🏗️ Technical Architecture & Decoupling
+## 🗺️ How to Adapt to Your Own GIS Domain (in 3 Steps)
 
-The template relies entirely on standard Python modules (`http.server`, `json`, `re`, `random`, `pathlib`):
+### Step 1: Provide Your Spatial Dataset
+Place your JSON records in `data/facilities.json` (or any path). Each record must contain `id`, `name`, `latitude`, `longitude`, plus your custom domain attributes:
 
-- [`run_template.py`](run_template.py): High-performance HTTP server and REST API handler (`/api/config`, `/api/facilities`, `/api/generate_points`, `/api/query`, `/api/add_filter`, `/api/preset`, `/api/territory_geojson`).
-- [`filters_config.json`](filters_config.json): Declarative schema storing current territory coordinates, active filter dimensions, options, and color palettes.
-- [`data/facilities.json`](data/facilities.json): Current procedurally generated points distributed across the territory (starts empty until populated).
-- [`static/territory.geojson`](static/territory.geojson): Vector geometry of the fictional island nation (shelf, mainland, mountains, satellite isles).
-- [`static/index.html`](static/index.html): Interactive single-page GIS frontend with Leaflet.js (vector mode) and Tailwind CSS.
+```json
+[
+  {
+    "id": "STN-01",
+    "name": "Air Quality Station Central",
+    "latitude": 40.4168,
+    "longitude": -3.7038,
+    "sensor_type": "PM2.5",
+    "status": "Active",
+    "aqi_index": 42
+  }
+]
+```
+
+### Step 2: Declare Filter Fields in `filters_config.json`
+Define which attributes should appear as interactive filters and specify synonyms for natural language keyword extraction.
+
+### Step 3: Run the Server
+Launch `python run_template.py`. The Leaflet map, facet counters, Solr query builder, and conversational search bar immediately reflect your custom domain!
+
+---
+
+## 🔬 4-Stage Architecture Trace in the Inspector Drawer
+
+At the bottom of the template UI, an expandable inspector drawer reveals the live internal state of the 4 decoupled stages:
+- **[1] NLU Parsing**: User text, detected intent (`filter_search` vs `generic_qa`), and extracted keyword tokens.
+- **[2] Schema Validation**: Canonical filter structure compliant with JSON schema rules.
+- **[3] Solr Query & Facets**: The exact Solr query URL parameters (`q=*:*&fq=...`) and real-time facet distributions.
+- **[4] Dynamic GIS Sync**: List of matching spatial record IDs, animated pulsing rings, and map badge sync.
+- **💬 Narrative**: Evidence-grounded natural language synthesis summarizing query findings.
+
+---
+
+## 📂 Template Directory Structure
+
+```
+template/
+├── README.md               # This architectural guide and tutorial
+├── filters_config.json     # Declarative filter definitions & thesaurus mapping
+├── run_template.py         # Zero-dependency Python server & 4-stage orchestrator
+├── run_template.sh         # Shell launcher script
+├── requirements.txt        # Documentation of standard library dependencies
+├── data/
+│   └── facilities.json     # 30-facility domain-agnostic GIS dataset
+└── static/
+    ├── index.html          # Reactive Leaflet GIS UI with Live Filter Studio
+    └── favicon.ico         # App icon
+```

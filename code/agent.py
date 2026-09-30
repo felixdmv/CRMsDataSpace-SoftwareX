@@ -6,14 +6,15 @@ to drive Apache Solr filtering and GIS visualization on 100 European CRM sites.
 
 import json
 import re
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from llm_client import call_llm, extract_json_block
 from nlu_pipeline import (
     SYSTEM_PROMPT_FEWSHOT, 
     NLU_RESPONSE_SCHEMA, 
     Normalizer, 
     Validator, 
-    QueryBuilder
+    QueryBuilder,
+    DialogueStateTracker
 )
 from mock_api import query_data_space_solr, load_dataset
 
@@ -272,23 +273,79 @@ def generate_natural_response(
         narrative += f"\n\n*...and {num_found - 3} additional facilities visualised on the map.*"
     return narrative
 
-def process_chat_message(query: str, provider: str = "mock") -> Dict[str, Any]:
+def process_chat_message(
+    query: str, 
+    provider: str = "mock",
+    conversation_history: Optional[List[Dict[str, str]]] = None,
+    current_filters: Optional[Dict[str, Any]] = None
+) -> Dict[str, Any]:
     """
     Main entry point for processing chat queries in SoftwareX application.
-    Orchestrates semantic extraction, out-of-scope country validation, Solr querying, and response generation.
+    Orchestrates semantic extraction, dialogue state tracking (DST) across turns,
+    out-of-scope country validation, Solr querying, and natural response generation.
     """
-    # 1. Semantic parsing with v1 Few-Shot + v3 JSON Schema
+    if conversation_history is None:
+        conversation_history = []
+    if current_filters is None:
+        current_filters = {}
+
+    q_lower = query.lower().strip()
+    is_spanish = any(w in q_lower for w in [
+        "dime", "muestra", "en ", "escombrera", "balsa", "donde", "hola", "que ", "de ",
+        "los ", "las ", "paises", "países", "y ademas", "de esas", "quita", "ademas", "litio", "cobalto"
+    ])
+
+    # 1. Check for explicit reset requests
+    detected_action = DialogueStateTracker.detect_dialogue_action(query, current_filters)
+    if detected_action == "reset":
+        reset_filters = DialogueStateTracker.update_state(current_filters, {}, "reset")
+        msg = (
+            "🧹 **Memoria de conversación y filtros del mapa reiniciados con éxito.**\n\n"
+            "El visor vuelve a mostrar la totalidad del catálogo europeo (100 instalaciones). "
+            "Puedes iniciar una nueva búsqueda espacial o conceptual por país, mineral crítico o tipología de depósito."
+            if is_spanish else
+            "🧹 **Conversation memory and spatial filters have been successfully reset.**\n\n"
+            "The map now displays the complete European dataset (100 facilities). "
+            "You can start a new search by country, critical mineral, or facility type."
+        )
+        return {
+            "query": query,
+            "extracted_json": {"intent": "filter_search", "dialogue_action": "reset", "filters": reset_filters},
+            "dialogue_action": "reset",
+            "solr_query": {"q": "*:*", "fq": []},
+            "num_found": 100,
+            "total_dataset": 100,
+            "matched_ids": [d["id"] for d in load_dataset()],
+            "active_map_filters": [],
+            "filters": reset_filters,
+            "current_filters": reset_filters,
+            "conversation_history": [{"role": "user", "content": query}, {"role": "assistant", "content": msg}],
+            "facets": {},
+            "response_text": msg,
+            "docs": load_dataset()
+        }
+
+    # 2. Semantic parsing with Few-Shot prompting + JSON Schema enforcement
+    context_prefix = ""
+    has_active = any(bool(current_filters.get(k)) for k in ["countries", "commodities", "storage_facility_types", "project_status", "environmental_flags"]) or (current_filters.get("restored") is not None)
+    if has_active:
+        context_prefix = f"Active Filters: {json.dumps(current_filters, ensure_ascii=False)}\n"
+        
+    user_prompt = f"{context_prefix}User Query: \"{query}\"\nJSON Output:"
+
     raw_response = call_llm(
         system_prompt=SYSTEM_PROMPT_FEWSHOT,
-        user_prompt=f"User Query: \"{query}\"\nJSON Output:",
+        user_prompt=user_prompt,
         provider=provider,
         json_mode=True,
-        response_schema=NLU_RESPONSE_SCHEMA
+        response_schema=NLU_RESPONSE_SCHEMA,
+        conversation_history=conversation_history,
+        current_filters=current_filters
     )
     
     raw_json = extract_json_block(raw_response)
     
-    # 2. Pipeline normalization and validation
+    # 3. Pipeline normalization and validation
     normalizer = Normalizer()
     validator = Validator()
     query_builder = QueryBuilder()
@@ -296,14 +353,52 @@ def process_chat_message(query: str, provider: str = "mock") -> Dict[str, Any]:
     normalized = normalizer.normalize(raw_json)
     validated = validator.validate(normalized)
     
-    print(f"[NLU Agent] Model/Provider: {provider} | Query: '{query}'")
-    print(f"[NLU Agent] Parsed Filters: {validated.get('filters')}")
-
     intent = validated.get("intent", "filter_search")
-    filters = validated.get("filters", {})
-    q_lower = query.lower()
+    extracted_filters = validated.get("filters", {})
+    action = validated.get("dialogue_action", "new_search")
+    
+    # Re-verify dialogue action with deterministic tracker if LLM defaulted to new_search
+    if action == "new_search" and detected_action in ["expand", "refine", "remove"]:
+        action = detected_action
+    validated["dialogue_action"] = action
 
-    # 3. Detect Out-of-Scope / Unsupported Countries
+    # 4. Handle "generic_qa" intent (greetings, onboarding, help, conceptual domain queries)
+    if intent == "generic_qa" and action not in ["expand", "refine", "remove"]:
+        response_text = build_generic_qa_response(query, validated)
+        hist = list(conversation_history)
+        hist.append({"role": "user", "content": query})
+        hist.append({"role": "assistant", "content": response_text})
+        return {
+            "query": query,
+            "extracted_json": validated,
+            "dialogue_action": action,
+            "solr_query": {"q": "*:*", "fq": []},
+            "num_found": 0,
+            "total_dataset": 100,
+            "matched_ids": [],
+            "active_map_filters": [],
+            "filters": current_filters,
+            "current_filters": current_filters,
+            "conversation_history": hist,
+            "facets": {},
+            "response_text": response_text,
+            "docs": []
+        }
+
+    # 5. Dialogue State Tracking (DST) - Accumulate/Merge filters
+    updated_filters = DialogueStateTracker.update_state(
+        current_filters=current_filters,
+        extracted_filters=extracted_filters,
+        action=action,
+        remove_filters=validated.get("remove_filters", {})
+    )
+    validated["filters"] = updated_filters
+    filters = updated_filters
+
+    print(f"[NLU Agent] Model/Provider: {provider} | Action: {action} | Query: '{query}'")
+    print(f"[NLU Agent] Accumulated Active Filters: {updated_filters}")
+
+    # 6. Detect Out-of-Scope / Unsupported Countries
     unsupported_found = list(validated.get("unsupported_countries", []))
     for ukw, ulabel in UNSUPPORTED_COUNTRY_DICT.items():
         if re.search(r'\b' + re.escape(ukw) + r'\b', q_lower) and ulabel not in unsupported_found:
@@ -317,32 +412,16 @@ def process_chat_message(query: str, provider: str = "mock") -> Dict[str, Any]:
         filters.get("restored") is not None
     ])
 
-    # 4. Handle "generic_qa" intent (greetings, onboarding, help, conceptual domain queries)
-    if intent == "generic_qa":
-        response_text = build_generic_qa_response(query, validated)
-        return {
-            "query": query,
-            "extracted_json": validated,
-            "solr_query": {"q": "*:*", "fq": []},
-            "num_found": 0,
-            "total_dataset": 100,
-            "matched_ids": [],
-            "active_map_filters": [],
-            "facets": {},
-            "response_text": response_text,
-            "docs": []
-        }
+    # 7. Transition notification prefix explaining state changes
+    transition_notice = DialogueStateTracker.format_transition_notice(action, current_filters, updated_filters, is_spanish=is_spanish)
 
-    # 5. Handle Unsupported Countries in filter queries
-    prefix_notice = ""
+    prefix_notice = transition_notice
     if unsupported_found:
-        is_spanish = any(w in q_lower for w in ["paises", "países", "como", "que", "tengan", "en ", "de "])
         country_names_str = ", ".join(unsupported_found)
         has_valid_country = bool(filters.get("countries"))
         if has_valid_country:
-            # Partially valid query: e.g. "paises del sur de europa como grecia o albania que tengan niquel"
             if is_spanish:
-                prefix_notice = (
+                prefix_notice += (
                     f"⚠️ **Aclaración sobre la consulta y cobertura geográfica**:\n"
                     f"Has consultado por **{country_names_str}**, pero el repositorio europeo CRMsDataSpace está actualmente limitado a "
                     f"**12 países miembros de la Unión Europea** (España, Portugal, Francia, Alemania, Suecia, Finlandia, Polonia, Italia, Grecia, Irlanda, Austria y Chequia). "
@@ -350,13 +429,12 @@ def process_chat_message(query: str, provider: str = "mock") -> Dict[str, Any]:
                     f"No obstante, para los países del sur de Europa integrados en el sistema, se han identificado las siguientes instalaciones que cumplen tus criterios de búsqueda:\n\n"
                 )
             else:
-                prefix_notice = (
+                prefix_notice += (
                     f"⚠️ **Geographical Scope Notice**:\n"
                     f"You inquired about **{country_names_str}**, which is outside the European CRMs Data Space (restricted to 12 EU Member States). "
                     f"Results below represent matching facilities in covered EU member states:\n\n"
                 )
         else:
-            # Query has ONLY unsupported countries (e.g. "minas en Albania" or "litio en Chile")
             if is_spanish:
                 response_text = (
                     f"⚠️ **País fuera de cobertura geográfica**:\n\n"
@@ -372,43 +450,57 @@ def process_chat_message(query: str, provider: str = "mock") -> Dict[str, Any]:
                     f"Facilities in **{country_names_str}** are not included in this repository.\n\n"
                     f"💡 *Try querying facilities in covered EU countries such as Spain, Portugal, Italy, or Greece.*"
                 )
+            hist = list(conversation_history)
+            hist.append({"role": "user", "content": query})
+            hist.append({"role": "assistant", "content": response_text})
             return {
                 "query": query,
                 "extracted_json": validated,
+                "dialogue_action": action,
                 "solr_query": {"q": "*:*", "fq": []},
                 "num_found": 0,
                 "total_dataset": 100,
                 "matched_ids": [],
                 "active_map_filters": [],
+                "filters": updated_filters,
+                "current_filters": updated_filters,
+                "conversation_history": hist,
                 "facets": {},
                 "response_text": response_text,
                 "docs": []
             }
 
-    # 6. Handle vague queries with zero search criteria (prevent dumping all 100 sites on vague queries)
+    # 8. Handle vague queries with zero search criteria
     if not has_valid_filters and not any(w in q_lower for w in ["todas", "todo", "todos", "all", "dataset"]):
         response_text = build_generic_qa_response(query, validated)
+        hist = list(conversation_history)
+        hist.append({"role": "user", "content": query})
+        hist.append({"role": "assistant", "content": response_text})
         return {
             "query": query,
             "extracted_json": validated,
+            "dialogue_action": action,
             "solr_query": {"q": "*:*", "fq": []},
             "num_found": 0,
             "total_dataset": 100,
             "matched_ids": [],
             "active_map_filters": [],
+            "filters": updated_filters,
+            "current_filters": updated_filters,
+            "conversation_history": hist,
             "facets": {},
             "response_text": response_text,
             "docs": []
         }
 
-    # 7. Solr query construction & execution for valid filter searches
+    # 9. Solr query construction & execution for accumulated filters
     solr_query = query_builder.build(validated)
     solr_results = query_data_space_solr(solr_query["q"], solr_query["fq"])
     
     matched_docs = solr_results.get("docs", [])
     matched_ids = [d["id"] for d in matched_docs]
     
-    # 8. Extract active filter badges for visual GIS map display
+    # 10. Extract active filter badges for visual GIS map display
     active_map_filters = []
     if filters.get("countries"):
         active_map_filters.append({"type": "Country", "label": "Countries", "values": filters["countries"]})
@@ -421,17 +513,26 @@ def process_chat_message(query: str, provider: str = "mock") -> Dict[str, Any]:
     if filters.get("restored") is not None:
         active_map_filters.append({"type": "Restoration", "label": "Restored", "values": [str(filters["restored"])]})
 
-    # 9. Generate natural language response
+    # 11. Generate natural language response
     response_text = generate_natural_response(query, validated, solr_results, provider, prefix_notice=prefix_notice)
+
+    # 12. Update conversation history
+    hist = list(conversation_history)
+    hist.append({"role": "user", "content": query})
+    hist.append({"role": "assistant", "content": response_text})
         
     return {
         "query": query,
         "extracted_json": validated,
+        "dialogue_action": action,
         "solr_query": solr_query,
         "num_found": solr_results.get("numFound", 0),
         "total_dataset": solr_results.get("totalDatasetSize", 100),
         "matched_ids": matched_ids,
         "active_map_filters": active_map_filters,
+        "filters": updated_filters,
+        "current_filters": updated_filters,
+        "conversation_history": hist,
         "facets": solr_results.get("facets", {}),
         "response_text": response_text,
         "docs": matched_docs

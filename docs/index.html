@@ -123,6 +123,19 @@
 
     <!-- Right-side status and telemetry controls -->
     <div class="flex items-center gap-3 shrink-0">
+      <!-- Link to Generic GIS Template Sandbox -->
+      <button 
+        type="button"
+        onclick="openSiblingApp(8085)"
+        class="bg-blue-950/60 hover:bg-blue-900/80 text-blue-300 hover:text-white border border-blue-800/80 text-[10.5px] px-2.5 py-1.5 rounded-md transition flex items-center gap-1.5 cursor-pointer shadow-sm"
+        title="Open General-Purpose GIS Architecture Template on Port 8085"
+      >
+        <span>🌍 GIS Template (Port 8085)</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      </button>
+
       <!-- Live Hardware / Engine Telemetry Badge -->
       <div id="gpu-telemetry-badge" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-md shadow-sm" title="Real-time Execution Engine Status">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -206,21 +219,24 @@
         
         <!-- Reviewer Test Bench Bar -->
         <div class="p-3 bg-[#0d1222] border-b border-geodark-border flex flex-col gap-1.5 shadow-sm">
-          <div class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold flex items-center gap-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-            </svg>
-            Reviewer Test Bench (Preset Benchmark Queries)
+          <div class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              Reviewer Test Bench (Preset Benchmark Queries & Conversational Multi-Turn)
+            </div>
+            <span class="text-[9.5px] text-purple-400 font-mono">Chat Memory: DST Active</span>
           </div>
           
-          <div class="grid grid-cols-3 gap-2">
+          <div class="grid grid-cols-4 gap-2">
             <button 
               id="btn-scenario-1"
               onclick="runScenario('query_1')"
               class="text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-geodark-card border-geodark-border hover:border-slate-600 text-slate-300"
             >
-              <span class="font-semibold block text-emerald-400 mb-1">Test 1: Active Li & Co</span>
-              <span class="text-slate-400 text-[10px]">Lithium and Cobalt active sites in Spain & Finland</span>
+              <span class="font-semibold block text-emerald-400 mb-0.5">Test 1: Active Li & Co</span>
+              <span class="text-slate-400 text-[9.5px]">Spain & Finland</span>
             </button>
             
             <button 
@@ -228,8 +244,8 @@
               onclick="runScenario('query_2')"
               class="text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-geodark-card border-geodark-border hover:border-slate-600 text-slate-300"
             >
-              <span class="font-semibold block text-amber-400 mb-1">Test 2: Tungsten Ponds</span>
-              <span class="text-slate-400 text-[10px]">Unrestored tungsten ponds in Germany</span>
+              <span class="font-semibold block text-amber-400 mb-0.5">Test 2: W Ponds</span>
+              <span class="text-slate-400 text-[9.5px]">Germany unrestored</span>
             </button>
 
             <button 
@@ -237,10 +253,41 @@
               onclick="runScenario('query_3')"
               class="text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-geodark-card border-geodark-border hover:border-slate-600 text-slate-300"
             >
-              <span class="font-semibold block text-blue-400 mb-1">Test 3: REE Deposits</span>
-              <span class="text-slate-400 text-[10px]">Rare Earth Elements in Sweden & France</span>
+              <span class="font-semibold block text-blue-400 mb-0.5">Test 3: REE Deposits</span>
+              <span class="text-slate-400 text-[9.5px]">Sweden & France</span>
+            </button>
+
+            <button 
+              id="btn-scenario-multiturn"
+              onclick="runMultiTurnDemoStep()"
+              class="text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-purple-950/40 border-purple-800/80 hover:border-purple-400 text-purple-200"
+              title="Click repeatedly to execute the 4-turn multi-turn conversational dialogue requested by reviewers"
+            >
+              <span class="font-semibold block text-purple-300 mb-0.5 flex items-center justify-between" id="multiturn-demo-title">
+                <span>💬 Multi-Turn DST</span>
+                <span class="text-[9px] bg-purple-900/60 px-1 rounded text-purple-300">Step 1/4</span>
+              </span>
+              <span class="text-purple-300/80 text-[9.5px] truncate" id="multiturn-demo-sub">"dime escombreras cerca de paris"</span>
             </button>
           </div>
+        </div>
+
+        <!-- Conversational Memory & State Tracking Bar -->
+        <div class="px-3.5 py-1.5 bg-[#090d19] border-b border-geodark-border flex items-center justify-between text-[11px] shrink-0">
+          <div class="flex items-center gap-2 truncate">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+            <span id="chat-memory-status" class="text-slate-300 font-mono text-[10px] truncate">
+              Conversational Memory: <span class="text-emerald-400 font-semibold">Active</span> (Tracking progressive filters)
+            </span>
+          </div>
+          <button 
+            type="button" 
+            onclick="resetConversationMemory()" 
+            class="text-[10px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white px-2.5 py-0.5 rounded border border-slate-700 transition-all flex items-center gap-1 shrink-0 shadow-sm"
+            title="Reiniciar historial y limpiar filtros de conversación"
+          >
+            <span>🔄</span> New Search / Reset
+          </button>
         </div>
 
         <!-- Chat Feed Window -->
@@ -703,6 +750,18 @@
       JAVASCRIPT LOGIC (PURE VANILLA)
       ========================================== -->
   <script>
+    function openSiblingApp(targetPort) {
+      const loc = window.location;
+      let targetUrl;
+      if (loc.hostname.includes('.app.github.dev') || loc.hostname.includes('.githubpreview.dev')) {
+        const newHostname = loc.hostname.replace(/-\d+(\.(?:preview\.)?app\.github\.dev|\.githubpreview\.dev)/, `-${targetPort}$1`);
+        targetUrl = `${loc.protocol}//${newHostname}/`;
+      } else {
+        targetUrl = `${loc.protocol}//${loc.hostname}:${targetPort}/`;
+      }
+      window.open(targetUrl, '_blank');
+    }
+
     // ==========================================
     // DATASET: 100 Synthetic European CRM Facilities
     // ==========================================
@@ -3537,6 +3596,102 @@
     let currentProvider = "rules";
     let lastWorkingProvider = "rules";
 
+    // Conversational Chat Memory & Dialogue State Tracking (DST)
+    let chatConversationHistory = [];
+    let chatCurrentFilters = {
+      countries: [],
+      regions: [],
+      commodities: [],
+      storage_facility_types: [],
+      material_types: [],
+      project_status: [],
+      environmental_flags: [],
+      restored: null
+    };
+    let multiTurnDemoStep = 0;
+
+    const MULTI_TURN_STEPS = [
+      {
+        query: "dime escombreras cerca de paris",
+        title: "Step 1: Paris Dumps",
+        sub: '"dime escombreras cerca de paris"'
+      },
+      {
+        query: "y ademas las que esten cerca de berlin",
+        title: "Step 2: + Berlin (OR)",
+        sub: '"y ademas las que esten cerca de berlin"'
+      },
+      {
+        query: "de esas, solo las que contengan litio y cobalto",
+        title: "Step 3: Li & Co (AND)",
+        sub: '"de esas, solo las que contengan litio y cobalto"'
+      },
+      {
+        query: "ahora quita las de cobalto",
+        title: "Step 4: Drop Cobalt",
+        sub: '"ahora quita las de cobalto"'
+      }
+    ];
+
+    function runMultiTurnDemoStep() {
+      const stepIdx = multiTurnDemoStep % MULTI_TURN_STEPS.length;
+      const stepData = MULTI_TURN_STEPS[stepIdx];
+      
+      multiTurnDemoStep++;
+      updateMultiTurnDemoButton();
+      
+      const getInput = () => document.getElementById('chat-input') || document.getElementById('custom-input');
+      const inputEl = getInput();
+      if (inputEl) inputEl.value = '';
+      sendChatMessage(stepData.query);
+    }
+
+    function updateMultiTurnDemoButton() {
+      const titleEl = document.getElementById('multiturn-demo-title');
+      const subEl = document.getElementById('multiturn-demo-sub');
+      if (!titleEl || !subEl) return;
+      
+      const nextStepIdx = multiTurnDemoStep % MULTI_TURN_STEPS.length;
+      const nextStep = MULTI_TURN_STEPS[nextStepIdx];
+      titleEl.innerHTML = `<span>💬 Multi-Turn DST</span><span class="text-[9px] bg-purple-900/60 px-1 rounded text-purple-300">Step ${nextStepIdx + 1}/4</span>`;
+      subEl.textContent = nextStep.sub;
+    }
+
+    function resetConversationMemory() {
+      chatConversationHistory = [];
+      chatCurrentFilters = {
+        countries: [],
+        regions: [],
+        commodities: [],
+        storage_facility_types: [],
+        material_types: [],
+        project_status: [],
+        environmental_flags: [],
+        restored: null
+      };
+      multiTurnDemoStep = 0;
+      updateMultiTurnDemoButton();
+      updateChatMemoryStatus('reset', chatCurrentFilters, 0);
+      sendChatMessage("empezar de nuevo");
+    }
+
+    function updateChatMemoryStatus(action, filters, historyLen) {
+      const el = document.getElementById('chat-memory-status');
+      if (!el) return;
+      filters = filters || {};
+      const activeItems = [];
+      if (filters.countries && filters.countries.length) activeItems.push(`Países: ${filters.countries.join(', ')}`);
+      if (filters.commodities && filters.commodities.length) activeItems.push(`Metales: ${filters.commodities.join(', ')}`);
+      if (filters.storage_facility_types && filters.storage_facility_types.length) activeItems.push(`Depósito: ${filters.storage_facility_types.join(', ')}`);
+      
+      const turnCount = historyLen !== undefined ? Math.floor(historyLen / 2) : Math.floor(chatConversationHistory.length / 2);
+      if (activeItems.length > 0) {
+        el.innerHTML = `Conversational Memory: <span class="text-emerald-400 font-semibold">Active (${turnCount} turns)</span> | <span class="text-slate-300 font-normal">${activeItems.join(' · ')}</span>`;
+      } else {
+        el.innerHTML = `Conversational Memory: <span class="text-slate-400 font-semibold">Standby (Full data space)</span>`;
+      }
+    }
+
     // ==========================================
     // MULTI-SELECTION FILTERS & BIDIRECTIONAL SYNC
     // ==========================================
@@ -4355,15 +4510,67 @@
       sendChatMessage(query);
     }
 
-    function executeClientSideFallback(query) {
-      const qLower = query.toLowerCase();
+    function executeClientSideFallback(query, currentFilters = null, conversationHistory = null) {
+      const qLower = (query || "").toLowerCase().trim();
 
-      // 1. Detect greetings and help
+      // Initialize accumulated state from currentFilters if present
+      const state = {
+        countries: (currentFilters && Array.isArray(currentFilters.countries)) ? [...currentFilters.countries] : [],
+        regions: (currentFilters && Array.isArray(currentFilters.regions)) ? [...currentFilters.regions] : [],
+        commodities: (currentFilters && Array.isArray(currentFilters.commodities)) ? [...currentFilters.commodities] : [],
+        storage_facility_types: (currentFilters && Array.isArray(currentFilters.storage_facility_types)) ? [...currentFilters.storage_facility_types] : [],
+        material_types: (currentFilters && Array.isArray(currentFilters.material_types)) ? [...currentFilters.material_types] : [],
+        project_status: (currentFilters && Array.isArray(currentFilters.project_status)) ? [...currentFilters.project_status] : [],
+        environmental_flags: (currentFilters && Array.isArray(currentFilters.environmental_flags)) ? [...currentFilters.environmental_flags] : [],
+        restored: (currentFilters && currentFilters.restored !== undefined) ? currentFilters.restored : null
+      };
+
+      // 1. Detect Dialogue Action
+      let action = "new_search";
+      const resetCues = [
+        /\breset\b/, /\breiniciar\b/, /\blimpiar\b/, /\bempezar de nuevo\b/,
+        /\bnueva b[uú]squeda\b/, /\bolvida lo anterior\b/, /\bolvida todo\b/,
+        /\bborrar filtros\b/, /\bclear\b/, /\bstart over\b/, /\bnew search\b/
+      ];
+      const removeCues = [
+        /\bquita\b/, /\bquitar\b/, /\belimina\b/, /\beliminar\b/, /\bdescarta\b/,
+        /\bsin\b/, /\bexcepto\b/, /\bmenos\b/, /\bya no quiero\b/, /\bborra\b/,
+        /\bremove\b/, /\bexclude\b/, /\bdrop\b/, /\bwithout\b/, /\bdelete\b/
+      ];
+      const refineCues = [
+        /\bde es[ao]s\b/, /\bde est[ao]s\b/, /\bde ell[ao]s\b/, /\bde los anteriores\b/,
+        /\bsolo las que\b/, /\bsolo los que\b/, /\b[uú]nicamente\b/, /\bunicamente\b/,
+        /\bque contengan\b/, /\bque tengan\b/, /\bpero solo\b/, /\bde ah[ií] solo\b/,
+        /\bacota\b/, /\bfiltra por\b/, /\bfiltradas por\b/, /\bof those\b/, /\bfrom these\b/,
+        /\bonly (those|that)\b/, /\bnarrow down\b/, /\bjust the ones\b/
+      ];
+      const expandCues = [
+        /\by adem[aá]s\b/, /\btambi[eé]n\b/, /\ba[ñn]ade\b/, /\bagrega\b/, /\bsuma\b/,
+        /\by en\b/, /\by las de\b/, /\by los de\b/, /\by cerca de\b/, /\bo en\b/,
+        /\band also\b/, /\badditionally\b/, /\bas well as\b/, /\bplus\b/, /\binclude\b/
+      ];
+
+      const hasPriorFilters = state.countries.length > 0 || state.commodities.length > 0 ||
+        state.storage_facility_types.length > 0 || state.project_status.length > 0 || state.restored !== null;
+
+      if (resetCues.some(re => re.test(qLower))) {
+        action = "reset";
+      } else if (hasPriorFilters && removeCues.some(re => re.test(qLower))) {
+        action = "remove";
+      } else if (hasPriorFilters && refineCues.some(re => re.test(qLower))) {
+        action = "refine";
+      } else if (hasPriorFilters && expandCues.some(re => re.test(qLower))) {
+        action = "expand";
+      } else if (!hasPriorFilters) {
+        action = "new_search";
+      }
+
+      // Greetings / General Help (only if not an action on existing filters)
       const isGreeting = /\b(hola|hello|hi|hey|buenos d[ií]as|buenas tardes|buenas noches|buenas)\b/i.test(qLower);
       const isHelp = /\b(ayuda|help|en qu[eé] me puedes ayudar|qu[eé] puedes hacer|c[oó]mo funciona|para qu[eé] sirves)\b/i.test(qLower);
       const isConceptual = /\b(diferencia|qué es|que es|directiva|unfc|jorc|amd|drenaje [aá]cido)\b/i.test(qLower);
 
-      if (isGreeting || isHelp) {
+      if ((isGreeting || isHelp) && action === "new_search" && !hasPriorFilters) {
         const welcomeText = `👋 **¡Hola! Bienvenido al Asistente Inteligente de CRMsDataSpace.**\n\n` +
           `Este espacio de datos te permite consultar y analizar **100 instalaciones y depósitos mineros** (balsas de relaves, escombreras y acopios) distribuidos en **12 países de la Unión Europea**.\n\n` +
           `**¿En qué te puedo ayudar?**\n` +
@@ -4379,9 +4586,12 @@
           query: query,
           narrative: welcomeText,
           response_text: welcomeText,
-          matched_ids: [],
+          matched_ids: MINING_SITES.map(s => s.id),
           active_map_filters: [],
-          filters: {},
+          filters: state,
+          current_filters: state,
+          dialogue_action: "new_search",
+          num_found: MINING_SITES.length,
           extracted_json: { intent: 'generic_qa', filters: {} },
           solr_query: { q: "*:*", fq: [] },
           solr_facets: { facet_counts: { facet_fields: { country: [], commodities: [] } } },
@@ -4402,9 +4612,12 @@
           query: query,
           narrative: diffText,
           response_text: diffText,
-          matched_ids: [],
+          matched_ids: MINING_SITES.map(s => s.id),
           active_map_filters: [],
-          filters: {},
+          filters: state,
+          current_filters: state,
+          dialogue_action: "new_search",
+          num_found: MINING_SITES.length,
           extracted_json: { intent: 'generic_qa', filters: {} },
           solr_query: { q: "*:*", fq: [] },
           solr_facets: { facet_counts: { facet_fields: { country: [], commodities: [] } } },
@@ -4412,68 +4625,115 @@
         };
       }
 
-      let matched = MINING_SITES.slice();
-      let activeFilters = [];
-      let countries = [];
-      let commodities = [];
-      let statuses = [];
-      let facilityTypes = [];
+      // 2. Extract Entities from current query
+      const extracted = {
+        countries: [],
+        commodities: [],
+        storage_facility_types: [],
+        project_status: [],
+        environmental_flags: [],
+        restored: null
+      };
 
-      // Detect European Countries
+      // City grounding to countries
+      const cityMap = {
+        'paris': 'france', 'parís': 'france', 'lyon': 'france', 'marseille': 'france', 'toulouse': 'france', 'bordeaux': 'france',
+        'berlin': 'germany', 'berlín': 'germany', 'munich': 'germany', 'múnich': 'germany', 'frankfurt': 'germany', 'hamburg': 'germany', 'cologne': 'germany', 'dresden': 'germany', 'leipzig': 'germany',
+        'madrid': 'spain', 'barcelona': 'spain', 'ourense': 'spain', 'zamora': 'spain', 'salamanca': 'spain', 'huelva': 'spain', 'asturias': 'spain', 'sevilla': 'spain',
+        'lisboa': 'portugal', 'lisbon': 'portugal', 'porto': 'portugal',
+        'roma': 'italy', 'rome': 'italy', 'milan': 'italy', 'milán': 'italy', 'turin': 'italy',
+        'stockholm': 'sweden', 'estocolmo': 'sweden', 'kiruna': 'sweden',
+        'helsinki': 'finland', 'espoo': 'finland', 'tampere': 'finland',
+        'warsaw': 'poland', 'varsovia': 'poland', 'krakow': 'poland', 'cracovia': 'poland',
+        'vienna': 'austria', 'viena': 'austria', 'salzburg': 'austria',
+        'athens': 'greece', 'atenas': 'greece',
+        'dublin': 'ireland', 'dublín': 'ireland',
+        'prague': 'czechia', 'praga': 'czechia'
+      };
+      for (const [cName, coMapped] of Object.entries(cityMap)) {
+        const re = new RegExp(`\\b${cName}\\b`, 'i');
+        if (re.test(qLower) && !extracted.countries.includes(coMapped)) {
+          extracted.countries.push(coMapped);
+        }
+      }
+
+      // Supported European Countries
       const countryMap = {
-        'spain': 'Spain', 'españa': 'Spain', 'finland': 'Finland', 'finlandia': 'Finland',
-        'germany': 'Germany', 'alemania': 'Germany', 'france': 'France', 'francia': 'France',
-        'sweden': 'Sweden', 'suecia': 'Sweden', 'portugal': 'Portugal', 'italy': 'Italy',
-        'italia': 'Italy', 'poland': 'Poland', 'polonia': 'Poland', 'greece': 'Greece',
-        'grecia': 'Greece', 'austria': 'Austria', 'ireland': 'Ireland', 'irlanda': 'Ireland'
+        'spain': 'spain', 'españa': 'spain', 'espana': 'spain',
+        'finland': 'finland', 'finlandia': 'finland',
+        'germany': 'germany', 'alemania': 'germany',
+        'france': 'france', 'francia': 'france',
+        'sweden': 'sweden', 'suecia': 'sweden',
+        'portugal': 'portugal',
+        'italy': 'italy', 'italia': 'italy',
+        'poland': 'poland', 'polonia': 'poland',
+        'greece': 'greece', 'grecia': 'greece',
+        'austria': 'austria',
+        'ireland': 'ireland', 'irlanda': 'ireland',
+        'czechia': 'czechia', 'chequia': 'czechia', 'república checa': 'czechia'
       };
-      for (const [k, v] of Object.entries(countryMap)) {
-        if (qLower.includes(k) && !countries.includes(v)) countries.push(v);
+      for (const [cName, coMapped] of Object.entries(countryMap)) {
+        const re = new RegExp(`\\b${cName}\\b`, 'i');
+        if (re.test(qLower) && !extracted.countries.includes(coMapped)) {
+          extracted.countries.push(coMapped);
+        }
       }
 
-      // Check for out-of-scope countries
-      const unsupportedList = ['albania', 'chile', 'china', 'uk', 'reino unido', 'estados unidos', 'usa', 'rusia', 'noruega', 'suiza'];
-      const unsupportedFound = unsupportedList.filter(u => qLower.includes(u));
-
-      // Detect Critical Raw Materials (CRMs)
+      // Commodities (CRMs)
       const commMap = {
-        'lithium': 'Lithium', 'litio': 'Lithium', 'cobalt': 'Cobalt', 'cobalto': 'Cobalt',
-        'tungsten': 'Tungsten', 'wolframio': 'Tungsten', 'golfranio': 'Tungsten',
-        'nickel': 'Nickel', 'níquel': 'Nickel', 'niquel': 'Nickel', 'ree': 'Rare Earth Elements (REE)',
-        'rare earth': 'Rare Earth Elements (REE)', 'tierras raras': 'Rare Earth Elements (REE)',
-        'graphite': 'Graphite', 'grafito': 'Graphite', 'copper': 'Copper', 'cobre': 'Copper'
+        'lithium': 'lithium', 'litio': 'lithium',
+        'cobalt': 'cobalt', 'cobalto': 'cobalt',
+        'tungsten': 'tungsten', 'wolframio': 'tungsten', 'wolfram': 'tungsten', 'tungsteno': 'tungsten',
+        'nickel': 'nickel', 'níquel': 'nickel', 'niquel': 'nickel',
+        'ree': 'rare earth elements', 'rare earth': 'rare earth elements', 'tierras raras': 'rare earth elements', 'rare earth elements': 'rare earth elements',
+        'copper': 'copper', 'cobre': 'copper',
+        'tin': 'tin', 'estaño': 'tin', 'estano': 'tin',
+        'tantalum': 'tantalum', 'tántalo': 'tantalum', 'tantalo': 'tantalum', 'coltan': 'tantalum', 'coltán': 'tantalum',
+        'graphite': 'graphite', 'grafito': 'graphite',
+        'titanium': 'titanium', 'titanio': 'titanium',
+        'manganese': 'manganese', 'manganeso': 'manganese',
+        'platinum': 'pge', 'platino': 'pge', 'pge': 'pge'
       };
-      for (const [k, v] of Object.entries(commMap)) {
-        if (qLower.includes(k) && !commodities.includes(v)) commodities.push(v);
+      for (const [commTerm, commCanon] of Object.entries(commMap)) {
+        const re = new RegExp(`\\b${commTerm}\\b`, 'i');
+        if (re.test(qLower) && !extracted.commodities.includes(commCanon)) {
+          extracted.commodities.push(commCanon);
+        }
       }
 
-      // Detect Project Status
-      if (qLower.includes('active') || qLower.includes('activa') || qLower.includes('activas')) {
-        statuses.push('Active');
-      } else if (qLower.includes('closed') || qLower.includes('cerrada') || qLower.includes('cerradas')) {
-        statuses.push('Closed');
-      } else if (qLower.includes('abandoned') || qLower.includes('abandonada')) {
-        statuses.push('Abandoned');
+      // Facility Types
+      if (/\b(dump|dumps|escombrera|escombreras|vertedero|waste)\b/i.test(qLower)) {
+        if (!extracted.storage_facility_types.includes('waste dump')) extracted.storage_facility_types.push('waste dump');
+      }
+      if (/\b(tailing|tailings|balsa|balsas|pond|ponds|decantaci[oó]n|relave|relaves|tsf)\b/i.test(qLower)) {
+        if (!extracted.storage_facility_types.includes('pond')) extracted.storage_facility_types.push('pond');
+      }
+      if (/\b(stockpile|stockpiles|acopio|acopios)\b/i.test(qLower)) {
+        if (!extracted.storage_facility_types.includes('stockpile')) extracted.storage_facility_types.push('stockpile');
       }
 
-      // Detect Restoration Status
-      let restoredFilter = null;
-      if (qLower.includes('unrestored') || qLower.includes('sin restaurar') || qLower.includes('no restaurad')) {
-        restoredFilter = false;
-      } else if (qLower.includes('restored') || qLower.includes('restaurad')) {
-        restoredFilter = true;
+      // Project Status
+      if (/\b(active|activa|activas|activo|activos)\b/i.test(qLower)) {
+        extracted.project_status.push('active');
+      } else if (/\b(closed|cerrada|cerradas|cerrado|cerrados)\b/i.test(qLower)) {
+        extracted.project_status.push('closed');
+      } else if (/\b(abandoned|abandonada|abandonadas|abandonado)\b/i.test(qLower)) {
+        extracted.project_status.push('abandoned');
       }
 
-      // Detect Facility Types
-      if (qLower.includes('tailing') || qLower.includes('balsa') || qLower.includes('pond')) {
-        facilityTypes.push('Tailings Pond');
-      }
-      if (qLower.includes('dump') || qLower.includes('escombrera') || qLower.includes('waste')) {
-        facilityTypes.push('Waste Dump');
+      // Restoration Status
+      if (/\b(unrestored|sin restaurar|no restaurad[ao]s?)\b/i.test(qLower)) {
+        extracted.restored = false;
+        extracted.environmental_flags.push('not restored');
+      } else if (/\b(restored|restaurad[ao]s?)\b/i.test(qLower)) {
+        extracted.restored = true;
       }
 
-      // If only unsupported country was queried without supported countries
-      if (unsupportedFound.length > 0 && countries.length === 0) {
+      // Unsupported Countries Check
+      const unsupportedList = ['albania', 'chile', 'china', 'uk', 'reino unido', 'estados unidos', 'usa', 'rusia', 'noruega', 'suiza'];
+      const unsupportedFound = unsupportedList.filter(u => new RegExp(`\\b${u}\\b`, 'i').test(qLower));
+
+      if (unsupportedFound.length > 0 && extracted.countries.length === 0 && action === "new_search") {
         const outText = `⚠️ **País fuera de cobertura**: Has solicitado instalaciones en **${unsupportedFound.join(', ')}**, pero el espacio de datos europeo CRMsDataSpace está delimitado a **12 países de la Unión Europea** (España, Portugal, Francia, Alemania, Suecia, Finlandia, Polonia, Italia, Grecia, Irlanda, Austria y Chequia).\n\n💡 *Prueba a consultar instalaciones en países como España, Portugal, Alemania o Grecia.*`;
         return {
           query: query,
@@ -4481,7 +4741,10 @@
           response_text: outText,
           matched_ids: [],
           active_map_filters: [],
-          filters: {},
+          filters: state,
+          current_filters: state,
+          dialogue_action: "new_search",
+          num_found: 0,
           extracted_json: { intent: 'filter_search', filters: {} },
           solr_query: { q: "*:*", fq: [] },
           solr_facets: { facet_counts: { facet_fields: { country: [], commodities: [] } } },
@@ -4489,68 +4752,178 @@
         };
       }
 
-      // If no search filter criteria found
-      if (countries.length === 0 && commodities.length === 0 && statuses.length === 0 && facilityTypes.length === 0 && restoredFilter === null) {
-        const noFilterText = `No se han detectado criterios específicos de búsqueda en tu consulta.\n\nPara consultar el espacio de datos europeo, especifica al menos un **país** (ej. *España, Alemania, Suecia*), un **mineral CRM** (ej. *litio, cobalto, wolframio, níquel*) o un **tipo de instalación** (ej. *balsas, escombreras*).\n\n**Ejemplos recomendados:**\n- *"Balsas de litio en Portugal"*\n- *"Escombreras inactivas con níquel en Suecia"*\n- *"Depósitos de wolframio en España y Alemania"*`;
-        return {
-          query: query,
-          narrative: noFilterText,
-          response_text: noFilterText,
-          matched_ids: [],
-          active_map_filters: [],
-          filters: {},
-          extracted_json: { intent: 'generic_qa', filters: {} },
-          solr_query: { q: "*:*", fq: [] },
-          solr_facets: { facet_counts: { facet_fields: { country: [], commodities: [] } } },
-          evidences: []
-        };
+      // 3. Dialogue State Tracking Reconciliation
+      const prevFilters = {
+        countries: [...state.countries],
+        commodities: [...state.commodities],
+        storage_facility_types: [...state.storage_facility_types],
+        project_status: [...state.project_status],
+        environmental_flags: [...state.environmental_flags],
+        restored: state.restored
+      };
+
+      if (action === "reset") {
+        state.countries = [];
+        state.regions = [];
+        state.commodities = [];
+        state.storage_facility_types = [];
+        state.material_types = [];
+        state.project_status = [];
+        state.environmental_flags = [];
+        state.restored = null;
+      } else if (action === "new_search") {
+        state.countries = [...extracted.countries];
+        state.commodities = [...extracted.commodities];
+        state.storage_facility_types = [...extracted.storage_facility_types];
+        state.project_status = [...extracted.project_status];
+        state.environmental_flags = [...extracted.environmental_flags];
+        state.restored = extracted.restored;
+      } else if (action === "expand") {
+        // Additive OR
+        extracted.countries.forEach(c => { if (!state.countries.includes(c)) state.countries.push(c); });
+        extracted.commodities.forEach(c => { if (!state.commodities.includes(c)) state.commodities.push(c); });
+        extracted.storage_facility_types.forEach(f => { if (!state.storage_facility_types.includes(f)) state.storage_facility_types.push(f); });
+        extracted.project_status.forEach(s => { if (!state.project_status.includes(s)) state.project_status.push(s); });
+        if (extracted.restored !== null) state.restored = extracted.restored;
+      } else if (action === "refine") {
+        // AND refinement: override dimensions mentioned
+        if (extracted.countries.length > 0) state.countries = [...extracted.countries];
+        if (extracted.commodities.length > 0) state.commodities = [...extracted.commodities];
+        if (extracted.storage_facility_types.length > 0) state.storage_facility_types = [...extracted.storage_facility_types];
+        if (extracted.project_status.length > 0) state.project_status = [...extracted.project_status];
+        if (extracted.restored !== null) state.restored = extracted.restored;
+      } else if (action === "remove") {
+        // Subtraction: drop specified items
+        if (extracted.countries.length > 0) {
+          state.countries = state.countries.filter(c => !extracted.countries.includes(c));
+        }
+        if (extracted.commodities.length > 0) {
+          state.commodities = state.commodities.filter(c => !extracted.commodities.includes(c));
+        }
+        if (extracted.storage_facility_types.length > 0) {
+          state.storage_facility_types = state.storage_facility_types.filter(f => !extracted.storage_facility_types.includes(f));
+        }
+        if (extracted.project_status.length > 0) {
+          state.project_status = state.project_status.filter(s => !extracted.project_status.includes(s));
+        }
       }
 
-      // Filter sites
-      if (countries.length > 0) {
-        matched = matched.filter(s => countries.includes(s.country_name) || countries.includes(s.country));
-        activeFilters.push({ type: 'Country', label: 'Countries', values: countries });
-      }
-      if (commodities.length > 0) {
+      // 4. Filter MINING_SITES against accumulated state
+      let matched = MINING_SITES.slice();
+      const activeFilters = [];
+
+      if (state.countries.length > 0) {
         matched = matched.filter(s => {
-          const sc = (s.commodities || []).concat([s.commodities_label || '']);
-          return commodities.some(c => sc.some(item => item.toLowerCase().includes(c.toLowerCase())));
+          const sc = (s.country || '').toLowerCase();
+          const scn = (s.country_name || '').toLowerCase();
+          return state.countries.some(c => c.toLowerCase() === sc || c.toLowerCase() === scn);
         });
-        activeFilters.push({ type: 'Commodity', label: 'CRM Metal', values: commodities });
+        activeFilters.push({ type: 'Country', label: 'Countries', values: state.countries.map(c => c.charAt(0).toUpperCase() + c.slice(1)) });
       }
-      if (statuses.length > 0) {
-        matched = matched.filter(s => statuses.includes(s.project_status));
-        activeFilters.push({ type: 'Status', label: 'Status', values: statuses });
+
+      if (state.commodities.length > 0) {
+        matched = matched.filter(s => {
+          const siteComms = (s.commodities || []).map(c => c.toLowerCase());
+          const siteLabel = (s.commodities_label || '').toLowerCase();
+          return state.commodities.some(c => {
+            const cLower = c.toLowerCase();
+            return siteComms.some(sc => sc.includes(cLower)) || siteLabel.includes(cLower);
+          });
+        });
+        activeFilters.push({ type: 'Commodity', label: 'CRM Metal', values: state.commodities.map(c => c.charAt(0).toUpperCase() + c.slice(1)) });
       }
-      if (restoredFilter !== null) {
-        matched = matched.filter(s => s.restored === restoredFilter);
-        activeFilters.push({ type: 'Restoration', label: 'Restored', values: [String(restoredFilter)] });
+
+      if (state.storage_facility_types.length > 0) {
+        matched = matched.filter(s => {
+          const sfText = `${s.storage_facility_type || ''} ${s.facility_type || ''} ${s.storage_facility_label || ''}`.toLowerCase();
+          return state.storage_facility_types.some(ft => {
+            if (ft === 'waste dump') return sfText.includes('dump') || sfText.includes('escombrera') || sfText.includes('waste');
+            if (ft === 'pond' || ft === 'tailings storage facility') return sfText.includes('pond') || sfText.includes('balsa') || sfText.includes('tailing');
+            if (ft === 'stockpile') return sfText.includes('stockpile') || sfText.includes('acopio');
+            return sfText.includes(ft.toLowerCase());
+          });
+        });
+        activeFilters.push({ type: 'Facility', label: 'Facility Type', values: state.storage_facility_types });
       }
-      if (facilityTypes.length > 0) {
-        matched = matched.filter(s => facilityTypes.some(ft => (s.storage_facility_label || '').toLowerCase().includes(ft.toLowerCase())));
-        activeFilters.push({ type: 'Facility', label: 'Facility Type', values: facilityTypes });
+
+      if (state.project_status.length > 0) {
+        matched = matched.filter(s => {
+          const ps = (s.project_status || '').toLowerCase();
+          return state.project_status.some(st => ps.includes(st.toLowerCase()));
+        });
+        activeFilters.push({ type: 'Status', label: 'Status', values: state.project_status });
+      }
+
+      if (state.restored !== null) {
+        matched = matched.filter(s => {
+          if (state.restored === false) {
+            return (s.environmental_flags || []).some(f => f.toLowerCase().includes('not restored')) || s.restored === false;
+          }
+          return s.restored === true || !(s.environmental_flags || []).some(f => f.toLowerCase().includes('not restored'));
+        });
+        activeFilters.push({ type: 'Restoration', label: 'Restored', values: [String(state.restored)] });
       }
 
       const matchedIds = matched.map(s => s.id);
-      let prefixNotice = "";
-      if (unsupportedFound.length > 0) {
-        prefixNotice = `⚠️ **Aclaración sobre alcance geográfico**: Has consultado por **${unsupportedFound.join(', ')}**, país que no pertenece a este espacio de datos europeo (restringido a 12 países de la UE). Se muestran a continuación los resultados para los países cubiertos:\n\n`;
+
+      // 5. Build Transition Notice & Narrative
+      let transitionNotice = "";
+      if (action === "reset") {
+        transitionNotice = "🧹 **Filtros de conversación reiniciados** (mostrando el catálogo completo europeo de 100 sitios).\n\n";
+      } else if (action === "expand") {
+        const addedCountries = state.countries.filter(c => !prevFilters.countries.includes(c));
+        const addedComms = state.commodities.filter(c => !prevFilters.commodities.includes(c));
+        const details = [];
+        if (addedCountries.length) details.push(`países: ${addedCountries.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}`);
+        if (addedComms.length) details.push(`minerales: ${addedComms.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}`);
+        const detailStr = details.length ? ` (${details.join('; ')})` : "";
+        transitionNotice = `🔄 **Ampliando la búsqueda (OR)**${detailStr} y manteniendo los criterios anteriores:\n\n`;
+      } else if (action === "refine") {
+        const details = [];
+        if (extracted.commodities.length) details.push(`minerales: ${extracted.commodities.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}`);
+        if (extracted.storage_facility_types.length) details.push(`depósitos: ${extracted.storage_facility_types.join(', ')}`);
+        const detailStr = details.length ? ` a ${details.join('; ')}` : "";
+        transitionNotice = `🎯 **Refinando sobre los resultados anteriores (AND)**${detailStr}:\n\n`;
+      } else if (action === "remove") {
+        const dropped = [
+          ...prevFilters.countries.filter(c => !state.countries.includes(c)),
+          ...prevFilters.commodities.filter(c => !state.commodities.includes(c)),
+          ...prevFilters.storage_facility_types.filter(f => !state.storage_facility_types.includes(f))
+        ];
+        const droppedStr = dropped.length ? ` **${dropped.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}**` : "";
+        transitionNotice = `✂️ **Excluyendo${droppedStr}** de los criterios activos y conservando el resto de filtros:\n\n`;
       }
 
-      let narrative = prefixNotice + `Located **${matched.length} European CRM facilities** matching your query filters.\n\n**Key Matching Sites:**\n`;
-      matched.slice(0, 3).forEach(s => {
-        narrative += `- **${s.site_name}** (${s.country_name || s.country}): ${s.storage_facility_label || 'Facility'} containing ${s.commodities_label || 'CRMs'}. Status: *${s.project_status}*.\n`;
-      });
-      if (matched.length > 3) narrative += `\n*...and ${matched.length - 3} additional facilities visualised on the map.*`;
+      let narrative = transitionNotice;
+      if (matched.length === 0) {
+        narrative += `No se han localizado instalaciones mineras que cumplan con la combinación actual de filtros.\n\n` +
+          `💡 *Puedes reiniciar la conversación o ampliar la búsqueda probando con otros países o materias primas.*`;
+      } else {
+        narrative += `Localizadas **${matched.length} instalaciones europeas** de materias primas críticas correspondientes a los criterios activos.\n\n**Instalaciones principales:**\n`;
+        matched.slice(0, 3).forEach(s => {
+          narrative += `- **${s.site_name}** (${s.country_name || s.country}): ${s.facility_type || s.storage_facility_label || 'Depósito'} con ${s.commodities_label || (s.commodities || []).join(', ')}. Estado: *${s.status_label || s.project_status}*.\n`;
+        });
+        if (matched.length > 3) {
+          narrative += `\n*...y ${matched.length - 3} instalaciones adicionales visualizadas dinámicamente en el mapa.*`;
+        }
+      }
 
       const evidences = matched.slice(0, 3).map(s => ({
         title: `Technical_Report_${(s.id || 'SITE').toUpperCase()}.pdf`,
         page: 1,
         score: 0.95,
-        entities: [`Mineral: ${s.commodities_label || 'CRM'}`, `Country: ${s.country_name || s.country}`],
+        entities: [`Mineral: ${s.commodities_label || (s.commodities || []).join(', ')}`, `País: ${s.country_name || s.country}`],
         snippet: s.description || 'Facility deposit description from SoftwareX CRM repository.',
         site_id: s.id
       }));
+
+      // Build Solr FQ representation for Inspector
+      const fqList = [];
+      if (state.countries.length) fqList.push(`country:(${state.countries.join(' OR ')})`);
+      if (state.commodities.length) fqList.push(`commodities:(${state.commodities.join(' OR ')})`);
+      if (state.storage_facility_types.length) fqList.push(`storage_facility_type:(${state.storage_facility_types.join(' OR ')})`);
+      if (state.project_status.length) fqList.push(`project_status:(${state.project_status.join(' OR ')})`);
+      if (state.restored !== null) fqList.push(`restored:${state.restored}`);
 
       return {
         query: query,
@@ -4558,16 +4931,28 @@
         response_text: narrative,
         matched_ids: matchedIds,
         active_map_filters: activeFilters,
-        filters: { countries, commodities, project_status: statuses },
-        extracted_json: { intent: 'spatial_filter', filters: { countries, commodities, project_status: statuses } },
+        filters: state,
+        current_filters: state,
+        dialogue_action: action,
+        num_found: matched.length,
+        extracted_json: {
+          intent: 'spatial_filter',
+          dialogue_action: action,
+          filters: state
+        },
         solr_query: {
           q: "*:*",
-          fq: [
-            countries.length ? `country:(${countries.join(' OR ')})` : null,
-            commodities.length ? `commodities:(${commodities.join(' OR ')})` : null
-          ].filter(Boolean)
+          fq: fqList,
+          rows: 100
         },
-        solr_facets: { facet_counts: { facet_fields: { country: [], commodities: [] } } },
+        solr_facets: {
+          facet_counts: {
+            facet_fields: {
+              country: state.countries,
+              commodities: state.commodities
+            }
+          }
+        },
         evidences: evidences
       };
     }
@@ -4613,7 +4998,7 @@
       chatContainer.appendChild(typingBubble);
       chatContainer.scrollTop = chatContainer.scrollHeight;
 
-      // 3. Send Request to REST Server (/api/chat) with client-side fallback
+      // 3. Send Request to REST Server (/api/chat) with multi-turn memory & client fallback
       try {
         let data = null;
         try {
@@ -4621,17 +5006,42 @@
           const resp = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ question: query, query: query, provider: currentProvider, api_key: apiKey })
+            body: JSON.stringify({
+              question: query,
+              query: query,
+              provider: currentProvider,
+              api_key: apiKey,
+              conversation_history: chatConversationHistory,
+              current_filters: chatCurrentFilters
+            })
           });
           if (resp.ok) {
             data = await resp.json();
+            if (data.current_filters) {
+              chatCurrentFilters = data.current_filters;
+            }
+            if (data.conversation_history) {
+              chatConversationHistory = data.conversation_history;
+            } else {
+              chatConversationHistory.push({ role: "user", content: query });
+              chatConversationHistory.push({ role: "assistant", content: data.narrative || data.response_text || "" });
+            }
+            updateChatMemoryStatus(data.dialogue_action, chatCurrentFilters, chatConversationHistory.length);
           } else {
             console.warn('/api/chat returned status', resp.status, ', using client deterministic fallback');
-            data = executeClientSideFallback(query);
+            data = executeClientSideFallback(query, chatCurrentFilters, chatConversationHistory);
+            chatCurrentFilters = data.current_filters || chatCurrentFilters;
+            chatConversationHistory.push({ role: "user", content: query });
+            chatConversationHistory.push({ role: "assistant", content: data.narrative || data.response_text || "" });
+            updateChatMemoryStatus(data.dialogue_action, chatCurrentFilters, chatConversationHistory.length);
           }
         } catch (fetchErr) {
           console.warn('Backend server not reachable, executing client-side deterministic fallback:', fetchErr);
-          data = executeClientSideFallback(query);
+          data = executeClientSideFallback(query, chatCurrentFilters, chatConversationHistory);
+          chatCurrentFilters = data.current_filters || chatCurrentFilters;
+          chatConversationHistory.push({ role: "user", content: query });
+          chatConversationHistory.push({ role: "assistant", content: data.narrative || data.response_text || "" });
+          updateChatMemoryStatus(data.dialogue_action, chatCurrentFilters, chatConversationHistory.length);
         }
         
         // Remove typing indicator

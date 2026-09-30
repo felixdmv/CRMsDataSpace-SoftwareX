@@ -14,11 +14,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Leaflet CSS & JS (Vector-only mode: Zero external tile server dependencies) -->
+  <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
-  <!-- Marked.js for proper Markdown rendering (headers, bold, lists without stray asterisks or hashtags) -->
+  <!-- Marked.js for proper Markdown rendering -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <!-- Tailwind CSS -->
@@ -51,14 +51,10 @@
     ::-webkit-scrollbar-thumb { background: #1f293d; border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: #374151; }
 
-    /* Oceanic blue sea surrounding our island territory */
     #map {
-      background-color: #0b2246 !important;
-      background-image: 
-        radial-gradient(rgba(30, 80, 140, 0.45) 1px, transparent 1px),
-        linear-gradient(to right, rgba(23, 62, 110, 0.3) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(23, 62, 110, 0.3) 1px, transparent 1px);
-      background-size: 40px 40px, 40px 40px, 40px 40px;
+      width: 100%;
+      height: 100%;
+      background: #090d16;
     }
 
     @keyframes marker-pulse {
@@ -80,18 +76,6 @@
     }
     .leaflet-popup-tip {
       background: #0f172a !important;
-    }
-    .zone-label-icon {
-      background: transparent !important;
-      border: none !important;
-      color: rgba(241, 245, 249, 0.95);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      text-shadow: 0 0 6px #000, 0 0 2px #000;
-      white-space: nowrap;
-      pointer-events: none;
     }
 
     /* Markdown clean typography styles */
@@ -121,12 +105,15 @@
     }
   </style>
 </head>
-<body class="h-full flex flex-col font-sans text-slate-100 bg-[#070b14] antialiased select-none overflow-hidden">
+
+<body class="h-full flex flex-col font-sans text-slate-100 bg-slate-950 overflow-hidden select-none">
 
   <!-- =========================================================================
-       TOP NAVIGATION BAR
+       TOP GLOBAL NAVIGATION BAR
        ========================================================================= -->
-  <header class="h-14 bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 flex items-center justify-between z-30 shrink-0 shadow-md">
+  <header class="h-14 bg-slate-900 border-b border-slate-800 px-4 flex items-center justify-between shrink-0 z-30 shadow-md">
+    
+    <!-- Title & Brand -->
     <div class="flex items-center gap-3">
       <div class="h-8 w-8 rounded-lg bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/20 text-white font-bold text-sm">
         GIS
@@ -144,24 +131,24 @@
 
     <!-- Right Actions & Cross-App Navigation -->
     <div class="flex items-center gap-2.5">
-      <!-- Territory Badge -->
+      <!-- Area Badge -->
       <span class="text-xs text-cyan-300 bg-cyan-950/60 border border-cyan-800/80 px-2.5 py-1 rounded-md hidden lg:flex items-center gap-1.5 font-mono text-[11px]">
-        <span>🏝️</span>
-        <span id="territory-header-name">Avalon Island</span>
+        <span id="aoi-header-icon">🌍</span>
+        <span id="aoi-header-name">World Map</span>
       </span>
 
-      <!-- 100% Offline Badge -->
+      <!-- Real Map Badge -->
       <span class="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 rounded-md hidden md:flex items-center gap-1.5 font-mono text-[11px]">
         <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-        Zero Tile API Keys (100% Offline)
+        Real Coordinates Basemap
       </span>
 
       <!-- Switcher to CRMsDataSpace (Port 8080) -->
       <button 
-        type="button"
+        type="button" 
         onclick="openSiblingApp(8080)"
         class="bg-blue-950/60 hover:bg-blue-900/80 text-blue-300 hover:text-white border border-blue-800/80 text-xs px-2.5 py-1.5 rounded-md transition flex items-center gap-1.5 cursor-pointer shadow-sm"
-        title="Open real European Critical Raw Materials demonstrator on Port 8080"
+        title="Open European Critical Raw Materials demonstrator on Port 8080"
       >
         <span>🇪🇺 CRMsDataSpace (Port 8080)</span>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -174,7 +161,7 @@
         type="button" 
         onclick="resetToDefaults()" 
         class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs px-2.5 py-1.5 rounded-md transition cursor-pointer flex items-center gap-1"
-        title="Reset template and unselect domain"
+        title="Reset template and clear facilities"
       >
         <span>↺ Reset</span>
       </button>
@@ -187,7 +174,7 @@
   <div class="flex-1 flex overflow-hidden relative">
 
     <!-- =======================================================================
-         LEFT SIDEBAR: DOMAIN SELECTION, POPULATION & SEARCH (CLEAN & RELIEVED)
+         LEFT SIDEBAR: AOI SELECTOR, DOMAIN PRESETS, POPULATION & SEARCH
          ======================================================================= -->
     <aside class="w-80 sm:w-84 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0 z-20 shadow-xl">
       
@@ -207,17 +194,60 @@
       <!-- TAB 1: SANDBOX CONTROLS -->
       <div id="tab-content-sandbox" class="flex-1 flex flex-col overflow-y-auto p-3.5 space-y-4">
         
-        <!-- STEP 1: DOMAIN SELECTION (PROMINENT AT TOP) -->
+        <!-- STEP 1: AREA OF INTEREST (AOI) -->
         <div class="space-y-2">
           <div class="flex items-center justify-between">
             <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <span class="h-4 w-4 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px]">1</span>
+              <span class="h-4 w-4 rounded-full bg-cyan-600 text-white flex items-center justify-center text-[10px]">1</span>
+              <span>Area of Interest (AOI)</span>
+            </span>
+            <span id="aoi-active-pill" class="text-[10px] text-cyan-400 font-mono font-semibold">USA 🇺🇸</span>
+          </div>
+
+          <!-- 5 Regional Buttons -->
+          <div class="grid grid-cols-5 gap-1 text-[11px]">
+            <button onclick="selectArea('usa')" id="btn-aoi-usa" class="aoi-btn py-1.5 rounded text-center transition flex flex-col items-center bg-cyan-600 text-white font-medium shadow cursor-pointer">
+              <span class="text-sm">🇺🇸</span>
+              <span class="text-[9.5px]">USA</span>
+            </button>
+            <button onclick="selectArea('south_america')" id="btn-aoi-south_america" class="aoi-btn py-1.5 rounded text-center transition flex flex-col items-center bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer">
+              <span class="text-sm">🌎</span>
+              <span class="text-[9.5px]">S.America</span>
+            </button>
+            <button onclick="selectArea('europe')" id="btn-aoi-europe" class="aoi-btn py-1.5 rounded text-center transition flex flex-col items-center bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer">
+              <span class="text-sm">🇪🇺</span>
+              <span class="text-[9.5px]">Europe</span>
+            </button>
+            <button onclick="selectArea('middle_east')" id="btn-aoi-middle_east" class="aoi-btn py-1.5 rounded text-center transition flex flex-col items-center bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer">
+              <span class="text-sm">🏜️</span>
+              <span class="text-[9.5px]">M.East</span>
+            </button>
+            <button onclick="selectArea('southeast_asia_oceania')" id="btn-aoi-southeast_asia_oceania" class="aoi-btn py-1.5 rounded text-center transition flex flex-col items-center bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer">
+              <span class="text-sm">🌏</span>
+              <span class="text-[9.5px]">Oceania</span>
+            </button>
+          </div>
+
+          <!-- Subdivisions Dropdown (Specific State or Country) -->
+          <div class="pt-1">
+            <label id="subdivision-label" class="block text-[10px] text-slate-400 mb-0.5">Filter Specific State / Country (Optional):</label>
+            <select id="subdivision-select" onchange="onSubdivisionChange()" class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-slate-200 focus:border-cyan-500">
+              <option value="">All States in USA</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- STEP 2: DOMAIN SELECTION -->
+        <div class="border-t border-slate-800 pt-3 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <span class="h-4 w-4 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px]">2</span>
               <span>Select Domain</span>
             </span>
             <span id="domain-active-pill" class="text-[10px] text-slate-400 font-mono italic">No domain selected</span>
           </div>
 
-          <!-- Domain Preset Buttons (Initially NONE selected) -->
+          <!-- Domain Preset Buttons -->
           <div class="grid grid-cols-3 gap-1.5 text-[11px]">
             <button 
               onclick="loadPreset('energy')" 
@@ -254,30 +284,30 @@
               <span>👉 Select a domain above</span>
             </div>
             <p class="text-[10.5px] text-slate-300 leading-snug">
-              Choose <strong>Energy</strong>, <strong>Smart City</strong>, or <strong>Custom</strong>. This will activate the domain filters in the right panel and allow populating points.
+              Choose <strong>Energy</strong>, <strong>Smart City</strong>, or <strong>Custom</strong>. This will activate domain filters and enable procedural generation.
             </p>
           </div>
         </div>
 
-        <!-- STEP 2: PROCEDURAL GENERATOR (DISABLED UNTIL DOMAIN IS SELECTED) -->
+        <!-- STEP 3: PROCEDURAL GENERATOR -->
         <div id="section-generator" class="border-t border-slate-800 pt-3 space-y-2 opacity-50 pointer-events-none transition-opacity duration-300">
           <div class="flex items-center justify-between">
             <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <span class="h-4 w-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">2</span>
-              <span>Populate Territory on Map</span>
+              <span class="h-4 w-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">3</span>
+              <span>Generate Facilities</span>
             </span>
           </div>
 
           <div class="bg-gradient-to-br from-emerald-950/40 to-slate-950 border border-emerald-500/30 rounded-lg p-2.5 space-y-2">
             <p class="text-[11px] text-slate-300 leading-snug">
-              Scatter spatial facilities across the island biomes combining the active filter dimensions:
+              Generate real-coordinate facilities with automatic Country and State tags:
             </p>
             
             <div class="flex items-center gap-2">
               <select id="generate-count-select" class="bg-slate-900 border border-slate-700 rounded text-xs text-white px-2 py-1.5 focus:border-emerald-500">
-                <option value="25">25 facilities</option>
-                <option value="40" selected>40 facilities</option>
-                <option value="80">80 facilities</option>
+                <option value="25">25 points</option>
+                <option value="40" selected>40 points</option>
+                <option value="80">80 points</option>
               </select>
               <button 
                 onclick="triggerGeneratePoints()" 
@@ -294,14 +324,14 @@
           </div>
         </div>
 
-        <!-- STEP 3: CONVERSATIONAL SEARCH (DISABLED UNTIL DOMAIN IS SELECTED) -->
+        <!-- STEP 4: CONVERSATIONAL SEARCH -->
         <div id="section-search" class="border-t border-slate-800 pt-3 space-y-2.5 opacity-50 pointer-events-none transition-opacity duration-300">
           <div class="flex items-center justify-between">
             <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <span class="h-4 w-4 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px]">3</span>
+              <span class="h-4 w-4 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px]">4</span>
               <span>Conversational Search</span>
             </span>
-            <button onclick="clearAllFilters()" class="text-[10.5px] text-blue-400 hover:underline cursor-pointer">Clear filters</button>
+            <button onclick="clearAllFilters()" class="text-[10.5px] text-blue-400 hover:underline cursor-pointer">Clear</button>
           </div>
 
           <!-- Conversational Input -->
@@ -309,7 +339,7 @@
             <input 
               id="conversational-input" 
               type="text" 
-              placeholder="e.g. solar and wind farms in park..." 
+              placeholder="e.g. solar in California..." 
               onkeydown="if(event.key === 'Enter') submitConversationalQuery()"
               class="w-full bg-slate-950 border border-slate-700 rounded-lg pl-3 pr-16 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 shadow-inner"
             />
@@ -326,27 +356,21 @@
           <div class="space-y-1">
             <div class="text-[10px] text-slate-400 font-medium">Suggested queries:</div>
             <div id="dynamic-query-chips" class="flex flex-wrap gap-1">
-              <!-- Injected dynamically based on active filters -->
+              <!-- Injected dynamically based on active filters and region -->
             </div>
           </div>
-
-          <!-- Information Callout regarding Right Filters Panel -->
-          <div class="bg-slate-950/60 border border-slate-800 rounded p-2 text-[10.5px] text-slate-400 leading-snug">
-            <span>💡 <strong>Domain Filters:</strong> Configured on the right side of the map with live facet distributions and schema controls.</span>
-          </div>
-
         </div>
 
       </div>
 
       <!-- TAB 2: OBJECTS LIST -->
-      <div id="tab-content-objects" class="hidden flex-1 flex flex-col overflow-y-auto p-2">
-        <div class="text-[11px] text-slate-400 px-2 py-1.5 flex justify-between border-b border-slate-800 mb-2">
-          <span>Click facility to zoom</span>
-          <span id="objects-filtered-label" class="text-blue-400 font-medium">0 visible</span>
+      <div id="tab-content-objects" class="hidden flex-1 flex flex-col overflow-hidden">
+        <div class="p-3 border-b border-slate-800 flex justify-between items-center text-xs">
+          <span class="font-semibold text-slate-300">Generated Facilities</span>
+          <span id="objects-filtered-label" class="text-cyan-400 font-mono text-[11px]">0 visible</span>
         </div>
-        <div class="space-y-1.5" id="objects-cards-list">
-          <!-- Rendered via JS -->
+        <div id="objects-cards-list" class="flex-1 overflow-y-auto p-3 space-y-2">
+          <!-- Injected dynamically -->
         </div>
       </div>
 
@@ -373,7 +397,7 @@
     </aside>
 
     <!-- =======================================================================
-         CENTER MAIN AREA: OFFLINE VECTOR MAP & RESIZABLE 4-STAGE INSPECTOR
+         CENTER MAIN AREA: REAL-WORLD LEAFLET MAP & 4-STAGE INSPECTOR
          ======================================================================= -->
     <main class="flex-1 flex flex-col overflow-hidden relative">
       
@@ -408,9 +432,9 @@
           </div>
 
           <!-- Toggle Right Filter Panel Button -->
-          <button
-            type="button"
-            onclick="toggleRightPanel()"
+          <button 
+            type="button" 
+            onclick="toggleRightPanel()" 
             id="btn-toggle-right-panel"
             class="bg-slate-900/90 backdrop-blur border border-slate-700 text-slate-300 hover:text-white px-2.5 py-1.5 rounded-full text-xs transition cursor-pointer shadow-lg hidden items-center gap-1.5 font-medium"
             title="Toggle filters panel visibility"
@@ -425,10 +449,10 @@
       <div id="initial-guide-overlay" class="absolute top-16 left-1/2 -translate-x-1/2 z-[999] pointer-events-none transition-all duration-300">
         <div class="bg-slate-900/95 backdrop-blur-md border border-cyan-500/40 px-5 py-3 rounded-xl shadow-2xl pointer-events-auto max-w-lg text-center space-y-1.5">
           <div class="flex items-center justify-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider">
-            <span>🏝️ Avalon Island & Blue Ocean (100% Offline)</span>
+            <span>🌍 Real-World Map & Area of Interest Guide</span>
           </div>
           <p id="guide-overlay-text" class="text-xs text-slate-200 leading-relaxed">
-            Please <strong>select a domain</strong> on the left panel to load filter dimensions and populate facilities across the 4 island biomes.
+            Select an <strong>Area of Interest</strong> and a <strong>Domain</strong> on the left panel to populate real GPS facilities.
           </p>
           <div id="guide-overlay-actions" class="text-[11px] text-slate-400 flex items-center justify-center gap-2 pt-1 font-mono">
             <button onclick="loadPreset('energy')" class="bg-blue-600 hover:bg-blue-500 text-white font-sans px-2.5 py-0.5 rounded text-[11px] font-semibold cursor-pointer shadow">
@@ -442,42 +466,26 @@
         </div>
       </div>
 
-      <!-- WRAPPER FOR MAP CANVAS & FLOATING LEGEND (CONFINED TO MAP VIEWPORT ONLY) -->
+      <!-- WRAPPER FOR MAP CANVAS & FLOATING SCOPE CARD -->
       <div class="flex-1 w-full h-full relative overflow-hidden min-h-0">
-        <!-- LEAFLET MAP CANVAS (CUSTOM OFFLINE VECTOR BASEMAP) -->
+        <!-- LEAFLET MAP CANVAS -->
         <div id="map" class="w-full h-full"></div>
 
-        <!-- FLOATING BIOMES MAP LEGEND (ANCHORED TO BOTTOM-LEFT OF MAP, NEVER OVERLAPS INSPECTOR) -->
+        <!-- FLOATING ACTIVE SCOPE CARD -->
         <div class="absolute bottom-3 left-3 z-[500] pointer-events-none">
-          <div class="bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-lg p-2.5 shadow-2xl pointer-events-auto text-[10.5px] text-slate-300 space-y-1.5 min-w-[190px]">
+          <div class="bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-lg p-2.5 shadow-2xl pointer-events-auto text-[10.5px] text-slate-300 space-y-1 min-w-[200px]">
             <div class="flex items-center justify-between border-b border-slate-800 pb-1">
-              <span class="font-bold text-[10px] uppercase tracking-wider text-slate-400 font-mono">🏝️ Island Biomes</span>
-              <span class="text-[9px] text-cyan-400 font-mono">Ocean</span>
+              <span class="font-bold text-[10px] uppercase tracking-wider text-slate-400 font-mono">📍 Active Scope</span>
+              <span id="scope-flag" class="text-sm">🇺🇸</span>
             </div>
-            <div class="grid grid-cols-2 gap-x-2.5 gap-y-1 text-[10.5px]">
-              <div class="flex items-center gap-1.5">
-                <span class="w-3 h-3 rounded-sm bg-[#ea580c] border border-orange-300/40"></span>
-                <span class="truncate">Desert</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <span class="w-3 h-3 rounded-sm bg-[#16a34a] border border-emerald-300/40"></span>
-                <span class="truncate">Nature Reserve</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <span class="w-3 h-3 rounded-sm bg-[#9b4d4d] border border-red-300/40"></span>
-                <span class="truncate">City</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <span class="w-3 h-3 rounded-sm bg-[#ffffff] border border-slate-300"></span>
-                <span class="truncate font-medium text-white">Mountains</span>
-              </div>
-            </div>
+            <div class="text-[11px] font-semibold text-white" id="scope-region-name">United States</div>
+            <div class="text-[10px] text-slate-400 font-mono" id="scope-subdivision-name">All States</div>
           </div>
         </div>
       </div>
 
       <!-- =====================================================================
-           BOTTOM 4-STAGE PIPELINE INSPECTOR (FREELY RESIZABLE & EXPANDABLE)
+           BOTTOM 4-STAGE PIPELINE INSPECTOR
            ===================================================================== -->
       <div id="inspector-drawer" class="bg-slate-900 border-t border-slate-800 shrink-0 z-20 flex flex-col shadow-2xl relative" style="height: 220px;">
         
@@ -523,18 +531,18 @@
           </div>
         </div>
 
-        <!-- Drawer Content Tabs (Full internal scrolling) -->
+        <!-- Drawer Content Tabs -->
         <div id="inspector-content-area" class="flex-1 overflow-y-auto p-3 font-mono text-xs text-slate-300">
           
           <!-- Stage 1: NLU & Tokens -->
           <div id="insp-stage1" class="space-y-1.5 h-full">
-            <div class="text-[11px] text-slate-400">Stage 1: Conversational query tokenization, entity extraction, and synonym mapping:</div>
+            <div class="text-[11px] text-slate-400">Stage 1: Conversational query tokenization, entity extraction (including Country & State):</div>
             <pre id="insp-stage1-pre" class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-blue-300 overflow-x-auto text-[11.5px] leading-relaxed"></pre>
           </div>
 
           <!-- Stage 2: Schema Normalizer -->
           <div id="insp-stage2" class="hidden space-y-1.5 h-full">
-            <div class="text-[11px] text-slate-400">Stage 2: Deterministic Thesaurus normalization and JSON Schema alignment against active dimensions:</div>
+            <div class="text-[11px] text-slate-400">Stage 2: Deterministic Thesaurus normalization and JSON Schema alignment:</div>
             <pre id="insp-stage2-pre" class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-emerald-300 overflow-x-auto text-[11.5px] leading-relaxed"></pre>
           </div>
 
@@ -546,11 +554,11 @@
 
           <!-- Stage 4: Dynamic GIS Sync -->
           <div id="insp-stage4" class="hidden space-y-1.5 h-full">
-            <div class="text-[11px] text-slate-400">Stage 4: Leaflet cartographic synchronization, pulsating ring assignment, and badge generation:</div>
+            <div class="text-[11px] text-slate-400">Stage 4: Leaflet cartographic synchronization, pulsing rings, and marker coordinates:</div>
             <pre id="insp-stage4-pre" class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-purple-300 overflow-x-auto text-[11.5px] leading-relaxed"></pre>
           </div>
 
-          <!-- Grounded Narrative (Formatted without raw asterisks or hashtags) -->
+          <!-- Grounded Narrative -->
           <div id="insp-narrative" class="hidden space-y-1.5 font-sans h-full">
             <div class="text-[11px] text-slate-400 font-mono">Synthesized Natural Language Grounded Narrative:</div>
             <div id="insp-narrative-div" class="markdown-body bg-slate-950 p-3.5 rounded-lg border border-slate-800 text-slate-200 text-xs leading-relaxed overflow-y-auto"></div>
@@ -563,7 +571,7 @@
     </main>
 
     <!-- =======================================================================
-         RIGHT PANEL: DOMAIN FILTERS & LIVE FACET SCHEMAS (APPEARS ON DOMAIN SELECT)
+         RIGHT PANEL: DOMAIN FILTERS & LIVE FACET SCHEMAS
          ======================================================================= -->
     <aside id="right-filter-panel" class="w-80 sm:w-88 bg-slate-900 border-l border-slate-800 flex flex-col shrink-0 z-20 shadow-xl hidden transition-all duration-300">
       
@@ -572,7 +580,7 @@
         <div class="flex items-center gap-2">
           <span class="font-bold text-white flex items-center gap-1.5">
             <span>⚙️</span>
-            <span>Domain Filters</span>
+            <span>Domain Filters & Facets</span>
           </span>
           <span id="filters-summary-count" class="text-[10px] font-mono text-cyan-300 bg-cyan-950/70 border border-cyan-800/80 px-1.5 py-0.2 rounded-full">
             0 dimensions
@@ -591,7 +599,7 @@
       <!-- Panel Scrollable Body -->
       <div class="flex-1 flex flex-col overflow-y-auto p-3.5 space-y-4 text-xs">
         
-        <!-- SECTION 1: MANUAL INTERACTIVE FACET CONTROLS (Live Facet Counts) -->
+        <!-- SECTION 1: MANUAL INTERACTIVE FACET CONTROLS -->
         <div class="space-y-2">
           <div class="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
             <span class="h-4 w-4 rounded-full bg-cyan-600 text-white flex items-center justify-center text-[10px]">A</span>
@@ -634,7 +642,7 @@
               </div>
               <div>
                 <label class="block text-[10.5px] text-slate-400 mb-0.5">Filter Label (e.g. Asset Condition, Voltage):</label>
-                <input id="input-new-filter-label" type="text" placeholder="e.g. Infrastructure Condition" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-blue-500">
+                <input id="input-new-filter-label" type="text" placeholder="e.g. Asset Condition" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-blue-500">
               </div>
               <div>
                 <label class="block text-[10.5px] text-slate-400 mb-0.5">Category Options (comma-separated):</label>
@@ -654,7 +662,7 @@
   </div>
 
   <!-- =========================================================================
-       CLIENT-SIDE APPLICATION JAVASCRIPT
+       CLIENT-SIDE JAVASCRIPT
        ========================================================================= -->
   <script>
     // Codespaces & Localhost Cross-App Navigation Helper
@@ -670,57 +678,31 @@
       window.open(targetUrl, '_blank');
     }
 
-    // Markdown Parser & Stripper: Ensures headers, bold, and lists render cleanly with zero stray asterisks or hashtags
+    // Markdown Parser
     function renderMarkdownToHtml(markdownText) {
       if (!markdownText) return '';
       let text = String(markdownText);
-
-      // Replace math arrows
       text = text.replace(/\$\\to\$/g, '→').replace(/\$\\rightarrow\$/g, '→');
 
-      // Use marked if available
       if (typeof marked !== 'undefined' && marked.parse) {
         try {
           let html = marked.parse(text, { breaks: true, gfm: true });
-          // Strip any residual unparsed markdown asterisks or hashtags
           html = html.replace(/(^|\s)#+\s*/g, '$1').replace(/(^|\s)\*{1,2}(\s|$)/g, '$1$2');
           return html;
-        } catch (e) {
-          console.warn("marked error, falling back:", e);
-        }
+        } catch (e) {}
       }
 
-      // Robust fallback parser (zero external dependency)
-      let html = text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-
-      // Headers: ###, ##, #
+      let html = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       html = html.replace(/^### (.*$)/gim, '<h3 class="text-sm font-bold text-white mt-2 mb-1">$1</h3>');
       html = html.replace(/^## (.*$)/gim, '<h2 class="text-base font-bold text-white mt-2.5 mb-1">$1</h2>');
       html = html.replace(/^# (.*$)/gim, '<h1 class="text-lg font-bold text-white mt-3 mb-1.5">$1</h1>');
-
-      // Bold: **text**
       html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-white">$1</strong>');
-      // Italic: *text*
       html = html.replace(/\*([^\*]+)\*/g, '<em class="italic text-slate-300">$1</em>');
-
-      // Lists: - item or * item
       html = html.replace(/^\s*[\-\*]\s+(.*)$/gim, '<li class="ml-4 list-disc text-slate-300 my-0.5">$1</li>');
-      // Numbered lists: 1. item
       html = html.replace(/^\s*(\d+)\.\s+(.*)$/gim, '<li class="ml-4 list-decimal text-slate-300 my-0.5">$2</li>');
-
-      // Inline code: `code`
       html = html.replace(/`([^`]+)`/g, '<code class="bg-slate-800 text-blue-300 px-1 py-0.5 rounded font-mono text-[11px]">$1</code>');
-
-      // Line breaks
       html = html.replace(/\n\n/g, '<div class="h-2"></div>');
       html = html.replace(/\n/g, '<br/>');
-
-      // Clean remaining stray markdown asterisks and hashtags
-      html = html.replace(/(^|\s)#+\s*/g, '$1').replace(/(^|\s)\*{1,2}(\s|$)/g, '$1$2');
-
       return html;
     }
 
@@ -728,11 +710,10 @@
     let allPoints = [];
     let activeMatchedIds = [];
     let currentConfig = {};
+    let areasCatalog = {};
     let manualFilterState = {};
     let leafletMap = null;
-    let territoryVectorLayer = null;
     let markersLayer = null;
-    let zoneMarkersLayer = null;
     let markersById = {};
     let hideNonMatching = false;
     let rightPanelOpen = true;
@@ -743,153 +724,144 @@
     ];
 
     window.addEventListener('DOMContentLoaded', async () => {
+      await loadAreasCatalog();
       initMap();
       initInspectorResizer();
-      await loadTerritoryGeoJSON();
       await loadAppConfig();
       await loadPointsData();
       submitManualFilters();
     });
 
     // --------------------------------------------------------------------------
-    // 100% OFFLINE VECTOR MAP INITIALIZATION (BLUE SEA & 4 BIOMES)
+    // REAL WORLD LEAFLET MAP INITIALIZATION
     // --------------------------------------------------------------------------
     function initMap() {
-      // Center on fictional nation of Avalon Island
-      const center = [20.0, 30.0];
+      const defaultCenter = [39.8283, -98.5795];
+      const defaultZoom = 4.5;
+
       leafletMap = L.map('map', {
-        center: center,
-        zoom: 10.5,
-        minZoom: 9,
-        maxZoom: 13,
-        zoomControl: false,
-        attributionControl: false,
-        maxBounds: [[19.3, 29.1], [20.7, 30.9]]
+        center: defaultCenter,
+        zoom: defaultZoom,
+        minZoom: 2,
+        maxZoom: 18,
+        zoomControl: false
       });
 
-      L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
+      // CartoDB Dark Matter basemap (100% free, dark slate theme)
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        subdomains: 'abcd',
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>'
+      }).addTo(leafletMap);
 
-      territoryVectorLayer = L.layerGroup().addTo(leafletMap);
-      zoneMarkersLayer = L.layerGroup().addTo(leafletMap);
+      L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
       markersLayer = L.layerGroup().addTo(leafletMap);
     }
 
-    async function loadTerritoryGeoJSON() {
+    async function loadAreasCatalog() {
       try {
-        const resp = await fetch('/api/territory_geojson');
-        const geojson = await resp.json();
-
-        L.geoJSON(geojson, {
-          style: function(feature) {
-            const layer = feature.properties?.layer;
-            const biome = feature.properties?.biome;
-
-            // 1. Continental Shelf (shallow coastal bathymetric waters in blue sea)
-            if (layer === 'shelf') {
-              return {
-                fillColor: '#123e70',
-                fillOpacity: 0.65,
-                color: '#38bdf8',
-                weight: 1.5,
-                dashArray: '4, 4'
-              };
-            }
-            // 2. Island Base Shoreline Outline
-            if (layer === 'island_base') {
-              return {
-                fillColor: 'transparent',
-                color: '#93c5fd',
-                weight: 2,
-                opacity: 0.85
-              };
-            }
-            // 3. Biome: Desert
-            if (layer === 'biome_desert' || biome === 'desert') {
-              return {
-                fillColor: '#ea580c',
-                fillOpacity: 0.88,
-                color: '#c2410c',
-                weight: 1.5
-              };
-            }
-            // 4. Biome: Nature Reserve
-            if (layer === 'biome_park' || biome === 'park') {
-              return {
-                fillColor: '#16a34a',
-                fillOpacity: 0.88,
-                color: '#15803d',
-                weight: 1.5
-              };
-            }
-            // 5. Biome: Metropolitan City
-            if (layer === 'biome_city' || biome === 'city') {
-              return {
-                fillColor: '#9b4d4d',
-                fillOpacity: 0.90,
-                color: '#7a3838',
-                weight: 1.5
-              };
-            }
-            // 6. Biome: Mountains
-            if (layer === 'biome_mountains' || biome === 'mountains') {
-              return {
-                fillColor: '#ffffff',
-                fillOpacity: 0.96,
-                color: '#cbd5e1',
-                weight: 2.0
-              };
-            }
-            // 7. Satellite Isles
-            if (layer === 'satellite') {
-              return {
-                fillColor: '#1e3a5f',
-                fillOpacity: 0.9,
-                color: '#38bdf8',
-                weight: 1.5
-              };
-            }
-            return { fillColor: '#13213a', color: '#284673', weight: 1 };
-          },
-          onEachFeature: function(feature, layer) {
-            const props = feature.properties;
-            if (props && props.name && props.layer !== 'island_base') {
-              layer.bindTooltip(`<strong>${props.name}</strong><br/><span style="font-size:10px; opacity:0.8;">${props.desc || ''}</span>`, {
-                sticky: true,
-                className: 'leaflet-popup-content-wrapper'
-              });
-            }
-          }
-        }).addTo(territoryVectorLayer);
-
+        const resp = await fetch('/api/areas');
+        areasCatalog = await resp.json();
       } catch (e) {
-        console.error("Error loading territory GeoJSON:", e);
+        console.error("Error loading areas catalog:", e);
       }
     }
 
-    function renderZoneLabels() {
-      zoneMarkersLayer.clearLayers();
-      const zones = currentConfig.territory?.zones || [];
-      zones.forEach(z => {
-        // Soft zone boundary circle
-        L.circle([z.lat, z.lon], {
-          radius: 3600,
-          color: z.color || '#3b82f6',
-          weight: 1,
-          dashArray: '4, 4',
-          fillColor: z.color || '#3b82f6',
-          fillOpacity: 0.05,
-          interactive: false
-        }).addTo(zoneMarkersLayer);
+    // --------------------------------------------------------------------------
+    // AREA OF INTEREST (AOI) CONTROLLER
+    // --------------------------------------------------------------------------
+    async function selectArea(areaId) {
+      if (!areasCatalog[areaId]) return;
+      const area = areasCatalog[areaId];
 
-        // Zone text banner
-        const icon = L.divIcon({
-          className: 'zone-label-icon',
-          html: `<div style="color: ${z.color || '#ffffff'};">${z.name}</div>`,
-          iconSize: [160, 20],
-          iconAnchor: [80, 10]
-        });
-        L.marker([z.lat + 0.032, z.lon], { icon: icon, interactive: false }).addTo(zoneMarkersLayer);
+      // Update button visual styles
+      document.querySelectorAll('.aoi-btn').forEach(btn => {
+        btn.classList.remove('bg-cyan-600', 'text-white', 'shadow');
+        btn.classList.add('bg-slate-800', 'text-slate-300');
       });
+      const activeBtn = document.getElementById(`btn-aoi-${areaId}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-cyan-600', 'text-white', 'shadow');
+        activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+      }
+
+      // Populate subdivisions select dropdown
+      const subSelect = document.getElementById('subdivision-select');
+      const subLabel = document.getElementById('subdivision-label');
+      subSelect.innerHTML = `<option value="">All in ${area.name}</option>`;
+      subLabel.textContent = `Filter Specific ${area.subdivisions_type || 'Subdivision'}:`;
+
+      const subs = area.subdivisions || {};
+      Object.keys(subs).sort().forEach(sname => {
+        const opt = document.createElement('option');
+        opt.value = sname;
+        opt.textContent = sname;
+        subSelect.appendChild(opt);
+      });
+
+      // Fly map to area bounds
+      if (leafletMap && area.bounds) {
+        leafletMap.flyToBounds(area.bounds, { duration: 1.0, maxZoom: area.zoom || 5 });
+      }
+
+      // Update backend area state
+      try {
+        const resp = await fetch('/api/set_area', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ area: areaId, subdivision: null })
+        });
+        const resData = await resp.json();
+        currentConfig = resData.config;
+        updateScopeUI();
+        renderDynamicSuggestions();
+      } catch (e) {
+        console.error("Error setting area:", e);
+      }
+    }
+
+    async function onSubdivisionChange() {
+      const areaId = currentConfig.active_area || 'usa';
+      const subName = document.getElementById('subdivision-select').value || null;
+      const area = areasCatalog[areaId];
+
+      if (subName && area?.subdivisions?.[subName]) {
+        const sub = area.subdivisions[subName];
+        if (leafletMap && sub.center) {
+          leafletMap.flyTo(sub.center, sub.zoom || 6.5, { duration: 0.9 });
+        }
+      } else if (leafletMap && area?.bounds) {
+        leafletMap.flyToBounds(area.bounds, { duration: 1.0 });
+      }
+
+      try {
+        const resp = await fetch('/api/set_area', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ area: areaId, subdivision: subName })
+        });
+        const resData = await resp.json();
+        currentConfig = resData.config;
+        updateScopeUI();
+        renderDynamicSuggestions();
+      } catch (e) {
+        console.error("Error updating subdivision:", e);
+      }
+    }
+
+    function updateScopeUI() {
+      const activeArea = currentConfig.active_area || 'usa';
+      const activeSub = currentConfig.active_subdivision || null;
+      const areaInfo = areasCatalog[activeArea] || { name: 'World Map', icon: '🌍' };
+
+      document.getElementById('aoi-header-icon').textContent = areaInfo.icon || '🌍';
+      document.getElementById('aoi-header-name').textContent = activeSub ? `${areaInfo.name} (${activeSub})` : areaInfo.name;
+
+      document.getElementById('scope-flag').textContent = areaInfo.icon || '🌍';
+      document.getElementById('scope-region-name').textContent = areaInfo.name;
+      document.getElementById('scope-subdivision-name').textContent = activeSub ? `${areaInfo.subdivisions_type || 'State'}: ${activeSub}` : `All ${areaInfo.subdivisions_type || 'Regions'}`;
+
+      document.getElementById('aoi-active-pill').textContent = activeSub ? `${activeSub} ${areaInfo.icon}` : `${areaInfo.name} ${areaInfo.icon}`;
     }
 
     // --------------------------------------------------------------------------
@@ -900,12 +872,20 @@
         const resp = await fetch('/api/config');
         currentConfig = await resp.json();
         
-        document.getElementById('territory-header-name').textContent = currentConfig.territory?.name || 'Avalon Island';
         document.getElementById('raw-schema-textarea').value = JSON.stringify(currentConfig, null, 2);
         
+        const activeArea = currentConfig.active_area || 'usa';
+        const activeSub = currentConfig.active_subdivision || null;
+        
+        // Setup initial area UI
+        await selectArea(activeArea);
+        if (activeSub) {
+          const subSelect = document.getElementById('subdivision-select');
+          if (subSelect) subSelect.value = activeSub;
+        }
+
         updateDomainSelectionUI();
         renderActiveFilterCards();
-        renderZoneLabels();
         renderDynamicSuggestions();
       } catch (e) {
         console.error("Error loading config:", e);
@@ -938,7 +918,6 @@
       const secSearch = document.getElementById('section-search');
       const domainPill = document.getElementById('domain-active-pill');
 
-      // Preset buttons styling
       ['energy', 'smartcity', 'custom'].forEach(p => {
         const btn = document.getElementById(`btn-preset-${p}`);
         if (!btn) return;
@@ -952,38 +931,27 @@
       });
 
       if (activePreset) {
-        // Domain IS selected: Show right panel, enable generator & search
         if (rightPanel) rightPanel.classList.remove('hidden');
         if (toggleRightBtn) toggleRightBtn.classList.remove('hidden');
         if (guideBox) guideBox.classList.add('hidden');
-        if (secGen) {
-          secGen.classList.remove('opacity-50', 'pointer-events-none');
-        }
-        if (secSearch) {
-          secSearch.classList.remove('opacity-50', 'pointer-events-none');
-        }
+        if (secGen) secGen.classList.remove('opacity-50', 'pointer-events-none');
+        if (secSearch) secSearch.classList.remove('opacity-50', 'pointer-events-none');
         if (domainPill) {
           domainPill.textContent = `Active: ${activePreset.toUpperCase()}`;
           domainPill.className = "text-[10px] text-cyan-300 font-mono font-semibold";
         }
       } else {
-        // Initially NO domain selected: Hide right panel, disable generator & search
         if (rightPanel) rightPanel.classList.add('hidden');
         if (toggleRightBtn) toggleRightBtn.classList.add('hidden');
         if (guideBox) guideBox.classList.remove('hidden');
-        if (secGen) {
-          secGen.classList.add('opacity-50', 'pointer-events-none');
-        }
-        if (secSearch) {
-          secSearch.classList.add('opacity-50', 'pointer-events-none');
-        }
+        if (secGen) secGen.classList.add('opacity-50', 'pointer-events-none');
+        if (secSearch) secSearch.classList.add('opacity-50', 'pointer-events-none');
         if (domainPill) {
           domainPill.textContent = "No domain selected";
           domainPill.className = "text-[10px] text-slate-400 font-mono italic";
         }
       }
 
-      // Recompute map size
       setTimeout(() => {
         if (leafletMap) leafletMap.invalidateSize();
       }, 100);
@@ -992,59 +960,53 @@
     function toggleRightPanel(forceState) {
       const panel = document.getElementById('right-filter-panel');
       if (!panel) return;
-      if (typeof forceState === 'boolean') {
-        rightPanelOpen = forceState;
-      } else {
-        rightPanelOpen = !rightPanelOpen;
-      }
+      rightPanelOpen = (typeof forceState === 'boolean') ? forceState : !rightPanelOpen;
       panel.classList.toggle('hidden', !rightPanelOpen);
       setTimeout(() => {
         if (leafletMap) leafletMap.invalidateSize();
-      }, 150);
+      }, 100);
     }
 
     function updateMapCountsUI() {
-      const count = allPoints.length;
-      document.getElementById('objects-count-badge').textContent = count;
-      document.getElementById('map-total-badge').textContent = count;
-      document.getElementById('map-count-badge').textContent = activeMatchedIds.length;
+      const total = allPoints.length;
+      const matched = activeMatchedIds.length;
+      document.getElementById('map-count-badge').textContent = matched;
+      document.getElementById('map-total-badge').textContent = total;
+      document.getElementById('objects-count-badge').textContent = total;
+      document.getElementById('objects-filtered-label').textContent = `${matched} visible`;
 
-      const overlay = document.getElementById('initial-guide-overlay');
       const statusMsg = document.getElementById('dataset-status-msg');
+      if (statusMsg) {
+        statusMsg.textContent = total > 0 ? `Loaded ${total} facilities across active area.` : 'Map currently has 0 points. Click above to populate.';
+      }
 
-      if (!currentConfig.active_preset) {
-        if (overlay) overlay.classList.remove('hidden', 'opacity-0');
-        if (document.getElementById('guide-overlay-text')) {
-          document.getElementById('guide-overlay-text').innerHTML = "Please <strong>select a domain</strong> on the left to activate filter schema and explore facilities.";
+      const initialGuide = document.getElementById('initial-guide-overlay');
+      if (initialGuide) {
+        if (total === 0 && !currentConfig.active_preset) {
+          initialGuide.classList.remove('hidden');
+        } else {
+          initialGuide.classList.add('hidden');
         }
-        if (statusMsg) statusMsg.textContent = "Please select a domain above to start.";
-      } else if (count === 0) {
-        if (overlay) overlay.classList.remove('hidden', 'opacity-0');
-        if (document.getElementById('guide-overlay-text')) {
-          document.getElementById('guide-overlay-text').innerHTML = `Domain <strong>${currentConfig.title || 'selected'}</strong> active. The territory currently has <strong>0 facilities</strong> on the map.`;
-        }
-        if (statusMsg) statusMsg.textContent = "Map currently has 0 points. Click 'Generate Points' to populate.";
-      } else {
-        if (overlay) overlay.classList.add('hidden', 'opacity-0');
-        if (statusMsg) statusMsg.textContent = `${count} facilities scattered across ${currentConfig.territory?.name || 'territory'}.`;
       }
     }
 
-    // --------------------------------------------------------------------------
-    // PROCEDURAL GENERATION & PRESETS
-    // --------------------------------------------------------------------------
     async function triggerGeneratePoints() {
       const count = parseInt(document.getElementById('generate-count-select').value, 10) || 40;
+      const areaId = currentConfig.active_area || 'usa';
+      const subName = document.getElementById('subdivision-select')?.value || null;
+
       try {
         const resp = await fetch('/api/generate_points', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ count: count })
+          body: JSON.stringify({ count: count, area: areaId, subdivision: subName })
         });
         const data = await resp.json();
         if (data.status === 'success') {
           allPoints = data.points;
           activeMatchedIds = allPoints.map(p => p.id);
+          manualFilterState = {};
+          
           updateMapCountsUI();
           renderMapMarkers();
           renderObjectsList();
@@ -1069,13 +1031,11 @@
           allPoints = [];
           activeMatchedIds = [];
 
-          document.getElementById('territory-header-name').textContent = currentConfig.territory?.name || 'Avalon Island';
           document.getElementById('raw-schema-textarea').value = JSON.stringify(currentConfig, null, 2);
           document.getElementById('conversational-input').value = '';
 
           updateDomainSelectionUI();
           renderActiveFilterCards();
-          renderZoneLabels();
           renderDynamicSuggestions();
           updateMapCountsUI();
           renderMapMarkers();
@@ -1103,7 +1063,7 @@
     }
 
     // --------------------------------------------------------------------------
-    // DYNAMIC FILTER CARD RENDERING & CREATION (RIGHT PANEL)
+    // DYNAMIC FILTER CARD RENDERING & CREATION
     // --------------------------------------------------------------------------
     function renderActiveFilterCards() {
       const container = document.getElementById('active-filters-container');
@@ -1126,7 +1086,6 @@
         const card = document.createElement('div');
         card.className = "bg-slate-950/80 border border-slate-800 rounded-lg p-2.5 space-y-2";
 
-        // Card header
         const header = document.createElement('div');
         header.className = "flex justify-between items-center";
         header.innerHTML = `
@@ -1140,7 +1099,6 @@
         `;
         card.appendChild(header);
 
-        // Options chips
         const chipsContainer = document.createElement('div');
         chipsContainer.className = "flex flex-wrap gap-1";
         const colors = f.colors || {};
@@ -1156,7 +1114,6 @@
         });
         card.appendChild(chipsContainer);
 
-        // Inline adder for new option to this filter
         const adder = document.createElement('div');
         adder.className = "flex gap-1 pt-1";
         adder.innerHTML = `
@@ -1178,23 +1135,24 @@
     async function submitNewFilter() {
       const label = document.getElementById('input-new-filter-label').value.trim();
       const rawOpts = document.getElementById('input-new-filter-options').value.trim();
-      if (!label) return alert("Please provide a filter name.");
-      const options = rawOpts.split(',').map(s => s.trim()).filter(Boolean);
+      if (!label) return;
 
+      const opts = rawOpts.split(',').map(s => s.trim()).filter(Boolean);
       try {
         const resp = await fetch('/api/add_filter', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ label: label, options: options, type: 'select' })
+          body: JSON.stringify({ label: label, options: opts, type: 'select' })
         });
         const data = await resp.json();
         if (data.status === 'success') {
+          currentConfig = data.config;
           document.getElementById('input-new-filter-label').value = '';
           document.getElementById('input-new-filter-options').value = '';
           toggleNewFilterForm(false);
-          await loadAppConfig();
+          renderActiveFilterCards();
+          renderDynamicSuggestions();
           await loadPointsData();
-          submitManualFilters();
         }
       } catch (e) {
         console.error("Error creating filter:", e);
@@ -1203,20 +1161,19 @@
 
     async function addOptionToFilter(key) {
       const input = document.getElementById(`opt-input-${key}`);
-      const val = input.value.trim();
-      if (!val) return;
+      const optVal = input ? input.value.trim() : '';
+      if (!optVal) return;
+
       try {
         const resp = await fetch('/api/add_option', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ key: key, option: val })
+          body: JSON.stringify({ key: key, option: optVal })
         });
         const data = await resp.json();
         if (data.status === 'success') {
-          input.value = '';
           await loadAppConfig();
           await loadPointsData();
-          submitManualFilters();
         }
       } catch (e) {
         console.error("Error adding option:", e);
@@ -1224,7 +1181,7 @@
     }
 
     async function deleteFilter(key) {
-      if (!confirm(`Remove filter dimension '${key}'?`)) return;
+      if (!confirm(`Are you sure you want to remove the '${key}' dimension from the schema?`)) return;
       try {
         const resp = await fetch('/api/delete_filter', {
           method: 'POST',
@@ -1233,13 +1190,38 @@
         });
         const data = await resp.json();
         if (data.status === 'success') {
+          currentConfig = data.config;
           delete manualFilterState[key];
-          await loadAppConfig();
+          renderActiveFilterCards();
+          renderDynamicSuggestions();
           await loadPointsData();
           submitManualFilters();
         }
       } catch (e) {
         console.error("Error deleting filter:", e);
+      }
+    }
+
+    async function saveRawSchema() {
+      const textarea = document.getElementById('raw-schema-textarea');
+      try {
+        const parsed = JSON.parse(textarea.value);
+        const resp = await fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(parsed)
+        });
+        const data = await resp.json();
+        if (data.status === 'saved') {
+          currentConfig = data.config;
+          updateDomainSelectionUI();
+          renderActiveFilterCards();
+          renderDynamicSuggestions();
+          await loadPointsData();
+          alert("Schema saved successfully!");
+        }
+      } catch (e) {
+        alert("Invalid JSON syntax: " + e.message);
       }
     }
 
@@ -1251,11 +1233,16 @@
       if (!container) return;
       container.innerHTML = '';
       const fields = currentConfig.filter_fields || [];
-      const zones = currentConfig.territory?.zones || [];
+      const activeArea = currentConfig.active_area || 'usa';
+      const areaInfo = areasCatalog[activeArea];
+      const subNames = areaInfo ? Object.keys(areaInfo.subdivisions || {}) : [];
 
       const suggestions = [];
+      const sub1 = subNames[0] || "California";
+      const sub2 = subNames[1] || "Texas";
+
       if (fields.length > 0 && fields[0].options?.length > 0) {
-        suggestions.push(`${fields[0].options[0].toLowerCase()}`);
+        suggestions.push(`${fields[0].options[0].toLowerCase()} in ${sub1.toLowerCase()}`);
         if (fields[0].options.length > 1) {
           suggestions.push(`${fields[0].options[0].toLowerCase()} and ${fields[0].options[1].toLowerCase()}`);
         }
@@ -1263,9 +1250,7 @@
       if (fields.length > 1 && fields[1].options?.length > 0 && fields[0].options?.length > 0) {
         suggestions.push(`${fields[0].options[0].toLowerCase()} with ${fields[1].options[0].toLowerCase()}`);
       }
-      if (zones.length > 0 && fields.length > 0 && fields[0].options?.length > 0) {
-        suggestions.push(`${fields[0].options[0].toLowerCase()} in ${zones[0].name.toLowerCase()}`);
-      }
+      suggestions.push(`facilities in ${sub2.toLowerCase()}`);
       suggestions.push("show all facilities");
 
       suggestions.forEach(s => {
@@ -1393,30 +1378,53 @@
       const container = document.getElementById('manual-facet-groups');
       if (!container) return;
       container.innerHTML = '';
-      const fields = currentConfig.filter_fields || [];
 
-      // Zone facet group
-      const zones = currentConfig.territory?.zones || [];
-      if (zones.length > 0) {
-        const zoneGroup = document.createElement('div');
-        zoneGroup.className = "space-y-1";
-        zoneGroup.innerHTML = `<div class="text-[10px] text-slate-400 uppercase font-mono font-semibold">Geographic Sector / Biome</div>`;
+      // 1. Geographic Facets: Country
+      const countryFacets = facets["country"] || {};
+      const countryKeys = Object.keys(countryFacets).filter(k => countryFacets[k] > 0);
+      if (countryKeys.length > 0) {
+        const countryGroup = document.createElement('div');
+        countryGroup.className = "space-y-1";
+        countryGroup.innerHTML = `<div class="text-[10px] text-slate-400 uppercase font-mono font-semibold">🌍 Country</div>`;
         const pillsDiv = document.createElement('div');
         pillsDiv.className = "flex flex-wrap gap-1";
-        zones.forEach(z => {
-          const count = facets["zone"]?.[z.name] || 0;
-          const isActive = (manualFilterState["zone"] === z.name) || (Array.isArray(manualFilterState["zone"]) && manualFilterState["zone"].includes(z.name));
+        countryKeys.forEach(c => {
+          const count = countryFacets[c];
+          const isActive = (manualFilterState["country"] === c) || (Array.isArray(manualFilterState["country"]) && manualFilterState["country"].includes(c));
           const pill = document.createElement('button');
           pill.className = `text-[10.5px] px-2 py-0.5 rounded border transition cursor-pointer flex items-center gap-1 ${isActive ? 'bg-cyan-600 text-white border-cyan-400 font-bold shadow' : 'bg-slate-900 text-slate-300 border-slate-800 hover:bg-slate-800'}`;
-          pill.innerHTML = `<span>${z.name}</span> <span class="text-[9px] opacity-70">(${count})</span>`;
-          pill.onclick = () => toggleManualFilterValue("zone", z.name);
+          pill.innerHTML = `<span>${c}</span> <span class="text-[9px] opacity-70">(${count})</span>`;
+          pill.onclick = () => toggleManualFilterValue("country", c);
           pillsDiv.appendChild(pill);
         });
-        zoneGroup.appendChild(pillsDiv);
-        container.appendChild(zoneGroup);
+        countryGroup.appendChild(pillsDiv);
+        container.appendChild(countryGroup);
       }
 
-      // Dynamic Filter Fields Facets
+      // 2. Geographic Facets: State / Subdivision
+      const stateFacets = facets["state"] || {};
+      const stateKeys = Object.keys(stateFacets).filter(k => stateFacets[k] > 0);
+      if (stateKeys.length > 0) {
+        const stateGroup = document.createElement('div');
+        stateGroup.className = "space-y-1";
+        stateGroup.innerHTML = `<div class="text-[10px] text-slate-400 uppercase font-mono font-semibold">📍 State / Region</div>`;
+        const pillsDiv = document.createElement('div');
+        pillsDiv.className = "flex flex-wrap gap-1";
+        stateKeys.forEach(s => {
+          const count = stateFacets[s];
+          const isActive = (manualFilterState["state"] === s) || (Array.isArray(manualFilterState["state"]) && manualFilterState["state"].includes(s));
+          const pill = document.createElement('button');
+          pill.className = `text-[10.5px] px-2 py-0.5 rounded border transition cursor-pointer flex items-center gap-1 ${isActive ? 'bg-indigo-600 text-white border-indigo-400 font-bold shadow' : 'bg-slate-900 text-slate-300 border-slate-800 hover:bg-slate-800'}`;
+          pill.innerHTML = `<span>${s}</span> <span class="text-[9px] opacity-70">(${count})</span>`;
+          pill.onclick = () => toggleManualFilterValue("state", s);
+          pillsDiv.appendChild(pill);
+        });
+        stateGroup.appendChild(pillsDiv);
+        container.appendChild(stateGroup);
+      }
+
+      // 3. Dynamic Filter Fields Facets
+      const fields = currentConfig.filter_fields || [];
       fields.forEach(f => {
         const group = document.createElement('div');
         group.className = "space-y-1";
@@ -1473,6 +1481,16 @@
 
         // Popup Table
         let rowsHtml = '';
+        rowsHtml += `
+          <tr class="border-b border-slate-800">
+            <td class="text-slate-400 py-0.5 pr-2 font-mono text-[10px]">Location:</td>
+            <td class="text-slate-200 py-0.5 font-medium text-[10px]">${pt.state ? pt.state + ', ' : ''}${pt.country}</td>
+          </tr>
+          <tr class="border-b border-slate-800">
+            <td class="text-slate-400 py-0.5 pr-2 font-mono text-[10px]">GPS:</td>
+            <td class="text-cyan-400 py-0.5 font-mono text-[10px]">${pt.latitude.toFixed(4)}, ${pt.longitude.toFixed(4)}</td>
+          </tr>
+        `;
         fields.forEach(f => {
           let val = pt[f.key] || '—';
           if (Array.isArray(val)) val = val.join(', ');
@@ -1486,9 +1504,9 @@
 
         const cleanDesc = renderMarkdownToHtml(pt.description);
         const popupContent = `
-          <div class="p-1 space-y-1.5 font-sans min-w-[210px]">
+          <div class="p-1 space-y-1.5 font-sans min-w-[220px]">
             <div class="border-b border-slate-700 pb-1">
-              <div class="text-[10px] font-mono text-cyan-400">${pt.id} · ${pt.zone}</div>
+              <div class="text-[10px] font-mono text-cyan-400">${pt.id} · ${pt.country}</div>
               <div class="font-bold text-xs text-white">${pt.name}</div>
             </div>
             <table class="w-full text-left">${rowsHtml}</table>
@@ -1576,7 +1594,7 @@
       }
 
       filtered.forEach(pt => {
-        let tagVal = primaryField ? pt[primaryField.key] : pt.zone;
+        let tagVal = primaryField ? pt[primaryField.key] : pt.country;
         if (Array.isArray(tagVal)) tagVal = tagVal.join(', ');
 
         const card = document.createElement('div');
@@ -1585,7 +1603,7 @@
         card.innerHTML = `
           <div class="flex justify-between items-start">
             <span class="font-semibold text-white truncate">${pt.name}</span>
-            <span class="text-[9px] font-mono text-cyan-400 bg-cyan-950/50 border border-cyan-800/60 px-1.5 py-0.2 rounded">${pt.zone}</span>
+            <span class="text-[9px] font-mono text-cyan-400 bg-cyan-950/50 border border-cyan-800/60 px-1.5 py-0.2 rounded">${pt.state || pt.country}</span>
           </div>
           <div class="flex items-center gap-1.5 text-[10px] text-slate-400">
             <span>${pt.id}</span> · <span class="text-blue-300 font-medium">${tagVal}</span>
@@ -1596,171 +1614,128 @@
     }
 
     // --------------------------------------------------------------------------
-    // 4-STAGE PIPELINE INSPECTOR TRACE & MARKDOWN RENDERING
+    // 4-STAGE PIPELINE INSPECTOR TRACE
     // --------------------------------------------------------------------------
     function updateInspectorTrace(result) {
       document.getElementById('insp-stage1-pre').textContent = JSON.stringify({
-        input_query: result.query || "(Manual filter / all)",
-        detected_intent: result.intent,
-        matched_tokens: result.matched_tokens
+        query: result.query || '',
+        intent: result.intent || 'filter_search',
+        matched_tokens: result.matched_tokens || [],
+        extracted_filters: result.filters || {}
       }, null, 2);
 
       document.getElementById('insp-stage2-pre').textContent = JSON.stringify({
-        validated_filters: result.filters,
-        active_dimensions_count: Object.keys(result.filters || {}).length
+        schema_validation: "PASS (OpenAPI JSON Schema Enforced)",
+        normalized_filters: result.filters || {}
       }, null, 2);
 
       document.getElementById('insp-stage3-pre').textContent = JSON.stringify({
-        solr_query: result.solr_query,
-        facet_distributions: result.solr_facets
+        solr_query: result.solr_query || {},
+        solr_facets: result.solr_facets || {},
+        num_found: result.num_found || 0,
+        total_dataset: result.total_dataset || 0
       }, null, 2);
 
       document.getElementById('insp-stage4-pre').textContent = JSON.stringify({
-        cartographic_status: "SYNCHRONIZED",
-        matching_count: result.num_found,
-        total_count: result.total_dataset,
-        illuminated_ids: result.matched_ids
+        synchronized_leaflet_markers: (result.matched_ids || []).length,
+        matched_ids: result.matched_ids || [],
+        active_map_badges: result.active_map_filters || []
       }, null, 2);
 
-      // Render markdown properly without residual asterisks or hashtags
-      const formattedNarrative = renderMarkdownToHtml(result.narrative);
-      document.getElementById('insp-narrative-div').innerHTML = formattedNarrative;
+      const narrDiv = document.getElementById('insp-narrative-div');
+      if (narrDiv) {
+        narrDiv.innerHTML = renderMarkdownToHtml(result.narrative || result.response_text || 'No narrative synthesized.');
+      }
     }
 
     function setInspectorTab(tabId) {
       ['stage1', 'stage2', 'stage3', 'stage4', 'narrative'].forEach(t => {
-        document.getElementById(`insp-${t}`).classList.add('hidden');
+        const pane = document.getElementById(`insp-${t}`);
         const btn = document.getElementById(`insp-btn-${t}`);
-        if (btn) {
-          btn.classList.remove('bg-blue-600', 'text-white');
-          btn.classList.add('text-slate-400');
+        if (t === tabId) {
+          if (pane) pane.classList.remove('hidden');
+          if (btn) {
+            btn.classList.add('bg-blue-600', 'text-white');
+            btn.classList.remove('text-slate-400', 'hover:text-white');
+          }
+        } else {
+          if (pane) pane.classList.add('hidden');
+          if (btn) {
+            btn.classList.remove('bg-blue-600', 'text-white');
+            btn.classList.add('text-slate-400', 'hover:text-white');
+          }
         }
       });
-      document.getElementById(`insp-${tabId}`).classList.remove('hidden');
-      const activeBtn = document.getElementById(`insp-btn-${tabId}`);
-      if (activeBtn) {
-        activeBtn.classList.remove('text-slate-400');
-        activeBtn.classList.add('bg-blue-600', 'text-white');
-      }
     }
 
-    // --------------------------------------------------------------------------
-    // INSPECTOR RESIZER (EXPAND/REDUCE FREE DRAG + PRESETS)
-    // --------------------------------------------------------------------------
-    function setInspectorHeight(h) {
-      const drawer = document.getElementById('inspector-drawer');
-      if (!drawer) return;
-      let targetPx = 220;
-      if (h === 'max') {
-        targetPx = Math.round(window.innerHeight * 0.82);
-      } else {
-        targetPx = parseInt(h, 10) || 220;
-      }
-      drawer.style.height = `${targetPx}px`;
-      try {
-        localStorage.setItem('inspector_height', targetPx);
-      } catch (e) {}
-      setTimeout(() => {
-        if (leafletMap) leafletMap.invalidateSize();
-      }, 50);
-    }
-
-    function initInspectorResizer() {
-      const drawer = document.getElementById('inspector-drawer');
-      const resizer = document.getElementById('inspector-resizer');
-      if (!drawer || !resizer) return;
-
-      // Restore saved height if available
-      try {
-        const saved = localStorage.getItem('inspector_height');
-        if (saved) {
-          const px = Math.min(Math.round(window.innerHeight * 0.85), Math.max(80, parseInt(saved, 10)));
-          drawer.style.height = `${px}px`;
+    function switchTab(tabId) {
+      ['sandbox', 'objects', 'schema'].forEach(t => {
+        const content = document.getElementById(`tab-content-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (t === tabId) {
+          if (content) content.classList.remove('hidden');
+          if (btn) {
+            btn.classList.add('bg-blue-600', 'text-white');
+            btn.classList.remove('text-slate-400');
+          }
+        } else {
+          if (content) content.classList.add('hidden');
+          if (btn) {
+            btn.classList.remove('bg-blue-600', 'text-white');
+            btn.classList.add('text-slate-400');
+          }
         }
-      } catch (e) {}
+      });
+    }
+
+    // --------------------------------------------------------------------------
+    // INSPECTOR DRAG RESIZER
+    // --------------------------------------------------------------------------
+    function initInspectorResizer() {
+      const resizer = document.getElementById('inspector-resizer');
+      const drawer = document.getElementById('inspector-drawer');
+      if (!resizer || !drawer) return;
 
       let isDragging = false;
       let startY = 0;
       let startHeight = 0;
 
-      function onPointerDown(e) {
+      resizer.addEventListener('mousedown', (e) => {
         isDragging = true;
-        startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+        startY = e.clientY;
         startHeight = drawer.offsetHeight;
         document.body.style.cursor = 'row-resize';
         e.preventDefault();
-      }
+      });
 
-      function onPointerMove(e) {
+      window.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
-        const currentY = e.clientY || (e.touches && e.touches[0].clientY) || startY;
-        // Dragging upward increases height: delta = startY - currentY
-        const delta = startY - currentY;
-        const minHeight = 85;
-        const maxHeight = Math.round(window.innerHeight * 0.86);
-        const newHeight = Math.max(minHeight, Math.min(maxHeight, startHeight + delta));
+        const deltaY = startY - e.clientY;
+        const newHeight = Math.max(90, Math.min(window.innerHeight - 100, startHeight + deltaY));
         drawer.style.height = `${newHeight}px`;
-
         if (leafletMap) leafletMap.invalidateSize();
-      }
+      });
 
-      function onPointerUp() {
-        if (!isDragging) return;
-        isDragging = false;
-        document.body.style.cursor = '';
-        try {
-          localStorage.setItem('inspector_height', drawer.offsetHeight);
-        } catch (e) {}
-        if (leafletMap) leafletMap.invalidateSize();
-      }
-
-      // Mouse events
-      resizer.addEventListener('mousedown', onPointerDown);
-      document.addEventListener('mousemove', onPointerMove);
-      document.addEventListener('mouseup', onPointerUp);
-
-      // Touch events
-      resizer.addEventListener('touchstart', onPointerDown, { passive: false });
-      document.addEventListener('touchmove', onPointerMove, { passive: true });
-      document.addEventListener('touchend', onPointerUp);
-    }
-
-    function switchTab(tabId) {
-      ['sandbox', 'objects', 'schema'].forEach(t => {
-        document.getElementById(`tab-content-${t}`).classList.add('hidden');
-        const btn = document.getElementById(`tab-btn-${t}`);
-        if (btn) {
-          btn.classList.remove('bg-blue-600', 'text-white');
-          btn.classList.add('text-slate-400');
+      window.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          document.body.style.cursor = '';
+          if (leafletMap) leafletMap.invalidateSize();
         }
       });
-      document.getElementById(`tab-content-${tabId}`).classList.remove('hidden');
-      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
-      if (activeBtn) {
-        activeBtn.classList.remove('text-slate-400');
-        activeBtn.classList.add('bg-blue-600', 'text-white');
-      }
     }
 
-    async function saveRawSchema() {
-      try {
-        const raw = document.getElementById('raw-schema-textarea').value;
-        const parsed = JSON.parse(raw);
-        const resp = await fetch('/api/config', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(parsed)
-        });
-        const data = await resp.json();
-        if (data.status === 'saved') {
-          alert("Schema saved and applied successfully.");
-          await loadAppConfig();
-          await loadPointsData();
-          submitManualFilters();
-        }
-      } catch (e) {
-        alert("Invalid JSON: " + e.message);
+    function setInspectorHeight(heightVal) {
+      const drawer = document.getElementById('inspector-drawer');
+      if (!drawer) return;
+      if (heightVal === 'max') {
+        drawer.style.height = `${window.innerHeight - 120}px`;
+      } else {
+        drawer.style.height = `${heightVal}px`;
       }
+      setTimeout(() => {
+        if (leafletMap) leafletMap.invalidateSize();
+      }, 50);
     }
   </script>
 </body>

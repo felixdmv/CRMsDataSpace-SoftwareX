@@ -3,8 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python: 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
 [![SoftwareX](https://img.shields.io/badge/Elsevier-SoftwareX-orange.svg)](https://www.sciencedirect.com/journal/softwarex)
-[![Codespace: CRMsDataSpace WebApp](https://img.shields.io/badge/Codespace-CRMs%20WebApp%20(Port%208080)-blue.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX?devcontainer_path=.devcontainer/crm-webapp/devcontainer.json)
-[![Codespace: GIS Template Sandbox](https://img.shields.io/badge/Codespace-GIS%20Template%20Sandbox%20(Port%208085)-emerald.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX?devcontainer_path=.devcontainer/generic-template/devcontainer.json)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX)
 [![Reviewer Tests: 100% Passing](https://img.shields.io/badge/Reviewer_Tests-100%25_Passing-brightgreen.svg)]()
 [![Data Sovereignty: EU Compliant](https://img.shields.io/badge/Data_Sovereignty-100%25_On--Premises-blueviolet.svg)]()
 
@@ -46,16 +45,17 @@ Additionally, to allow reviewers and developers to test the **generality and reu
 
 Reviewers can access and evaluate the software through three complementary modalities:
 
-### Method 1: One-Click Cloud Execution (Two Dedicated GitHub Codespaces)
+### Method 1: One-Click Cloud Execution (GitHub Codespaces)
 
-Reviewers can choose between two dedicated cloud environments configured in [`.devcontainer/`](.devcontainer/):
+Reviewers can launch the entire replication environment in the cloud with zero setup. Clicking the button provisions a single unified Codespace running both applications simultaneously:
 
-| Environment | Description | Direct 1-Click Launch | Auto-Opened Port |
-|---|---|---|---|
-| **Option A: CRMsDataSpace WebApp** | Official European Critical Raw Materials demonstrator (100 facilities across 15 countries, multi-model NLU). | [![Open CRMsDataSpace WebApp](https://img.shields.io/badge/Launch-CRMsDataSpace%20WebApp-blue.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX?devcontainer_path=.devcontainer/crm-webapp/devcontainer.json) | **`8080`** |
-| **Option B: General GIS Template** | Domain-agnostic sandbox with in-browser **Filter Studio** to create custom filters by hand and test framework generality. | [![Open GIS Template Sandbox](https://img.shields.io/badge/Launch-GIS%20Template%20Sandbox-emerald.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX?devcontainer_path=.devcontainer/generic-template/devcontainer.json) | **`8085`** |
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX)
 
-> **Note on GitHub UI**: If you navigate via **Code $\to$ Codespaces $\to$ New with options...**, GitHub will prompt you with a dropdown to select either `CRMsDataSpace — European Critical Raw Materials WebApp` or `General-Purpose GIS Architecture Template (Customizable Sandbox)`.
+Both web applications are automatically orchestrated in parallel in the background:
+- 🇪🇺 **Port 8080**: **CRMsDataSpace WebApp** — Official European Critical Raw Materials demonstrator (100 facilities across 15 countries, multi-model NLU).
+- 🌍 **Port 8085**: **General GIS Template Sandbox** — Domain-agnostic sandbox with in-browser **Filter Studio** to create custom filters by hand and test framework generality.
+
+> **Note on Automatic Port Forwarding**: Ports `8080` and `8085` forward automatically upon container startup and will open in separate browser tabs.
 >
 > **Note on Direct Web Access**: If you prefer an instant zero-editor web preview without VS Code, you can also explore the static deployment directly at: **[https://felixdmv.github.io/CRMsDataSpace-SoftwareX/](https://felixdmv.github.io/CRMsDataSpace-SoftwareX/)**.
 
@@ -182,10 +182,8 @@ python benchmark_all_models.py
 ```
 CRMsDataSpace-SoftwareX/
 ├── .devcontainer/
-│   ├── crm-webapp/
-│   │   └── devcontainer.json           # Codespaces config for European CRMs WebApp (Port 8080)
-│   └── generic-template/
-│       └── devcontainer.json           # Codespaces config for General GIS Template Sandbox (Port 8085)
+│   └── devcontainer.json           # Unified Codespaces configuration (auto-forwards 8080 & 8085)
+├── run_codespace.py                 # Codespaces background orchestrator for both web applications
 ├── code/                               # Reference software implementation (European CRMs)
 │   ├── agent.py                        # Orchestrator coordinating Stages 1-4
 │   ├── llm_client.py                   # Multi-engine NLU client (Mock, Local Transformers, Cloud APIs)
