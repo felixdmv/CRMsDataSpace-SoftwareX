@@ -1,34 +1,34 @@
-===============================================================================================
-  SOFTWAREX CONVERSATIONAL DST BENCHMARK SUMMARY (102 TURNS, 25 EPISODES)
-===============================================================================================
-Model                          | Action Acc  | Country F1  | CRM F1     | Macro F1   | Exact Match  | Lat. (ms) 
------------------------------------------------------------------------------------------------
-Deterministic Baseline (Mock)  | 96.1      % | 93.0      % | 97.5     % | 95.5     % | 87.2       % | 0.7       
-Llama 3.2 3B Instruct          | 98.0      % | 92.4      % | 59.7     % | 73.7     % | 34.3       % | 1874.0    
-Phi-3 Mini 4K Instruct         | 95.1      % | 73.7      % | 57.8     % | 55.4     % | 27.4       % | 3046.4    
-Qwen 2.5 7B Instruct           | 100.0     % | 99.1      % | 96.5     % | 97.5     % | 86.3       % | 1807.5    
-DeepSeek R1 Distill Qwen 7B    | 33.3      % | 0.0       % | 0.0      % | 0.0      % | 8.8        % | 4617.0    
-===============================================================================================
+=========================================================================================================
+  SOFTWAREX CONVERSATIONAL DST BENCHMARK (132 TURNS, 30 EPISODES) - FILTER ACCURACY ACROSS TEST TYPES
+=========================================================================================================
+Model                          | Search   | Expand   | Refine   | Remove   | Context  | Reset    | Global F1 
+---------------------------------------------------------------------------------------------------------
+Deterministic Baseline (Mock)  | 86.0   % | 49.8   % | 58.8   % | 29.9   % | 64.8   % | 40.0   % | 58.5     %
+Llama 3.2 3B Instruct          | 81.4   % | 74.0   % | 42.2   % | 22.8   % | 55.5   % | 100.0  % | 52.2     %
+Phi-3 Mini 4K Instruct         | 61.4   % | 36.5   % | 32.2   % | 13.3   % | 30.6   % | 90.0   % | 36.9     %
+Qwen 2.5 7B Instruct           | 93.1   % | 96.0   % | 97.5   % | 95.3   % | 90.2   % | 100.0  % | 95.0     %
+DeepSeek R1 Distill Qwen 7B    | 0.0    % | 0.0    % | 0.0    % | 0.0    % | 0.0    % | 100.0  % | 0.0      %
+=========================================================================================================
 
 LATEX TABLE OUTPUT FOR MANUSCRIPT:
 
 \begin{table*}[t!]
 \centering
 \small
-\caption{Empirical evaluation of multi-turn Conversational Dialogue State Tracking (DST) across 25 dialogue episodes (102 sequential conversational turns) on the NVIDIA A100 testbed.}
+\caption{Empirical evaluation of expected filter accuracy (Macro F1 / Exact Match) across conversational test categories (132 sequential turns, 30 dialogue episodes) on the NVIDIA A100 testbed.}
 \label{tab:dst_benchmark}
 \resizebox{\textwidth}{!}{
-\begin{tabular}{lcccccccc}
+\begin{tabular}{lccccccc}
 \hline
-\textbf{Inference Model} & \textbf{Parameters} & \textbf{VRAM (GB)} & \textbf{Action Acc. (\%)} & \textbf{State Country F1 (\%)} & \textbf{State CRM F1 (\%)} & \textbf{Macro State F1 (\%)} & \textbf{State Exact Match (\%)} & \textbf{Mean Turn Lat. (ms)} \\
+\textbf{Inference Model} & \textbf{Search (\%)} & \textbf{Expansion (\%)} & \textbf{Refinement (\%)} & \textbf{Removal (\%)} & \textbf{Context (\%)} & \textbf{Reset (\%)} & \textbf{Global Macro F1 (\%)} \\
 \hline
-Deterministic Baseline (Mock) & Rule-based & 0.0 (RAM) & 96.1 & 93.0 & 97.5 & \textbf{95.5} & 87.2 & 0.7 \\
-Llama 3.2 3B Instruct & 3.21B & 6.0 & 98.0 & 92.4 & 59.7 & \textbf{73.7} & 34.3 & 1874.0 \\
-Phi-3 Mini 4K Instruct & 3.82B & 7.1 & 95.1 & 73.7 & 57.8 & \textbf{55.4} & 27.4 & 3046.4 \\
-Qwen 2.5 7B Instruct & 7.61B & 14.2 & 100.0 & 99.1 & 96.5 & \textbf{97.5} & 86.3 & 1807.5 \\
-DeepSeek R1 Distill Qwen 7B & 7.61B & 14.2 & 33.3 & 0.0 & 0.0 & \textbf{0.0} & 8.8 & 4617.0 \\
+Deterministic Baseline (Mock) & 86.0 & 49.8 & 58.8 & 29.9 & 64.8 & 40.0 & \textbf{58.5} \\
+Llama 3.2 3B Instruct & 81.4 & 74.0 & 42.2 & 22.8 & 55.5 & 100.0 & \textbf{52.2} \\
+Phi-3 Mini 4K Instruct & 61.4 & 36.5 & 32.2 & 13.3 & 30.6 & 90.0 & \textbf{36.9} \\
+Qwen 2.5 7B Instruct & 93.1 & 96.0 & 97.5 & 95.3 & 90.2 & 100.0 & \textbf{95.0} \\
+DeepSeek R1 Distill Qwen 7B & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 100.0 & \textbf{0.0} \\
 \hline
-\multicolumn{9}{l}{\footnotesize Evaluated on 102 sequential turns spanning 5 dialogue actions: \texttt{new\_search}, \texttt{expand} (OR), \texttt{refine} (AND), \texttt{remove}, and \texttt{reset}.} \\
+\multicolumn{8}{l}{\footnotesize Filter accuracy measured as Macro F1 on accumulated expected filters across 6 test categories: Initial Search (31 turns), Expansion (19 turns), Refinement (30 turns), Removal (28 turns), Contextual Anaphora (14 turns), and Reset (10 turns).} \\
 \end{tabular}
 }
 \end{table*}

@@ -1,19 +1,22 @@
 [
   {
     "episode_id": "EP-01",
-    "title": "Canonical 5-Turn Sequential Exploration and Reset",
+    "title": "Iberian Corridor with Natural Synonyms and Non-Formulaic Phrasing",
     "turns": [
       {
         "turn": 1,
-        "query": "Dime escombreras cerca de París",
+        "test_category": "search",
+        "query": "Quiero ver las presas de residuos mineros en la península ibérica",
         "expected_action": "new_search",
         "expected_accumulated_filters": {
           "countries": [
-            "france"
+            "spain",
+            "portugal"
           ],
           "commodities": [],
           "storage_facility_types": [
-            "waste dump"
+            "tailings storage facility",
+            "pond"
           ],
           "project_status": [],
           "restored": null
@@ -21,11 +24,121 @@
       },
       {
         "turn": 2,
-        "query": "Y además las que estén cerca de Berlín",
+        "test_category": "expansion",
+        "query": "Incluye también los yacimientos del país galo",
         "expected_action": "expand",
         "expected_accumulated_filters": {
           "countries": [
-            "france",
+            "spain",
+            "portugal",
+            "france"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "tailings storage facility",
+            "pond"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "refinement",
+        "query": "Quédate únicamente con aquellas que sigan extrayendo a día de hoy",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "spain",
+            "portugal",
+            "france"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "tailings storage facility",
+            "pond"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "refinement",
+        "query": "Acota a las que contengan litio o cobalto",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "spain",
+            "portugal",
+            "france"
+          ],
+          "commodities": [
+            "lithium",
+            "cobalt"
+          ],
+          "storage_facility_types": [
+            "tailings storage facility",
+            "pond"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 5,
+        "test_category": "removal",
+        "query": "Prescinde de las explotaciones de cobalto",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "spain",
+            "portugal",
+            "france"
+          ],
+          "commodities": [
+            "lithium"
+          ],
+          "storage_facility_types": [
+            "tailings storage facility",
+            "pond"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 6,
+        "test_category": "reset",
+        "query": "Empecemos de cero",
+        "expected_action": "reset",
+        "expected_accumulated_filters": {
+          "countries": [],
+          "commodities": [],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-02",
+    "title": "Central European Corridor with Negative Status Constraints",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Muestra acúmulos de estériles y escorias en territorio germano",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
             "germany"
           ],
           "commodities": [],
@@ -37,9 +150,485 @@
         }
       },
       {
+        "turn": 2,
+        "test_category": "expansion",
+        "query": "Suma también las instalaciones de la República Checa",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "germany",
+            "czechia"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
         "turn": 3,
-        "query": "De esas, solo las que contengan litio y cobalto",
+        "test_category": "refinement",
+        "query": "Filtra aquellas donde el terreno continúe sin rehabilitar",
         "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "germany",
+            "czechia"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": false
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "refinement",
+        "query": "Me interesan solo las que alberguen wolframio",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "germany",
+            "czechia"
+          ],
+          "commodities": [
+            "tungsten"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": false
+        }
+      },
+      {
+        "turn": 5,
+        "test_category": "removal",
+        "query": "Olvídate de las de Chequia",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "germany"
+          ],
+          "commodities": [
+            "tungsten"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": false
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-03",
+    "title": "Nordic Critical Raw Materials & Environmental Audit",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Localiza balsas de decantación activas en Suecia",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "sweden"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "pond"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "expansion",
+        "query": "Incorpora las instalaciones de Finlandia a la visualización",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "sweden",
+            "finland"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "pond"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "refinement",
+        "query": "De todas esas, quédate solo con las que tengan tierras raras o níquel",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "sweden",
+            "finland"
+          ],
+          "commodities": [
+            "rare earth elements",
+            "nickel"
+          ],
+          "storage_facility_types": [
+            "pond"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "removal",
+        "query": "Saca las que están en Suecia",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "finland"
+          ],
+          "commodities": [
+            "rare earth elements",
+            "nickel"
+          ],
+          "storage_facility_types": [
+            "pond"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-04",
+    "title": "Contextual Anaphora and Cross-Border Neighbor Query",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Busca escombreras de litio en España",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "spain"
+          ],
+          "commodities": [
+            "lithium"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "context",
+        "query": "¿Y qué tenemos en el país vecino pero con wolframio?",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "spain",
+            "portugal"
+          ],
+          "commodities": [
+            "lithium",
+            "tungsten"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "refinement",
+        "query": "Conserva únicamente las que sigan operativas hoy",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "spain",
+            "portugal"
+          ],
+          "commodities": [
+            "lithium",
+            "tungsten"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "removal",
+        "query": "Descarta España de la selección",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "portugal"
+          ],
+          "commodities": [
+            "lithium",
+            "tungsten"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-05",
+    "title": "Mediterranean Corridor Exploration and Facility Filtering",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Depósitos mineros en territorio heleno",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "greece"
+          ],
+          "commodities": [],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "expansion",
+        "query": "Agrega también lo que tengamos registrado en Italia",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "greece",
+            "italy"
+          ],
+          "commodities": [],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "refinement",
+        "query": "Conserva solo las balsas de lodos y relaves",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "greece",
+            "italy"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "pond",
+            "tailings storage facility"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "refinement",
+        "query": "Filtra las que contengan titanio",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "greece",
+            "italy"
+          ],
+          "commodities": [
+            "titanium"
+          ],
+          "storage_facility_types": [
+            "pond",
+            "tailings storage facility"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 5,
+        "test_category": "reset",
+        "query": "Limpia la vista del mapa",
+        "expected_action": "reset",
+        "expected_accumulated_filters": {
+          "countries": [],
+          "commodities": [],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-06",
+    "title": "Alpine Corridor with Environmental Acid Risk",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Instalaciones en Austria con manganeso",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "austria"
+          ],
+          "commodities": [
+            "manganese"
+          ],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "expansion",
+        "query": "Incorpora las escombreras de Alemania",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "austria",
+            "germany"
+          ],
+          "commodities": [
+            "manganese"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "expansion",
+        "query": "Suma también minerales de wolframio",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "austria",
+            "germany"
+          ],
+          "commodities": [
+            "manganese",
+            "tungsten"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "removal",
+        "query": "Prescinde del manganeso",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "austria",
+            "germany"
+          ],
+          "commodities": [
+            "tungsten"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-07",
+    "title": "Elliptical Entity Transfer Across Jurisdictions",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Escombreras de litio en Francia",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "france"
+          ],
+          "commodities": [
+            "lithium"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "context",
+        "query": "Aplica exactamente los mismos criterios para Alemania",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "france",
+            "germany"
+          ],
+          "commodities": [
+            "lithium"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "expansion",
+        "query": "Añade además cobalto",
+        "expected_action": "expand",
         "expected_accumulated_filters": {
           "countries": [
             "france",
@@ -58,113 +647,42 @@
       },
       {
         "turn": 4,
-        "query": "Ahora quita las de cobalto",
-        "expected_action": "remove",
+        "test_category": "refinement",
+        "query": "Quédate únicamente con las que continúen en fase de explotación",
+        "expected_action": "refine",
         "expected_accumulated_filters": {
           "countries": [
             "france",
             "germany"
           ],
           "commodities": [
-            "lithium"
+            "lithium",
+            "cobalt"
           ],
           "storage_facility_types": [
             "waste dump"
           ],
-          "project_status": [],
+          "project_status": [
+            "active"
+          ],
           "restored": null
         }
       },
       {
         "turn": 5,
-        "query": "Reiniciar búsqueda",
-        "expected_action": "reset",
-        "expected_accumulated_filters": {
-          "countries": [],
-          "commodities": [],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      }
-    ]
-  },
-  {
-    "episode_id": "EP-02",
-    "title": "Iberian Cross-Border Corridor Refinement",
-    "turns": [
-      {
-        "turn": 1,
-        "query": "Balsas de relaves cerca de Lisboa",
-        "expected_action": "new_search",
+        "test_category": "removal",
+        "query": "Pasa de las instalaciones francesas",
+        "expected_action": "remove",
         "expected_accumulated_filters": {
           "countries": [
-            "portugal"
-          ],
-          "commodities": [],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 2,
-        "query": "Y también añade las instalaciones en Madrid",
-        "expected_action": "expand",
-        "expected_accumulated_filters": {
-          "countries": [
-            "portugal",
-            "spain"
-          ],
-          "commodities": [],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 3,
-        "query": "De esas solo las que tengan wolframio o estaño",
-        "expected_action": "refine",
-        "expected_accumulated_filters": {
-          "countries": [
-            "portugal",
-            "spain"
+            "germany"
           ],
           "commodities": [
-            "tungsten",
-            "tin"
+            "lithium",
+            "cobalt"
           ],
           "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 4,
-        "query": "Filtra únicamente las operativas o activas",
-        "expected_action": "refine",
-        "expected_accumulated_filters": {
-          "countries": [
-            "portugal",
-            "spain"
-          ],
-          "commodities": [
-            "tungsten",
-            "tin"
-          ],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
+            "waste dump"
           ],
           "project_status": [
             "active"
@@ -175,91 +693,92 @@
     ]
   },
   {
-    "episode_id": "EP-03",
-    "title": "Nordic Critical Raw Materials & Environmental Audit",
+    "episode_id": "EP-08",
+    "title": "Multi-Commodity Refinement and Subtraction",
     "turns": [
       {
         "turn": 1,
-        "query": "Show active waste facilities around Stockholm",
+        "test_category": "search",
+        "query": "Yacimientos con titanio y grafito en Italia",
         "expected_action": "new_search",
         "expected_accumulated_filters": {
           "countries": [
-            "sweden"
+            "italy"
           ],
-          "commodities": [],
+          "commodities": [
+            "titanium",
+            "graphite"
+          ],
           "storage_facility_types": [],
-          "project_status": [
-            "active"
-          ],
+          "project_status": [],
           "restored": null
         }
       },
       {
         "turn": 2,
-        "query": "Include also facilities in Helsinki",
+        "test_category": "expansion",
+        "query": "Suma también las ubicaciones en territorio heleno",
         "expected_action": "expand",
         "expected_accumulated_filters": {
           "countries": [
-            "sweden",
-            "finland"
+            "italy",
+            "greece"
           ],
-          "commodities": [],
+          "commodities": [
+            "titanium",
+            "graphite"
+          ],
           "storage_facility_types": [],
-          "project_status": [
-            "active"
-          ],
+          "project_status": [],
           "restored": null
         }
       },
       {
         "turn": 3,
-        "query": "From these, only those with rare earth elements or nickel",
-        "expected_action": "refine",
+        "test_category": "removal",
+        "query": "El grafito ya no me interesa, déjalo fuera",
+        "expected_action": "remove",
         "expected_accumulated_filters": {
           "countries": [
-            "sweden",
-            "finland"
+            "italy",
+            "greece"
           ],
           "commodities": [
-            "rare earth elements",
-            "nickel"
+            "titanium"
           ],
           "storage_facility_types": [],
-          "project_status": [
-            "active"
-          ],
+          "project_status": [],
           "restored": null
         }
       },
       {
         "turn": 4,
-        "query": "Narrow down to unrestored facilities",
+        "test_category": "refinement",
+        "query": "Acota a las que no se hayan restaurado todavía",
         "expected_action": "refine",
         "expected_accumulated_filters": {
           "countries": [
-            "sweden",
-            "finland"
+            "italy",
+            "greece"
           ],
           "commodities": [
-            "rare earth elements",
-            "nickel"
+            "titanium"
           ],
           "storage_facility_types": [],
-          "project_status": [
-            "active"
-          ],
+          "project_status": [],
           "restored": false
         }
       }
     ]
   },
   {
-    "episode_id": "EP-04",
-    "title": "Central European Corridor & Subtractive Country Removal",
+    "episode_id": "EP-09",
+    "title": "Polish-Czech Copper Exploration and Reset",
     "turns": [
       {
         "turn": 1,
-        "query": "Escombreras en Polonia",
+        "test_category": "search",
+        "query": "Escombreras de estériles en Polonia",
         "expected_action": "new_search",
         "expected_accumulated_filters": {
           "countries": [
@@ -275,7 +794,8 @@
       },
       {
         "turn": 2,
-        "query": "Y además las de Chequia",
+        "test_category": "expansion",
+        "query": "Incorpora las instalaciones de Chequia",
         "expected_action": "expand",
         "expected_accumulated_filters": {
           "countries": [
@@ -292,7 +812,8 @@
       },
       {
         "turn": 3,
-        "query": "De esas solo las que tengan cobre",
+        "test_category": "refinement",
+        "query": "Quédate únicamente con las que contengan cobre",
         "expected_action": "refine",
         "expected_accumulated_filters": {
           "countries": [
@@ -311,7 +832,8 @@
       },
       {
         "turn": 4,
-        "query": "Quita las de Polonia",
+        "test_category": "removal",
+        "query": "Saca las instalaciones polacas de los filtros",
         "expected_action": "remove",
         "expected_accumulated_filters": {
           "countries": [
@@ -326,379 +848,17 @@
           "project_status": [],
           "restored": null
         }
-      }
-    ]
-  },
-  {
-    "episode_id": "EP-05",
-    "title": "Alpine Exploration and Immediate Clear",
-    "turns": [
-      {
-        "turn": 1,
-        "query": "Tailings ponds in Austria",
-        "expected_action": "new_search",
-        "expected_accumulated_filters": {
-          "countries": [
-            "austria"
-          ],
-          "commodities": [],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
-          "project_status": [],
-          "restored": null
-        }
       },
       {
-        "turn": 2,
-        "query": "Add also sites near Rome",
-        "expected_action": "expand",
-        "expected_accumulated_filters": {
-          "countries": [
-            "austria",
-            "italy"
-          ],
-          "commodities": [],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 3,
-        "query": "Just the ones with graphite",
-        "expected_action": "refine",
-        "expected_accumulated_filters": {
-          "countries": [
-            "austria",
-            "italy"
-          ],
-          "commodities": [
-            "graphite"
-          ],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 4,
-        "query": "Clear all filters",
+        "turn": 5,
+        "test_category": "reset",
+        "query": "Vuelve a mostrar todo el catálogo europeo",
         "expected_action": "reset",
         "expected_accumulated_filters": {
           "countries": [],
           "commodities": [],
           "storage_facility_types": [],
           "project_status": [],
-          "restored": null
-        }
-      }
-    ]
-  },
-  {
-    "episode_id": "EP-06",
-    "title": "Commodity Expansion with Status Refinement",
-    "turns": [
-      {
-        "turn": 1,
-        "query": "Instalaciones con litio en España",
-        "expected_action": "new_search",
-        "expected_accumulated_filters": {
-          "countries": [
-            "spain"
-          ],
-          "commodities": [
-            "lithium"
-          ],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 2,
-        "query": "Y además añade cobalto",
-        "expected_action": "expand",
-        "expected_accumulated_filters": {
-          "countries": [
-            "spain"
-          ],
-          "commodities": [
-            "lithium",
-            "cobalt"
-          ],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 3,
-        "query": "Y también níquel",
-        "expected_action": "expand",
-        "expected_accumulated_filters": {
-          "countries": [
-            "spain"
-          ],
-          "commodities": [
-            "lithium",
-            "cobalt",
-            "nickel"
-          ],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 4,
-        "query": "De esas solo las que estén en estado activo",
-        "expected_action": "refine",
-        "expected_accumulated_filters": {
-          "countries": [
-            "spain"
-          ],
-          "commodities": [
-            "lithium",
-            "cobalt",
-            "nickel"
-          ],
-          "storage_facility_types": [],
-          "project_status": [
-            "active"
-          ],
-          "restored": null
-        }
-      }
-    ]
-  },
-  {
-    "episode_id": "EP-07",
-    "title": "Sequential Subtractive Commodity Removal",
-    "turns": [
-      {
-        "turn": 1,
-        "query": "Depósitos con litio, cobalto y níquel en Finlandia",
-        "expected_action": "new_search",
-        "expected_accumulated_filters": {
-          "countries": [
-            "finland"
-          ],
-          "commodities": [
-            "lithium",
-            "cobalt",
-            "nickel"
-          ],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 2,
-        "query": "Elimina el litio",
-        "expected_action": "remove",
-        "expected_accumulated_filters": {
-          "countries": [
-            "finland"
-          ],
-          "commodities": [
-            "cobalt",
-            "nickel"
-          ],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 3,
-        "query": "Descarta el níquel",
-        "expected_action": "remove",
-        "expected_accumulated_filters": {
-          "countries": [
-            "finland"
-          ],
-          "commodities": [
-            "cobalt"
-          ],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 4,
-        "query": "Y además las de Suecia",
-        "expected_action": "expand",
-        "expected_accumulated_filters": {
-          "countries": [
-            "finland",
-            "sweden"
-          ],
-          "commodities": [
-            "cobalt"
-          ],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      }
-    ]
-  },
-  {
-    "episode_id": "EP-08",
-    "title": "Geographic City Grounding across Island and Mediterranean",
-    "turns": [
-      {
-        "turn": 1,
-        "query": "Dumps near Dublin",
-        "expected_action": "new_search",
-        "expected_accumulated_filters": {
-          "countries": [
-            "ireland"
-          ],
-          "commodities": [],
-          "storage_facility_types": [
-            "waste dump"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 2,
-        "query": "And also sites around Athens",
-        "expected_action": "expand",
-        "expected_accumulated_filters": {
-          "countries": [
-            "ireland",
-            "greece"
-          ],
-          "commodities": [],
-          "storage_facility_types": [
-            "waste dump"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 3,
-        "query": "Only those containing titanium",
-        "expected_action": "refine",
-        "expected_accumulated_filters": {
-          "countries": [
-            "ireland",
-            "greece"
-          ],
-          "commodities": [
-            "titanium"
-          ],
-          "storage_facility_types": [
-            "waste dump"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 4,
-        "query": "Start over with a new search",
-        "expected_action": "reset",
-        "expected_accumulated_filters": {
-          "countries": [],
-          "commodities": [],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      }
-    ]
-  },
-  {
-    "episode_id": "EP-09",
-    "title": "Chemical Notation with Facility Type Narrowing",
-    "turns": [
-      {
-        "turn": 1,
-        "query": "Muestra instalaciones con W en Alemania",
-        "expected_action": "new_search",
-        "expected_accumulated_filters": {
-          "countries": [
-            "germany"
-          ],
-          "commodities": [
-            "tungsten"
-          ],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 2,
-        "query": "Y además con Sn",
-        "expected_action": "expand",
-        "expected_accumulated_filters": {
-          "countries": [
-            "germany"
-          ],
-          "commodities": [
-            "tungsten",
-            "tin"
-          ],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 3,
-        "query": "De esas solo balsas de decantación",
-        "expected_action": "refine",
-        "expected_accumulated_filters": {
-          "countries": [
-            "germany"
-          ],
-          "commodities": [
-            "tungsten",
-            "tin"
-          ],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 4,
-        "query": "Únicamente las inactivas",
-        "expected_action": "refine",
-        "expected_accumulated_filters": {
-          "countries": [
-            "germany"
-          ],
-          "commodities": [
-            "tungsten",
-            "tin"
-          ],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
-          "project_status": [
-            "inactive"
-          ],
           "restored": null
         }
       }
@@ -706,67 +866,100 @@
   },
   {
     "episode_id": "EP-10",
-    "title": "Environmental Risk and Restoration State Tracking",
+    "title": "English Spatial Search with Regional Concepts",
     "turns": [
       {
         "turn": 1,
-        "query": "Escombreras de cobre en España",
+        "test_category": "search",
+        "query": "Locate operational tailings storage facilities in the Iberian peninsula",
         "expected_action": "new_search",
         "expected_accumulated_filters": {
           "countries": [
-            "spain"
+            "spain",
+            "portugal"
           ],
-          "commodities": [
-            "copper"
-          ],
+          "commodities": [],
           "storage_facility_types": [
-            "waste dump"
+            "tailings storage facility"
           ],
-          "project_status": [],
+          "project_status": [
+            "active"
+          ],
           "restored": null
         }
       },
       {
         "turn": 2,
-        "query": "Y además en Portugal",
+        "test_category": "expansion",
+        "query": "Include also mining waste sites across France",
         "expected_action": "expand",
         "expected_accumulated_filters": {
           "countries": [
             "spain",
-            "portugal"
+            "portugal",
+            "france"
           ],
-          "commodities": [
-            "copper"
-          ],
+          "commodities": [],
           "storage_facility_types": [
-            "waste dump"
+            "tailings storage facility"
           ],
-          "project_status": [],
+          "project_status": [
+            "active"
+          ],
           "restored": null
         }
       },
       {
         "turn": 3,
-        "query": "Filtra por las no restauradas",
+        "test_category": "refinement",
+        "query": "Filter down to those containing lithium or cobalt",
         "expected_action": "refine",
         "expected_accumulated_filters": {
           "countries": [
             "spain",
-            "portugal"
+            "portugal",
+            "france"
           ],
           "commodities": [
-            "copper"
+            "lithium",
+            "cobalt"
           ],
           "storage_facility_types": [
-            "waste dump"
+            "tailings storage facility"
           ],
-          "project_status": [],
-          "restored": false
+          "project_status": [
+            "active"
+          ],
+          "restored": null
         }
       },
       {
         "turn": 4,
-        "query": "Borrar filtros y reset",
+        "test_category": "removal",
+        "query": "Drop facilities located in Spain",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "portugal",
+            "france"
+          ],
+          "commodities": [
+            "lithium",
+            "cobalt"
+          ],
+          "storage_facility_types": [
+            "tailings storage facility"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 5,
+        "test_category": "reset",
+        "query": "Reset all active search filters",
         "expected_action": "reset",
         "expected_accumulated_filters": {
           "countries": [],
@@ -780,163 +973,161 @@
   },
   {
     "episode_id": "EP-11",
-    "title": "Macro-Regional Entity Resolution and Incremental Narrowing",
+    "title": "English Elliptical Context and Neighbor Shift",
     "turns": [
       {
         "turn": 1,
-        "query": "Instalaciones en el sur de Europa",
+        "test_category": "search",
+        "query": "Show tungsten waste dumps in Germany",
         "expected_action": "new_search",
         "expected_accumulated_filters": {
           "countries": [
-            "spain",
-            "portugal",
-            "italy",
-            "greece"
+            "germany"
           ],
-          "commodities": [],
-          "storage_facility_types": [],
+          "commodities": [
+            "tungsten"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
           "project_status": [],
           "restored": null
         }
       },
       {
         "turn": 2,
-        "query": "Y también Francia",
+        "test_category": "context",
+        "query": "What about in the neighboring Czech Republic?",
         "expected_action": "expand",
         "expected_accumulated_filters": {
           "countries": [
-            "spain",
-            "portugal",
-            "italy",
-            "greece",
-            "france"
+            "germany",
+            "czechia"
           ],
-          "commodities": [],
-          "storage_facility_types": [],
+          "commodities": [
+            "tungsten"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
           "project_status": [],
           "restored": null
         }
       },
       {
         "turn": 3,
-        "query": "De esas solo las que tengan manganeso",
+        "test_category": "refinement",
+        "query": "Keep solely unrestored sites",
         "expected_action": "refine",
         "expected_accumulated_filters": {
           "countries": [
-            "spain",
-            "portugal",
-            "italy",
-            "greece",
-            "france"
+            "germany",
+            "czechia"
           ],
           "commodities": [
-            "manganese"
+            "tungsten"
           ],
-          "storage_facility_types": [],
+          "storage_facility_types": [
+            "waste dump"
+          ],
           "project_status": [],
-          "restored": null
+          "restored": false
         }
       },
       {
         "turn": 4,
-        "query": "Quita Grecia e Italia",
+        "test_category": "removal",
+        "query": "Get rid of the German deposits",
         "expected_action": "remove",
         "expected_accumulated_filters": {
           "countries": [
-            "spain",
-            "portugal",
-            "france"
+            "czechia"
           ],
           "commodities": [
-            "manganese"
+            "tungsten"
           ],
-          "storage_facility_types": [],
+          "storage_facility_types": [
+            "waste dump"
+          ],
           "project_status": [],
-          "restored": null
+          "restored": false
         }
       }
     ]
   },
   {
     "episode_id": "EP-12",
-    "title": "Nordic Regional Expansion and Critical Metal Combination",
+    "title": "English Multi-Element Exclusion and Status Refinement",
     "turns": [
       {
         "turn": 1,
-        "query": "Tailings facilities in Nordic countries",
+        "test_category": "search",
+        "query": "Find facilities with titanium and graphite in Italy",
         "expected_action": "new_search",
         "expected_accumulated_filters": {
           "countries": [
-            "sweden",
-            "finland"
+            "italy"
           ],
-          "commodities": [],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
+          "commodities": [
+            "titanium",
+            "graphite"
           ],
+          "storage_facility_types": [],
           "project_status": [],
           "restored": null
         }
       },
       {
         "turn": 2,
-        "query": "Of those, only with platinum or PGE",
-        "expected_action": "refine",
+        "test_category": "expansion",
+        "query": "Also bring in locations in Greece",
+        "expected_action": "expand",
         "expected_accumulated_filters": {
           "countries": [
-            "sweden",
-            "finland"
+            "italy",
+            "greece"
           ],
           "commodities": [
-            "pge"
+            "titanium",
+            "graphite"
           ],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
+          "storage_facility_types": [],
           "project_status": [],
           "restored": null
         }
       },
       {
         "turn": 3,
-        "query": "And also add tantalum",
-        "expected_action": "expand",
+        "test_category": "removal",
+        "query": "Exclude graphite from the results",
+        "expected_action": "remove",
         "expected_accumulated_filters": {
           "countries": [
-            "sweden",
-            "finland"
+            "italy",
+            "greece"
           ],
           "commodities": [
-            "pge",
-            "tantalum"
+            "titanium"
           ],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
+          "storage_facility_types": [],
           "project_status": [],
           "restored": null
         }
       },
       {
         "turn": 4,
-        "query": "Only active ones",
+        "test_category": "refinement",
+        "query": "Restrict to active commercial operations",
         "expected_action": "refine",
         "expected_accumulated_filters": {
           "countries": [
-            "sweden",
-            "finland"
+            "italy",
+            "greece"
           ],
           "commodities": [
-            "pge",
-            "tantalum"
+            "titanium"
           ],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
+          "storage_facility_types": [],
           "project_status": [
             "active"
           ],
@@ -947,21 +1138,21 @@
   },
   {
     "episode_id": "EP-13",
-    "title": "Colloquial Code-Switching Dialogue",
+    "title": "Atlantic Corridor Exploration",
     "turns": [
       {
         "turn": 1,
-        "query": "Find waste dumps in Spain with coltan",
+        "test_category": "search",
+        "query": "Balsas de relaves en Irlanda",
         "expected_action": "new_search",
         "expected_accumulated_filters": {
           "countries": [
-            "spain"
+            "ireland"
           ],
-          "commodities": [
-            "tantalum"
-          ],
+          "commodities": [],
           "storage_facility_types": [
-            "waste dump"
+            "tailings storage facility",
+            "pond"
           ],
           "project_status": [],
           "restored": null
@@ -969,18 +1160,18 @@
       },
       {
         "turn": 2,
-        "query": "Y además en Portugal",
+        "test_category": "expansion",
+        "query": "Incorpora las instalaciones mineras de España",
         "expected_action": "expand",
         "expected_accumulated_filters": {
           "countries": [
-            "spain",
-            "portugal"
+            "ireland",
+            "spain"
           ],
-          "commodities": [
-            "tantalum"
-          ],
+          "commodities": [],
           "storage_facility_types": [
-            "waste dump"
+            "tailings storage facility",
+            "pond"
           ],
           "project_status": [],
           "restored": null
@@ -988,18 +1179,18 @@
       },
       {
         "turn": 3,
-        "query": "Just the active ones",
+        "test_category": "refinement",
+        "query": "Quédate únicamente con aquellas que sigan operando hoy",
         "expected_action": "refine",
         "expected_accumulated_filters": {
           "countries": [
-            "spain",
-            "portugal"
+            "ireland",
+            "spain"
           ],
-          "commodities": [
-            "tantalum"
-          ],
+          "commodities": [],
           "storage_facility_types": [
-            "waste dump"
+            "tailings storage facility",
+            "pond"
           ],
           "project_status": [
             "active"
@@ -1009,7 +1200,114 @@
       },
       {
         "turn": 4,
-        "query": "Olvida todo",
+        "test_category": "removal",
+        "query": "Descarta los depósitos de Irlanda",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "spain"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "tailings storage facility",
+            "pond"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-14",
+    "title": "Nordic Battery Minerals Supply Chain",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Yacimientos con litio y níquel en Finlandia",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "finland"
+          ],
+          "commodities": [
+            "lithium",
+            "nickel"
+          ],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "expansion",
+        "query": "Agrega también las explotaciones de Suecia",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "finland",
+            "sweden"
+          ],
+          "commodities": [
+            "lithium",
+            "nickel"
+          ],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "refinement",
+        "query": "Restringe la consulta a balsas de relaves",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "finland",
+            "sweden"
+          ],
+          "commodities": [
+            "lithium",
+            "nickel"
+          ],
+          "storage_facility_types": [
+            "tailings storage facility",
+            "pond"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "removal",
+        "query": "Prescinde del níquel",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "finland",
+            "sweden"
+          ],
+          "commodities": [
+            "lithium"
+          ],
+          "storage_facility_types": [
+            "tailings storage facility",
+            "pond"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 5,
+        "test_category": "reset",
+        "query": "Borra todos los filtros aplicados",
         "expected_action": "reset",
         "expected_accumulated_filters": {
           "countries": [],
@@ -1022,12 +1320,254 @@
     ]
   },
   {
-    "episode_id": "EP-14",
-    "title": "Industrial City Cluster Expansion and Commodity Narrowing",
+    "episode_id": "EP-015",
+    "title": "Environmental Legacy Liabilities with AMD Risk",
     "turns": [
       {
         "turn": 1,
-        "query": "Escombreras cerca de Munich",
+        "test_category": "search",
+        "query": "Instalaciones sin rehabilitar en Alemania",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "germany"
+          ],
+          "commodities": [],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": false
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "expansion",
+        "query": "Suma las que tengamos en Austria",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "germany",
+            "austria"
+          ],
+          "commodities": [],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": false
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "refinement",
+        "query": "Conserva solo las que alberguen tungsteno",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "germany",
+            "austria"
+          ],
+          "commodities": [
+            "tungsten"
+          ],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": false
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "removal",
+        "query": "Descarta los activos en Austria",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "germany"
+          ],
+          "commodities": [
+            "tungsten"
+          ],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": false
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-16",
+    "title": "Refractory Technology Metals in Spain & Portugal",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Escombreras de wolframio y estaño en España",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "spain"
+          ],
+          "commodities": [
+            "tungsten",
+            "tin"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "expansion",
+        "query": "Incorpora a Portugal a la selección",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "spain",
+            "portugal"
+          ],
+          "commodities": [
+            "tungsten",
+            "tin"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "removal",
+        "query": "Deja fuera el estaño",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "spain",
+            "portugal"
+          ],
+          "commodities": [
+            "tungsten"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "refinement",
+        "query": "Quédate únicamente con las que sigan activas hoy",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "spain",
+            "portugal"
+          ],
+          "commodities": [
+            "tungsten"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-17",
+    "title": "Contextual Interrogative Continuity Across Regions",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Balsas de residuos en Grecia",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "greece"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "pond"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "context",
+        "query": "¿Y qué tenemos registrado en territorio transalpino?",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "greece",
+            "italy"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "pond"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "context",
+        "query": "De las que me has dicho, ¿cuáles tienen níquel?",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "greece",
+            "italy"
+          ],
+          "commodities": [
+            "nickel"
+          ],
+          "storage_facility_types": [
+            "pond"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "removal",
+        "query": "Olvídate de Grecia",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "italy"
+          ],
+          "commodities": [
+            "nickel"
+          ],
+          "storage_facility_types": [
+            "pond"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-18",
+    "title": "German-Scandinavian Corridor with Rare Earths",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Escombreras en Alemania",
         "expected_action": "new_search",
         "expected_accumulated_filters": {
           "countries": [
@@ -1043,12 +1583,14 @@
       },
       {
         "turn": 2,
-        "query": "Y también las de Lyon",
+        "test_category": "expansion",
+        "query": "Suma también las de la zona nórdica",
         "expected_action": "expand",
         "expected_accumulated_filters": {
           "countries": [
             "germany",
-            "france"
+            "sweden",
+            "finland"
           ],
           "commodities": [],
           "storage_facility_types": [
@@ -1060,15 +1602,18 @@
       },
       {
         "turn": 3,
-        "query": "Y suma Kiruna",
-        "expected_action": "expand",
+        "test_category": "refinement",
+        "query": "Quédate exclusivamente con tierras raras",
+        "expected_action": "refine",
         "expected_accumulated_filters": {
           "countries": [
             "germany",
-            "france",
-            "sweden"
+            "sweden",
+            "finland"
           ],
-          "commodities": [],
+          "commodities": [
+            "rare earth elements"
+          ],
           "storage_facility_types": [
             "waste dump"
           ],
@@ -1078,13 +1623,13 @@
       },
       {
         "turn": 4,
-        "query": "De esas solo con tierras raras",
-        "expected_action": "refine",
+        "test_category": "removal",
+        "query": "Prescinde de Alemania",
+        "expected_action": "remove",
         "expected_accumulated_filters": {
           "countries": [
-            "germany",
-            "france",
-            "sweden"
+            "sweden",
+            "finland"
           ],
           "commodities": [
             "rare earth elements"
@@ -1099,246 +1644,24 @@
     ]
   },
   {
-    "episode_id": "EP-15",
-    "title": "Out-of-Scope Geographic Boundary Dialogue Handling",
+    "episode_id": "EP-19",
+    "title": "Complex Multi-Metal Subtractive Sequence",
     "turns": [
       {
         "turn": 1,
-        "query": "Dime escombreras de litio en España",
+        "test_category": "search",
+        "query": "Instalaciones con cobre, cobalto y litio en Portugal y España",
         "expected_action": "new_search",
-        "expected_accumulated_filters": {
-          "countries": [
-            "spain"
-          ],
-          "commodities": [
-            "lithium"
-          ],
-          "storage_facility_types": [
-            "waste dump"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 2,
-        "query": "Y además las que estén en Chile",
-        "expected_action": "expand",
-        "expected_accumulated_filters": {
-          "countries": [
-            "spain"
-          ],
-          "commodities": [
-            "lithium"
-          ],
-          "storage_facility_types": [
-            "waste dump"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 3,
-        "query": "Y también Portugal",
-        "expected_action": "expand",
-        "expected_accumulated_filters": {
-          "countries": [
-            "spain",
-            "portugal"
-          ],
-          "commodities": [
-            "lithium"
-          ],
-          "storage_facility_types": [
-            "waste dump"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 4,
-        "query": "De esas solo las activas",
-        "expected_action": "refine",
-        "expected_accumulated_filters": {
-          "countries": [
-            "spain",
-            "portugal"
-          ],
-          "commodities": [
-            "lithium"
-          ],
-          "storage_facility_types": [
-            "waste dump"
-          ],
-          "project_status": [
-            "active"
-          ],
-          "restored": null
-        }
-      }
-    ]
-  },
-  {
-    "episode_id": "EP-16",
-    "title": "Storage Facility Typology Transformation",
-    "turns": [
-      {
-        "turn": 1,
-        "query": "Instalaciones con titanio en Italia",
-        "expected_action": "new_search",
-        "expected_accumulated_filters": {
-          "countries": [
-            "italy"
-          ],
-          "commodities": [
-            "titanium"
-          ],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 2,
-        "query": "Y también en Grecia",
-        "expected_action": "expand",
-        "expected_accumulated_filters": {
-          "countries": [
-            "italy",
-            "greece"
-          ],
-          "commodities": [
-            "titanium"
-          ],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 3,
-        "query": "Filtra por acopios o stockpiles",
-        "expected_action": "refine",
-        "expected_accumulated_filters": {
-          "countries": [
-            "italy",
-            "greece"
-          ],
-          "commodities": [
-            "titanium"
-          ],
-          "storage_facility_types": [
-            "stockpile"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 4,
-        "query": "Quita Grecia",
-        "expected_action": "remove",
-        "expected_accumulated_filters": {
-          "countries": [
-            "italy"
-          ],
-          "commodities": [
-            "titanium"
-          ],
-          "storage_facility_types": [
-            "stockpile"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      }
-    ]
-  },
-  {
-    "episode_id": "EP-17",
-    "title": "Restoration State Inversion and Re-filtering",
-    "turns": [
-      {
-        "turn": 1,
-        "query": "Balsas de relave en Portugal",
-        "expected_action": "new_search",
-        "expected_accumulated_filters": {
-          "countries": [
-            "portugal"
-          ],
-          "commodities": [],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 2,
-        "query": "De esas solo las que estén restauradas",
-        "expected_action": "refine",
-        "expected_accumulated_filters": {
-          "countries": [
-            "portugal"
-          ],
-          "commodities": [],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
-          "project_status": [],
-          "restored": true
-        }
-      },
-      {
-        "turn": 3,
-        "query": "Y además añade España",
-        "expected_action": "expand",
         "expected_accumulated_filters": {
           "countries": [
             "portugal",
             "spain"
           ],
-          "commodities": [],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
+          "commodities": [
+            "copper",
+            "cobalt",
+            "lithium"
           ],
-          "project_status": [],
-          "restored": true
-        }
-      },
-      {
-        "turn": 4,
-        "query": "Reiniciar",
-        "expected_action": "reset",
-        "expected_accumulated_filters": {
-          "countries": [],
-          "commodities": [],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      }
-    ]
-  },
-  {
-    "episode_id": "EP-18",
-    "title": "German-Polish Border Mining Basin",
-    "turns": [
-      {
-        "turn": 1,
-        "query": "Depósitos en Katowice",
-        "expected_action": "new_search",
-        "expected_accumulated_filters": {
-          "countries": [
-            "poland"
-          ],
-          "commodities": [],
           "storage_facility_types": [],
           "project_status": [],
           "restored": null
@@ -1346,87 +1669,17 @@
       },
       {
         "turn": 2,
-        "query": "Y además los de Frankfurt",
-        "expected_action": "expand",
-        "expected_accumulated_filters": {
-          "countries": [
-            "poland",
-            "germany"
-          ],
-          "commodities": [],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 3,
-        "query": "De esos solo con cobre y zinc o estaño",
-        "expected_action": "refine",
-        "expected_accumulated_filters": {
-          "countries": [
-            "poland",
-            "germany"
-          ],
-          "commodities": [
-            "copper",
-            "tin"
-          ],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 4,
-        "query": "Elimina Alemania",
+        "test_category": "removal",
+        "query": "Prescinde del cobre",
         "expected_action": "remove",
         "expected_accumulated_filters": {
           "countries": [
-            "poland"
-          ],
-          "commodities": [
-            "copper",
-            "tin"
-          ],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      }
-    ]
-  },
-  {
-    "episode_id": "EP-19",
-    "title": "Strategic Raw Materials Multi-Step Expansion",
-    "turns": [
-      {
-        "turn": 1,
-        "query": "Muestra instalaciones de galio o tántalo en España",
-        "expected_action": "new_search",
-        "expected_accumulated_filters": {
-          "countries": [
+            "portugal",
             "spain"
           ],
           "commodities": [
-            "tantalum"
-          ],
-          "storage_facility_types": [],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 2,
-        "query": "Y además en Irlanda",
-        "expected_action": "expand",
-        "expected_accumulated_filters": {
-          "countries": [
-            "spain",
-            "ireland"
-          ],
-          "commodities": [
-            "tantalum"
+            "cobalt",
+            "lithium"
           ],
           "storage_facility_types": [],
           "project_status": [],
@@ -1435,16 +1688,16 @@
       },
       {
         "turn": 3,
-        "query": "Suma también Austria",
-        "expected_action": "expand",
+        "test_category": "removal",
+        "query": "Descarta España de la lista",
+        "expected_action": "remove",
         "expected_accumulated_filters": {
           "countries": [
-            "spain",
-            "ireland",
-            "austria"
+            "portugal"
           ],
           "commodities": [
-            "tantalum"
+            "cobalt",
+            "lithium"
           ],
           "storage_facility_types": [],
           "project_status": [],
@@ -1453,20 +1706,18 @@
       },
       {
         "turn": 4,
-        "query": "De esas solo escombreras activas",
+        "test_category": "refinement",
+        "query": "Restringe a instalaciones activas",
         "expected_action": "refine",
         "expected_accumulated_filters": {
           "countries": [
-            "spain",
-            "ireland",
-            "austria"
+            "portugal"
           ],
           "commodities": [
-            "tantalum"
+            "cobalt",
+            "lithium"
           ],
-          "storage_facility_types": [
-            "waste dump"
-          ],
+          "storage_facility_types": [],
           "project_status": [
             "active"
           ],
@@ -1477,73 +1728,71 @@
   },
   {
     "episode_id": "EP-20",
-    "title": "Iberian Municipal Grounding and Progressive Subtraction",
+    "title": "Cross-Border Mixed Scope Dialogue",
     "turns": [
       {
         "turn": 1,
-        "query": "Balsas de decantación en Ourense",
+        "test_category": "search",
+        "query": "Países del sur de Europa como Grecia o Albania que tengan níquel",
         "expected_action": "new_search",
         "expected_accumulated_filters": {
           "countries": [
-            "spain"
+            "greece"
           ],
-          "commodities": [],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
+          "commodities": [
+            "nickel"
           ],
+          "storage_facility_types": [],
           "project_status": [],
           "restored": null
         }
       },
       {
         "turn": 2,
-        "query": "Y además las de Porto",
+        "test_category": "expansion",
+        "query": "Agrega depósitos en Italia",
         "expected_action": "expand",
         "expected_accumulated_filters": {
           "countries": [
-            "spain",
-            "portugal"
+            "greece",
+            "italy"
           ],
-          "commodities": [],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
+          "commodities": [
+            "nickel"
           ],
+          "storage_facility_types": [],
           "project_status": [],
           "restored": null
         }
       },
       {
         "turn": 3,
-        "query": "De esas solo con litio",
-        "expected_action": "refine",
+        "test_category": "removal",
+        "query": "Saca las instalaciones de Grecia",
+        "expected_action": "remove",
         "expected_accumulated_filters": {
           "countries": [
-            "spain",
-            "portugal"
+            "italy"
           ],
           "commodities": [
-            "lithium"
+            "nickel"
           ],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
+          "storage_facility_types": [],
           "project_status": [],
           "restored": null
         }
       },
       {
         "turn": 4,
-        "query": "Quita las de España",
-        "expected_action": "remove",
+        "test_category": "refinement",
+        "query": "Quédate únicamente con balsas de relaves",
+        "expected_action": "refine",
         "expected_accumulated_filters": {
           "countries": [
-            "portugal"
+            "italy"
           ],
           "commodities": [
-            "lithium"
+            "nickel"
           ],
           "storage_facility_types": [
             "tailings storage facility",
@@ -1557,15 +1806,17 @@
   },
   {
     "episode_id": "EP-21",
-    "title": "French-German Industrial Corridor and Material Refinement",
+    "title": "Consecutive Multi-Dimensional Refinements",
     "turns": [
       {
         "turn": 1,
-        "query": "Waste dumps in France",
+        "test_category": "search",
+        "query": "Escombreras de estériles en Francia y Alemania",
         "expected_action": "new_search",
         "expected_accumulated_filters": {
           "countries": [
-            "france"
+            "france",
+            "germany"
           ],
           "commodities": [],
           "storage_facility_types": [
@@ -1577,14 +1828,17 @@
       },
       {
         "turn": 2,
-        "query": "And also Germany",
-        "expected_action": "expand",
+        "test_category": "refinement",
+        "query": "Quédate únicamente con las que contengan litio",
+        "expected_action": "refine",
         "expected_accumulated_filters": {
           "countries": [
             "france",
             "germany"
           ],
-          "commodities": [],
+          "commodities": [
+            "lithium"
+          ],
           "storage_facility_types": [
             "waste dump"
           ],
@@ -1594,7 +1848,8 @@
       },
       {
         "turn": 3,
-        "query": "Only those with tungsten",
+        "test_category": "refinement",
+        "query": "De esas solo las que estén activas hoy en día",
         "expected_action": "refine",
         "expected_accumulated_filters": {
           "countries": [
@@ -1602,18 +1857,67 @@
             "germany"
           ],
           "commodities": [
-            "tungsten"
+            "lithium"
           ],
           "storage_facility_types": [
             "waste dump"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "refinement",
+        "query": "Y que además sigan sin restaurar",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "france",
+            "germany"
+          ],
+          "commodities": [
+            "lithium"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": false
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-22",
+    "title": "Rapid Exploration Pivot and Context Rebuilding",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Balsas de relaves en Suecia",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "sweden"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "tailings storage facility",
+            "pond"
           ],
           "project_status": [],
           "restored": null
         }
       },
       {
-        "turn": 4,
-        "query": "Empezar de nuevo",
+        "turn": 2,
+        "test_category": "reset",
+        "query": "Limpia la búsqueda",
         "expected_action": "reset",
         "expected_accumulated_filters": {
           "countries": [],
@@ -1622,84 +1926,43 @@
           "project_status": [],
           "restored": null
         }
-      }
-    ]
-  },
-  {
-    "episode_id": "EP-22",
-    "title": "Arctic Mining Sector Exploration and Status Narrowing",
-    "turns": [
-      {
-        "turn": 1,
-        "query": "Instalaciones activas en Finlandia",
-        "expected_action": "new_search",
-        "expected_accumulated_filters": {
-          "countries": [
-            "finland"
-          ],
-          "commodities": [],
-          "storage_facility_types": [],
-          "project_status": [
-            "active"
-          ],
-          "restored": null
-        }
-      },
-      {
-        "turn": 2,
-        "query": "Y además en Suecia",
-        "expected_action": "expand",
-        "expected_accumulated_filters": {
-          "countries": [
-            "finland",
-            "sweden"
-          ],
-          "commodities": [],
-          "storage_facility_types": [],
-          "project_status": [
-            "active"
-          ],
-          "restored": null
-        }
       },
       {
         "turn": 3,
-        "query": "De esas solo escombreras con níquel",
-        "expected_action": "refine",
+        "test_category": "search",
+        "query": "Escombreras en España con tántalo",
+        "expected_action": "new_search",
         "expected_accumulated_filters": {
           "countries": [
-            "finland",
-            "sweden"
+            "spain"
           ],
           "commodities": [
-            "nickel"
+            "tantalum"
           ],
           "storage_facility_types": [
             "waste dump"
           ],
-          "project_status": [
-            "active"
-          ],
+          "project_status": [],
           "restored": null
         }
       },
       {
         "turn": 4,
-        "query": "Quita las de Suecia",
-        "expected_action": "remove",
+        "test_category": "expansion",
+        "query": "Suma también las instalaciones en Portugal",
+        "expected_action": "expand",
         "expected_accumulated_filters": {
           "countries": [
-            "finland"
+            "spain",
+            "portugal"
           ],
           "commodities": [
-            "nickel"
+            "tantalum"
           ],
           "storage_facility_types": [
             "waste dump"
           ],
-          "project_status": [
-            "active"
-          ],
+          "project_status": [],
           "restored": null
         }
       }
@@ -1707,158 +1970,73 @@
   },
   {
     "episode_id": "EP-23",
-    "title": "Czech-Austrian Corridor with Multi-Commodity Narrowing",
+    "title": "Anaphora with Negation and Mineral Substitution",
     "turns": [
       {
         "turn": 1,
-        "query": "Balsas de relaves en Praga",
+        "test_category": "search",
+        "query": "Instalaciones en Finlandia con níquel",
         "expected_action": "new_search",
         "expected_accumulated_filters": {
           "countries": [
-            "czechia"
-          ],
-          "commodities": [],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 2,
-        "query": "Y también las de Viena",
-        "expected_action": "expand",
-        "expected_accumulated_filters": {
-          "countries": [
-            "czechia",
-            "austria"
-          ],
-          "commodities": [],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 3,
-        "query": "De esas solo con manganeso",
-        "expected_action": "refine",
-        "expected_accumulated_filters": {
-          "countries": [
-            "czechia",
-            "austria"
+            "finland"
           ],
           "commodities": [
-            "manganese"
+            "nickel"
           ],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
-          "project_status": [],
-          "restored": null
-        }
-      },
-      {
-        "turn": 4,
-        "query": "Limpiar filtros",
-        "expected_action": "reset",
-        "expected_accumulated_filters": {
-          "countries": [],
-          "commodities": [],
           "storage_facility_types": [],
           "project_status": [],
           "restored": null
         }
-      }
-    ]
-  },
-  {
-    "episode_id": "EP-24",
-    "title": "Italian Mediterranean Exploration and Commodity Removal",
-    "turns": [
-      {
-        "turn": 1,
-        "query": "Tailings ponds in Italy with titanium and graphite",
-        "expected_action": "new_search",
-        "expected_accumulated_filters": {
-          "countries": [
-            "italy"
-          ],
-          "commodities": [
-            "titanium",
-            "graphite"
-          ],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
-          "project_status": [],
-          "restored": null
-        }
       },
       {
         "turn": 2,
-        "query": "And also sites in Greece",
+        "test_category": "context",
+        "query": "¿Hay algo similar en Suecia?",
         "expected_action": "expand",
         "expected_accumulated_filters": {
           "countries": [
-            "italy",
-            "greece"
+            "finland",
+            "sweden"
           ],
           "commodities": [
-            "titanium",
-            "graphite"
+            "nickel"
           ],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
+          "storage_facility_types": [],
           "project_status": [],
           "restored": null
         }
       },
       {
         "turn": 3,
-        "query": "Remove graphite",
-        "expected_action": "remove",
+        "test_category": "refinement",
+        "query": "Descarta aquellas que ya hayan sido rehabilitadas",
+        "expected_action": "refine",
         "expected_accumulated_filters": {
           "countries": [
-            "italy",
-            "greece"
+            "finland",
+            "sweden"
           ],
           "commodities": [
-            "titanium"
+            "nickel"
           ],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
+          "storage_facility_types": [],
           "project_status": [],
-          "restored": null
+          "restored": false
         }
       },
       {
         "turn": 4,
-        "query": "Only unrestored",
-        "expected_action": "refine",
+        "test_category": "removal",
+        "query": "Prescinde del níquel",
+        "expected_action": "remove",
         "expected_accumulated_filters": {
           "countries": [
-            "italy",
-            "greece"
+            "finland",
+            "sweden"
           ],
-          "commodities": [
-            "titanium"
-          ],
-          "storage_facility_types": [
-            "tailings storage facility",
-            "pond"
-          ],
+          "commodities": [],
+          "storage_facility_types": [],
           "project_status": [],
           "restored": false
         }
@@ -1866,20 +2044,21 @@
     ]
   },
   {
-    "episode_id": "EP-25",
-    "title": "Comprehensive 5-Turn End-to-End Exploration Cycle",
+    "episode_id": "EP-24",
+    "title": "Tailings and Dumps Contrast in Czechia and Poland",
     "turns": [
       {
         "turn": 1,
-        "query": "Dime escombreras en Huelva",
+        "test_category": "search",
+        "query": "Presas de lodos y decantación en Chequia",
         "expected_action": "new_search",
         "expected_accumulated_filters": {
           "countries": [
-            "spain"
+            "czechia"
           ],
           "commodities": [],
           "storage_facility_types": [
-            "waste dump"
+            "pond"
           ],
           "project_status": [],
           "restored": null
@@ -1887,15 +2066,17 @@
       },
       {
         "turn": 2,
-        "query": "Y además añade las instalaciones en Francia",
+        "test_category": "expansion",
+        "query": "Añade escombreras de roca estéril en Polonia",
         "expected_action": "expand",
         "expected_accumulated_filters": {
           "countries": [
-            "spain",
-            "france"
+            "czechia",
+            "poland"
           ],
           "commodities": [],
           "storage_facility_types": [
+            "pond",
             "waste dump"
           ],
           "project_status": [],
@@ -1904,17 +2085,19 @@
       },
       {
         "turn": 3,
-        "query": "De esas solo con cobre",
+        "test_category": "refinement",
+        "query": "Quédate solo con las que contengan cobre",
         "expected_action": "refine",
         "expected_accumulated_filters": {
           "countries": [
-            "spain",
-            "france"
+            "czechia",
+            "poland"
           ],
           "commodities": [
             "copper"
           ],
           "storage_facility_types": [
+            "pond",
             "waste dump"
           ],
           "project_status": [],
@@ -1923,16 +2106,18 @@
       },
       {
         "turn": 4,
-        "query": "Quita las de España",
+        "test_category": "removal",
+        "query": "Elimina Chequia de la búsqueda",
         "expected_action": "remove",
         "expected_accumulated_filters": {
           "countries": [
-            "france"
+            "poland"
           ],
           "commodities": [
             "copper"
           ],
           "storage_facility_types": [
+            "pond",
             "waste dump"
           ],
           "project_status": [],
@@ -1941,12 +2126,543 @@
       },
       {
         "turn": 5,
-        "query": "Reiniciar",
+        "test_category": "reset",
+        "query": "Reinicia todos los criterios",
         "expected_action": "reset",
         "expected_accumulated_filters": {
           "countries": [],
           "commodities": [],
           "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-25",
+    "title": "English Multi-Hop Anaphora and Asset Selection",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Locate lithium extraction waste in France",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "france"
+          ],
+          "commodities": [
+            "lithium"
+          ],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "context",
+        "query": "Do the same for Germany",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "france",
+            "germany"
+          ],
+          "commodities": [
+            "lithium"
+          ],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "refinement",
+        "query": "From those, solely keep operational waste dumps",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "france",
+            "germany"
+          ],
+          "commodities": [
+            "lithium"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "removal",
+        "query": "Drop French facilities",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "germany"
+          ],
+          "commodities": [
+            "lithium"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 5,
+        "test_category": "reset",
+        "query": "Clear all filters now",
+        "expected_action": "reset",
+        "expected_accumulated_filters": {
+          "countries": [],
+          "commodities": [],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-26",
+    "title": "Baltic and Scandinavian Anaphora with Operational Refinement",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Yacimientos con níquel en Finlandia",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "finland"
+          ],
+          "commodities": [
+            "nickel"
+          ],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "context",
+        "query": "¿Y qué tenemos en el país de al lado?",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "finland",
+            "sweden"
+          ],
+          "commodities": [
+            "nickel"
+          ],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "context",
+        "query": "¿Cuáles de las que me has dicho siguen activas a fecha de hoy?",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "finland",
+            "sweden"
+          ],
+          "commodities": [
+            "nickel"
+          ],
+          "storage_facility_types": [],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "removal",
+        "query": "Prescinde de las instalaciones suecas",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "finland"
+          ],
+          "commodities": [
+            "nickel"
+          ],
+          "storage_facility_types": [],
+          "project_status": [
+            "active"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 5,
+        "test_category": "reset",
+        "query": "Vuelve a empezar de cero",
+        "expected_action": "reset",
+        "expected_accumulated_filters": {
+          "countries": [],
+          "commodities": [],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-27",
+    "title": "Iberian Ellipsis and Multi-Commodity Synthesis",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Depósitos de litio en territorio luso",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "portugal"
+          ],
+          "commodities": [
+            "lithium"
+          ],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "context",
+        "query": "Suma lo que haya en la península ibérica que albergue tántalo",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "portugal",
+            "spain"
+          ],
+          "commodities": [
+            "lithium",
+            "tantalum"
+          ],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "refinement",
+        "query": "Quédate exclusivamente con las escombreras de roca estéril",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "portugal",
+            "spain"
+          ],
+          "commodities": [
+            "lithium",
+            "tantalum"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "removal",
+        "query": "Saca el tántalo",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "portugal",
+            "spain"
+          ],
+          "commodities": [
+            "lithium"
+          ],
+          "storage_facility_types": [
+            "waste dump"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-28",
+    "title": "English Deictic Reference and Environmental Constraints",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Display tailings ponds in Germany",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "germany"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "pond",
+            "tailings storage facility"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "context",
+        "query": "What about in France?",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "germany",
+            "france"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "pond",
+            "tailings storage facility"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "refinement",
+        "query": "From the previous ones, solely keep unrestored sites",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "germany",
+            "france"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "pond",
+            "tailings storage facility"
+          ],
+          "project_status": [],
+          "restored": false
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "removal",
+        "query": "Exclude the German deposits",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "france"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "pond",
+            "tailings storage facility"
+          ],
+          "project_status": [],
+          "restored": false
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-29",
+    "title": "Interrogative Status Shift in Alpine Region",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Balsas de relaves en Austria",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "austria"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "tailings storage facility",
+            "pond"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "context",
+        "query": "¿Y qué tenemos en territorio italiano?",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "austria",
+            "italy"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "tailings storage facility",
+            "pond"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "context",
+        "query": "De las anteriores, ¿hay alguna que esté cerrada o abandonada?",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "austria",
+            "italy"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "tailings storage facility",
+            "pond"
+          ],
+          "project_status": [
+            "inactive"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "removal",
+        "query": "Olvídate de Italia",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "austria"
+          ],
+          "commodities": [],
+          "storage_facility_types": [
+            "tailings storage facility",
+            "pond"
+          ],
+          "project_status": [
+            "inactive"
+          ],
+          "restored": null
+        }
+      },
+      {
+        "turn": 5,
+        "test_category": "reset",
+        "query": "Reinicia los filtros y muestra todo el mapa",
+        "expected_action": "reset",
+        "expected_accumulated_filters": {
+          "countries": [],
+          "commodities": [],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      }
+    ]
+  },
+  {
+    "episode_id": "EP-30",
+    "title": "Complex Multi-Lingual Contextual Transfer and Refinement",
+    "turns": [
+      {
+        "turn": 1,
+        "test_category": "search",
+        "query": "Mining waste deposits in Greece",
+        "expected_action": "new_search",
+        "expected_accumulated_filters": {
+          "countries": [
+            "greece"
+          ],
+          "commodities": [],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 2,
+        "test_category": "context",
+        "query": "¿Y qué tenemos en España con cobre?",
+        "expected_action": "expand",
+        "expected_accumulated_filters": {
+          "countries": [
+            "greece",
+            "spain"
+          ],
+          "commodities": [
+            "copper"
+          ],
+          "storage_facility_types": [],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 3,
+        "test_category": "refinement",
+        "query": "Restringe a presas y balsas de lodos",
+        "expected_action": "refine",
+        "expected_accumulated_filters": {
+          "countries": [
+            "greece",
+            "spain"
+          ],
+          "commodities": [
+            "copper"
+          ],
+          "storage_facility_types": [
+            "pond",
+            "tailings storage facility"
+          ],
+          "project_status": [],
+          "restored": null
+        }
+      },
+      {
+        "turn": 4,
+        "test_category": "removal",
+        "query": "Saca las instalaciones griegas",
+        "expected_action": "remove",
+        "expected_accumulated_filters": {
+          "countries": [
+            "spain"
+          ],
+          "commodities": [
+            "copper"
+          ],
+          "storage_facility_types": [
+            "pond",
+            "tailings storage facility"
+          ],
           "project_status": [],
           "restored": null
         }

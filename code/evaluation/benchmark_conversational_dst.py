@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 """
 benchmark_conversational_dst.py
-Comprehensive Evaluation Benchmark for Multi-Turn Conversational Dialogue State Tracking (DST):
-Compares Rule-based Deterministic Baseline (Mock), Llama 3.2 3B, Phi-3 Mini 4K, Qwen 2.5 7B,
-and DeepSeek R1 7B across 25 multi-turn dialogue episodes (102 sequential conversational turns).
+Evaluates Dialogue State Tracking (DST) and accumulated filter extraction accuracy
+across multi-turn conversational dialogue episodes on the NVIDIA A100 testbed.
 
-Evaluates:
-- Turn Dialogue Action Classification Accuracy (new_search, expand, refine, remove, reset)
-- Field-level F1-scores for accumulated state tracking across conversation history
-  (countries, commodities, storage_facility_types, project_status, restored)
-- Cumulative State Exact Match Rate (% of turns where the active filter state is 100% correct)
-- Episode Completion Rate (% of entire dialogue episodes executed with zero state drift)
-- Turn inference latency (ms) and GPU VRAM memory footprint (GB)
-- Generates LaTeX table for the SoftwareX manuscript
+Specifically evaluates expected filter accuracy across test categories:
+- search: Initial spatial searches with natural language, periphrasis, and synonyms
+- expansion: Additive disjunction (OR) using natural conversational phrasing
+- refinement: Progressive conjunction (AND) with complex constraints
+- removal: Subtractive exclusion with diverse natural phrasing
+- context: Anaphoric, elliptical, and cross-turn conversational continuity
+- reset: Natural conversational resets
 """
 
 import sys
@@ -71,6 +69,8 @@ MODEL_METADATA = {
     }
 }
 
+CATEGORIES = ["search", "expansion", "refinement", "removal", "context", "reset"]
+
 def calculate_set_metrics(gold_list: List[str], pred_list: List[str]) -> Tuple[float, float, float, int, int, int]:
     gold_set = set(gold_list)
     pred_set = set(pred_list)
@@ -83,6 +83,13 @@ def calculate_set_metrics(gold_list: List[str], pred_list: List[str]) -> Tuple[f
     recall = tp / (tp + fn) if (tp + fn) > 0 else 1.0
     f1 = (2 * precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
     return precision, recall, f1, tp, fp, fn
+
+def compute_macro_f1(stats: List[int]) -> float:
+    tp, fp, fn = stats
+    p = tp / (tp + fp) if (tp + fp) > 0 else 1.0
+    r = tp / (tp + fn) if (tp + fn) > 0 else 1.0
+    f1 = (2 * p * r) / (p + r) if (p + r) > 0 else 0.0
+    return round(f1 * 100.0, 1)
 
 def run_conversational_benchmark(provider: str, episodes: List[Dict[str, Any]]) -> Dict[str, Any]:
     print(f"\n{'='*75}")
@@ -127,6 +134,19 @@ def run_conversational_benchmark(provider: str, episodes: List[Dict[str, Any]]) 
         "reset": {"total": 0, "correct": 0}
     }
 
+    category_stats = {
+        cat: {
+            "total": 0,
+            "exact": 0,
+            "country": [0, 0, 0],
+            "comm": [0, 0, 0],
+            "fac": [0, 0, 0],
+            "status": [0, 0, 0],
+            "restored_matches": 0
+        }
+        for cat in CATEGORIES
+    }
+
     processed_turns = 0
 
     for ep_idx, ep in enumerate(episodes, 1):
@@ -145,6 +165,13 @@ def run_conversational_benchmark(provider: str, episodes: List[Dict[str, Any]]) 
             q = t["query"]
             exp_action = t["expected_action"]
             exp_filters = t["expected_accumulated_filters"]
+            cat = t.get("test_category", "search")
+            if cat not in category_stats:
+                category_stats[cat] = {
+                    "total": 0, "exact": 0, "country": [0, 0, 0],
+                    "comm": [0, 0, 0], "fac": [0, 0, 0], "status": [0, 0, 0], "restored_matches": 0
+                }
+            category_stats[cat]["total"] += 1
 
             if exp_action in action_breakdown:
                 action_breakdown[exp_action]["total"] += 1
@@ -183,27 +210,33 @@ def run_conversational_benchmark(provider: str, episodes: List[Dict[str, Any]]) 
             # 2. Field metrics on accumulated state
             p, r, f1, tp, fp, fn = calculate_set_metrics(exp_filters.get("countries", []), pred_filters.get("countries", []))
             country_stats[0] += tp; country_stats[1] += fp; country_stats[2] += fn
+            category_stats[cat]["country"][0] += tp; category_stats[cat]["country"][1] += fp; category_stats[cat]["country"][2] += fn
             c_match = (set(exp_filters.get("countries", [])) == set(pred_filters.get("countries", [])))
 
             p, r, f1, tp, fp, fn = calculate_set_metrics(exp_filters.get("commodities", []), pred_filters.get("commodities", []))
             comm_stats[0] += tp; comm_stats[1] += fp; comm_stats[2] += fn
+            category_stats[cat]["comm"][0] += tp; category_stats[cat]["comm"][1] += fp; category_stats[cat]["comm"][2] += fn
             m_match = (set(exp_filters.get("commodities", [])) == set(pred_filters.get("commodities", [])))
 
             p, r, f1, tp, fp, fn = calculate_set_metrics(exp_filters.get("storage_facility_types", []), pred_filters.get("storage_facility_types", []))
             fac_stats[0] += tp; fac_stats[1] += fp; fac_stats[2] += fn
+            category_stats[cat]["fac"][0] += tp; category_stats[cat]["fac"][1] += fp; category_stats[cat]["fac"][2] += fn
             f_match = (set(exp_filters.get("storage_facility_types", [])) == set(pred_filters.get("storage_facility_types", [])))
 
             p, r, f1, tp, fp, fn = calculate_set_metrics(exp_filters.get("project_status", []), pred_filters.get("project_status", []))
             status_stats[0] += tp; status_stats[1] += fp; status_stats[2] += fn
+            category_stats[cat]["status"][0] += tp; category_stats[cat]["status"][1] += fp; category_stats[cat]["status"][2] += fn
             s_match = (set(exp_filters.get("project_status", [])) == set(pred_filters.get("project_status", [])))
 
             r_match = (exp_filters.get("restored") == pred_filters.get("restored"))
             if r_match:
                 restored_matches += 1
+                category_stats[cat]["restored_matches"] += 1
 
             turn_exact = c_match and m_match and f_match and s_match and r_match
             if turn_exact:
                 exact_state_matches += 1
+                category_stats[cat]["exact"] += 1
             else:
                 ep_perfect = False
 
@@ -231,6 +264,24 @@ def run_conversational_benchmark(provider: str, episodes: List[Dict[str, Any]]) 
     fp, fr, ff1 = compute_macro(fac_stats)
     sp, sr, sf1 = compute_macro(status_stats)
     macro_f1 = round((cf1 + mf1 + ff1 + sf1) / 4.0, 2)
+
+    # Category breakdown computations
+    cat_results = {}
+    for cat_name, c_data in category_stats.items():
+        tot = c_data["total"]
+        ex = c_data["exact"]
+        ex_rate = round((ex / tot) * 100.0, 1) if tot > 0 else 0.0
+        c_f1 = compute_macro_f1(c_data["country"])
+        m_f1 = compute_macro_f1(c_data["comm"])
+        f_f1 = compute_macro_f1(c_data["fac"])
+        s_f1 = compute_macro_f1(c_data["status"])
+        c_macro = round((c_f1 + m_f1 + f_f1 + s_f1) / 4.0, 1)
+        cat_results[cat_name] = {
+            "total_turns": tot,
+            "exact_matches": ex,
+            "exact_match_rate": ex_rate,
+            "macro_f1": c_macro
+        }
 
     mean_latency = round(sum(latencies_ms) / len(latencies_ms), 1)
     min_latency = round(min(latencies_ms), 1)
@@ -268,6 +319,7 @@ def run_conversational_benchmark(provider: str, episodes: List[Dict[str, Any]]) 
         "status_f1": sf1,
         "restored_accuracy": round(restored_accuracy, 2),
         "action_breakdown": action_rates,
+        "category_metrics": cat_results,
         "details": {
             "country": {"p": cp, "r": cr, "f1": cf1},
             "commodity": {"p": mp, "r": mr, "f1": mf1},
@@ -280,29 +332,39 @@ def run_conversational_benchmark(provider: str, episodes: List[Dict[str, Any]]) 
     return result_entry
 
 def generate_latex_dst_table(results: List[Dict[str, Any]]) -> str:
-    """Generates an academic publication-ready LaTeX table for SoftwareX."""
+    """
+    Generates an academic publication-ready LaTeX table for SoftwareX
+    strictly focusing on expected filter precision/accuracy across test categories.
+    """
     lines = [
         r"\begin{table*}[t!]",
         r"\centering",
         r"\small",
-        r"\caption{Empirical evaluation of multi-turn Conversational Dialogue State Tracking (DST) across 25 dialogue episodes (102 sequential conversational turns) on the NVIDIA A100 testbed.}",
+        r"\caption{Empirical evaluation of expected filter accuracy (Macro F1 / Exact Match) across conversational test categories (132 sequential turns, 30 dialogue episodes) on the NVIDIA A100 testbed.}",
         r"\label{tab:dst_benchmark}",
         r"\resizebox{\textwidth}{!}{",
-        r"\begin{tabular}{lcccccccc}",
+        r"\begin{tabular}{lccccccc}",
         r"\hline",
-        r"\textbf{Inference Model} & \textbf{Parameters} & \textbf{VRAM (GB)} & \textbf{Action Acc. (\%)} & \textbf{State Country F1 (\%)} & \textbf{State CRM F1 (\%)} & \textbf{Macro State F1 (\%)} & \textbf{State Exact Match (\%)} & \textbf{Mean Turn Lat. (ms)} \\",
+        r"\textbf{Inference Model} & \textbf{Search (\%)} & \textbf{Expansion (\%)} & \textbf{Refinement (\%)} & \textbf{Removal (\%)} & \textbf{Context (\%)} & \textbf{Reset (\%)} & \textbf{Global Macro F1 (\%)} \\",
         r"\hline"
     ]
     for r in results:
-        vram_str = f"{r['vram_gb']:.1f}" if r['vram_gb'] > 0 else "0.0 (RAM)"
+        cm = r.get("category_metrics", {})
+        s_f1 = cm.get("search", {}).get("macro_f1", 0.0)
+        e_f1 = cm.get("expansion", {}).get("macro_f1", 0.0)
+        ref_f1 = cm.get("refinement", {}).get("macro_f1", 0.0)
+        rem_f1 = cm.get("removal", {}).get("macro_f1", 0.0)
+        ctx_f1 = cm.get("context", {}).get("macro_f1", 0.0)
+        rst_f1 = cm.get("reset", {}).get("exact_match_rate", 0.0)
+        glob_f1 = r.get("macro_f1", 0.0)
+
         lines.append(
-            f"{r['model_name']} & {r['parameters']} & {vram_str} & {r['action_accuracy']:.1f} & "
-            f"{r['country_f1']:.1f} & {r['commodity_f1']:.1f} & "
-            f"\\textbf{{{r['macro_f1']:.1f}}} & {r['exact_state_match_rate']:.1f} & {r['mean_latency_ms']:.1f} \\\\"
+            f"{r['model_name']} & {s_f1:.1f} & {e_f1:.1f} & {ref_f1:.1f} & "
+            f"{rem_f1:.1f} & {ctx_f1:.1f} & {rst_f1:.1f} & \\textbf{{{glob_f1:.1f}}} \\\\"
         )
     lines.extend([
         r"\hline",
-        r"\multicolumn{9}{l}{\footnotesize Evaluated on 102 sequential turns spanning 5 dialogue actions: \texttt{new\_search}, \texttt{expand} (OR), \texttt{refine} (AND), \texttt{remove}, and \texttt{reset}.} \\",
+        r"\multicolumn{8}{l}{\footnotesize Filter accuracy measured as Macro F1 on accumulated expected filters across 6 test categories: Initial Search (31 turns), Expansion (19 turns), Refinement (30 turns), Removal (28 turns), Contextual Anaphora (14 turns), and Reset (10 turns).} \\",
         r"\end{tabular}",
         r"}",
         r"\end{table*}"
@@ -359,17 +421,25 @@ def main():
     latex_table = generate_latex_dst_table(benchmark_results)
 
     summary_lines = [
-        "="*95,
-        "  SOFTWAREX CONVERSATIONAL DST BENCHMARK SUMMARY (102 TURNS, 25 EPISODES)",
-        "="*95,
-        f"{'Model':<30} | {'Action Acc':<11} | {'Country F1':<11} | {'CRM F1':<10} | {'Macro F1':<10} | {'Exact Match':<12} | {'Lat. (ms)':<10}",
-        "-"*95
+        "="*105,
+        f"  SOFTWAREX CONVERSATIONAL DST BENCHMARK (132 TURNS, 30 EPISODES) - FILTER ACCURACY ACROSS TEST TYPES",
+        "="*105,
+        f"{'Model':<30} | {'Search':<8} | {'Expand':<8} | {'Refine':<8} | {'Remove':<8} | {'Context':<8} | {'Reset':<8} | {'Global F1':<10}",
+        "-"*105
     ]
     for r in benchmark_results:
+        cm = r.get("category_metrics", {})
+        s_f1 = cm.get("search", {}).get("macro_f1", 0.0)
+        e_f1 = cm.get("expansion", {}).get("macro_f1", 0.0)
+        ref_f1 = cm.get("refinement", {}).get("macro_f1", 0.0)
+        rem_f1 = cm.get("removal", {}).get("macro_f1", 0.0)
+        ctx_f1 = cm.get("context", {}).get("macro_f1", 0.0)
+        rst_f1 = cm.get("reset", {}).get("exact_match_rate", 0.0)
+        glob_f1 = r.get("macro_f1", 0.0)
         summary_lines.append(
-            f"{r['model_name']:<30} | {r['action_accuracy']:<10.1f}% | {r['country_f1']:<10.1f}% | {r['commodity_f1']:<9.1f}% | {r['macro_f1']:<9.1f}% | {r['exact_state_match_rate']:<11.1f}% | {r['mean_latency_ms']:<10.1f}"
+            f"{r['model_name']:<30} | {s_f1:<7.1f}% | {e_f1:<7.1f}% | {ref_f1:<7.1f}% | {rem_f1:<7.1f}% | {ctx_f1:<7.1f}% | {rst_f1:<7.1f}% | {glob_f1:<9.1f}%"
         )
-    summary_lines.append("="*95)
+    summary_lines.append("="*105)
     summary_lines.append("\nLATEX TABLE OUTPUT FOR MANUSCRIPT:\n")
     summary_lines.append(latex_table)
 
