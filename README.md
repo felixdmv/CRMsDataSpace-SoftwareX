@@ -37,7 +37,7 @@ Additionally, to allow reviewers and developers to test the **generality and reu
 - **Bidirectional Visual Synchronization**: Real-time rendering of active filter badges, dynamic glowing pulse rings on matching facilities, live site counters, and floating interactive filter controls.
 - **Zero Schema Hallucinations**: Combines Few-Shot domain exemplars with strict OpenAPI JSON Schema validation under greedy decoding ($T=0.0$).
 - **Zero-Dependency Standalone Mode (Reviewer Ready)**: Runs entirely out-of-the-box on standard Python 3.9+ without needing GPU hardware, external cloud accounts, or third-party database servers.
-- **100% European Data Sovereignty**: Designed for institutional on-premises deployment using open-weight foundation models (Qwen 2.5 7B, Llama 3.2 3B, DeepSeek R1 7B, Phi-3 Mini 4K) under Slurm, preventing data leakage under EU Regulation 2024/1252.
+- **100% European Data Sovereignty**: Designed for institutional on-premises deployment using open-weight foundation models (Qwen 2.5 7B, Llama 3.1 8B, Mistral 7B Instruct v0.2, Phi-3 Mini 4K) under Slurm, preventing data leakage under EU Regulation 2024/1252.
 
 ---
 
@@ -102,7 +102,7 @@ cd code
 chmod +x run_gpu.sh
 ./run_gpu.sh 8080
 ```
-This automatically allocates a GPU node via Slurm inside Apptainer, exposes local open-weight LLMs (Qwen 2.5 7B, Llama 3.2 3B, etc.), and sets up reverse proxy routing.
+This automatically allocates a GPU node via Slurm inside Apptainer, exposes local open-weight LLMs (Qwen 2.5 7B, Llama 3.1 8B, Mistral 7B Instruct v0.2, Phi-3 Mini 4K), and sets up reverse proxy routing.
 
 ---
 
@@ -159,21 +159,23 @@ cd code/evaluation
 python evaluate_100_tests.py
 ```
 
-### 3. Multi-Model Comparative Benchmark (NVIDIA A100 Testbed)
-Evaluates latency, VRAM footprint, and F1-score across local open-weight foundation models:
+### 3. Multi-Turn Conversational DST Benchmark (NVIDIA A100 Testbed)
+Evaluates expected filter accuracy (Macro F1) across 6 conversational test categories over 132 sequential turns and 30 dialogue episodes:
 ```bash
-cd code/evaluation
-python benchmark_all_models.py
+sbatch code/evaluation/run_dst_benchmark.sbatch
+# Or execute locally with python:
+python code/evaluation/benchmark_conversational_dst.py --models mock phi3 mistral llama qwen
 ```
 
-#### Benchmark Summary on NVIDIA A100 (40GB VRAM)
-| Model Variant | Parameters | VRAM (GB) | Latency (s) | Intent Acc | Country F1 | CRM Metal F1 | Macro F1 | Data Sovereignty |
-|---|---|---|---|---|---|---|---|---|
-| **Deterministic Mock (Rule-based)** | N/A | < 0.1 GB | **0.002 s** | 100.0% | 100.0% | 100.0% | **94.6%** | 100% Sovereign (Local CPU) |
-| **Llama 3.2 3B Instruct** | 3.2 B | 6.8 GB | 1.48 s | 100.0% | 97.4% | 94.6% | **89.9%** | 100% Sovereign (Local GPU) |
-| **Phi-3 Mini 4K Instruct** | 3.8 B | 7.9 GB | 1.82 s | 100.0% | 98.1% | 96.0% | **91.8%** | 100% Sovereign (Local GPU) |
-| **Qwen 2.5 7B Instruct** | 7.6 B | 15.4 GB | 2.65 s | 100.0% | 100.0% | 97.8% | **93.4%** | 100% Sovereign (Local GPU) |
-| **DeepSeek R1 Distill Qwen 7B** | 7.6 B | 15.5 GB | 3.84 s | 100.0% | 96.7% | 95.2% | **91.1%** | 100% Sovereign (Local GPU) |
+#### Benchmark Summary on NVIDIA A100 (40GB VRAM) across 132 Conversational Turns
+| Inference Model | Family / Vendor | Parameters | VRAM (GB) | Latency | Search | Expand | Refine | Remove | Context | Reset | Global Macro F1 | Data Sovereignty |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| **Deterministic Baseline (Mock)** | Rule-based | N/A | 0.0 GB | 0.9 ms | 86.0% | 49.8% | 58.8% | 29.9% | 64.8% | 40.0% | **58.5%** | 100% On-Premises (Air-gapped) |
+| **Phi-3 Mini 4K Instruct** | Microsoft | 3.82 B | 7.13 GB | 3.73 s | 61.4% | 36.5% | 32.2% | 13.3% | 30.6% | 90.0% | **36.9%** | 100% On-Premises (Private GPU) |
+| **Mistral 7B Instruct v0.2** | Mistral AI | 7.24 B | 13.49 GB | 3.65 s | **96.2%** | 92.6% | 80.0% | 64.2% | 86.7% | **100.0%** | **80.7%** | 100% Sovereign (European LLM) |
+| **Llama 3.1 8B Instruct** | Meta | 8.03 B | 14.96 GB | 2.47 s | 96.0% | 94.1% | 93.4% | 78.2% | 78.7% | **100.0%** | **88.8%** | 100% On-Premises (Private GPU) |
+| **Qwen 2.5 7B Instruct** | Alibaba | 7.61 B | 14.19 GB | 2.02 s | 93.1% | **96.0%** | **97.5%** | **95.3%** | **90.2%** | **100.0%** | **95.0%** | 100% On-Premises (Private GPU) |
+
 
 ---
 
@@ -198,9 +200,13 @@ CRMsDataSpace-SoftwareX/
 │   │   └── synthetic_escombreras_europe.json # 100 European CRM waste facilities
 │   ├── evaluation/
 │   │   ├── test_battery_100.json       # 100 golden test queries with ground truth
+│   │   ├── test_battery_conversational_dst.json # 132-turn sequential conversational benchmark
 │   │   ├── evaluate_100_tests.py       # Baseline evaluation script
-│   │   ├── benchmark_all_models.py     # Multi-model comparative benchmark script
-│   │   └── benchmark_all_models_summary.txt # Raw empirical benchmark output
+│   │   ├── benchmark_conversational_dst.py # Multi-model conversational DST benchmark suite
+│   │   ├── benchmark_dst_results.json  # Granular JSON metrics across 5 distinct model families
+│   │   ├── benchmark_dst_summary.txt   # Tabulated empirical DST benchmark output
+│   │   ├── benchmark_all_models.py     # 100-query single-turn comparative benchmark script
+│   │   └── benchmark_all_models_summary.txt # Raw single-turn benchmark output
 │   └── static/
 │       ├── favicon.ico                 # Application favicon
 │       └── index.html                  # Dynamic Single-Page App (Leaflet.js + TailwindCSS)
