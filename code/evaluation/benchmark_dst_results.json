@@ -1,0 +1,257 @@
+[
+  {
+    "provider": "mock",
+    "model_name": "Deterministic Baseline (Mock)",
+    "parameters": "Rule-based",
+    "precision": "CPU Heuristics",
+    "sovereignty": "100% On-Premises (Air-gapped)",
+    "vram_gb": 0.0,
+    "total_episodes": 25,
+    "total_turns": 102,
+    "mean_latency_ms": 0.7,
+    "min_latency_ms": 0.0,
+    "max_latency_ms": 2.0,
+    "action_accuracy": 96.08,
+    "exact_state_match_rate": 87.25,
+    "episode_success_rate": 76.0,
+    "macro_f1": 95.51,
+    "country_f1": 92.98,
+    "commodity_f1": 97.5,
+    "facility_f1": 94.8,
+    "status_f1": 96.77,
+    "restored_accuracy": 100.0,
+    "action_breakdown": {
+      "new_search": 100.0,
+      "expand": 96.6,
+      "refine": 89.3,
+      "remove": 100.0,
+      "reset": 100.0
+    },
+    "details": {
+      "country": {
+        "p": 100.0,
+        "r": 86.88,
+        "f1": 92.98
+      },
+      "commodity": {
+        "p": 100.0,
+        "r": 95.12,
+        "f1": 97.5
+      },
+      "facility": {
+        "p": 100.0,
+        "r": 90.11,
+        "f1": 94.8
+      },
+      "status": {
+        "p": 93.75,
+        "r": 100.0,
+        "f1": 96.77
+      }
+    }
+  },
+  {
+    "provider": "llama",
+    "model_name": "Llama 3.2 3B Instruct",
+    "parameters": "3.21B",
+    "precision": "FP16",
+    "sovereignty": "100% On-Premises (Private GPU)",
+    "vram_gb": 5.98,
+    "total_episodes": 25,
+    "total_turns": 102,
+    "mean_latency_ms": 1874.0,
+    "min_latency_ms": 0.0,
+    "max_latency_ms": 4776.6,
+    "action_accuracy": 98.04,
+    "exact_state_match_rate": 34.31,
+    "episode_success_rate": 4.0,
+    "macro_f1": 73.72,
+    "country_f1": 92.36,
+    "commodity_f1": 59.7,
+    "facility_f1": 67.8,
+    "status_f1": 75.0,
+    "restored_accuracy": 91.18,
+    "action_breakdown": {
+      "new_search": 100.0,
+      "expand": 100.0,
+      "refine": 92.9,
+      "remove": 100.0,
+      "reset": 100.0
+    },
+    "details": {
+      "country": {
+        "p": 94.16,
+        "r": 90.62,
+        "f1": 92.36
+      },
+      "commodity": {
+        "p": 76.92,
+        "r": 48.78,
+        "f1": 59.7
+      },
+      "facility": {
+        "p": 69.77,
+        "r": 65.93,
+        "f1": 67.8
+      },
+      "status": {
+        "p": 100.0,
+        "r": 60.0,
+        "f1": 75.0
+      }
+    }
+  },
+  {
+    "provider": "phi3",
+    "model_name": "Phi-3 Mini 4K Instruct",
+    "parameters": "3.82B",
+    "precision": "FP16",
+    "sovereignty": "100% On-Premises (Private GPU)",
+    "vram_gb": 7.13,
+    "total_episodes": 25,
+    "total_turns": 102,
+    "mean_latency_ms": 3046.4,
+    "min_latency_ms": 0.0,
+    "max_latency_ms": 6145.0,
+    "action_accuracy": 95.1,
+    "exact_state_match_rate": 27.45,
+    "episode_success_rate": 0.0,
+    "macro_f1": 55.44,
+    "country_f1": 73.68,
+    "commodity_f1": 57.81,
+    "facility_f1": 77.78,
+    "status_f1": 12.5,
+    "restored_accuracy": 91.18,
+    "action_breakdown": {
+      "new_search": 100.0,
+      "expand": 96.6,
+      "refine": 85.7,
+      "remove": 100.0,
+      "reset": 100.0
+    },
+    "details": {
+      "country": {
+        "p": 92.45,
+        "r": 61.25,
+        "f1": 73.68
+      },
+      "commodity": {
+        "p": 80.43,
+        "r": 45.12,
+        "f1": 57.81
+      },
+      "facility": {
+        "p": 88.73,
+        "r": 69.23,
+        "f1": 77.78
+      },
+      "status": {
+        "p": 100.0,
+        "r": 6.67,
+        "f1": 12.5
+      }
+    }
+  },
+  {
+    "provider": "qwen",
+    "model_name": "Qwen 2.5 7B Instruct",
+    "parameters": "7.61B",
+    "precision": "FP16",
+    "sovereignty": "100% On-Premises (Private GPU)",
+    "vram_gb": 14.19,
+    "total_episodes": 25,
+    "total_turns": 102,
+    "mean_latency_ms": 1807.5,
+    "min_latency_ms": 0.0,
+    "max_latency_ms": 2920.7,
+    "action_accuracy": 100.0,
+    "exact_state_match_rate": 86.27,
+    "episode_success_rate": 80.0,
+    "macro_f1": 97.54,
+    "country_f1": 99.07,
+    "commodity_f1": 96.47,
+    "facility_f1": 97.85,
+    "status_f1": 96.77,
+    "restored_accuracy": 100.0,
+    "action_breakdown": {
+      "new_search": 100.0,
+      "expand": 100.0,
+      "refine": 100.0,
+      "remove": 100.0,
+      "reset": 100.0
+    },
+    "details": {
+      "country": {
+        "p": 98.16,
+        "r": 100.0,
+        "f1": 99.07
+      },
+      "commodity": {
+        "p": 93.18,
+        "r": 100.0,
+        "f1": 96.47
+      },
+      "facility": {
+        "p": 95.79,
+        "r": 100.0,
+        "f1": 97.85
+      },
+      "status": {
+        "p": 93.75,
+        "r": 100.0,
+        "f1": 96.77
+      }
+    }
+  },
+  {
+    "provider": "deepseek",
+    "model_name": "DeepSeek R1 Distill Qwen 7B",
+    "parameters": "7.61B",
+    "precision": "FP16",
+    "sovereignty": "100% On-Premises (Private GPU)",
+    "vram_gb": 14.19,
+    "total_episodes": 25,
+    "total_turns": 102,
+    "mean_latency_ms": 4617.0,
+    "min_latency_ms": 0.1,
+    "max_latency_ms": 5164.9,
+    "action_accuracy": 33.33,
+    "exact_state_match_rate": 8.82,
+    "episode_success_rate": 0.0,
+    "macro_f1": 0.0,
+    "country_f1": 0.0,
+    "commodity_f1": 0.0,
+    "facility_f1": 0.0,
+    "status_f1": 0.0,
+    "restored_accuracy": 95.1,
+    "action_breakdown": {
+      "new_search": 100.0,
+      "expand": 0.0,
+      "refine": 0.0,
+      "remove": 0.0,
+      "reset": 100.0
+    },
+    "details": {
+      "country": {
+        "p": 100.0,
+        "r": 0.0,
+        "f1": 0.0
+      },
+      "commodity": {
+        "p": 100.0,
+        "r": 0.0,
+        "f1": 0.0
+      },
+      "facility": {
+        "p": 100.0,
+        "r": 0.0,
+        "f1": 0.0
+      },
+      "status": {
+        "p": 100.0,
+        "r": 0.0,
+        "f1": 0.0
+      }
+    }
+  }
+]
