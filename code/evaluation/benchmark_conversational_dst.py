@@ -67,6 +67,12 @@ MODEL_METADATA = {
         "precision": "FP16",
         "sovereignty": "100% On-Premises (Private GPU)"
     },
+    "mistral": {
+        "name": "Mistral 7B Instruct v0.2",
+        "params": "7.24B",
+        "precision": "FP16",
+        "sovereignty": "100% On-Premises (Private GPU)"
+    },
     "deepseek": {
         "name": "DeepSeek R1 Distill Qwen 7B",
         "params": "7.61B",
@@ -379,8 +385,8 @@ def generate_latex_dst_table(results: List[Dict[str, Any]]) -> str:
 
 def main():
     parser = argparse.ArgumentParser(description="SoftwareX Conversational DST Benchmark")
-    parser.add_argument("--models", nargs="+", default=["mock", "llama", "phi3", "llama8b", "qwen"],
-                        help="List of model keys to benchmark: mock, llama, phi3, llama8b, qwen")
+    parser.add_argument("--models", nargs="+", default=["mock", "phi3", "mistral", "llama8b", "qwen"],
+                        help="List of model keys to benchmark: mock, phi3, mistral, llama8b, qwen")
     args = parser.parse_args()
 
     with open(BENCHMARK_FILE, "r", encoding="utf-8") as f:
@@ -411,7 +417,7 @@ def main():
         if entry:
             existing_map[entry["provider"]] = entry
 
-    order = ["mock", "llama", "phi3", "llama8b", "qwen"]
+    order = ["mock", "phi3", "mistral", "llama8b", "qwen"]
     benchmark_results = []
     for k in order:
         if k in existing_map:

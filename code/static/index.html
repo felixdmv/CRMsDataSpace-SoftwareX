@@ -349,9 +349,9 @@
               title="Execution Engine Mode"
             >
               <option value="rules">⚡ Deterministic Engine (Standalone / Zero-GPU)</option>
+              <option value="mistral">🇪🇺 Mistral 7B Instruct v0.2 (Local GPU)</option>
               <option value="qwen">🚀 Qwen 2.5 7B (Local GPU)</option>
               <option value="llama8b">🦙 Meta Llama 3.1 8B (Local GPU)</option>
-              <option value="llama">🦙 Llama 3.2 3B (Local GPU)</option>
               <option value="phi3">🔬 Phi-3 Mini 4K (Local GPU)</option>
               <option value="gemini">✨ Gemini 2.0 / 1.5 (Cloud API)</option>
               <option value="openai">🤖 OpenAI GPT-4o (Cloud API)</option>
@@ -3884,7 +3884,7 @@
     // HELPER FUNCTIONS FOR FORM & SELECTOR
     // ==========================================
     function changeLLMProvider(val) {
-      if (['qwen', 'llama8b', 'llama', 'phi3', 'gemma'].includes(val)) {
+      if (['mistral', 'qwen', 'llama8b', 'phi3', 'gemma'].includes(val)) {
         if (window.cudaAvailable === false) {
           alert("Notice: No CUDA GPU detected on host. Running 7B+ local LLMs on CPU may be slow or exceed memory. The Deterministic Engine (Standalone) or Cloud APIs are recommended for CPU-only testing.");
         }
@@ -4194,7 +4194,7 @@
     let modelPollInterval = null;
 
     async function triggerModelPreload(provider) {
-      const localModels = ['qwen', 'llama8b', 'llama', 'phi3'];
+      const localModels = ['mistral', 'qwen', 'llama8b', 'phi3'];
       if (!localModels.includes(provider)) {
         hideModelLoadingBanner();
         return;
@@ -4270,8 +4270,8 @@
       });
 
       const names = {
+        'mistral': 'Mistral 7B Instruct v0.2',
         'llama8b': 'Meta Llama 3.1 8B',
-        'llama': 'Llama 3.2 3B',
         'qwen': 'Qwen 2.5 7B',
         'phi3': 'Phi-3 Mini 4K',
         'gemma': 'Gemma 2 2B'
@@ -4398,8 +4398,8 @@
       }
 
       const modelNames = {
+        'mistral': 'Mistral 7B Instruct v0.2',
         'llama8b': 'Meta Llama 3.1 8B',
-        'llama': 'Llama 3.2 3B',
         'qwen': 'Qwen 2.5 7B',
         'phi3': 'Phi-3 Mini 4K',
         'gemma': 'Gemma 2 2B'
@@ -4462,12 +4462,12 @@
           indicator.textContent = 'OpenAI GPT-4o (Cloud API)';
         } else if (provider === 'claude') {
           indicator.textContent = 'Anthropic Claude 3.5 / 3.7 (Cloud API / Claude Code)';
+        } else if (provider === 'mistral') {
+          indicator.textContent = 'Mistral 7B Instruct v0.2 (Local GPU)';
         } else if (provider === 'qwen') {
           indicator.textContent = 'Qwen 2.5 7B (Local GPU)';
         } else if (provider === 'llama8b') {
           indicator.textContent = 'Meta Llama 3.1 8B (Local GPU)';
-        } else if (provider === 'llama') {
-          indicator.textContent = 'Llama 3.2 3B (Local GPU)';
         } else if (provider === 'phi3') {
           indicator.textContent = 'Phi-3 Mini 4K (Local GPU)';
         } else {

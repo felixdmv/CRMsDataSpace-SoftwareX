@@ -19,7 +19,7 @@ echo "=========================================================="
 apptainer exec --nv \
   --bind /home/felix.demiguel:/home/felix.demiguel \
   /opt/ohpc/pub/containers/nvidia-pytorch-24.03-uv.sif \
-  python3 -u code/evaluation/benchmark_conversational_dst.py --models llama8b
+  python3 -u code/evaluation/benchmark_conversational_dst.py --models mistral
 
 echo "=========================================================="
 echo " Finished Conversational DST Benchmark: $(date)"

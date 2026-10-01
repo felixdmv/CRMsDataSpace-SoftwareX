@@ -4,8 +4,8 @@
 Model                          | Search   | Expand   | Refine   | Remove   | Context  | Reset    | Global F1 
 ---------------------------------------------------------------------------------------------------------
 Deterministic Baseline (Mock)  | 86.0   % | 49.8   % | 58.8   % | 29.9   % | 64.8   % | 40.0   % | 58.5     %
-Llama 3.2 3B Instruct          | 81.4   % | 74.0   % | 42.2   % | 22.8   % | 55.5   % | 100.0  % | 52.2     %
 Phi-3 Mini 4K Instruct         | 61.4   % | 36.5   % | 32.2   % | 13.3   % | 30.6   % | 90.0   % | 36.9     %
+Mistral 7B Instruct v0.2       | 96.2   % | 92.6   % | 80.0   % | 64.2   % | 86.7   % | 100.0  % | 80.7     %
 Llama 3.1 8B Instruct          | 96.0   % | 94.1   % | 93.4   % | 78.2   % | 78.7   % | 100.0  % | 88.8     %
 Qwen 2.5 7B Instruct           | 93.1   % | 96.0   % | 97.5   % | 95.3   % | 90.2   % | 100.0  % | 95.0     %
 =========================================================================================================
@@ -23,8 +23,8 @@ LATEX TABLE OUTPUT FOR MANUSCRIPT:
 \textbf{Inference Model} & \textbf{Search (\%)} & \textbf{Expansion (\%)} & \textbf{Refinement (\%)} & \textbf{Removal (\%)} & \textbf{Context (\%)} & \textbf{Reset (\%)} & \textbf{Global Macro F1 (\%)} \\
 \hline
 Deterministic Baseline (Mock) & 86.0 & 49.8 & 58.8 & 29.9 & 64.8 & 40.0 & \textbf{58.5} \\
-Llama 3.2 3B Instruct & 81.4 & 74.0 & 42.2 & 22.8 & 55.5 & 100.0 & \textbf{52.2} \\
 Phi-3 Mini 4K Instruct & 61.4 & 36.5 & 32.2 & 13.3 & 30.6 & 90.0 & \textbf{36.9} \\
+Mistral 7B Instruct v0.2 & 96.2 & 92.6 & 80.0 & 64.2 & 86.7 & 100.0 & \textbf{80.7} \\
 Llama 3.1 8B Instruct & 96.0 & 94.1 & 93.4 & 78.2 & 78.7 & 100.0 & \textbf{88.8} \\
 Qwen 2.5 7B Instruct & 93.1 & 96.0 & 97.5 & 95.3 & 90.2 & 100.0 & \textbf{95.0} \\
 \hline
