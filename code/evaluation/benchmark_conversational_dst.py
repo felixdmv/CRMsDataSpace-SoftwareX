@@ -61,6 +61,12 @@ MODEL_METADATA = {
         "precision": "FP16",
         "sovereignty": "100% On-Premises (Private GPU)"
     },
+    "llama8b": {
+        "name": "Llama 3.1 8B Instruct",
+        "params": "8.03B",
+        "precision": "FP16",
+        "sovereignty": "100% On-Premises (Private GPU)"
+    },
     "deepseek": {
         "name": "DeepSeek R1 Distill Qwen 7B",
         "params": "7.61B",
@@ -373,8 +379,8 @@ def generate_latex_dst_table(results: List[Dict[str, Any]]) -> str:
 
 def main():
     parser = argparse.ArgumentParser(description="SoftwareX Conversational DST Benchmark")
-    parser.add_argument("--models", nargs="+", default=["mock", "llama", "phi3", "qwen", "deepseek"],
-                        help="List of model keys to benchmark: mock, llama, phi3, qwen, deepseek")
+    parser.add_argument("--models", nargs="+", default=["mock", "llama", "phi3", "llama8b", "qwen"],
+                        help="List of model keys to benchmark: mock, llama, phi3, llama8b, qwen")
     args = parser.parse_args()
 
     with open(BENCHMARK_FILE, "r", encoding="utf-8") as f:
@@ -405,14 +411,11 @@ def main():
         if entry:
             existing_map[entry["provider"]] = entry
 
-    order = ["mock", "llama", "phi3", "qwen", "deepseek"]
+    order = ["mock", "llama", "phi3", "llama8b", "qwen"]
     benchmark_results = []
     for k in order:
         if k in existing_map:
             benchmark_results.append(existing_map[k])
-    for k, v in existing_map.items():
-        if k not in order:
-            benchmark_results.append(v)
 
     with open(RESULTS_JSON, "w", encoding="utf-8") as f:
         json.dump(benchmark_results, f, indent=2, ensure_ascii=False)

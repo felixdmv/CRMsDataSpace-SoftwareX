@@ -122,6 +122,10 @@ MODEL_REPO_MAP = {
     "llama": "unsloth/Llama-3.2-3B-Instruct",
     "llama3": "unsloth/Llama-3.2-3B-Instruct",
     "llama-3.2": "unsloth/Llama-3.2-3B-Instruct",
+    "llama8b": "/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1",
+    "llama-8b": "/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1",
+    "llama3.1": "/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1",
+    "llama-3.1": "/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1",
     "gemma": "google/gemma-2-2b-it",
     "gemma2": "google/gemma-2-2b-it",
     "deepseek": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
@@ -249,14 +253,21 @@ def load_local_model_weights(provider: str) -> bool:
         dtype = torch.float16 if use_cuda else torch.float32
         
         print(f"[LLM Client] Loading local model '{repo_id}' onto GPU (CUDA)...")
+        is_local_path = os.path.exists(repo_id)
         trust_remote = (repo_id not in ["microsoft/Phi-3-mini-4k-instruct"])
-        tokenizer = AutoTokenizer.from_pretrained(repo_id, cache_dir=str(cache_dir), trust_remote_code=trust_remote)
+        tokenizer = AutoTokenizer.from_pretrained(
+            repo_id, 
+            cache_dir=str(cache_dir) if not is_local_path else None, 
+            local_files_only=is_local_path,
+            trust_remote_code=trust_remote
+        )
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
             
         model = AutoModelForCausalLM.from_pretrained(
             repo_id,
-            cache_dir=str(cache_dir),
+            cache_dir=str(cache_dir) if not is_local_path else None,
+            local_files_only=is_local_path,
             torch_dtype=dtype,
             device_map="auto" if use_cuda else None,
             trust_remote_code=trust_remote
