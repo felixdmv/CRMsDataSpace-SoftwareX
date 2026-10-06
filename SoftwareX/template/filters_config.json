@@ -1,29 +1,29 @@
 {
   "title": "General-Purpose GIS Architecture Template — Elsevier SoftwareX",
-  "description": "Domain-Agnostic Conversational Spatial Search Sandbox. Select a domain preset to begin.",
+  "description": "Domain-Agnostic Conversational Spatial Search Sandbox. Select an Area of Interest and domain preset to begin.",
   "active_preset": null,
+  "active_area": null,
+  "active_subdivision": null,
   "territory": {
-    "area_id": "europe",
-    "area_name": "Europe",
-    "name": "Europe",
+    "area_id": null,
+    "area_name": "Global Overview",
+    "name": "Global Canvas",
     "subdivision_name": null,
     "center": [
-      50.0,
-      10.0
+      20.0,
+      0.0
     ],
-    "zoom": 4.2,
+    "zoom": 2.5,
     "bounds": [
       [
-        35.0,
-        -11.0
+        -60.0,
+        -170.0
       ],
       [
-        70.0,
-        32.0
+        75.0,
+        175.0
       ]
     ]
   },
-  "filter_fields": [],
-  "active_area": "europe",
-  "active_subdivision": null
+  "filter_fields": []
 }

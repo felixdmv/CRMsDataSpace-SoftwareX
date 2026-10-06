@@ -613,11 +613,24 @@ GEOGRAPHIC_ALIASES: Dict[str, Dict[str, str]] = {
     "western australia": {"type": "state", "canonical": "Western Australia"}
 }
 
-DEFAULT_AREA_ID = "usa"
+DEFAULT_AREA_ID = "europe"
 
-def get_area_territory(area_id: str, subdivision_name: Optional[str] = None) -> Dict[str, Any]:
+def get_area_territory(area_id: Optional[str] = None, subdivision_name: Optional[str] = None) -> Dict[str, Any]:
     """Generates territory config dictionary for an Area of Interest or subdivision."""
-    area = AREAS_OF_INTEREST.get(area_id, AREAS_OF_INTEREST[DEFAULT_AREA_ID])
+    if not area_id or area_id not in AREAS_OF_INTEREST:
+        return {
+            "area_id": None,
+            "area_name": "Global Overview",
+            "name": "Global Canvas",
+            "subdivision_name": None,
+            "center": [20.0, 0.0],
+            "zoom": 2.5,
+            "bounds": [
+                [-60.0, -170.0],
+                [75.0, 175.0]
+            ]
+        }
+    area = AREAS_OF_INTEREST[area_id]
     if subdivision_name and subdivision_name in area.get("subdivisions", {}):
         sub = area["subdivisions"][subdivision_name]
         return {
@@ -644,11 +657,11 @@ def get_area_territory(area_id: str, subdivision_name: Optional[str] = None) -> 
 
 EMPTY_CONFIG: Dict[str, Any] = {
     "title": "General-Purpose GIS Architecture Template — Elsevier SoftwareX",
-    "description": "Domain-Agnostic Conversational Spatial Search Sandbox. Select a domain preset and Area of Interest to begin.",
+    "description": "Domain-Agnostic Conversational Spatial Search Sandbox. Select an Area of Interest and domain preset to begin.",
     "active_preset": None,
-    "active_area": DEFAULT_AREA_ID,
+    "active_area": None,
     "active_subdivision": None,
-    "territory": get_area_territory(DEFAULT_AREA_ID),
+    "territory": get_area_territory(None),
     "filter_fields": []
 }
 
@@ -989,7 +1002,7 @@ def load_config() -> Dict[str, Any]:
                     _CONFIG = json.load(f)
             except Exception:
                 _CONFIG = {}
-        if not _CONFIG or "territory" not in _CONFIG:
+        if not _CONFIG:
             _CONFIG = json.loads(json.dumps(EMPTY_CONFIG))
             save_config(_CONFIG)
     return _CONFIG
@@ -1678,7 +1691,7 @@ class GenericGISHandler(SimpleHTTPRequestHandler):
                     raise ValueError(f"Unknown preset: {preset_id}")
 
                 cfg = load_config()
-                active_area = cfg.get("active_area", DEFAULT_AREA_ID)
+                active_area = cfg.get("active_area")
                 active_sub = cfg.get("active_subdivision")
 
                 new_cfg = json.loads(json.dumps(PRESETS[preset_id]))

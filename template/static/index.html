@@ -156,6 +156,16 @@
         </svg>
       </button>
 
+      <!-- Wizard / Guide button -->
+      <button 
+        type="button" 
+        onclick="openOnboardingModal()" 
+        class="bg-cyan-950/80 hover:bg-cyan-900 text-cyan-300 hover:text-white border border-cyan-700/80 text-xs px-2.5 py-1.5 rounded-md transition cursor-pointer flex items-center gap-1.5 shadow-sm font-medium"
+        title="Open interactive 3-step setup guide"
+      >
+        <span>🧭 Setup Guide</span>
+      </button>
+
       <!-- Reset button -->
       <button 
         type="button" 
@@ -201,12 +211,12 @@
               <span class="h-4 w-4 rounded-full bg-cyan-600 text-white flex items-center justify-center text-[10px]">1</span>
               <span>Area of Interest (AOI)</span>
             </span>
-            <span id="aoi-active-pill" class="text-[10px] text-cyan-400 font-mono font-semibold">USA 🇺🇸</span>
+            <span id="aoi-active-pill" class="text-[10px] text-slate-400 font-mono italic">None 🌍</span>
           </div>
 
           <!-- 5 Regional Buttons -->
           <div class="grid grid-cols-5 gap-1 text-[11px]">
-            <button onclick="selectArea('usa')" id="btn-aoi-usa" class="aoi-btn py-1.5 rounded text-center transition flex flex-col items-center bg-cyan-600 text-white font-medium shadow cursor-pointer">
+            <button onclick="selectArea('usa')" id="btn-aoi-usa" class="aoi-btn py-1.5 rounded text-center transition flex flex-col items-center bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer">
               <span class="text-sm">🇺🇸</span>
               <span class="text-[9.5px]">USA</span>
             </button>
@@ -231,8 +241,8 @@
           <!-- Subdivisions Dropdown (Specific State or Country) -->
           <div class="pt-1">
             <label id="subdivision-label" class="block text-[10px] text-slate-400 mb-0.5">Filter Specific State / Country (Optional):</label>
-            <select id="subdivision-select" onchange="onSubdivisionChange()" class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-slate-200 focus:border-cyan-500">
-              <option value="">All States in USA</option>
+            <select id="subdivision-select" onchange="onSubdivisionChange()" disabled class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-slate-200 focus:border-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed">
+              <option value="">Select an AOI first...</option>
             </select>
           </div>
         </div>
@@ -445,24 +455,216 @@
 
       </div>
 
-      <!-- INITIAL EMPTY STATE GUIDE CALLOUT -->
-      <div id="initial-guide-overlay" class="absolute top-16 left-1/2 -translate-x-1/2 z-[999] pointer-events-none transition-all duration-300">
-        <div class="bg-slate-900/95 backdrop-blur-md border border-cyan-500/40 px-5 py-3 rounded-xl shadow-2xl pointer-events-auto max-w-lg text-center space-y-1.5">
-          <div class="flex items-center justify-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider">
-            <span>🌍 Real-World Map & Area of Interest Guide</span>
+      <!-- INTERACTIVE ONBOARDING SETUP MODAL (STEP 1: AOI -> STEP 2: DOMAIN -> STEP 3: GENERATE) -->
+      <div id="onboarding-modal" class="absolute inset-0 z-[1500] flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 transition-all duration-300">
+        <div class="bg-slate-900 border border-slate-700/90 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[92vh] overflow-y-auto p-6 text-slate-100 relative space-y-5">
+          
+          <!-- Close Button -->
+          <button 
+            type="button" 
+            onclick="closeOnboardingModal()" 
+            class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition cursor-pointer"
+            title="Close setup guide"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          <!-- Modal Header -->
+          <div class="flex items-start gap-3.5 pr-8">
+            <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 text-white text-xl shrink-0">
+              🧭
+            </div>
+            <div>
+              <h2 class="text-base font-bold text-white tracking-tight flex items-center gap-2">
+                <span>Setup Guide: GIS Sandbox Initialization</span>
+                <span class="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-[10px] px-2 py-0.5 rounded-full font-mono font-medium">3 Steps</span>
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5 leading-relaxed">
+                Configure your cartographic workspace in three simple steps: select an Area of Interest (AOI), choose a thematic domain schema, and procedurally generate spatial facilities.
+              </p>
+            </div>
           </div>
-          <p id="guide-overlay-text" class="text-xs text-slate-200 leading-relaxed">
-            Select an <strong>Area of Interest</strong> and a <strong>Domain</strong> on the left panel to populate real GPS facilities.
-          </p>
-          <div id="guide-overlay-actions" class="text-[11px] text-slate-400 flex items-center justify-center gap-2 pt-1 font-mono">
-            <button onclick="loadPreset('energy')" class="bg-blue-600 hover:bg-blue-500 text-white font-sans px-2.5 py-0.5 rounded text-[11px] font-semibold cursor-pointer shadow">
-              ⚡ Choose Energy
-            </button>
-            <span>·</span>
-            <button onclick="loadPreset('smartcity')" class="bg-blue-600 hover:bg-blue-500 text-white font-sans px-2.5 py-0.5 rounded text-[11px] font-semibold cursor-pointer shadow">
-              🏙️ Choose Smart City
+
+          <!-- STEP 1: SELECT AOI -->
+          <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-4 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="h-5 w-5 rounded-full bg-cyan-600 text-white flex items-center justify-center text-xs font-bold font-mono">1</span>
+                <span class="text-xs font-bold text-slate-200 uppercase tracking-wider">Step 1: Select Area of Interest (AOI)</span>
+              </div>
+              <span id="wizard-aoi-status" class="text-[11px] text-amber-400 font-mono font-semibold flex items-center gap-1">
+                <span>Pending</span>
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-400">
+              Choose a geographic territory. The background map will smoothly fly to the coordinates and spatial extent of that region:
+            </p>
+
+            <!-- 5 AOI cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-1">
+              <button 
+                type="button" 
+                onclick="selectWizardArea('europe')" 
+                id="wizard-btn-aoi-europe"
+                class="wizard-aoi-btn p-2.5 rounded-lg border border-slate-800 bg-slate-900/90 hover:bg-slate-800 hover:border-slate-700 transition flex flex-col items-center justify-center text-center gap-1 cursor-pointer group"
+              >
+                <span class="text-2xl group-hover:scale-110 transition-transform">🇪🇺</span>
+                <span class="text-xs font-semibold text-slate-200">Europe</span>
+                <span class="text-[9.5px] text-slate-400">10 nations</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="selectWizardArea('usa')" 
+                id="wizard-btn-aoi-usa"
+                class="wizard-aoi-btn p-2.5 rounded-lg border border-slate-800 bg-slate-900/90 hover:bg-slate-800 hover:border-slate-700 transition flex flex-col items-center justify-center text-center gap-1 cursor-pointer group"
+              >
+                <span class="text-2xl group-hover:scale-110 transition-transform">🇺🇸</span>
+                <span class="text-xs font-semibold text-slate-200">United States</span>
+                <span class="text-[9.5px] text-slate-400">9 states</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="selectWizardArea('south_america')" 
+                id="wizard-btn-aoi-south_america"
+                class="wizard-aoi-btn p-2.5 rounded-lg border border-slate-800 bg-slate-900/90 hover:bg-slate-800 hover:border-slate-700 transition flex flex-col items-center justify-center text-center gap-1 cursor-pointer group"
+              >
+                <span class="text-2xl group-hover:scale-110 transition-transform">🌎</span>
+                <span class="text-xs font-semibold text-slate-200">South America</span>
+                <span class="text-[9.5px] text-slate-400">9 nations</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="selectWizardArea('middle_east')" 
+                id="wizard-btn-aoi-middle_east"
+                class="wizard-aoi-btn p-2.5 rounded-lg border border-slate-800 bg-slate-900/90 hover:bg-slate-800 hover:border-slate-700 transition flex flex-col items-center justify-center text-center gap-1 cursor-pointer group"
+              >
+                <span class="text-2xl group-hover:scale-110 transition-transform">🏜️</span>
+                <span class="text-xs font-semibold text-slate-200">Middle East</span>
+                <span class="text-[9.5px] text-slate-400">6 nations</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="selectWizardArea('southeast_asia_oceania')" 
+                id="wizard-btn-aoi-southeast_asia_oceania"
+                class="wizard-aoi-btn p-2.5 rounded-lg border border-slate-800 bg-slate-900/90 hover:bg-slate-800 hover:border-slate-700 transition flex flex-col items-center justify-center text-center gap-1 cursor-pointer group"
+              >
+                <span class="text-2xl group-hover:scale-110 transition-transform">🌏</span>
+                <span class="text-xs font-semibold text-slate-200">SE Asia & Oceania</span>
+                <span class="text-[9.5px] text-slate-400">8 nations</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 2: SELECT DOMAIN -->
+          <div id="wizard-step-2" class="bg-slate-950/70 border border-slate-800 rounded-xl p-4 space-y-2.5 transition-all">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="h-5 w-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold font-mono">2</span>
+                <span class="text-xs font-bold text-slate-200 uppercase tracking-wider">Step 2: Select Thematic Domain Schema</span>
+              </div>
+              <span id="wizard-domain-status" class="text-[11px] text-amber-400 font-mono font-semibold flex items-center gap-1">
+                <span>Pending</span>
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-400">
+              Load a dynamic schema with multidimensional categorical attributes, operational states, and semantic filter synonyms:
+            </p>
+
+            <!-- 3 Domain cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+              <button 
+                type="button" 
+                onclick="selectWizardPreset('energy')" 
+                id="wizard-btn-preset-energy"
+                class="wizard-domain-btn p-3 rounded-lg border border-slate-800 bg-slate-900/90 hover:bg-slate-800 hover:border-slate-700 transition flex flex-col text-left gap-1.5 cursor-pointer group"
+              >
+                <div class="flex items-center justify-between w-full">
+                  <span class="text-lg">⚡</span>
+                  <span class="text-[10px] text-cyan-400 font-mono font-medium">4 dimensions</span>
+                </div>
+                <div class="font-bold text-xs text-white group-hover:text-cyan-300 transition-colors">Renewable Energy</div>
+                <p class="text-[10px] text-slate-400 leading-snug">Solar, wind, battery storage (BESS), hydroelectric, and ESG compliance grades.</p>
+              </button>
+              
+              <button 
+                type="button" 
+                onclick="selectWizardPreset('smartcity')" 
+                id="wizard-btn-preset-smartcity"
+                class="wizard-domain-btn p-3 rounded-lg border border-slate-800 bg-slate-900/90 hover:bg-slate-800 hover:border-slate-700 transition flex flex-col text-left gap-1.5 cursor-pointer group"
+              >
+                <div class="flex items-center justify-between w-full">
+                  <span class="text-lg">🏙️</span>
+                  <span class="text-[10px] text-blue-400 font-mono font-medium">3 dimensions</span>
+                </div>
+                <div class="font-bold text-xs text-white group-hover:text-blue-300 transition-colors">Smart City</div>
+                <p class="text-[10px] text-slate-400 leading-snug">Hospitals, public schools, metro transit hubs, police, and response tiers.</p>
+              </button>
+
+              <button 
+                type="button" 
+                onclick="selectWizardPreset('custom')" 
+                id="wizard-btn-preset-custom"
+                class="wizard-domain-btn p-3 rounded-lg border border-slate-800 bg-slate-900/90 hover:bg-slate-800 hover:border-slate-700 transition flex flex-col text-left gap-1.5 cursor-pointer group"
+              >
+                <div class="flex items-center justify-between w-full">
+                  <span class="text-lg">✨</span>
+                  <span class="text-[10px] text-rose-400 font-mono font-medium">Blank canvas</span>
+                </div>
+                <div class="font-bold text-xs text-white group-hover:text-rose-300 transition-colors">Custom Studio</div>
+                <p class="text-[10px] text-slate-400 leading-snug">Start from a clean canvas to author your own domain dimensions and options.</p>
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 3: GENERATE POINTS -->
+          <div id="wizard-step-3" class="bg-slate-950/70 border border-slate-800 rounded-xl p-4 space-y-3 transition-all">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold font-mono">3</span>
+                <span class="text-xs font-bold text-slate-200 uppercase tracking-wider">Step 3: Generate Procedural Facilities</span>
+              </div>
+              <span id="wizard-points-status" class="text-[11px] text-slate-400 font-mono flex items-center gap-1">
+                <span>0 facilities</span>
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-400">
+              Synthesize spatial facilities placed strictly on land within the territorial anchors of the chosen Area of Interest:
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center gap-3 pt-1">
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <label class="text-xs text-slate-300 font-medium whitespace-nowrap">Quantity:</label>
+                <select id="wizard-count-select" class="bg-slate-900 border border-slate-700 rounded-lg text-xs text-white px-3 py-2 focus:border-emerald-500">
+                  <option value="25">25 facilities</option>
+                  <option value="40" selected>40 facilities (Recommended)</option>
+                  <option value="80">80 facilities</option>
+                </select>
+              </div>
+              <button 
+                type="button" 
+                onclick="wizardGeneratePoints()" 
+                id="wizard-btn-generate"
+                class="w-full sm:flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <span>🎲 Generate Facilities & Start Exploring</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- FOOTER NOTE -->
+          <div class="flex items-center justify-between pt-1 border-t border-slate-800 text-[11px] text-slate-400">
+            <span>💡 You can reopen this guide at any time by clicking <strong>🧭 Setup Guide</strong> in the top navigation bar.</span>
+            <button 
+              type="button" 
+              onclick="closeOnboardingModal()" 
+              class="text-slate-400 hover:text-white underline cursor-pointer text-xs"
+            >
+              Skip / Close
             </button>
           </div>
+
         </div>
       </div>
 
@@ -729,29 +931,35 @@
       initInspectorResizer();
       await loadAppConfig();
       await loadPointsData();
-      submitManualFilters();
+      checkInitialOnboarding();
     });
 
     // --------------------------------------------------------------------------
-    // REAL WORLD LEAFLET MAP INITIALIZATION
+    // REAL WORLD LEAFLET MAP INITIALIZATION (ESRI DARK GRAY CANVAS — NO API KEY)
     // --------------------------------------------------------------------------
     function initMap() {
-      const defaultCenter = [39.8283, -98.5795];
-      const defaultZoom = 4.5;
+      const defaultCenter = [20.0, 0.0];
+      const defaultZoom = 2.2;
 
       leafletMap = L.map('map', {
         center: defaultCenter,
         zoom: defaultZoom,
         minZoom: 2,
-        maxZoom: 18,
+        maxZoom: 19,
         zoomControl: false
       });
 
-      // CartoDB Dark Matter basemap (100% free, dark slate theme)
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        subdomains: 'abcd',
+      // Esri World Dark Gray Canvas basemap (100% free, dark slate theme, zero API key required)
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+        maxNativeZoom: 16,
         maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>'
+        attribution: '&copy; <a href="https://www.esri.com/" target="_blank">Esri</a> &mdash; Esri, DeLorme, NAVTEQ'
+      }).addTo(leafletMap);
+
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+        maxNativeZoom: 16,
+        maxZoom: 19,
+        attribution: ''
       }).addTo(leafletMap);
 
       L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
@@ -770,11 +978,11 @@
     // --------------------------------------------------------------------------
     // AREA OF INTEREST (AOI) CONTROLLER
     // --------------------------------------------------------------------------
-    async function selectArea(areaId) {
-      if (!areasCatalog[areaId]) return;
+    async function selectArea(areaId, skipFly = false) {
+      if (!areasCatalog || !areasCatalog[areaId]) return;
       const area = areasCatalog[areaId];
 
-      // Update button visual styles
+      // Update button visual styles on left sidebar
       document.querySelectorAll('.aoi-btn').forEach(btn => {
         btn.classList.remove('bg-cyan-600', 'text-white', 'shadow');
         btn.classList.add('bg-slate-800', 'text-slate-300');
@@ -788,20 +996,23 @@
       // Populate subdivisions select dropdown
       const subSelect = document.getElementById('subdivision-select');
       const subLabel = document.getElementById('subdivision-label');
-      subSelect.innerHTML = `<option value="">All in ${area.name}</option>`;
-      subLabel.textContent = `Filter Specific ${area.subdivisions_type || 'Subdivision'}:`;
+      if (subSelect && subLabel) {
+        subSelect.disabled = false;
+        subSelect.innerHTML = `<option value="">All in ${area.name}</option>`;
+        subLabel.textContent = `Filter Specific ${area.subdivisions_type || 'Subdivision'}:`;
 
-      const subs = area.subdivisions || {};
-      Object.keys(subs).sort().forEach(sname => {
-        const opt = document.createElement('option');
-        opt.value = sname;
-        opt.textContent = sname;
-        subSelect.appendChild(opt);
-      });
+        const subs = area.subdivisions || {};
+        Object.keys(subs).sort().forEach(sname => {
+          const opt = document.createElement('option');
+          opt.value = sname;
+          opt.textContent = sname;
+          subSelect.appendChild(opt);
+        });
+      }
 
-      // Fly map to area bounds
-      if (leafletMap && area.bounds) {
-        leafletMap.flyToBounds(area.bounds, { duration: 1.0, maxZoom: area.zoom || 5 });
+      // Smoothly fly map to area bounds
+      if (leafletMap && area.bounds && !skipFly) {
+        leafletMap.flyToBounds(area.bounds, { duration: 1.2, maxZoom: area.zoom || 5, padding: [25, 25] });
       }
 
       // Update backend area state
@@ -815,13 +1026,43 @@
         currentConfig = resData.config;
         updateScopeUI();
         renderDynamicSuggestions();
+        if (typeof updateWizardUI === 'function') {
+          updateWizardUI();
+        }
       } catch (e) {
         console.error("Error setting area:", e);
       }
     }
 
+    function resetAreaUI() {
+      document.querySelectorAll('.aoi-btn').forEach(btn => {
+        btn.classList.remove('bg-cyan-600', 'text-white', 'shadow');
+        btn.classList.add('bg-slate-800', 'text-slate-300');
+      });
+      const subSelect = document.getElementById('subdivision-select');
+      const subLabel = document.getElementById('subdivision-label');
+      if (subSelect && subLabel) {
+        subSelect.innerHTML = `<option value="">Select an AOI first...</option>`;
+        subSelect.disabled = true;
+        subLabel.textContent = `Filter Specific Subdivision:`;
+      }
+      const hdrIcon = document.getElementById('aoi-header-icon');
+      if (hdrIcon) hdrIcon.textContent = '🌍';
+      const hdrName = document.getElementById('aoi-header-name');
+      if (hdrName) hdrName.textContent = 'World Map (No AOI)';
+      const scopeFlag = document.getElementById('scope-flag');
+      if (scopeFlag) scopeFlag.textContent = '🌍';
+      const scopeReg = document.getElementById('scope-region-name');
+      if (scopeReg) scopeReg.textContent = 'Global Overview';
+      const scopeSub = document.getElementById('scope-subdivision-name');
+      if (scopeSub) scopeSub.textContent = 'No AOI selected';
+      const aoiPill = document.getElementById('aoi-active-pill');
+      if (aoiPill) aoiPill.textContent = 'None 🌍';
+    }
+
     async function onSubdivisionChange() {
-      const areaId = currentConfig.active_area || 'usa';
+      const areaId = currentConfig.active_area;
+      if (!areaId) return;
       const subName = document.getElementById('subdivision-select').value || null;
       const area = areasCatalog[areaId];
 
@@ -850,18 +1091,28 @@
     }
 
     function updateScopeUI() {
-      const activeArea = currentConfig.active_area || 'usa';
+      const activeArea = currentConfig.active_area;
       const activeSub = currentConfig.active_subdivision || null;
-      const areaInfo = areasCatalog[activeArea] || { name: 'World Map', icon: '🌍' };
+      if (!activeArea || !areasCatalog[activeArea]) {
+        resetAreaUI();
+        return;
+      }
+      const areaInfo = areasCatalog[activeArea];
 
-      document.getElementById('aoi-header-icon').textContent = areaInfo.icon || '🌍';
-      document.getElementById('aoi-header-name').textContent = activeSub ? `${areaInfo.name} (${activeSub})` : areaInfo.name;
+      const hdrIcon = document.getElementById('aoi-header-icon');
+      if (hdrIcon) hdrIcon.textContent = areaInfo.icon || '🌍';
+      const hdrName = document.getElementById('aoi-header-name');
+      if (hdrName) hdrName.textContent = activeSub ? `${areaInfo.name} (${activeSub})` : areaInfo.name;
 
-      document.getElementById('scope-flag').textContent = areaInfo.icon || '🌍';
-      document.getElementById('scope-region-name').textContent = areaInfo.name;
-      document.getElementById('scope-subdivision-name').textContent = activeSub ? `${areaInfo.subdivisions_type || 'State'}: ${activeSub}` : `All ${areaInfo.subdivisions_type || 'Regions'}`;
+      const scopeFlag = document.getElementById('scope-flag');
+      if (scopeFlag) scopeFlag.textContent = areaInfo.icon || '🌍';
+      const scopeReg = document.getElementById('scope-region-name');
+      if (scopeReg) scopeReg.textContent = areaInfo.name;
+      const scopeSub = document.getElementById('scope-subdivision-name');
+      if (scopeSub) scopeSub.textContent = activeSub ? `${areaInfo.subdivisions_type || 'State'}: ${activeSub}` : `All ${areaInfo.subdivisions_type || 'Regions'}`;
 
-      document.getElementById('aoi-active-pill').textContent = activeSub ? `${activeSub} ${areaInfo.icon}` : `${areaInfo.name} ${areaInfo.icon}`;
+      const aoiPill = document.getElementById('aoi-active-pill');
+      if (aoiPill) aoiPill.textContent = activeSub ? `${activeSub} ${areaInfo.icon}` : `${areaInfo.name} ${areaInfo.icon}`;
     }
 
     // --------------------------------------------------------------------------
@@ -874,19 +1125,26 @@
         
         document.getElementById('raw-schema-textarea').value = JSON.stringify(currentConfig, null, 2);
         
-        const activeArea = currentConfig.active_area || 'usa';
+        const activeArea = currentConfig.active_area;
         const activeSub = currentConfig.active_subdivision || null;
         
         // Setup initial area UI
-        await selectArea(activeArea);
-        if (activeSub) {
-          const subSelect = document.getElementById('subdivision-select');
-          if (subSelect) subSelect.value = activeSub;
+        if (activeArea && areasCatalog[activeArea]) {
+          await selectArea(activeArea, true);
+          if (activeSub) {
+            const subSelect = document.getElementById('subdivision-select');
+            if (subSelect) subSelect.value = activeSub;
+          }
+        } else {
+          resetAreaUI();
         }
 
         updateDomainSelectionUI();
         renderActiveFilterCards();
         renderDynamicSuggestions();
+        if (typeof updateWizardUI === 'function') {
+          updateWizardUI();
+        }
       } catch (e) {
         console.error("Error loading config:", e);
       }
@@ -980,19 +1238,14 @@
         statusMsg.textContent = total > 0 ? `Loaded ${total} facilities across active area.` : 'Map currently has 0 points. Click above to populate.';
       }
 
-      const initialGuide = document.getElementById('initial-guide-overlay');
-      if (initialGuide) {
-        if (total === 0 && !currentConfig.active_preset) {
-          initialGuide.classList.remove('hidden');
-        } else {
-          initialGuide.classList.add('hidden');
-        }
+      if (typeof updateWizardUI === 'function') {
+        updateWizardUI();
       }
     }
 
     async function triggerGeneratePoints() {
       const count = parseInt(document.getElementById('generate-count-select').value, 10) || 40;
-      const areaId = currentConfig.active_area || 'usa';
+      const areaId = currentConfig.active_area || 'europe';
       const subName = document.getElementById('subdivision-select')?.value || null;
 
       try {
@@ -1011,6 +1264,18 @@
           renderMapMarkers();
           renderObjectsList();
           submitManualFilters();
+
+          // Smoothly fit map to generated markers
+          if (allPoints.length > 0 && leafletMap) {
+            const markers = markersLayer.getLayers();
+            if (markers.length > 0) {
+              const group = new L.featureGroup(markers);
+              leafletMap.flyToBounds(group.getBounds().pad(0.12), { duration: 1.2, maxZoom: 8 });
+            }
+          }
+          if (typeof updateWizardUI === 'function') {
+            updateWizardUI();
+          }
         }
       } catch (e) {
         console.error("Error generating facilities:", e);
@@ -1040,7 +1305,9 @@
           updateMapCountsUI();
           renderMapMarkers();
           renderObjectsList();
-          submitManualFilters();
+          if (typeof updateWizardUI === 'function') {
+            updateWizardUI();
+          }
         }
       } catch (e) {
         console.error("Error loading preset:", e);
@@ -1055,10 +1322,144 @@
           manualFilterState = {};
           await loadAppConfig();
           await loadPointsData();
-          submitManualFilters();
+          if (leafletMap) {
+            leafletMap.flyTo([20.0, 0.0], 2.2, { duration: 1.0 });
+          }
+          openOnboardingModal();
         }
       } catch (e) {
         console.error("Error resetting sandbox:", e);
+      }
+    }
+
+    // --------------------------------------------------------------------------
+    // ONBOARDING WIZARD MODAL CONTROLLER
+    // --------------------------------------------------------------------------
+    function openOnboardingModal() {
+      const modal = document.getElementById('onboarding-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        updateWizardUI();
+      }
+    }
+
+    function closeOnboardingModal() {
+      const modal = document.getElementById('onboarding-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+    }
+
+    async function selectWizardArea(areaId) {
+      await selectArea(areaId);
+      updateWizardUI();
+    }
+
+    async function selectWizardPreset(presetId) {
+      await loadPreset(presetId);
+      updateWizardUI();
+    }
+
+    async function wizardGeneratePoints() {
+      const count = parseInt(document.getElementById('wizard-count-select').value, 10) || 40;
+      const countSelect = document.getElementById('generate-count-select');
+      if (countSelect) countSelect.value = count;
+      
+      const genBtn = document.getElementById('wizard-btn-generate');
+      if (genBtn) {
+        genBtn.disabled = true;
+        genBtn.innerHTML = '<span>⏳ Generating spatial facilities...</span>';
+      }
+
+      await triggerGeneratePoints();
+
+      if (genBtn) {
+        genBtn.disabled = false;
+        genBtn.innerHTML = '<span>🎲 Generate Facilities & Start Exploring</span>';
+      }
+
+      closeOnboardingModal();
+    }
+
+    function updateWizardUI() {
+      const activeArea = currentConfig.active_area;
+      const activePreset = currentConfig.active_preset;
+      const totalPoints = allPoints.length;
+
+      // Update Step 1 buttons
+      document.querySelectorAll('.wizard-aoi-btn').forEach(btn => {
+        btn.classList.remove('border-cyan-500', 'bg-cyan-950/60', 'text-cyan-200', 'ring-2', 'ring-cyan-500/50');
+        btn.classList.add('border-slate-800', 'bg-slate-900/90', 'text-slate-200');
+      });
+      const aoiStatus = document.getElementById('wizard-aoi-status');
+      if (activeArea) {
+        const activeAoiBtn = document.getElementById(`wizard-btn-aoi-${activeArea}`);
+        if (activeAoiBtn) {
+          activeAoiBtn.classList.remove('border-slate-800', 'bg-slate-900/90');
+          activeAoiBtn.classList.add('border-cyan-500', 'bg-cyan-950/60', 'text-cyan-200', 'ring-2', 'ring-cyan-500/50');
+        }
+        if (aoiStatus) {
+          const aInfo = areasCatalog[activeArea] || {};
+          aoiStatus.className = "text-[11px] text-emerald-400 font-mono font-semibold flex items-center gap-1";
+          aoiStatus.innerHTML = `<span>✓ ${aInfo.name || activeArea}</span>`;
+        }
+      } else {
+        if (aoiStatus) {
+          aoiStatus.className = "text-[11px] text-amber-400 font-mono font-semibold flex items-center gap-1";
+          aoiStatus.innerHTML = `<span>Pending</span>`;
+        }
+      }
+
+      // Update Step 2 buttons
+      document.querySelectorAll('.wizard-domain-btn').forEach(btn => {
+        btn.classList.remove('border-blue-500', 'bg-blue-950/60', 'text-blue-200', 'ring-2', 'ring-blue-500/50');
+        btn.classList.add('border-slate-800', 'bg-slate-900/90', 'text-slate-200');
+      });
+      const domainStatus = document.getElementById('wizard-domain-status');
+      if (activePreset) {
+        const activeDomBtn = document.getElementById(`wizard-btn-preset-${activePreset}`);
+        if (activeDomBtn) {
+          activeDomBtn.classList.remove('border-slate-800', 'bg-slate-900/90');
+          activeDomBtn.classList.add('border-blue-500', 'bg-blue-950/60', 'text-blue-200', 'ring-2', 'ring-blue-500/50');
+        }
+        if (domainStatus) {
+          domainStatus.className = "text-[11px] text-emerald-400 font-mono font-semibold flex items-center gap-1";
+          domainStatus.innerHTML = `<span>✓ ${activePreset.toUpperCase()}</span>`;
+        }
+      } else {
+        if (domainStatus) {
+          domainStatus.className = "text-[11px] text-amber-400 font-mono font-semibold flex items-center gap-1";
+          domainStatus.innerHTML = `<span>Pending</span>`;
+        }
+      }
+
+      // Update Step 3 button & status
+      const genBtn = document.getElementById('wizard-btn-generate');
+      const pointsStatus = document.getElementById('wizard-points-status');
+      if (pointsStatus) {
+        pointsStatus.textContent = `${totalPoints} facilities on map`;
+        if (totalPoints > 0) {
+          pointsStatus.className = "text-[11px] text-emerald-400 font-mono font-semibold";
+        } else {
+          pointsStatus.className = "text-[11px] text-slate-400 font-mono";
+        }
+      }
+      if (genBtn) {
+        if (!activeArea) {
+          genBtn.disabled = true;
+          genBtn.title = "Please select an Area of Interest in Step 1 first";
+        } else {
+          genBtn.disabled = false;
+          genBtn.title = "";
+        }
+      }
+    }
+
+    function checkInitialOnboarding() {
+      if (allPoints.length === 0 && (!currentConfig.active_preset || !currentConfig.active_area)) {
+        openOnboardingModal();
+      } else {
+        closeOnboardingModal();
       }
     }
 
@@ -1147,6 +1548,7 @@
         const data = await resp.json();
         if (data.status === 'success') {
           currentConfig = data.config;
+          lastAddedFeature = { type: 'filter', key: data.field?.key || label.toLowerCase(), label: label, options: opts };
           document.getElementById('input-new-filter-label').value = '';
           document.getElementById('input-new-filter-options').value = '';
           toggleNewFilterForm(false);
@@ -1158,6 +1560,8 @@
         console.error("Error creating filter:", e);
       }
     }
+
+    let lastAddedFeature = null;
 
     async function addOptionToFilter(key) {
       const input = document.getElementById(`opt-input-${key}`);
@@ -1172,8 +1576,12 @@
         });
         const data = await resp.json();
         if (data.status === 'success') {
+          lastAddedFeature = { type: 'option', key: key, val: optVal };
+          if (input) input.value = '';
           await loadAppConfig();
           await loadPointsData();
+          renderActiveFilterCards();
+          renderDynamicSuggestions();
         }
       } catch (e) {
         console.error("Error adding option:", e);
@@ -1191,6 +1599,7 @@
         const data = await resp.json();
         if (data.status === 'success') {
           currentConfig = data.config;
+          lastAddedFeature = null;
           delete manualFilterState[key];
           renderActiveFilterCards();
           renderDynamicSuggestions();
@@ -1214,6 +1623,7 @@
         const data = await resp.json();
         if (data.status === 'saved') {
           currentConfig = data.config;
+          lastAddedFeature = null;
           updateDomainSelectionUI();
           renderActiveFilterCards();
           renderDynamicSuggestions();
@@ -1226,39 +1636,110 @@
     }
 
     // --------------------------------------------------------------------------
-    // DYNAMIC SUGGESTIONS
+    // DYNAMIC SUGGESTIONS ENGINE (ADAPTS IN REAL TIME TO ANY SCHEMA / REGION)
     // --------------------------------------------------------------------------
     function renderDynamicSuggestions() {
       const container = document.getElementById('dynamic-query-chips');
       if (!container) return;
       container.innerHTML = '';
+
       const fields = currentConfig.filter_fields || [];
-      const activeArea = currentConfig.active_area || 'usa';
-      const areaInfo = areasCatalog[activeArea];
-      const subNames = areaInfo ? Object.keys(areaInfo.subdivisions || {}) : [];
+      const activeArea = currentConfig.active_area || 'europe';
+      const areaInfo = areasCatalog[activeArea] || {};
+      const subNames = areaInfo.subdivisions ? Object.keys(areaInfo.subdivisions) : [];
+      const activeSub = currentConfig.active_subdivision;
 
+      // Determine regional geographic anchors for contextual queries
+      const places = [];
+      if (activeSub) places.push(activeSub);
+      subNames.forEach(s => { if (!places.includes(s)) places.push(s); });
+      if (places.length === 0) places.push("Europe", "Germany", "Spain", "France");
+
+      const place0 = places[0] || "Europe";
+      const place1 = places[1] || places[0];
+      const place2 = places[2] || places[0];
+
+      // Collect all non-empty filter dimensions
+      const fieldList = fields.filter(f => Array.isArray(f.options) && f.options.length > 0);
       const suggestions = [];
-      const sub1 = subNames[0] || "California";
-      const sub2 = subNames[1] || "Texas";
 
-      if (fields.length > 0 && fields[0].options?.length > 0) {
-        suggestions.push(`${fields[0].options[0].toLowerCase()} in ${sub1.toLowerCase()}`);
-        if (fields[0].options.length > 1) {
-          suggestions.push(`${fields[0].options[0].toLowerCase()} and ${fields[0].options[1].toLowerCase()}`);
+      const cleanOpt = (s) => (s ? s.toLowerCase().trim() : "");
+
+      // Priority 1: If an option or filter was recently added, prioritize contextual examples for it
+      if (lastAddedFeature) {
+        if (lastAddedFeature.type === 'option' && lastAddedFeature.val) {
+          const newOpt = cleanOpt(lastAddedFeature.val);
+          suggestions.push(`${newOpt} in ${place0.toLowerCase()}`);
+          if (fieldList.length > 1) {
+            const otherField = fieldList.find(f => f.key !== lastAddedFeature.key) || fieldList[0];
+            if (otherField && otherField.options.length > 0) {
+              const otherOpt = cleanOpt(otherField.options[0]);
+              suggestions.push(`${newOpt} with ${otherOpt}`);
+            }
+          }
+          suggestions.push(`${newOpt} in ${place1.toLowerCase()}`);
+        } else if (lastAddedFeature.type === 'filter' && lastAddedFeature.options && lastAddedFeature.options.length > 0) {
+          const firstNewOpt = cleanOpt(lastAddedFeature.options[0]);
+          suggestions.push(`${firstNewOpt} in ${place0.toLowerCase()}`);
+          if (lastAddedFeature.options.length > 1) {
+            const secondNewOpt = cleanOpt(lastAddedFeature.options[1]);
+            suggestions.push(`${firstNewOpt} and ${secondNewOpt}`);
+          }
         }
       }
-      if (fields.length > 1 && fields[1].options?.length > 0 && fields[0].options?.length > 0) {
-        suggestions.push(`${fields[0].options[0].toLowerCase()} with ${fields[1].options[0].toLowerCase()}`);
-      }
-      suggestions.push(`facilities in ${sub2.toLowerCase()}`);
-      suggestions.push("show all facilities");
 
-      suggestions.forEach(s => {
+      // Priority 2: Iterate across ALL defined filter dimensions (Field 0, 1, 2, 3, etc.)
+      fieldList.forEach((f, idx) => {
+        const targetPlace = places[idx % places.length];
+        const optA = cleanOpt(f.options[0]);
+        const q1 = `${optA} in ${targetPlace.toLowerCase()}`;
+        if (!suggestions.includes(q1)) suggestions.push(q1);
+
+        // If field has multiple options, generate intra-field combination or latest option
+        if (f.options.length >= 2) {
+          const optB = cleanOpt(f.options[f.options.length - 1]);
+          const altPlace = places[(idx + 1) % places.length];
+          const q2 = `${optB} in ${altPlace.toLowerCase()}`;
+          if (!suggestions.includes(q2)) suggestions.push(q2);
+          
+          const qCombo = `${optA} and ${cleanOpt(f.options[1])}`;
+          if (!suggestions.includes(qCombo)) suggestions.push(qCombo);
+        }
+      });
+
+      // Priority 3: Cross-dimensional conjunctions across different filter fields
+      if (fieldList.length >= 2) {
+        for (let i = 0; i < fieldList.length - 1; i++) {
+          const fA = fieldList[i];
+          const fB = fieldList[i + 1];
+          if (fA.options.length > 0 && fB.options.length > 0) {
+            const oA = cleanOpt(fA.options[0]);
+            const oB = cleanOpt(fB.options[0]);
+            const qCross = `${oA} with ${oB}`;
+            if (!suggestions.includes(qCross)) suggestions.push(qCross);
+            const qCrossGeo = `${oA} with ${oB} in ${place0.toLowerCase()}`;
+            if (!suggestions.includes(qCrossGeo)) suggestions.push(qCrossGeo);
+          }
+        }
+      }
+
+      // Priority 4: General spatial discovery queries
+      const qRegion = `facilities in ${place1.toLowerCase()}`;
+      if (!suggestions.includes(qRegion)) suggestions.push(qRegion);
+      if (!suggestions.includes("show all facilities")) suggestions.push("show all facilities");
+
+      // Take up to 8 diverse suggestions
+      const finalSuggestions = suggestions.slice(0, 8);
+
+      finalSuggestions.forEach(s => {
         const btn = document.createElement('button');
-        btn.className = "text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-2 py-0.5 rounded transition cursor-pointer";
+        btn.type = 'button';
+        btn.className = "text-[10.5px] bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-500/60 px-2 py-0.5 rounded transition cursor-pointer text-left truncate max-w-[270px]";
+        btn.title = `Execute query: "${s}"`;
         btn.textContent = s;
         btn.onclick = () => {
-          document.getElementById('conversational-input').value = s;
+          const input = document.getElementById('conversational-input');
+          if (input) input.value = s;
           submitConversationalQuery();
         };
         container.appendChild(btn);
