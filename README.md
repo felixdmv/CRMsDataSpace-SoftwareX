@@ -237,7 +237,7 @@ CRMsDataSpace-SoftwareX/
 
 ## 🛠️ General-Purpose GIS Template & Filter Customization Studio
 
-The package in [`template/`](template/) (also mirrored at [`SoftwareX/template/`](SoftwareX/template/)) allows reviewers to evaluate the framework's adaptability to **any geospatial domain**:
+The package in [`template/`](template/) allows reviewers to evaluate the framework's adaptability to **any geospatial domain**:
 
 1. **Interactive In-Browser Filter Studio**:
    - Launch `python run_template.py --port 8085` and open the **"🛠️ Filter Studio"** tab.

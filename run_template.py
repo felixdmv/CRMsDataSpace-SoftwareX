@@ -9,8 +9,6 @@ import importlib.util
 from pathlib import Path
 
 TEMPLATE_DIR = Path(__file__).resolve().parent / "template"
-if not TEMPLATE_DIR.exists():
-    TEMPLATE_DIR = Path(__file__).resolve().parent / "SoftwareX" / "template"
 
 server_script = TEMPLATE_DIR / "run_template.py"
 spec = importlib.util.spec_from_file_location("template_server", str(server_script))
