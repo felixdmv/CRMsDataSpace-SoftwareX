@@ -1,1 +1,1282 @@
-[]
+[
+  {
+    "id": "FAC-001",
+    "name": "Potosí gfhdfg #01",
+    "latitude": -19.53105,
+    "longitude": -65.695,
+    "country": "Bolivia",
+    "state": "Potosí",
+    "zone": "Potosí, Bolivia",
+    "area": "South America",
+    "description": "Located in Potosí, Bolivia. Key attributes: eet: gfhdfg; tyrty: ct.",
+    "eet": "gfhdfg",
+    "tyrty": "ct",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-002",
+    "name": "La tytr #02",
+    "latitude": -16.47183,
+    "longitude": -68.1333,
+    "country": "Bolivia",
+    "state": "La Paz",
+    "zone": "La Paz, Bolivia",
+    "area": "South America",
+    "description": "Located in La Paz, Bolivia. Key attributes: eet: tytr; tyrty: gnyu.",
+    "eet": "tytr",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-003",
+    "name": "La gfhdfg #03",
+    "latitude": -16.48038,
+    "longitude": -68.12711,
+    "country": "Bolivia",
+    "state": "La Paz",
+    "zone": "La Paz, Bolivia",
+    "area": "South America",
+    "description": "Located in La Paz, Bolivia. Key attributes: eet: gfhdfg; tyrty: vtr.",
+    "eet": "gfhdfg",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-004",
+    "name": "Potosí ghjm #04",
+    "latitude": -19.51985,
+    "longitude": -65.78451,
+    "country": "Bolivia",
+    "state": "Potosí",
+    "zone": "Potosí, Bolivia",
+    "area": "South America",
+    "description": "Located in Potosí, Bolivia. Key attributes: eet: ghjm; tyrty: xctrtr.",
+    "eet": "ghjm",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-005",
+    "name": "Barranquilla tytr #05",
+    "latitude": 11.0079,
+    "longitude": -74.72633,
+    "country": "Colombia",
+    "state": "Atlántico",
+    "zone": "Atlántico, Colombia",
+    "area": "South America",
+    "description": "Located in Atlántico, Colombia. Key attributes: eet: tytr; tyrty: xctrtr.",
+    "eet": "tytr",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-006",
+    "name": "Ciudad gfhdfg #06",
+    "latitude": -25.47639,
+    "longitude": -54.64319,
+    "country": "Paraguay",
+    "state": "Alto Paraná",
+    "zone": "Alto Paraná, Paraguay",
+    "area": "South America",
+    "description": "Located in Alto Paraná, Paraguay. Key attributes: eet: gfhdfg; tyrty: vtr.",
+    "eet": "gfhdfg",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-007",
+    "name": "Barranquilla gfhdfg #07",
+    "latitude": 10.97497,
+    "longitude": -74.798,
+    "country": "Colombia",
+    "state": "Atlántico",
+    "zone": "Atlántico, Colombia",
+    "area": "South America",
+    "description": "Located in Atlántico, Colombia. Key attributes: eet: gfhdfg; tyrty: vtr.",
+    "eet": "gfhdfg",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-008",
+    "name": "Brasília ghjm #08",
+    "latitude": -15.76466,
+    "longitude": -47.93744,
+    "country": "Brazil",
+    "state": "Distrito Federal",
+    "zone": "Distrito Federal, Brazil",
+    "area": "South America",
+    "description": "Located in Distrito Federal, Brazil. Key attributes: eet: ghjm; tyrty: gnyu.",
+    "eet": "ghjm",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-009",
+    "name": "Cali tytr #09",
+    "latitude": 3.39702,
+    "longitude": -76.59885,
+    "country": "Colombia",
+    "state": "Valle del Cauca",
+    "zone": "Valle del Cauca, Colombia",
+    "area": "South America",
+    "description": "Located in Valle del Cauca, Colombia. Key attributes: eet: tytr; tyrty: vtr.",
+    "eet": "tytr",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-010",
+    "name": "Antofagasta ghjm #10",
+    "latitude": -23.66772,
+    "longitude": -70.4507,
+    "country": "Chile",
+    "state": "Antofagasta",
+    "zone": "Antofagasta, Chile",
+    "area": "South America",
+    "description": "Located in Antofagasta, Chile. Key attributes: eet: ghjm; tyrty: vtr.",
+    "eet": "ghjm",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-011",
+    "name": "Santiago ghjm #11",
+    "latitude": -33.45592,
+    "longitude": -70.69472,
+    "country": "Chile",
+    "state": "Santiago",
+    "zone": "Santiago, Chile",
+    "area": "South America",
+    "description": "Located in Santiago, Chile. Key attributes: eet: ghjm; tyrty: gnyu.",
+    "eet": "ghjm",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-012",
+    "name": "Córdoba gfhdfg #12",
+    "latitude": -31.45849,
+    "longitude": -64.18268,
+    "country": "Argentina",
+    "state": "Córdoba",
+    "zone": "Córdoba, Argentina",
+    "area": "South America",
+    "description": "Located in Córdoba, Argentina. Key attributes: eet: gfhdfg; tyrty: gnyu.",
+    "eet": "gfhdfg",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-013",
+    "name": "Barranquilla gfhdfg #13",
+    "latitude": 11.01494,
+    "longitude": -74.76422,
+    "country": "Colombia",
+    "state": "Atlántico",
+    "zone": "Atlántico, Colombia",
+    "area": "South America",
+    "description": "Located in Atlántico, Colombia. Key attributes: eet: gfhdfg; tyrty: xctrtr.",
+    "eet": "gfhdfg",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-014",
+    "name": "Montevideo tytr #14",
+    "latitude": -34.86235,
+    "longitude": -56.15859,
+    "country": "Uruguay",
+    "state": "Montevideo",
+    "zone": "Montevideo, Uruguay",
+    "area": "South America",
+    "description": "Located in Montevideo, Uruguay. Key attributes: eet: tytr; tyrty: vtr.",
+    "eet": "tytr",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-015",
+    "name": "Potosí tytr #15",
+    "latitude": -19.60255,
+    "longitude": -65.70895,
+    "country": "Bolivia",
+    "state": "Potosí",
+    "zone": "Potosí, Bolivia",
+    "area": "South America",
+    "description": "Located in Potosí, Bolivia. Key attributes: eet: tytr; tyrty: ct.",
+    "eet": "tytr",
+    "tyrty": "ct",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-016",
+    "name": "Cuenca ghjm #16",
+    "latitude": -2.961,
+    "longitude": -79.07705,
+    "country": "Ecuador",
+    "state": "Azuay",
+    "zone": "Azuay, Ecuador",
+    "area": "South America",
+    "description": "Located in Azuay, Ecuador. Key attributes: eet: ghjm; tyrty: ct.",
+    "eet": "ghjm",
+    "tyrty": "ct",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-017",
+    "name": "Rosario ghjm #17",
+    "latitude": -33.00695,
+    "longitude": -60.67002,
+    "country": "Argentina",
+    "state": "Santa Fe",
+    "zone": "Santa Fe, Argentina",
+    "area": "South America",
+    "description": "Located in Santa Fe, Argentina. Key attributes: eet: ghjm; tyrty: xctrtr.",
+    "eet": "ghjm",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-018",
+    "name": "La ghjm #18",
+    "latitude": -16.56478,
+    "longitude": -68.0805,
+    "country": "Bolivia",
+    "state": "La Paz",
+    "zone": "La Paz, Bolivia",
+    "area": "South America",
+    "description": "Located in La Paz, Bolivia. Key attributes: eet: ghjm; tyrty: ct.",
+    "eet": "ghjm",
+    "tyrty": "ct",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-019",
+    "name": "Asunción tytr #19",
+    "latitude": -25.32003,
+    "longitude": -57.5409,
+    "country": "Paraguay",
+    "state": "Central",
+    "zone": "Central, Paraguay",
+    "area": "South America",
+    "description": "Located in Central, Paraguay. Key attributes: eet: tytr; tyrty: xctrtr.",
+    "eet": "tytr",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-020",
+    "name": "Antofagasta ghjm #20",
+    "latitude": -23.61501,
+    "longitude": -70.37427,
+    "country": "Chile",
+    "state": "Antofagasta",
+    "zone": "Antofagasta, Chile",
+    "area": "South America",
+    "description": "Located in Antofagasta, Chile. Key attributes: eet: ghjm; tyrty: xctrtr.",
+    "eet": "ghjm",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-021",
+    "name": "Cali tytr #21",
+    "latitude": 3.48875,
+    "longitude": -76.57793,
+    "country": "Colombia",
+    "state": "Valle del Cauca",
+    "zone": "Valle del Cauca, Colombia",
+    "area": "South America",
+    "description": "Located in Valle del Cauca, Colombia. Key attributes: eet: tytr; tyrty: ct.",
+    "eet": "tytr",
+    "tyrty": "ct",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-022",
+    "name": "Trujillo srtgs #22",
+    "latitude": -8.06353,
+    "longitude": -79.03872,
+    "country": "Peru",
+    "state": "La Libertad",
+    "zone": "La Libertad, Peru",
+    "area": "South America",
+    "description": "Located in La Libertad, Peru. Key attributes: eet: srtgs; tyrty: vtr.",
+    "eet": "srtgs",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-023",
+    "name": "Trujillo ghjm #23",
+    "latitude": -8.07532,
+    "longitude": -79.05636,
+    "country": "Peru",
+    "state": "La Libertad",
+    "zone": "La Libertad, Peru",
+    "area": "South America",
+    "description": "Located in La Libertad, Peru. Key attributes: eet: ghjm; tyrty: ct.",
+    "eet": "ghjm",
+    "tyrty": "ct",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-024",
+    "name": "Concepción ghjm #24",
+    "latitude": -36.85734,
+    "longitude": -73.10868,
+    "country": "Chile",
+    "state": "Biobío",
+    "zone": "Biobío, Chile",
+    "area": "South America",
+    "description": "Located in Biobío, Chile. Key attributes: eet: ghjm; tyrty: vtr.",
+    "eet": "ghjm",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-025",
+    "name": "Arequipa tytr #25",
+    "latitude": -16.38091,
+    "longitude": -71.59319,
+    "country": "Peru",
+    "state": "Arequipa",
+    "zone": "Arequipa, Peru",
+    "area": "South America",
+    "description": "Located in Arequipa, Peru. Key attributes: eet: tytr; tyrty: ct.",
+    "eet": "tytr",
+    "tyrty": "ct",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-026",
+    "name": "Quito ghjm #26",
+    "latitude": -0.14261,
+    "longitude": -78.46733,
+    "country": "Ecuador",
+    "state": "Pichincha",
+    "zone": "Pichincha, Ecuador",
+    "area": "South America",
+    "description": "Located in Pichincha, Ecuador. Key attributes: eet: ghjm; tyrty: xctrtr.",
+    "eet": "ghjm",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-027",
+    "name": "Bogotá srtgs #27",
+    "latitude": 4.74155,
+    "longitude": -74.09187,
+    "country": "Colombia",
+    "state": "Cundinamarca",
+    "zone": "Cundinamarca, Colombia",
+    "area": "South America",
+    "description": "Located in Cundinamarca, Colombia. Key attributes: eet: srtgs; tyrty: vtr.",
+    "eet": "srtgs",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-028",
+    "name": "Arequipa srtgs #28",
+    "latitude": -16.47044,
+    "longitude": -71.59313,
+    "country": "Peru",
+    "state": "Arequipa",
+    "zone": "Arequipa, Peru",
+    "area": "South America",
+    "description": "Located in Arequipa, Peru. Key attributes: eet: srtgs; tyrty: gnyu.",
+    "eet": "srtgs",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-029",
+    "name": "La tytr #29",
+    "latitude": -16.47617,
+    "longitude": -68.13991,
+    "country": "Bolivia",
+    "state": "La Paz",
+    "zone": "La Paz, Bolivia",
+    "area": "South America",
+    "description": "Located in La Paz, Bolivia. Key attributes: eet: tytr; tyrty: xctrtr.",
+    "eet": "tytr",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-030",
+    "name": "Rio tytr #30",
+    "latitude": -22.94555,
+    "longitude": -43.21014,
+    "country": "Brazil",
+    "state": "Rio de Janeiro",
+    "zone": "Rio de Janeiro, Brazil",
+    "area": "South America",
+    "description": "Located in Rio de Janeiro, Brazil. Key attributes: eet: tytr; tyrty: vtr.",
+    "eet": "tytr",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-031",
+    "name": "Lima ghjm #31",
+    "latitude": -12.08894,
+    "longitude": -77.02208,
+    "country": "Peru",
+    "state": "Lima",
+    "zone": "Lima, Peru",
+    "area": "South America",
+    "description": "Located in Lima, Peru. Key attributes: eet: ghjm; tyrty: gnyu.",
+    "eet": "ghjm",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-032",
+    "name": "Santa tytr #32",
+    "latitude": -17.76864,
+    "longitude": -63.22848,
+    "country": "Bolivia",
+    "state": "Santa Cruz",
+    "zone": "Santa Cruz, Bolivia",
+    "area": "South America",
+    "description": "Located in Santa Cruz, Bolivia. Key attributes: eet: tytr; tyrty: ct.",
+    "eet": "tytr",
+    "tyrty": "ct",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-033",
+    "name": "Calama gfhdfg #33",
+    "latitude": -22.46045,
+    "longitude": -68.85541,
+    "country": "Chile",
+    "state": "Antofagasta",
+    "zone": "Antofagasta, Chile",
+    "area": "South America",
+    "description": "Located in Antofagasta, Chile. Key attributes: eet: gfhdfg; tyrty: gnyu.",
+    "eet": "gfhdfg",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-034",
+    "name": "Rio gfhdfg #34",
+    "latitude": -22.85123,
+    "longitude": -43.12945,
+    "country": "Brazil",
+    "state": "Rio de Janeiro",
+    "zone": "Rio de Janeiro, Brazil",
+    "area": "South America",
+    "description": "Located in Rio de Janeiro, Brazil. Key attributes: eet: gfhdfg; tyrty: xctrtr.",
+    "eet": "gfhdfg",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-035",
+    "name": "Cuenca tytr #35",
+    "latitude": -2.87364,
+    "longitude": -78.95694,
+    "country": "Ecuador",
+    "state": "Azuay",
+    "zone": "Azuay, Ecuador",
+    "area": "South America",
+    "description": "Located in Azuay, Ecuador. Key attributes: eet: tytr; tyrty: xctrtr.",
+    "eet": "tytr",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-036",
+    "name": "Cali srtgs #36",
+    "latitude": 3.45223,
+    "longitude": -76.49913,
+    "country": "Colombia",
+    "state": "Valle del Cauca",
+    "zone": "Valle del Cauca, Colombia",
+    "area": "South America",
+    "description": "Located in Valle del Cauca, Colombia. Key attributes: eet: srtgs; tyrty: vtr.",
+    "eet": "srtgs",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-037",
+    "name": "Salto tytr #37",
+    "latitude": -31.42474,
+    "longitude": -57.89473,
+    "country": "Uruguay",
+    "state": "Salto",
+    "zone": "Salto, Uruguay",
+    "area": "South America",
+    "description": "Located in Salto, Uruguay. Key attributes: eet: tytr; tyrty: xctrtr.",
+    "eet": "tytr",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-038",
+    "name": "Curitiba ghjm #38",
+    "latitude": -25.46849,
+    "longitude": -49.21542,
+    "country": "Brazil",
+    "state": "Paraná",
+    "zone": "Paraná, Brazil",
+    "area": "South America",
+    "description": "Located in Paraná, Brazil. Key attributes: eet: ghjm; tyrty: vtr.",
+    "eet": "ghjm",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-039",
+    "name": "Cuenca srtgs #39",
+    "latitude": -2.9478,
+    "longitude": -79.07132,
+    "country": "Ecuador",
+    "state": "Azuay",
+    "zone": "Azuay, Ecuador",
+    "area": "South America",
+    "description": "Located in Azuay, Ecuador. Key attributes: eet: srtgs; tyrty: vtr.",
+    "eet": "srtgs",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-040",
+    "name": "Ciudad gfhdfg #40",
+    "latitude": -25.52331,
+    "longitude": -54.66279,
+    "country": "Paraguay",
+    "state": "Alto Paraná",
+    "zone": "Alto Paraná, Paraguay",
+    "area": "South America",
+    "description": "Located in Alto Paraná, Paraguay. Key attributes: eet: gfhdfg; tyrty: xctrtr.",
+    "eet": "gfhdfg",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-041",
+    "name": "Calama gfhdfg #41",
+    "latitude": -22.39376,
+    "longitude": -68.91261,
+    "country": "Chile",
+    "state": "Antofagasta",
+    "zone": "Antofagasta, Chile",
+    "area": "South America",
+    "description": "Located in Antofagasta, Chile. Key attributes: eet: gfhdfg; tyrty: gnyu.",
+    "eet": "gfhdfg",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-042",
+    "name": "Neuquén srtgs #42",
+    "latitude": -38.9859,
+    "longitude": -68.1326,
+    "country": "Argentina",
+    "state": "Neuquén",
+    "zone": "Neuquén, Argentina",
+    "area": "South America",
+    "description": "Located in Neuquén, Argentina. Key attributes: eet: srtgs; tyrty: gnyu.",
+    "eet": "srtgs",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-043",
+    "name": "Arequipa tytr #43",
+    "latitude": -16.37493,
+    "longitude": -71.55615,
+    "country": "Peru",
+    "state": "Arequipa",
+    "zone": "Arequipa, Peru",
+    "area": "South America",
+    "description": "Located in Arequipa, Peru. Key attributes: eet: tytr; tyrty: vtr.",
+    "eet": "tytr",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-044",
+    "name": "La ghjm #44",
+    "latitude": -16.50159,
+    "longitude": -68.1711,
+    "country": "Bolivia",
+    "state": "La Paz",
+    "zone": "La Paz, Bolivia",
+    "area": "South America",
+    "description": "Located in La Paz, Bolivia. Key attributes: eet: ghjm; tyrty: ct.",
+    "eet": "ghjm",
+    "tyrty": "ct",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-045",
+    "name": "Valparaíso ghjm #45",
+    "latitude": -33.10792,
+    "longitude": -71.65971,
+    "country": "Chile",
+    "state": "Valparaíso",
+    "zone": "Valparaíso, Chile",
+    "area": "South America",
+    "description": "Located in Valparaíso, Chile. Key attributes: eet: ghjm; tyrty: gnyu.",
+    "eet": "ghjm",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-046",
+    "name": "Concepción ghjm #46",
+    "latitude": -36.78354,
+    "longitude": -73.00389,
+    "country": "Chile",
+    "state": "Biobío",
+    "zone": "Biobío, Chile",
+    "area": "South America",
+    "description": "Located in Biobío, Chile. Key attributes: eet: ghjm; tyrty: ct.",
+    "eet": "ghjm",
+    "tyrty": "ct",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-047",
+    "name": "Rosario gfhdfg #47",
+    "latitude": -32.92469,
+    "longitude": -60.65153,
+    "country": "Argentina",
+    "state": "Santa Fe",
+    "zone": "Santa Fe, Argentina",
+    "area": "South America",
+    "description": "Located in Santa Fe, Argentina. Key attributes: eet: gfhdfg; tyrty: xctrtr.",
+    "eet": "gfhdfg",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-048",
+    "name": "Santa gfhdfg #48",
+    "latitude": -17.84735,
+    "longitude": -63.17892,
+    "country": "Bolivia",
+    "state": "Santa Cruz",
+    "zone": "Santa Cruz, Bolivia",
+    "area": "South America",
+    "description": "Located in Santa Cruz, Bolivia. Key attributes: eet: gfhdfg; tyrty: vtr.",
+    "eet": "gfhdfg",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-049",
+    "name": "Salvador tytr #49",
+    "latitude": -13.02065,
+    "longitude": -38.4285,
+    "country": "Brazil",
+    "state": "Bahia",
+    "zone": "Bahia, Brazil",
+    "area": "South America",
+    "description": "Located in Bahia, Brazil. Key attributes: eet: tytr; tyrty: xctrtr.",
+    "eet": "tytr",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-050",
+    "name": "Mendoza ghjm #50",
+    "latitude": -32.94531,
+    "longitude": -68.84842,
+    "country": "Argentina",
+    "state": "Mendoza",
+    "zone": "Mendoza, Argentina",
+    "area": "South America",
+    "description": "Located in Mendoza, Argentina. Key attributes: eet: ghjm; tyrty: xctrtr.",
+    "eet": "ghjm",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-051",
+    "name": "Montevideo ghjm #51",
+    "latitude": -34.92467,
+    "longitude": -56.21675,
+    "country": "Uruguay",
+    "state": "Montevideo",
+    "zone": "Montevideo, Uruguay",
+    "area": "South America",
+    "description": "Located in Montevideo, Uruguay. Key attributes: eet: ghjm; tyrty: xctrtr.",
+    "eet": "ghjm",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-052",
+    "name": "Trujillo tytr #52",
+    "latitude": -8.17389,
+    "longitude": -78.98657,
+    "country": "Peru",
+    "state": "La Libertad",
+    "zone": "La Libertad, Peru",
+    "area": "South America",
+    "description": "Located in La Libertad, Peru. Key attributes: eet: tytr; tyrty: ct.",
+    "eet": "tytr",
+    "tyrty": "ct",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-053",
+    "name": "Ciudad ghjm #53",
+    "latitude": -25.48694,
+    "longitude": -54.59823,
+    "country": "Paraguay",
+    "state": "Alto Paraná",
+    "zone": "Alto Paraná, Paraguay",
+    "area": "South America",
+    "description": "Located in Alto Paraná, Paraguay. Key attributes: eet: ghjm; tyrty: ct.",
+    "eet": "ghjm",
+    "tyrty": "ct",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-054",
+    "name": "Concepción tytr #54",
+    "latitude": -36.79462,
+    "longitude": -73.06634,
+    "country": "Chile",
+    "state": "Biobío",
+    "zone": "Biobío, Chile",
+    "area": "South America",
+    "description": "Located in Biobío, Chile. Key attributes: eet: tytr; tyrty: vtr.",
+    "eet": "tytr",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-055",
+    "name": "Santiago gfhdfg #55",
+    "latitude": -33.4898,
+    "longitude": -70.70371,
+    "country": "Chile",
+    "state": "Santiago",
+    "zone": "Santiago, Chile",
+    "area": "South America",
+    "description": "Located in Santiago, Chile. Key attributes: eet: gfhdfg; tyrty: ct.",
+    "eet": "gfhdfg",
+    "tyrty": "ct",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-056",
+    "name": "Neuquén tytr #56",
+    "latitude": -38.9246,
+    "longitude": -67.99795,
+    "country": "Argentina",
+    "state": "Neuquén",
+    "zone": "Neuquén, Argentina",
+    "area": "South America",
+    "description": "Located in Neuquén, Argentina. Key attributes: eet: tytr; tyrty: ct.",
+    "eet": "tytr",
+    "tyrty": "ct",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-057",
+    "name": "Porto ghjm #57",
+    "latitude": -30.07181,
+    "longitude": -51.17921,
+    "country": "Brazil",
+    "state": "Rio Grande do Sul",
+    "zone": "Rio Grande do Sul, Brazil",
+    "area": "South America",
+    "description": "Located in Rio Grande do Sul, Brazil. Key attributes: eet: ghjm; tyrty: gnyu.",
+    "eet": "ghjm",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-058",
+    "name": "Asunción ghjm #58",
+    "latitude": -25.19996,
+    "longitude": -57.60436,
+    "country": "Paraguay",
+    "state": "Central",
+    "zone": "Central, Paraguay",
+    "area": "South America",
+    "description": "Located in Central, Paraguay. Key attributes: eet: ghjm; tyrty: ct.",
+    "eet": "ghjm",
+    "tyrty": "ct",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-059",
+    "name": "Concepción ghjm #59",
+    "latitude": -36.85545,
+    "longitude": -72.98143,
+    "country": "Chile",
+    "state": "Biobío",
+    "zone": "Biobío, Chile",
+    "area": "South America",
+    "description": "Located in Biobío, Chile. Key attributes: eet: ghjm; tyrty: gnyu.",
+    "eet": "ghjm",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-060",
+    "name": "Valparaíso ghjm #60",
+    "latitude": -33.09855,
+    "longitude": -71.54635,
+    "country": "Chile",
+    "state": "Valparaíso",
+    "zone": "Valparaíso, Chile",
+    "area": "South America",
+    "description": "Located in Valparaíso, Chile. Key attributes: eet: ghjm; tyrty: vtr.",
+    "eet": "ghjm",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-061",
+    "name": "Salta ghjm #61",
+    "latitude": -24.81539,
+    "longitude": -65.39047,
+    "country": "Argentina",
+    "state": "Salta",
+    "zone": "Salta, Argentina",
+    "area": "South America",
+    "description": "Located in Salta, Argentina. Key attributes: eet: ghjm; tyrty: xctrtr.",
+    "eet": "ghjm",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-062",
+    "name": "Montevideo srtgs #62",
+    "latitude": -34.9033,
+    "longitude": -56.16739,
+    "country": "Uruguay",
+    "state": "Montevideo",
+    "zone": "Montevideo, Uruguay",
+    "area": "South America",
+    "description": "Located in Montevideo, Uruguay. Key attributes: eet: srtgs; tyrty: xctrtr.",
+    "eet": "srtgs",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-063",
+    "name": "Salvador gfhdfg #63",
+    "latitude": -13.02624,
+    "longitude": -38.47826,
+    "country": "Brazil",
+    "state": "Bahia",
+    "zone": "Bahia, Brazil",
+    "area": "South America",
+    "description": "Located in Bahia, Brazil. Key attributes: eet: gfhdfg; tyrty: vtr.",
+    "eet": "gfhdfg",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-064",
+    "name": "Ciudad srtgs #64",
+    "latitude": -25.56102,
+    "longitude": -54.59215,
+    "country": "Paraguay",
+    "state": "Alto Paraná",
+    "zone": "Alto Paraná, Paraguay",
+    "area": "South America",
+    "description": "Located in Alto Paraná, Paraguay. Key attributes: eet: srtgs; tyrty: xctrtr.",
+    "eet": "srtgs",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-065",
+    "name": "Asunción tytr #65",
+    "latitude": -25.26225,
+    "longitude": -57.63827,
+    "country": "Paraguay",
+    "state": "Central",
+    "zone": "Central, Paraguay",
+    "area": "South America",
+    "description": "Located in Central, Paraguay. Key attributes: eet: tytr; tyrty: gnyu.",
+    "eet": "tytr",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-066",
+    "name": "Trujillo ghjm #66",
+    "latitude": -8.14935,
+    "longitude": -79.09137,
+    "country": "Peru",
+    "state": "La Libertad",
+    "zone": "La Libertad, Peru",
+    "area": "South America",
+    "description": "Located in La Libertad, Peru. Key attributes: eet: ghjm; tyrty: gnyu.",
+    "eet": "ghjm",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-067",
+    "name": "Buenos srtgs #67",
+    "latitude": -34.56902,
+    "longitude": -58.34936,
+    "country": "Argentina",
+    "state": "Buenos Aires",
+    "zone": "Buenos Aires, Argentina",
+    "area": "South America",
+    "description": "Located in Buenos Aires, Argentina. Key attributes: eet: srtgs; tyrty: gnyu.",
+    "eet": "srtgs",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-068",
+    "name": "Cuenca gfhdfg #68",
+    "latitude": -2.88653,
+    "longitude": -78.943,
+    "country": "Ecuador",
+    "state": "Azuay",
+    "zone": "Azuay, Ecuador",
+    "area": "South America",
+    "description": "Located in Azuay, Ecuador. Key attributes: eet: gfhdfg; tyrty: vtr.",
+    "eet": "gfhdfg",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-069",
+    "name": "Cuenca srtgs #69",
+    "latitude": -2.87474,
+    "longitude": -78.98481,
+    "country": "Ecuador",
+    "state": "Azuay",
+    "zone": "Azuay, Ecuador",
+    "area": "South America",
+    "description": "Located in Azuay, Ecuador. Key attributes: eet: srtgs; tyrty: vtr.",
+    "eet": "srtgs",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-070",
+    "name": "Guayaquil gfhdfg #70",
+    "latitude": -2.14302,
+    "longitude": -79.83068,
+    "country": "Ecuador",
+    "state": "Guayas",
+    "zone": "Guayas, Ecuador",
+    "area": "South America",
+    "description": "Located in Guayas, Ecuador. Key attributes: eet: gfhdfg; tyrty: ct.",
+    "eet": "gfhdfg",
+    "tyrty": "ct",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-071",
+    "name": "Lima tytr #71",
+    "latitude": -12.07548,
+    "longitude": -76.97083,
+    "country": "Peru",
+    "state": "Lima",
+    "zone": "Lima, Peru",
+    "area": "South America",
+    "description": "Located in Lima, Peru. Key attributes: eet: tytr; tyrty: ct.",
+    "eet": "tytr",
+    "tyrty": "ct",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-072",
+    "name": "Montevideo tytr #72",
+    "latitude": -34.92002,
+    "longitude": -56.15435,
+    "country": "Uruguay",
+    "state": "Montevideo",
+    "zone": "Montevideo, Uruguay",
+    "area": "South America",
+    "description": "Located in Montevideo, Uruguay. Key attributes: eet: tytr; tyrty: xctrtr.",
+    "eet": "tytr",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-073",
+    "name": "Salto gfhdfg #73",
+    "latitude": -31.31853,
+    "longitude": -57.91879,
+    "country": "Uruguay",
+    "state": "Salto",
+    "zone": "Salto, Uruguay",
+    "area": "South America",
+    "description": "Located in Salto, Uruguay. Key attributes: eet: gfhdfg; tyrty: xctrtr.",
+    "eet": "gfhdfg",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Decommissioned"
+    ]
+  },
+  {
+    "id": "FAC-074",
+    "name": "La ghjm #74",
+    "latitude": -16.45799,
+    "longitude": -68.17143,
+    "country": "Bolivia",
+    "state": "La Paz",
+    "zone": "La Paz, Bolivia",
+    "area": "South America",
+    "description": "Located in La Paz, Bolivia. Key attributes: eet: ghjm; tyrty: xctrtr.",
+    "eet": "ghjm",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-075",
+    "name": "Cali tytr #75",
+    "latitude": 3.44395,
+    "longitude": -76.59001,
+    "country": "Colombia",
+    "state": "Valle del Cauca",
+    "zone": "Valle del Cauca, Colombia",
+    "area": "South America",
+    "description": "Located in Valle del Cauca, Colombia. Key attributes: eet: tytr; tyrty: vtr.",
+    "eet": "tytr",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-076",
+    "name": "Cusco gfhdfg #76",
+    "latitude": -13.58743,
+    "longitude": -71.92034,
+    "country": "Peru",
+    "state": "Cusco",
+    "zone": "Cusco, Peru",
+    "area": "South America",
+    "description": "Located in Cusco, Peru. Key attributes: eet: gfhdfg; tyrty: gnyu.",
+    "eet": "gfhdfg",
+    "tyrty": "gnyu",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-077",
+    "name": "Córdoba srtgs #77",
+    "latitude": -31.4465,
+    "longitude": -64.20451,
+    "country": "Argentina",
+    "state": "Córdoba",
+    "zone": "Córdoba, Argentina",
+    "area": "South America",
+    "description": "Located in Córdoba, Argentina. Key attributes: eet: srtgs; tyrty: vtr.",
+    "eet": "srtgs",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-078",
+    "name": "Concepción ghjm #78",
+    "latitude": -36.8173,
+    "longitude": -73.06952,
+    "country": "Chile",
+    "state": "Biobío",
+    "zone": "Biobío, Chile",
+    "area": "South America",
+    "description": "Located in Biobío, Chile. Key attributes: eet: ghjm; tyrty: xctrtr.",
+    "eet": "ghjm",
+    "tyrty": "xctrtr",
+    "test_condition": [
+      "Operational"
+    ]
+  },
+  {
+    "id": "FAC-079",
+    "name": "Concepción tytr #79",
+    "latitude": -36.79192,
+    "longitude": -72.97655,
+    "country": "Chile",
+    "state": "Biobío",
+    "zone": "Biobío, Chile",
+    "area": "South America",
+    "description": "Located in Biobío, Chile. Key attributes: eet: tytr; tyrty: vtr.",
+    "eet": "tytr",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Maintenance"
+    ]
+  },
+  {
+    "id": "FAC-080",
+    "name": "Potosí ghjm #80",
+    "latitude": -19.5581,
+    "longitude": -65.73875,
+    "country": "Bolivia",
+    "state": "Potosí",
+    "zone": "Potosí, Bolivia",
+    "area": "South America",
+    "description": "Located in Potosí, Bolivia. Key attributes: eet: ghjm; tyrty: vtr.",
+    "eet": "ghjm",
+    "tyrty": "vtr",
+    "test_condition": [
+      "Operational"
+    ]
+  }
+]

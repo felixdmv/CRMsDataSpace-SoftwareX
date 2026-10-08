@@ -6,6 +6,7 @@ with automatic fallback to the zero-setup standalone synthetic dataset (syntheti
 
 import os
 import json
+import re
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
@@ -127,7 +128,45 @@ def query_data_space_solr(q: str = "*:*", fq: List[str] = None) -> Dict[str, Any
 
     # Parse filter queries (fq)
     filter_rules = {}
+    commodities_and_rules = []
+    commodities_or_rules = []
+
     for rule in fq:
+        rule_clean = rule.strip()
+        if "commodities:" in rule_clean or rule_clean.startswith("(commodities:"):
+            if " OR " in rule_clean and "commodities:(" in rule_clean and " AND " in rule_clean:
+                # Compound rule e.g. (commodities:("nickel" OR "cobalt") OR (commodities:"tin" AND commodities:"lithium"))
+                m_or = re.search(r'commodities:\(([^)]+)\)', rule_clean)
+                if m_or:
+                    for v in m_or.group(1).split(" OR "):
+                        v_clean = v.strip().strip('"').lower()
+                        if v_clean and v_clean not in commodities_or_rules:
+                            commodities_or_rules.append(v_clean)
+                m_and = re.findall(r'commodities:"([^"]+)"', rule_clean)
+                for v in m_and:
+                    v_clean = v.strip().lower()
+                    if v_clean and v_clean not in commodities_and_rules:
+                        commodities_and_rules.append(v_clean)
+            elif "commodities:(" in rule_clean:
+                raw_inner = rule_clean.split("commodities:(", 1)[1].split(")", 1)[0]
+                if " AND " in raw_inner:
+                    for v in raw_inner.split(" AND "):
+                        v_clean = v.strip().strip('"').lower()
+                        if v_clean and v_clean not in commodities_and_rules:
+                            commodities_and_rules.append(v_clean)
+                else:
+                    for v in raw_inner.split(" OR "):
+                        v_clean = v.strip().strip('"').lower()
+                        if v_clean and v_clean not in commodities_or_rules:
+                            commodities_or_rules.append(v_clean)
+            elif 'commodities:"' in rule_clean:
+                m_direct = re.findall(r'commodities:"([^"]+)"', rule_clean)
+                for v in m_direct:
+                    v_clean = v.strip().lower()
+                    if v_clean and v_clean not in commodities_and_rules:
+                        commodities_and_rules.append(v_clean)
+            continue
+
         if ":" in rule:
             field, raw_vals = rule.split(":", 1)
             raw_vals = raw_vals.strip("()")
@@ -152,12 +191,24 @@ def query_data_space_solr(q: str = "*:*", fq: List[str] = None) -> Dict[str, Any
             if site_r not in filter_rules["region"]:
                 matches = False
 
-        # Check commodities filter
-        if "commodities" in filter_rules and matches:
+        # Check commodities filter (Supports Conjunction AND, Disjunction OR, and Compound)
+        if (commodities_and_rules or commodities_or_rules) and matches:
             site_comms = [c.lower() for c in site.get("commodities", [])]
-            target_comms = filter_rules["commodities"]
-            if not any(tc in site_comms for tc in target_comms):
-                matches = False
+            has_and = len(commodities_and_rules) > 0
+            has_or = len(commodities_or_rules) > 0
+
+            and_match = all(c in site_comms for c in commodities_and_rules) if has_and else False
+            or_match = any(c in site_comms for c in commodities_or_rules) if has_or else False
+
+            if has_and and has_or:
+                if not (and_match or or_match):
+                    matches = False
+            elif has_and:
+                if not and_match:
+                    matches = False
+            elif has_or:
+                if not or_match:
+                    matches = False
 
         # Check storage facility type
         if "storage_facility_type" in filter_rules and matches:
@@ -182,22 +233,6 @@ def query_data_space_solr(q: str = "*:*", fq: List[str] = None) -> Dict[str, Any
             site_copy = dict(site)
             site_copy["score"] = 0.98 if len(fq) > 0 else 0.85
             matched_sites.append(site_copy)
-
-    # Fallback to core filters (country & commodity) if combined filters yield 0 sites
-    if len(matched_sites) == 0 and len(fq) > 1:
-        for site in dataset:
-            core_match = True
-            if "country" in filter_rules:
-                if site.get("country", "").lower() not in filter_rules["country"]:
-                    core_match = False
-            if "commodities" in filter_rules and core_match:
-                site_comms = [c.lower() for c in site.get("commodities", [])]
-                if not any(tc in site_comms for tc in filter_rules["commodities"]):
-                    core_match = False
-            if core_match:
-                site_copy = dict(site)
-                site_copy["score"] = 0.75
-                matched_sites.append(site_copy)
 
     # Compute Solr Facets
     facet_countries = {}

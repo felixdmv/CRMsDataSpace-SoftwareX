@@ -248,6 +248,45 @@ def generate_natural_response(
     num_found = solr_results.get("numFound", 0)
     docs = solr_results.get("docs", [])
     
+    filters = validated_nlu.get("filters", {})
+    comms = filters.get("commodities", [])
+    comm_op = filters.get("commodity_operator", "OR")
+    is_ambiguous = filters.get("is_ambiguous_commodities", False)
+
+    # Detect multi-element conjunction with zero results or ambiguous intent
+    if len(comms) >= 2 and ((num_found == 0 and comm_op in ["AND", "COMPOUND"]) or is_ambiguous):
+        is_spanish = any(w in query.lower() for w in ["dime", "muestra", "en ", "escombrera", "balsa", "donde", "hola", "que ", "de ", "los ", "las ", "paises", "países"])
+        comms_str = ", ".join(c.capitalize() for c in comms)
+        msg = prefix_notice if prefix_notice else ""
+        
+        if num_found == 0 and comm_op in ["AND", "COMPOUND"]:
+            if is_spanish:
+                msg += f"⚠️ No se han encontrado instalaciones que contengan **simultáneamente todos los elementos juntos** ({comms_str}).\n\n"
+                msg += "¿Deseas buscar instalaciones que contengan ambos elementos a la vez (conjunción) o cualquiera de ellos por separado (disyunción)?\n\n"
+            else:
+                msg += f"⚠️ No mining facilities were found containing **all elements co-occurring together** ({comms_str}).\n\n"
+                msg += "Would you like to search for facilities containing all elements together, or either element separately?\n\n"
+        else:
+            if is_spanish:
+                msg += f"ℹ️ Tu consulta contiene múltiples materias primas ({comms_str}). ¿Deseas buscar instalaciones que contengan **ambos elementos a la vez** o **por separado**?\n\n"
+            else:
+                msg += f"ℹ️ Your query mentions multiple raw materials ({comms_str}). Would you like to search for facilities containing **both elements together** or **either element separately**?\n\n"
+
+        msg += (
+            f"1. **Option 1: Together (AND)** — Search facilities containing all specified elements simultaneously.\n"
+            f"2. **Option 2: Separately (OR)** — Search facilities containing any of the specified elements separately.\n\n"
+            f'<div class="disambiguation-actions mt-2 mb-1 p-2 bg-light border rounded d-flex flex-wrap align-items-center gap-2">'
+            f'<span class="small font-weight-bold mr-2 text-muted">Select filter mode:</span>'
+            f'<button type="button" class="btn btn-sm btn-outline-primary mr-2" onclick="applyChatFilterMode(\'AND\')">'
+            f'<i class="fas fa-layer-group mr-1"></i> Option 1: Together (AND)'
+            f'</button>'
+            f'<button type="button" class="btn btn-sm btn-primary" onclick="applyChatFilterMode(\'OR\')">'
+            f'<i class="fas fa-object-ungroup mr-1"></i> Option 2: Separately (OR)'
+            f'</button>'
+            f'</div>'
+        )
+        return msg
+
     if num_found == 0:
         is_spanish = any(w in query.lower() for w in ["dime", "muestra", "en ", "escombrera", "balsa", "donde", "hola", "que ", "de ", "los ", "las ", "paises", "países"])
         msg = prefix_notice if prefix_notice else ""
@@ -505,7 +544,14 @@ def process_chat_message(
     if filters.get("countries"):
         active_map_filters.append({"type": "Country", "label": "Countries", "values": filters["countries"]})
     if filters.get("commodities"):
-        active_map_filters.append({"type": "Commodity", "label": "CRM Metal", "values": filters["commodities"]})
+        comm_op = filters.get("commodity_operator", "OR")
+        if comm_op == "AND":
+            lbl = "CRM Metals (AND - Together)"
+        elif comm_op == "COMPOUND":
+            lbl = "CRM Metals (Compound: OR + AND)"
+        else:
+            lbl = "CRM Metals (OR - Separately)"
+        active_map_filters.append({"type": "Commodity", "label": lbl, "values": filters["commodities"]})
     if filters.get("storage_facility_types"):
         active_map_filters.append({"type": "Facility", "label": "Facility Type", "values": filters["storage_facility_types"]})
     if filters.get("project_status"):
@@ -515,6 +561,16 @@ def process_chat_message(
 
     # 11. Generate natural language response
     response_text = generate_natural_response(query, validated, solr_results, provider, prefix_notice=prefix_notice)
+
+    disambiguation_options = None
+    comms = updated_filters.get("commodities", [])
+    comm_op = updated_filters.get("commodity_operator", "OR")
+    is_ambiguous = updated_filters.get("is_ambiguous_commodities", False)
+    if len(comms) >= 2 and ((solr_results.get("numFound", 0) == 0 and comm_op in ["AND", "COMPOUND"]) or is_ambiguous):
+        disambiguation_options = [
+            {"mode": "AND", "label": "Option 1: Together (AND)"},
+            {"mode": "OR", "label": "Option 2: Separately (OR)"}
+        ]
 
     # 12. Update conversation history
     hist = list(conversation_history)
@@ -535,5 +591,6 @@ def process_chat_message(
         "conversation_history": hist,
         "facets": solr_results.get("facets", {}),
         "response_text": response_text,
-        "docs": matched_docs
+        "docs": matched_docs,
+        "disambiguation_options": disambiguation_options
     }

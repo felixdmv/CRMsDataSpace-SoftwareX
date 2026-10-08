@@ -29,6 +29,9 @@ NLU_RESPONSE_SCHEMA = {
                 "countries": {"type": "ARRAY", "items": {"type": "STRING"}},
                 "regions": {"type": "ARRAY", "items": {"type": "STRING"}},
                 "commodities": {"type": "ARRAY", "items": {"type": "STRING"}},
+                "commodity_operator": {"type": "STRING", "enum": ["AND", "OR", "COMPOUND"]},
+                "commodities_and": {"type": "ARRAY", "items": {"type": "STRING"}},
+                "commodities_or": {"type": "ARRAY", "items": {"type": "STRING"}},
                 "storage_facility_types": {"type": "ARRAY", "items": {"type": "STRING"}},
                 "material_types": {"type": "ARRAY", "items": {"type": "STRING"}},
                 "project_status": {"type": "ARRAY", "items": {"type": "STRING"}},
@@ -121,6 +124,10 @@ Allowed filter fields and domain mapping rules:
   * Titanium: "titanium" (use for "titanium", "titanio", "ti")
   * Platinum Group Elements: "pge" (use for "pge", "platinum", "platino", "platinum group elements")
   * Manganese: "manganese" (use for "manganese", "manganeso", "mn")
+  * MULTI-ELEMENT BOOLEAN LOGIC (AND vs OR):
+    - Conjunction (Both together / AND): When query asks for deposits containing multiple elements simultaneously (e.g., "escombreras en españa con litio y estaño", "facilities with lithium and cobalt", "ambos elementos", "juntos"): set "commodity_operator": "AND", "commodities_and": [elements], "commodities": [elements].
+    - Disjunction (Either / OR): When query asks for deposits with either element separately (e.g., "litio o estaño", "lithium or tin", "por separado"): set "commodity_operator": "OR", "commodities_or": [elements], "commodities": [elements].
+    - Compound: When query mixes both (e.g. "litio o (estaño y cobalto)"): set "commodity_operator": "COMPOUND", "commodities_or": ["lithium"], "commodities_and": ["tin", "cobalt"].
 - storage_facility_types: asset types:
   Allowed values: ["tailings storage facility", "waste dump", "stockpile", "pond"]
   * "tailings ponds" or "balsas de relaves" -> ["pond", "tailings storage facility"]
@@ -294,11 +301,13 @@ class Normalizer:
         "nickel": "nickel", "niquel": "nickel", "níquel": "nickel",
         "copper": "copper", "cobre": "copper",
         "tin": "tin", "estaño": "tin", "estano": "tin",
-        "tantalum": "tantalum", "tantalo": "tantalum", "tántalo": "tantalum", "coltan": "tantalum", "coltán": "tantalum",
+        "tantalum": "tantalum", "tantalo": "tantalum", "tántalo": "tantalum", "tantalio": "tantalum", "coltan": "tantalum", "coltán": "tantalum",
         "graphite": "graphite", "grafito": "graphite",
         "titanium": "titanium", "titanio": "titanium",
         "manganese": "manganese", "manganeso": "manganese",
-        "pge": "pge", "platino": "pge", "platinum": "pge", "platinum group elements": "pge"
+        "pge": "pge", "platino": "pge", "platinum": "pge", "paladio": "pge", "palladium": "pge", "platinum group elements": "pge",
+        "germanium": "germanium", "germanio": "germanium",
+        "gallium": "gallium", "galio": "gallium"
     }
 
     CITY_COUNTRY_MAP = {
@@ -519,10 +528,28 @@ class Validator:
             intent = "filter_search"
             
         filters = data.get("filters", {})
+        comm_op = filters.get("commodity_operator", "OR")
+        comms_and = filters.get("commodities_and", [])
+        comms_or = filters.get("commodities_or", [])
+        comms = filters.get("commodities", [])
+
+        # Harmonize commodities if not explicitly split
+        if not comms_and and not comms_or and comms:
+            if comm_op == "AND":
+                comms_and = list(comms)
+            else:
+                comms_or = list(comms)
+        elif (comms_and or comms_or) and not comms:
+            comms = list(dict.fromkeys(comms_and + comms_or))
+
         validated_filters = {
             "countries": filters.get("countries", []),
             "regions": filters.get("regions", []),
-            "commodities": filters.get("commodities", []),
+            "commodities": comms,
+            "commodity_operator": comm_op,
+            "commodities_and": comms_and,
+            "commodities_or": comms_or,
+            "is_ambiguous_commodities": bool(filters.get("is_ambiguous_commodities", False)),
             "storage_facility_types": filters.get("storage_facility_types", []),
             "material_types": filters.get("material_types", []),
             "project_status": filters.get("project_status", []),
@@ -555,8 +582,22 @@ class QueryBuilder:
             r_str = " OR ".join(f'"{r}"' for r in filters["regions"])
             fq_list.append(f"region:({r_str})")
 
-        if filters.get("commodities"):
-            cm_str = " OR ".join(f'"{cm}"' for cm in filters["commodities"])
+        comm_op = filters.get("commodity_operator", "OR")
+        comms_and = filters.get("commodities_and", [])
+        comms_or = filters.get("commodities_or", [])
+        comms = filters.get("commodities", [])
+
+        if comm_op == "AND" or (comms_and and not comms_or):
+            target_and = comms_and or comms
+            for cm in target_and:
+                fq_list.append(f'commodities:"{cm}"')
+        elif comm_op == "COMPOUND" and (comms_and and comms_or):
+            or_parts = " OR ".join(f'"{c}"' for c in comms_or)
+            and_parts = " AND ".join(f'commodities:"{c}"' for c in comms_and)
+            fq_list.append(f'(commodities:({or_parts}) OR ({and_parts}))')
+        elif comms_or or comms:
+            target_or = comms_or or comms
+            cm_str = " OR ".join(f'"{cm}"' for cm in target_or)
             fq_list.append(f"commodities:({cm_str})")
 
         if filters.get("storage_facility_types"):
@@ -663,14 +704,27 @@ class DialogueStateTracker:
             k: list(current_filters.get(k, [])) if current_filters else [] for k in keys_list
         }
         state["restored"] = current_filters.get("restored", None) if current_filters else None
+        state["commodity_operator"] = (extracted_filters.get("commodity_operator") or (current_filters.get("commodity_operator") if current_filters else "OR"))
+        state["commodities_and"] = list(extracted_filters.get("commodities_and") or (current_filters.get("commodities_and", []) if current_filters else []))
+        state["commodities_or"] = list(extracted_filters.get("commodities_or") or (current_filters.get("commodities_or", []) if current_filters else []))
+        state["is_ambiguous_commodities"] = bool(extracted_filters.get("is_ambiguous_commodities", False))
 
         if action == "reset":
-            return {k: ([] if k != "restored" else None) for k in state}
+            res = {k: ([] if k != "restored" else None) for k in state}
+            res["commodity_operator"] = "OR"
+            res["commodities_and"] = []
+            res["commodities_or"] = []
+            res["is_ambiguous_commodities"] = False
+            return res
 
         if action == "new_search":
             for k in keys_list:
                 state[k] = list(extracted_filters.get(k, []))
             state["restored"] = extracted_filters.get("restored", None)
+            state["commodity_operator"] = extracted_filters.get("commodity_operator", "OR")
+            state["commodities_and"] = list(extracted_filters.get("commodities_and", []))
+            state["commodities_or"] = list(extracted_filters.get("commodities_or", []))
+            state["is_ambiguous_commodities"] = bool(extracted_filters.get("is_ambiguous_commodities", False))
             return state
 
         if action == "expand":
@@ -681,6 +735,10 @@ class DialogueStateTracker:
                         state[k].append(val)
             if extracted_filters.get("restored") is not None:
                 state["restored"] = extracted_filters.get("restored")
+            if extracted_filters.get("commodities_or"):
+                for val in extracted_filters["commodities_or"]:
+                    if val not in state["commodities_or"]:
+                        state["commodities_or"].append(val)
             return state
 
         if action == "refine":
@@ -691,6 +749,12 @@ class DialogueStateTracker:
                     state[k] = list(extracted_vals)
             if extracted_filters.get("restored") is not None:
                 state["restored"] = extracted_filters.get("restored")
+            if extracted_filters.get("commodity_operator"):
+                state["commodity_operator"] = extracted_filters["commodity_operator"]
+            if extracted_filters.get("commodities_and"):
+                state["commodities_and"] = list(extracted_filters["commodities_and"])
+            if extracted_filters.get("commodities_or"):
+                state["commodities_or"] = list(extracted_filters["commodities_or"])
             return state
 
         if action == "remove":
@@ -699,6 +763,10 @@ class DialogueStateTracker:
             for k in keys_list:
                 to_drop = set(removals.get(k, []))
                 state[k] = [v for v in state[k] if v not in to_drop]
+            if "commodities" in removals:
+                to_drop_c = set(removals["commodities"])
+                state["commodities_and"] = [v for v in state["commodities_and"] if v not in to_drop_c]
+                state["commodities_or"] = [v for v in state["commodities_or"] if v not in to_drop_c]
             return state
 
         return state

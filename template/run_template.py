@@ -675,7 +675,7 @@ PRESETS: Dict[str, Dict[str, Any]] = {
             {
                 "key": "energy_type",
                 "label": "Generation Technology",
-                "type": "multiselect",
+                "type": "compound",
                 "options": [
                     "Solar Photovoltaic",
                     "Onshore Wind",
@@ -774,7 +774,7 @@ PRESETS: Dict[str, Dict[str, Any]] = {
             {
                 "key": "facility_type",
                 "label": "Municipal Infrastructure",
-                "type": "multiselect",
+                "type": "compound",
                 "options": [
                     "General Hospital",
                     "Public School",
@@ -936,7 +936,7 @@ def generate_procedural_points(
             opts = f.get("options", [])
             f_type = f.get("type", "select")
             if opts:
-                if f_type == "multiselect" and random.random() < 0.25 and len(opts) > 1:
+                if f_type in ["multiselect", "compound"] and random.random() < 0.35 and len(opts) > 1:
                     props[key] = random.sample(opts, k=min(2, len(opts)))
                 else:
                     props[key] = random.choice(opts)
@@ -1096,7 +1096,13 @@ def parse_conversational_query(query: str, config: Dict[str, Any]) -> Dict[str, 
                         break
 
         if field_matches:
-            if f_type == "multiselect" or len(field_matches) > 1:
+            if f_type == "compound":
+                is_conjunction = any(c in q_lower for c in [" and ", " y ", " with both ", " con ambos ", " together ", " co-located ", " a la vez ", " e "])
+                if is_conjunction and len(field_matches) > 1:
+                    extracted_filters[f_key] = {"and": field_matches, "or": []}
+                else:
+                    extracted_filters[f_key] = {"or": field_matches, "and": []}
+            elif f_type == "multiselect" or len(field_matches) > 1:
                 extracted_filters[f_key] = field_matches
             else:
                 extracted_filters[f_key] = field_matches[0]
@@ -1133,7 +1139,17 @@ def build_solr_query(filters: Dict[str, Any], config: Dict[str, Any]) -> Dict[st
     for f_key, f_val in filters.items():
         if not f_val:
             continue
-        if isinstance(f_val, list):
+        if isinstance(f_val, dict) and ("or" in f_val or "and" in f_val):
+            or_parts = [f'"{v}"' for v in f_val.get("or", []) if v]
+            and_parts = [f'"{v}"' for v in f_val.get("and", []) if v]
+            compound_parts = []
+            if or_parts:
+                compound_parts.append(f"{f_key}:({' OR '.join(or_parts)})")
+            if and_parts:
+                compound_parts.append(f"({' AND '.join([f'{f_key}:' + c for c in and_parts])})")
+            if compound_parts:
+                fq_list.append(f"({' OR '.join(compound_parts)})")
+        elif isinstance(f_val, list):
             clauses = [f'"{v}"' for v in f_val]
             fq_list.append(f"{f_key}:({' OR '.join(clauses)})")
         else:
@@ -1152,6 +1168,7 @@ def execute_spatial_filtering(filters: Dict[str, Any], dataset: List[Dict[str, A
     """
     Executes Solr boolean filter rules over the in-memory dataset,
     computing dynamic multidimensional facet distributions.
+    Supports atomic, multiselect, and compound (disjunction OR + conjunction AND) filters.
     """
     matched_sites = []
 
@@ -1164,6 +1181,32 @@ def execute_spatial_filtering(filters: Dict[str, Any], dataset: List[Dict[str, A
             if site_val is None:
                 matches = False
                 break
+
+            # Handle Compound filters (dict with 'or' and 'and')
+            if isinstance(f_val, dict) and ("or" in f_val or "and" in f_val):
+                or_vals = [strip_accents(str(v).lower()) for v in f_val.get("or", []) if v]
+                and_vals = [strip_accents(str(v).lower()) for v in f_val.get("and", []) if v]
+                site_vals_norm = [strip_accents(str(x).lower()) for x in (site_val if isinstance(site_val, list) else [site_val])]
+
+                has_or = len(or_vals) > 0
+                has_and = len(and_vals) > 0
+
+                or_matches = any(tv in site_vals_norm for tv in or_vals) if has_or else False
+                and_matches = all(tv in site_vals_norm for tv in and_vals) if has_and else False
+
+                if has_or and has_and:
+                    if not (or_matches or and_matches):
+                        matches = False
+                        break
+                elif has_and:
+                    if not and_matches:
+                        matches = False
+                        break
+                elif has_or:
+                    if not or_matches:
+                        matches = False
+                        break
+                continue
 
             target_vals = [strip_accents(str(v).lower()) for v in (f_val if isinstance(f_val, list) else [f_val])]
 
@@ -1353,7 +1396,17 @@ def process_query_pipeline(payload: Dict[str, Any]) -> Dict[str, Any]:
             f_def = fields_dict.get(k, {})
             label = f_def.get("label", k.title())
 
-        vals = v if isinstance(v, list) else [str(v)]
+        if isinstance(v, dict) and ("or" in v or "and" in v):
+            parts = []
+            if v.get("or"):
+                parts.append(f"OR: {', '.join(v['or'])}")
+            if v.get("and"):
+                parts.append(f"AND: {', '.join(v['and'])}")
+            vals = parts if parts else [str(v)]
+        elif isinstance(v, list):
+            vals = v
+        else:
+            vals = [str(v)]
         active_badges.append({"key": k, "label": label, "values": vals})
 
     narrative = generate_natural_narrative(query, intent, validated_filters, filtering_results, config)
@@ -1588,10 +1641,12 @@ class GenericGISHandler(SimpleHTTPRequestHandler):
 
                 cfg = load_config()
                 existing = next((f for f in cfg.get("filter_fields", []) if f["key"] == key), None)
+                is_multi = payload.get("type") in ["compound", "multiselect"] or payload.get("multivalue") is True
+                f_type = "compound" if is_multi else payload.get("type", "select")
                 field_entry = {
                     "key": key,
                     "label": label,
-                    "type": payload.get("type", "select"),
+                    "type": f_type,
                     "options": options,
                     "colors": colors,
                     "synonyms": {}
@@ -1608,13 +1663,68 @@ class GenericGISHandler(SimpleHTTPRequestHandler):
                 dataset = load_dataset()
                 for pt in dataset:
                     if key not in pt or not pt[key]:
-                        pt[key] = random.choice(options)
+                        if f_type == "compound" and random.random() < 0.35 and len(options) > 1:
+                            pt[key] = random.sample(options, k=min(2, len(options)))
+                        else:
+                            pt[key] = random.choice(options)
                 save_dataset(dataset)
 
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
                 self.wfile.write(json.dumps({"status": "success", "field": field_entry, "config": cfg}, ensure_ascii=False).encode("utf-8"))
+            except Exception as e:
+                self.send_response(400)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+            return
+
+        # API: Toggle multi-value (compound) status for an existing filter dimension
+        elif self.path == "/api/toggle_multivalue":
+            try:
+                payload = json.loads(post_data)
+                key = payload.get("key", "").strip()
+                cfg = load_config()
+                field = next((f for f in cfg.get("filter_fields", []) if f["key"] == key), None)
+                if not field:
+                    raise ValueError(f"Filter with key '{key}' not found.")
+
+                current_type = field.get("type", "select")
+                if "multivalue" in payload:
+                    target_multi = bool(payload["multivalue"])
+                else:
+                    target_multi = (current_type != "compound")
+
+                field["type"] = "compound" if target_multi else "select"
+                save_config(cfg)
+
+                dataset = load_dataset()
+                options = field.get("options", [])
+                if target_multi:
+                    # Give ~35% of sites multi-values so compound co-occurrences exist
+                    for pt in dataset:
+                        curr_val = pt.get(key)
+                        if not isinstance(curr_val, list):
+                            if random.random() < 0.35 and len(options) > 1:
+                                sec_candidates = [o for o in options if o != curr_val]
+                                sec_opt = random.choice(sec_candidates) if sec_candidates else random.choice(options)
+                                pt[key] = [curr_val, sec_opt] if curr_val else [sec_opt]
+                            else:
+                                pt[key] = [curr_val] if curr_val else [random.choice(options)] if options else ["None"]
+                else:
+                    # Downgrade multi-values to single scalar string
+                    for pt in dataset:
+                        curr_val = pt.get(key)
+                        if isinstance(curr_val, list):
+                            pt[key] = curr_val[0] if curr_val else (options[0] if options else "None")
+
+                save_dataset(dataset)
+
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success", "field": field, "config": cfg}, ensure_ascii=False).encode("utf-8"))
             except Exception as e:
                 self.send_response(400)
                 self.send_header("Content-Type", "application/json")
@@ -1635,6 +1745,34 @@ class GenericGISHandler(SimpleHTTPRequestHandler):
                 for pt in dataset:
                     pt.pop(key, None)
                 save_dataset(dataset)
+
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success", "config": cfg}, ensure_ascii=False).encode("utf-8"))
+            except Exception as e:
+                self.send_response(400)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+            return
+
+        # API: Reorder filter fields
+        elif self.path == "/api/reorder_filters":
+            try:
+                payload = json.loads(post_data)
+                order = payload.get("order", [])
+                cfg = load_config()
+                current_fields = {f["key"]: f for f in cfg.get("filter_fields", [])}
+                new_fields = []
+                for k in order:
+                    if k in current_fields and current_fields[k] not in new_fields:
+                        new_fields.append(current_fields[k])
+                for k, f in current_fields.items():
+                    if f not in new_fields:
+                        new_fields.append(f)
+                cfg["filter_fields"] = new_fields
+                save_config(cfg)
 
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")

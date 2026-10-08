@@ -1,29 +1,66 @@
 {
-  "title": "General-Purpose GIS Architecture Template — Elsevier SoftwareX",
-  "description": "Domain-Agnostic Conversational Spatial Search Sandbox. Select an Area of Interest and domain preset to begin.",
-  "active_preset": null,
-  "active_area": null,
+  "title": "Custom User-Defined GIS Architecture Sandbox",
+  "description": "Blank canvas. Use the Filter Studio to define custom dimensions and schema rules.",
+  "active_preset": "custom",
+  "filter_fields": [
+    {
+      "key": "tyrty",
+      "label": "tyrty",
+      "type": "select",
+      "options": [
+        "ct",
+        "gnyu",
+        "xctrtr",
+        "vtr"
+      ],
+      "colors": {
+        "ct": "#3b82f6",
+        "gnyu": "#10b981",
+        "xctrtr": "#f59e0b",
+        "vtr": "#8b5cf6"
+      },
+      "synonyms": {}
+    },
+    {
+      "key": "eet",
+      "label": "eet",
+      "type": "select",
+      "options": [
+        "tytr",
+        "gfhdfg",
+        "ghjm",
+        "srtgs"
+      ],
+      "colors": {
+        "tytr": "#3b82f6",
+        "gfhdfg": "#10b981",
+        "ghjm": "#f59e0b",
+        "srtgs": "#8b5cf6"
+      },
+      "synonyms": {}
+    }
+  ],
+  "active_area": "south_america",
   "active_subdivision": null,
   "territory": {
-    "area_id": null,
-    "area_name": "Global Overview",
-    "name": "Global Canvas",
+    "area_id": "south_america",
+    "area_name": "South America",
+    "name": "South America",
     "subdivision_name": null,
     "center": [
-      20.0,
-      0.0
+      -15.0,
+      -60.0
     ],
-    "zoom": 2.5,
+    "zoom": 3.8,
     "bounds": [
       [
-        -60.0,
-        -170.0
+        -56.0,
+        -82.0
       ],
       [
-        75.0,
-        175.0
+        13.0,
+        -34.0
       ]
     ]
-  },
-  "filter_fields": []
+  }
 }

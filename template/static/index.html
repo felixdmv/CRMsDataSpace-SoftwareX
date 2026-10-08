@@ -673,8 +673,22 @@
         <!-- LEAFLET MAP CANVAS -->
         <div id="map" class="w-full h-full"></div>
 
-        <!-- FLOATING ACTIVE SCOPE CARD -->
-        <div class="absolute bottom-3 left-3 z-[500] pointer-events-none">
+        <!-- FLOATING ACTIVE SCOPE & DYNAMIC MARKER LEGEND (ANCHORED TO BOTTOM-LEFT OF MAP) -->
+        <div class="absolute bottom-3 left-3 z-[500] pointer-events-none flex flex-col gap-2">
+          <!-- Dynamic Marker Color Legend -->
+          <div id="map-marker-legend" class="bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-lg p-2.5 shadow-2xl pointer-events-auto text-[10.5px] text-slate-300 space-y-1.5 min-w-[200px] max-w-[260px]">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-1">
+              <span class="font-bold text-[10px] uppercase tracking-wider text-slate-400 font-mono flex items-center gap-1">
+                <span>🎨 Marker Colors</span>
+              </span>
+              <span id="legend-field-label" class="text-[9.5px] text-cyan-400 font-mono truncate max-w-[110px]" title="Primary dimension controlling point colors">Primary Field</span>
+            </div>
+            <div id="legend-items-container" class="space-y-1 max-h-36 overflow-y-auto pr-1">
+              <!-- Dynamically populated with color dots and option names -->
+            </div>
+          </div>
+
+          <!-- Active Scope Card -->
           <div class="bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-lg p-2.5 shadow-2xl pointer-events-auto text-[10.5px] text-slate-300 space-y-1 min-w-[200px]">
             <div class="flex items-center justify-between border-b border-slate-800 pb-1">
               <span class="font-bold text-[10px] uppercase tracking-wider text-slate-400 font-mono">📍 Active Scope</span>
@@ -850,6 +864,12 @@
                 <label class="block text-[10.5px] text-slate-400 mb-0.5">Category Options (comma-separated):</label>
                 <input id="input-new-filter-options" type="text" placeholder="e.g. Excellent, Good, Fair, Critical" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-blue-500">
               </div>
+              <div class="pt-0.5">
+                <label class="flex items-center gap-2 cursor-pointer text-[10.5px] text-slate-300 select-none bg-slate-900/60 p-1.5 rounded border border-slate-800 hover:border-slate-700">
+                  <input type="checkbox" id="input-new-filter-multivalue" class="rounded border-slate-700 text-emerald-500 focus:ring-0">
+                  <span class="flex-1">Allow multi-value per facility <span class="text-[9.5px] text-emerald-400 font-mono">(Compound AND/OR)</span></span>
+                </label>
+              </div>
               <button onclick="submitNewFilter()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-1.5 rounded transition text-xs cursor-pointer shadow">
                 Save & Apply to Schema
               </button>
@@ -914,6 +934,7 @@
     let currentConfig = {};
     let areasCatalog = {};
     let manualFilterState = {};
+    let lastFacets = {};
     let leafletMap = null;
     let markersLayer = null;
     let markersById = {};
@@ -1141,6 +1162,7 @@
 
         updateDomainSelectionUI();
         renderActiveFilterCards();
+        renderMapLegend();
         renderDynamicSuggestions();
         if (typeof updateWizardUI === 'function') {
           updateWizardUI();
@@ -1483,20 +1505,38 @@
         return;
       }
 
-      fields.forEach(f => {
+      fields.forEach((f, idx) => {
+        const isFirst = idx === 0;
+        const isLast = idx === fields.length - 1;
         const card = document.createElement('div');
-        card.className = "bg-slate-950/80 border border-slate-800 rounded-lg p-2.5 space-y-2";
+        card.className = `border rounded-lg p-2.5 space-y-2 transition-all ${isFirst ? 'bg-slate-950 border-amber-500/50 shadow-md ring-1 ring-amber-500/20' : 'bg-slate-950/80 border-slate-800'}`;
 
+        const isCompound = f.type === 'compound';
         const header = document.createElement('div');
         header.className = "flex justify-between items-center";
         header.innerHTML = `
-          <div class="flex items-center gap-1.5">
-            <span class="font-semibold text-xs text-white">${f.label}</span>
-            <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-400">${f.key}</span>
+          <div class="flex items-center gap-1.5 min-w-0 flex-wrap">
+            <span class="font-semibold text-xs text-white truncate">${f.label}</span>
+            <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 shrink-0">${f.key}</span>
+            ${isCompound ? `
+              <button onclick="toggleFilterMultiValue('${f.key}')" class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 shrink-0 flex items-center gap-1 cursor-pointer transition" title="Currently allows multiple simultaneous values per facility (Compound AND/OR). Click to make Single-Value.">
+                <span>🔀 Multi-Value</span>
+                <span class="text-[8px] bg-emerald-800/80 px-1 rounded text-white font-mono">ON</span>
+              </button>
+            ` : `
+              <button onclick="toggleFilterMultiValue('${f.key}')" class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800/80 text-slate-400 border border-slate-700 hover:text-white hover:border-slate-500 hover:bg-slate-700 shrink-0 flex items-center gap-1 cursor-pointer transition" title="Currently single-value. Click to allow facilities to possess multiple values simultaneously (Enables Compound AND/OR widget).">
+                <span>➕ Make Multi-Value</span>
+              </button>
+            `}
+            ${isFirst ? '<span class="text-[8.5px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 shrink-0 flex items-center gap-0.5" title="Primary dimension controlling map point colors"><span>🎨</span><span>Marker Colors</span></span>' : ''}
           </div>
-          <button onclick="deleteFilter('${f.key}')" class="text-slate-500 hover:text-rose-400 text-xs cursor-pointer p-0.5" title="Remove this dimension">
-            🗑️
-          </button>
+          <div class="flex items-center gap-1 shrink-0 ml-1">
+            <button onclick="moveFilterDimension(${idx}, -1)" ${isFirst ? 'disabled class="opacity-25 text-slate-500 cursor-not-allowed text-xs px-1"' : 'class="text-slate-400 hover:text-white text-xs px-1 hover:bg-slate-800 rounded cursor-pointer"'} title="Move dimension up (priority color)">▲</button>
+            <button onclick="moveFilterDimension(${idx}, 1)" ${isLast ? 'disabled class="opacity-25 text-slate-500 cursor-not-allowed text-xs px-1"' : 'class="text-slate-400 hover:text-white text-xs px-1 hover:bg-slate-800 rounded cursor-pointer"'} title="Move dimension down">▼</button>
+            <button onclick="deleteFilter('${f.key}')" class="text-slate-500 hover:text-rose-400 text-xs cursor-pointer p-0.5 ml-0.5" title="Remove this dimension">
+              🗑️
+            </button>
+          </div>
         `;
         card.appendChild(header);
 
@@ -1527,6 +1567,37 @@
       });
     }
 
+    async function moveFilterDimension(index, direction) {
+      const fields = currentConfig.filter_fields || [];
+      const targetIdx = index + direction;
+      if (targetIdx < 0 || targetIdx >= fields.length) return;
+      const temp = fields[index];
+      fields[index] = fields[targetIdx];
+      fields[targetIdx] = temp;
+
+      const order = fields.map(f => f.key);
+      try {
+        const resp = await fetch('/api/reorder_filters', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order: order })
+        });
+        const data = await resp.json();
+        if (data.status === 'success' && data.config) {
+          currentConfig = data.config;
+        }
+      } catch (e) {
+        console.error("Error saving filter order:", e);
+      }
+
+      renderActiveFilterCards();
+      renderManualFacetPills(lastFacets || {});
+      renderMapMarkers();
+      renderMapLegend();
+      renderDynamicSuggestions();
+      renderObjectsList();
+    }
+
     function toggleNewFilterForm(expand) {
       document.getElementById('new-filter-collapsed').classList.toggle('hidden', expand);
       document.getElementById('new-filter-expanded').classList.toggle('hidden', !expand);
@@ -1539,11 +1610,12 @@
       if (!label) return;
 
       const opts = rawOpts.split(',').map(s => s.trim()).filter(Boolean);
+      const isMulti = document.getElementById('input-new-filter-multivalue')?.checked || false;
       try {
         const resp = await fetch('/api/add_filter', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ label: label, options: opts, type: 'select' })
+          body: JSON.stringify({ label: label, options: opts, type: isMulti ? 'compound' : 'select', multivalue: isMulti })
         });
         const data = await resp.json();
         if (data.status === 'success') {
@@ -1551,6 +1623,9 @@
           lastAddedFeature = { type: 'filter', key: data.field?.key || label.toLowerCase(), label: label, options: opts };
           document.getElementById('input-new-filter-label').value = '';
           document.getElementById('input-new-filter-options').value = '';
+          if (document.getElementById('input-new-filter-multivalue')) {
+            document.getElementById('input-new-filter-multivalue').checked = false;
+          }
           toggleNewFilterForm(false);
           renderActiveFilterCards();
           renderDynamicSuggestions();
@@ -1558,6 +1633,29 @@
         }
       } catch (e) {
         console.error("Error creating filter:", e);
+      }
+    }
+
+    async function toggleFilterMultiValue(key) {
+      try {
+        const resp = await fetch('/api/toggle_multivalue', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: key })
+        });
+        const data = await resp.json();
+        if (data.status === 'success' && data.config) {
+          currentConfig = data.config;
+          await loadPointsData();
+          renderActiveFilterCards();
+          renderManualFacetPills(lastFacets || {});
+          renderMapMarkers();
+          renderMapLegend();
+          renderDynamicSuggestions();
+          renderObjectsList();
+        }
+      } catch (e) {
+        console.error("Error toggling filter multi-value:", e);
       }
     }
 
@@ -1855,7 +1953,90 @@
       });
     }
 
+    function renderMapLegend() {
+      const container = document.getElementById('legend-items-container');
+      const labelEl = document.getElementById('legend-field-label');
+      const legendBox = document.getElementById('map-marker-legend');
+      if (!container || !legendBox) return;
+
+      const fields = currentConfig.filter_fields || [];
+      const primaryField = fields[0] || null;
+
+      if (!primaryField || !primaryField.options || primaryField.options.length === 0) {
+        legendBox.classList.add('hidden');
+        return;
+      }
+
+      legendBox.classList.remove('hidden');
+      labelEl.textContent = primaryField.label || primaryField.key;
+      container.innerHTML = '';
+
+      primaryField.options.forEach(opt => {
+        const color = primaryField.colors?.[opt] || COLOR_PALETTE[0];
+        const item = document.createElement('div');
+        item.className = 'flex items-center gap-1.5 text-[10.5px]';
+        item.innerHTML = `
+          <span class="w-2.5 h-2.5 rounded-full shrink-0 border border-white/60 shadow-sm" style="background-color: ${color}"></span>
+          <span class="truncate text-slate-200" title="${opt}">${opt}</span>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function addCompoundItem(fieldKey, optionVal, mode) {
+      if (!manualFilterState[fieldKey] || typeof manualFilterState[fieldKey] !== 'object' || Array.isArray(manualFilterState[fieldKey])) {
+        manualFilterState[fieldKey] = { or: [], and: [] };
+      }
+      const state = manualFilterState[fieldKey];
+      if (!state.or) state.or = [];
+      if (!state.and) state.and = [];
+
+      state.or = state.or.filter(v => v !== optionVal);
+      state.and = state.and.filter(v => v !== optionVal);
+
+      if (mode === 'and') {
+        state.and.push(optionVal);
+      } else {
+        state.or.push(optionVal);
+      }
+      submitManualFilters();
+    }
+
+    function moveCompoundItem(fieldKey, optionVal, targetMode) {
+      if (!manualFilterState[fieldKey] || typeof manualFilterState[fieldKey] !== 'object') return;
+      const state = manualFilterState[fieldKey];
+      if (!state.or) state.or = [];
+      if (!state.and) state.and = [];
+
+      state.or = state.or.filter(v => v !== optionVal);
+      state.and = state.and.filter(v => v !== optionVal);
+
+      if (targetMode === 'and') {
+        state.and.push(optionVal);
+      } else {
+        state.or.push(optionVal);
+      }
+      submitManualFilters();
+    }
+
+    function removeCompoundItem(fieldKey, optionVal) {
+      if (!manualFilterState[fieldKey] || typeof manualFilterState[fieldKey] !== 'object') return;
+      const state = manualFilterState[fieldKey];
+      if (state.or) state.or = state.or.filter(v => v !== optionVal);
+      if (state.and) state.and = state.and.filter(v => v !== optionVal);
+      if ((!state.or || state.or.length === 0) && (!state.and || state.and.length === 0)) {
+        delete manualFilterState[fieldKey];
+      }
+      submitManualFilters();
+    }
+
+    function clearCompoundFilter(fieldKey) {
+      delete manualFilterState[fieldKey];
+      submitManualFilters();
+    }
+
     function renderManualFacetPills(facets) {
+      lastFacets = facets || {};
       const container = document.getElementById('manual-facet-groups');
       if (!container) return;
       container.innerHTML = '';
@@ -1906,31 +2087,188 @@
 
       // 3. Dynamic Filter Fields Facets
       const fields = currentConfig.filter_fields || [];
-      fields.forEach(f => {
-        const group = document.createElement('div');
-        group.className = "space-y-1";
-        group.innerHTML = `<div class="text-[10px] text-slate-400 uppercase font-mono font-semibold">${f.label}</div>`;
-        const pillsDiv = document.createElement('div');
-        pillsDiv.className = "flex flex-wrap gap-1";
+      fields.forEach((f, idx) => {
+        const isFirst = idx === 0;
+        const isLast = idx === fields.length - 1;
 
-        (f.options || []).forEach(opt => {
-          const count = facets[f.key]?.[opt] || 0;
-          const isActive = (manualFilterState[f.key] === opt) || (Array.isArray(manualFilterState[f.key]) && manualFilterState[f.key].includes(opt));
-          const optColor = f.colors?.[opt] || '#3b82f6';
+        if (f.type === 'compound') {
+          // Render Compound (Disjunction OR vs Conjunction AND) Widget
+          const compoundState = (manualFilterState[f.key] && typeof manualFilterState[f.key] === 'object' && !Array.isArray(manualFilterState[f.key]))
+            ? manualFilterState[f.key]
+            : { or: (Array.isArray(manualFilterState[f.key]) ? manualFilterState[f.key] : (manualFilterState[f.key] ? [manualFilterState[f.key]] : [])), and: [] };
 
-          const pill = document.createElement('button');
-          pill.className = `text-[10.5px] px-2 py-0.5 rounded border transition cursor-pointer flex items-center gap-1 ${isActive ? 'text-white font-bold shadow-md' : 'bg-slate-900 text-slate-300 border-slate-800 hover:bg-slate-800'}`;
-          if (isActive) {
-            pill.style.backgroundColor = optColor;
-            pill.style.borderColor = optColor;
+          const orList = compoundState.or || [];
+          const andList = compoundState.and || [];
+          const hasCompoundSelection = orList.length > 0 || andList.length > 0;
+
+          let formulaText = 'All (No filter applied)';
+          if (orList.length > 0 && andList.length > 0) {
+            formulaText = `(${orList.join(' OR ')}) OR (${andList.join(' AND ')})`;
+          } else if (orList.length > 0) {
+            formulaText = `${orList.join(' OR ')} (Any match)`;
+          } else if (andList.length > 0) {
+            formulaText = `${andList.join(' AND ')} (All together)`;
           }
-          pill.innerHTML = `<span>${opt}</span> <span class="text-[9px] opacity-70">(${count})</span>`;
-          pill.onclick = () => toggleManualFilterValue(f.key, opt);
-          pillsDiv.appendChild(pill);
-        });
 
-        group.appendChild(pillsDiv);
-        container.appendChild(group);
+          const group = document.createElement('div');
+          group.className = "space-y-2 bg-slate-950/80 border border-slate-800 rounded-lg p-2.5";
+
+          // Header with reordering and label
+          group.innerHTML = `
+            <div class="flex items-center justify-between border-b border-slate-800 pb-1.5">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="text-[11px] text-white font-bold truncate">${f.label}</span>
+                <span class="text-[8.5px] px-1.5 py-0.2 rounded bg-indigo-950 text-indigo-300 border border-indigo-800 font-mono">COMPOUND</span>
+                ${isFirst ? '<span class="text-[8.5px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">🎨 Marker Colors</span>' : ''}
+              </div>
+              <div class="flex items-center gap-1 shrink-0">
+                <button onclick="moveFilterDimension(${idx}, -1)" ${isFirst ? 'disabled class="opacity-25 text-slate-500 cursor-not-allowed text-xs px-1"' : 'class="text-slate-400 hover:text-white text-xs px-1 hover:bg-slate-800 rounded cursor-pointer"'} title="Move dimension up (priority color)">▲</button>
+                <button onclick="moveFilterDimension(${idx}, 1)" ${isLast ? 'disabled class="opacity-25 text-slate-500 cursor-not-allowed text-xs px-1"' : 'class="text-slate-400 hover:text-white text-xs px-1 hover:bg-slate-800 rounded cursor-pointer"'} title="Move dimension down">▼</button>
+                ${hasCompoundSelection ? `<button onclick="clearCompoundFilter('${f.key}')" class="text-[9.5px] text-slate-400 hover:text-rose-400 cursor-pointer ml-1">Clear</button>` : ''}
+              </div>
+            </div>
+
+            <!-- Formula Bar -->
+            <div class="text-[9.5px] px-2 py-1 rounded bg-slate-900 border border-slate-800 text-cyan-300 font-mono break-words leading-tight">
+              <span class="text-slate-500 font-sans">Formula:</span> ${formulaText}
+            </div>
+
+            <!-- 2 Columns: OR (Left) & AND (Right) -->
+            <div class="grid grid-cols-2 gap-2 text-[10px]">
+              <!-- Left: OR (Disjunction) -->
+              <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 space-y-1">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-1">
+                  <span class="font-bold text-emerald-400 uppercase tracking-wide">🔀 OR (Separate)</span>
+                  <span class="text-[8.5px] text-slate-500 font-mono">Any</span>
+                </div>
+                <div class="text-[9px] text-slate-400 italic leading-none">Sites with ANY:</div>
+                <div id="compound-or-${f.key}" class="space-y-1 min-h-[32px]"></div>
+              </div>
+
+              <!-- Right: AND (Conjunction) -->
+              <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 space-y-1">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-1">
+                  <span class="font-bold text-amber-400 uppercase tracking-wide">🔗 AND (Together)</span>
+                  <span class="text-[8.5px] text-slate-500 font-mono">All</span>
+                </div>
+                <div class="text-[9px] text-slate-400 italic leading-none">Sites with ALL:</div>
+                <div id="compound-and-${f.key}" class="space-y-1 min-h-[32px]"></div>
+              </div>
+            </div>
+
+            <!-- Available palette to add -->
+            <div class="pt-1 border-t border-slate-800 space-y-1">
+              <div class="text-[9px] text-slate-400 font-semibold">Available options:</div>
+              <div id="compound-available-${f.key}" class="flex flex-wrap gap-1"></div>
+            </div>
+          `;
+
+          container.appendChild(group);
+
+          // Populate OR column chips
+          const orContainer = group.querySelector(`#compound-or-${f.key}`);
+          if (orList.length === 0) {
+            orContainer.innerHTML = `<span class="text-[9px] text-slate-500 italic block py-1">No items in OR</span>`;
+          } else {
+            orList.forEach(opt => {
+              const optColor = f.colors?.[opt] || '#10b981';
+              const chip = document.createElement('div');
+              chip.className = "flex items-center justify-between bg-slate-950 border border-slate-700/80 rounded px-1.5 py-0.5 text-[9.5px]";
+              chip.innerHTML = `
+                <div class="flex items-center gap-1 truncate mr-1">
+                  <span class="w-2 h-2 rounded-full shrink-0" style="background-color: ${optColor}"></span>
+                  <span class="truncate text-slate-200">${opt}</span>
+                </div>
+                <div class="flex items-center gap-0.5 shrink-0">
+                  <button onclick="moveCompoundItem('${f.key}', '${opt}', 'and')" class="px-1 py-0.2 rounded bg-amber-950/80 hover:bg-amber-800 text-amber-300 text-[8.5px] cursor-pointer" title="Move to AND (Together)">➔ AND</button>
+                  <button onclick="removeCompoundItem('${f.key}', '${opt}')" class="text-slate-500 hover:text-rose-400 px-0.5 cursor-pointer" title="Remove">✕</button>
+                </div>
+              `;
+              orContainer.appendChild(chip);
+            });
+          }
+
+          // Populate AND column chips
+          const andContainer = group.querySelector(`#compound-and-${f.key}`);
+          if (andList.length === 0) {
+            andContainer.innerHTML = `<span class="text-[9px] text-slate-500 italic block py-1">No items in AND</span>`;
+          } else {
+            andList.forEach(opt => {
+              const optColor = f.colors?.[opt] || '#f59e0b';
+              const chip = document.createElement('div');
+              chip.className = "flex items-center justify-between bg-slate-950 border border-slate-700/80 rounded px-1.5 py-0.5 text-[9.5px]";
+              chip.innerHTML = `
+                <div class="flex items-center gap-1 truncate mr-1">
+                  <span class="w-2 h-2 rounded-full shrink-0" style="background-color: ${optColor}"></span>
+                  <span class="truncate text-slate-200">${opt}</span>
+                </div>
+                <div class="flex items-center gap-0.5 shrink-0">
+                  <button onclick="moveCompoundItem('${f.key}', '${opt}', 'or')" class="px-1 py-0.2 rounded bg-emerald-950/80 hover:bg-emerald-800 text-emerald-300 text-[8.5px] cursor-pointer" title="Move to OR (Separate)">⬅ OR</button>
+                  <button onclick="removeCompoundItem('${f.key}', '${opt}')" class="text-slate-500 hover:text-rose-400 px-0.5 cursor-pointer" title="Remove">✕</button>
+                </div>
+              `;
+              andContainer.appendChild(chip);
+            });
+          }
+
+          // Populate Available Options Palette
+          const availContainer = group.querySelector(`#compound-available-${f.key}`);
+          (f.options || []).forEach(opt => {
+            const isSelected = orList.includes(opt) || andList.includes(opt);
+            const count = facets[f.key]?.[opt] || 0;
+            const optColor = f.colors?.[opt] || '#3b82f6';
+            const pill = document.createElement('div');
+            pill.className = `flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded border ${isSelected ? 'opacity-40 border-slate-800 bg-slate-950 text-slate-500' : 'bg-slate-900 border-slate-700 text-slate-300'}`;
+            pill.innerHTML = `
+              <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: ${optColor}"></span>
+              <span class="truncate">${opt}</span>
+              <span class="opacity-60 text-[8px]">(${count})</span>
+              ${!isSelected ? `
+                <button onclick="addCompoundItem('${f.key}', '${opt}', 'or')" class="ml-0.5 px-1 py-0.2 rounded bg-emerald-950 hover:bg-emerald-800 text-emerald-300 text-[8px] cursor-pointer" title="Add to OR">+OR</button>
+                <button onclick="addCompoundItem('${f.key}', '${opt}', 'and')" class="px-1 py-0.2 rounded bg-amber-950 hover:bg-amber-800 text-amber-300 text-[8px] cursor-pointer" title="Add to AND">+AND</button>
+              ` : ''}
+            `;
+            availContainer.appendChild(pill);
+          });
+
+        } else {
+          // Standard Single/Multi Select Pills
+          const group = document.createElement('div');
+          group.className = "space-y-1";
+          group.innerHTML = `
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] text-slate-400 uppercase font-mono font-semibold">${f.label}</span>
+                ${isFirst ? '<span class="text-[8.5px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">🎨 Marker Colors</span>' : ''}
+              </div>
+              <div class="flex items-center gap-1">
+                <button onclick="moveFilterDimension(${idx}, -1)" ${isFirst ? 'disabled class="opacity-25 text-slate-500 cursor-not-allowed text-xs px-1"' : 'class="text-slate-400 hover:text-white text-xs px-1 hover:bg-slate-800 rounded cursor-pointer"'} title="Move dimension up (priority color)">▲</button>
+                <button onclick="moveFilterDimension(${idx}, 1)" ${isLast ? 'disabled class="opacity-25 text-slate-500 cursor-not-allowed text-xs px-1"' : 'class="text-slate-400 hover:text-white text-xs px-1 hover:bg-slate-800 rounded cursor-pointer"'} title="Move dimension down">▼</button>
+              </div>
+            </div>
+          `;
+          const pillsDiv = document.createElement('div');
+          pillsDiv.className = "flex flex-wrap gap-1";
+
+          (f.options || []).forEach(opt => {
+            const count = facets[f.key]?.[opt] || 0;
+            const isActive = (manualFilterState[f.key] === opt) || (Array.isArray(manualFilterState[f.key]) && manualFilterState[f.key].includes(opt));
+            const optColor = f.colors?.[opt] || '#3b82f6';
+
+            const pill = document.createElement('button');
+            pill.className = `text-[10.5px] px-2 py-0.5 rounded border transition cursor-pointer flex items-center gap-1 ${isActive ? 'text-white font-bold shadow-md' : 'bg-slate-900 text-slate-300 border-slate-800 hover:bg-slate-800'}`;
+            if (isActive) {
+              pill.style.backgroundColor = optColor;
+              pill.style.borderColor = optColor;
+            }
+            pill.innerHTML = `<span>${opt}</span> <span class="text-[9px] opacity-70">(${count})</span>`;
+            pill.onclick = () => toggleManualFilterValue(f.key, opt);
+            pillsDiv.appendChild(pill);
+          });
+
+          group.appendChild(pillsDiv);
+          container.appendChild(group);
+        }
       });
     }
 
@@ -2000,6 +2338,7 @@
       });
 
       syncMapMarkers();
+      renderMapLegend();
     }
 
     function syncMapMarkers() {

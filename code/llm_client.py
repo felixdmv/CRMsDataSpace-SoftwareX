@@ -657,17 +657,117 @@ def mock_nlu_parse(
         "nickel": "nickel", "niquel": "nickel", "níquel": "nickel", "nikel": "nickel", "ni": "nickel",
         "copper": "copper", "cobre": "copper", "cu": "copper",
         "tin": "tin", "estaño": "tin", "estano": "tin", "sn": "tin",
-        "tantalum": "tantalum", "tántalo": "tantalum", "tantalo": "tantalum", "coltan": "tantalum", "coltán": "tantalum", "niobium": "tantalum", "ta": "tantalum",
+        "tantalum": "tantalum", "tántalo": "tantalum", "tantalo": "tantalum", "tantalio": "tantalum", "coltan": "tantalum", "coltán": "tantalum", "niobium": "tantalum", "ta": "tantalum",
         "graphite": "graphite", "grafito": "graphite",
         "titanium": "titanium", "titanio": "titanium", "ti": "titanium",
-        "pge": "pge", "platino": "pge", "platinum": "pge",
-        "manganese": "manganese", "manganeso": "manganese", "mn": "manganese"
+        "pge": "pge", "platino": "pge", "platinum": "pge", "paladio": "pge", "palladium": "pge", "platinum group elements": "pge",
+        "manganese": "manganese", "manganeso": "manganese", "mn": "manganese",
+        "germanium": "germanium", "germanio": "germanium", "ge": "germanium",
+        "gallium": "gallium", "galio": "gallium", "ga": "gallium"
     }
     for kw, val in comm_map.items():
         if re.search(r'\b' + re.escape(kw) + r'\b', prompt_lower) and val not in commodities:
             commodities.append(val)
-            
-    # 3. Storage Facility Types
+
+    # Contextual disambiguation response check (e.g. user selected Option 1 / Option 2 or said 'juntos' / 'por separado')
+    commodity_operator = "OR"
+    commodities_and = []
+    commodities_or = []
+    is_ambiguous_commodities = False
+    is_disambiguation_resolved = False
+
+    if not commodities and current_filters and current_filters.get("commodities"):
+        if any(re.search(pat, prompt_lower) for pat in [r'\b(ambos|ambas|juntos|juntas|a la vez|together|both|option 1|opcion 1|opción 1)\b']):
+            commodities = list(current_filters["commodities"])
+            commodity_operator = "AND"
+            commodities_and = list(commodities)
+            commodities_or = []
+            is_disambiguation_resolved = True
+            if current_filters.get("countries"):
+                countries = list(current_filters["countries"])
+        elif any(re.search(pat, prompt_lower) for pat in [r'\b(por separado|separado|separados|either|separately|option 2|opcion 2|opción 2)\b']):
+            commodities = list(current_filters["commodities"])
+            commodity_operator = "OR"
+            commodities_or = list(commodities)
+            commodities_and = []
+            is_disambiguation_resolved = True
+            if current_filters.get("countries"):
+                countries = list(current_filters["countries"])
+
+    if not is_disambiguation_resolved and len(commodities) > 1:
+        # Check for parentheses compound expression, e.g., "litio o (estaño y cobalto)"
+        paren_match = re.search(r'\(([^)]+)\)', prompt_lower)
+        if paren_match:
+            inside_paren = paren_match.group(1)
+            inside_comms = []
+            for kw, val in comm_map.items():
+                if re.search(r'\b' + re.escape(kw) + r'\b', inside_paren) and val in commodities and val not in inside_comms:
+                    inside_comms.append(val)
+            outside_comms = [c for c in commodities if c not in inside_comms]
+            if inside_comms and outside_comms:
+                commodity_operator = "COMPOUND"
+                commodities_and = inside_comms
+                commodities_or = outside_comms
+
+        # Check for multi-clause compound expression without parentheses, e.g. "niquel o cobalto o estaño y litio"
+        if commodity_operator != "COMPOUND":
+            has_or_word = bool(re.search(r'\b(o|or|u)\b', prompt_lower))
+            has_and_word = bool(re.search(r'\b(y|and|e|ambos|both|juntos|together|a la vez)\b', prompt_lower))
+            if has_or_word and has_and_word:
+                # Split along disjunction tokens ' o ' / ' or '
+                parts = re.split(r'\b(?:o|or)\b', prompt_lower)
+                comp_and = []
+                comp_or = []
+                for p in parts:
+                    p_comms = []
+                    for kw, val in comm_map.items():
+                        if re.search(r'\b' + re.escape(kw) + r'\b', p) and val in commodities and val not in p_comms:
+                            p_comms.append(val)
+                    if len(p_comms) > 1 or re.search(r'\b(?:y|and|e|juntos|together|a la vez)\b', p):
+                        for c in p_comms:
+                            if c not in comp_and: comp_and.append(c)
+                    else:
+                        for c in p_comms:
+                            if c not in comp_or: comp_or.append(c)
+                if comp_and and comp_or:
+                    commodity_operator = "COMPOUND"
+                    commodities_and = comp_and
+                    commodities_or = comp_or
+                elif comp_and and has_or_word:
+                    commodity_operator = "COMPOUND"
+                    commodities_and = comp_and
+                    commodities_or = []
+
+        if commodity_operator != "COMPOUND":
+            conjunction_patterns = [
+                r'\b(y|and|e)\b', r'\bambos\b', r'\bambas\b', r'\bboth\b',
+                r'\bjuntos\b', r'\bjuntas\b', r'\ba la vez\b', r'\bal mismo tiempo\b',
+                r'\btogether\b', r'\bco-occurring\b', r'\bsimult[aá]neamente\b'
+            ]
+            disjunction_patterns = [
+                r'\b(o|or|u)\b', r'\bpor separado\b', r'\bseparately\b',
+                r'\beither\b', r'\bindistintamente\b', r'\bcualquiera\b'
+            ]
+            has_conj = any(re.search(p, prompt_lower) for p in conjunction_patterns)
+            has_disj = any(re.search(p, prompt_lower) for p in disjunction_patterns)
+            if has_conj and not has_disj:
+                commodity_operator = "AND"
+                commodities_and = list(commodities)
+                commodities_or = []
+            elif has_disj and not has_conj:
+                commodity_operator = "OR"
+                commodities_or = list(commodities)
+                commodities_and = []
+            else:
+                commodity_operator = "AND"
+                commodities_and = list(commodities)
+                commodities_or = []
+                is_ambiguous_commodities = True
+    elif not is_disambiguation_resolved:
+        commodity_operator = "OR"
+        commodities_or = list(commodities)
+        commodities_and = []
+
     if any(k in prompt_lower for k in ["tailing", "tailings", "relave", "relaves", "balsa", "balsas", "pond", "ponds", "decantación", "decantacion"]):
         facility_types.extend(["tailings storage facility", "pond"])
     if any(k in prompt_lower for k in ["dump", "dumps", "waste dump", "waste dumps", "vertedero", "vertederos"]):
@@ -816,6 +916,10 @@ def mock_nlu_parse(
             "countries": countries,
             "regions": regions,
             "commodities": commodities,
+            "commodity_operator": commodity_operator,
+            "commodities_and": commodities_and,
+            "commodities_or": commodities_or,
+            "is_ambiguous_commodities": is_ambiguous_commodities,
             "storage_facility_types": facility_types,
             "project_status": statuses,
             "environmental_flags": env_flags,

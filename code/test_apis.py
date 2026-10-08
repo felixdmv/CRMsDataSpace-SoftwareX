@@ -276,6 +276,21 @@ def test_claude_api():
     
     record_result("Anthropic Claude", "api.anthropic.com/v1/messages", request_success, fallback_ok, details)
 
+def test_compound_suite():
+    print("\n" + "=" * 65)
+    print(" [5/5] Testing Conjunction, Disjunction & Compound Suite (60 Tests)")
+    print("=" * 65)
+    try:
+        from evaluation.evaluate_compound_battery import evaluate_compound_battery
+        report = evaluate_compound_battery(provider="mock")
+        pass_rate = report.get("pass_rate", 0.0)
+        passed = report.get("passed", 0)
+        total = report.get("total", 60)
+        record_result("Compound Suite", "60 Tests (AND/OR/Compound/Disambig)", pass_rate >= 95.0, True, f"{passed}/{total} Passed ({pass_rate:.1f}%)")
+    except Exception as e:
+        print(f"  Error running compound battery: {e}")
+        record_result("Compound Suite", "60 Tests", False, False, str(e))
+
 def print_summary():
     print("\n" + "=" * 80)
     print("                      SOFTWAREX API VERIFICATION REPORT")
@@ -299,4 +314,5 @@ if __name__ == "__main__":
     test_gemini_api()
     test_openai_api()
     test_claude_api()
+    test_compound_suite()
     print_summary()

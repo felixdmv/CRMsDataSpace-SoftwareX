@@ -401,200 +401,29 @@
           <div id="map" class="w-full h-full bg-[#070a13]"></div>
           
           <!-- Floating Manual Filters Widget on Map Right Side -->
-          <div id="manual-filter-widget" class="absolute top-3 right-3 z-[1000] bg-slate-900/95 border border-slate-800 backdrop-blur-md rounded-xl p-3 shadow-2xl w-72 pointer-events-auto">
+          <div id="manual-filter-widget" class="absolute top-3 right-3 z-[1000] bg-slate-900/95 border border-slate-800 backdrop-blur-md rounded-xl p-3 shadow-2xl w-[350px] max-h-[85vh] overflow-y-auto pointer-events-auto">
             <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-800">
               <span class="text-[10.5px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                 🎛️ Spatial & Attribute Filters
               </span>
-              <button type="button" onclick="resetManualFilters()" class="text-[9.5px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-2 py-0.5 rounded transition-all">
+              <button type="button" onclick="resetManualFilters()" class="text-[9.5px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-2 py-0.5 rounded transition-all cursor-pointer">
                 Reset All
               </button>
             </div>
             
-            <div class="space-y-2.5 text-[10.5px]">
-              <!-- Country Multi-Select -->
-              <div class="relative">
-                <div class="flex items-center justify-between mb-0.5">
-                  <label class="text-[9.5px] text-slate-400 font-semibold">Country (Europe):</label>
-                  <span id="count-selected-countries" class="text-[9px] text-emerald-400 font-mono">All</span>
-                </div>
-                <button type="button" onclick="toggleFilterMenu('country')" class="w-full bg-slate-950 border border-slate-800 hover:border-slate-700 rounded px-2.5 py-1.5 text-left text-slate-200 flex items-center justify-between text-[11px] focus:outline-none">
-                  <span id="label-selected-countries" class="truncate">All European Countries</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                <div id="pills-selected-countries" class="flex flex-wrap gap-1 mt-1 empty:hidden"></div>
-                <div id="dropdown-menu-country" class="hidden absolute left-0 right-0 z-50 mt-1 bg-slate-950 border border-slate-700 rounded-lg p-2 max-h-40 overflow-y-auto space-y-1 shadow-2xl">
-                  <div class="grid grid-cols-2 gap-1 text-[10px]">
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="spain" onchange="toggleManualCheckbox('countries', 'spain')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Spain</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="portugal" onchange="toggleManualCheckbox('countries', 'portugal')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Portugal</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="germany" onchange="toggleManualCheckbox('countries', 'germany')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Germany</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="france" onchange="toggleManualCheckbox('countries', 'france')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>France</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="sweden" onchange="toggleManualCheckbox('countries', 'sweden')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Sweden</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="finland" onchange="toggleManualCheckbox('countries', 'finland')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Finland</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="poland" onchange="toggleManualCheckbox('countries', 'poland')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Poland</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="italy" onchange="toggleManualCheckbox('countries', 'italy')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Italy</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="austria" onchange="toggleManualCheckbox('countries', 'austria')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Austria</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="greece" onchange="toggleManualCheckbox('countries', 'greece')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Greece</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="ireland" onchange="toggleManualCheckbox('countries', 'ireland')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Ireland</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="czechia" onchange="toggleManualCheckbox('countries', 'czechia')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Czechia</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Commodity Multi-Select -->
-              <div class="relative">
-                <div class="flex items-center justify-between mb-0.5">
-                  <label class="text-[9.5px] text-slate-400 font-semibold">CRM Metal / Commodity:</label>
-                  <span id="count-selected-commodities" class="text-[9px] text-amber-400 font-mono">All</span>
-                </div>
-                <button type="button" onclick="toggleFilterMenu('commodity')" class="w-full bg-slate-950 border border-slate-800 hover:border-slate-700 rounded px-2.5 py-1.5 text-left text-slate-200 flex items-center justify-between text-[11px] focus:outline-none">
-                  <span id="label-selected-commodities" class="truncate">All Critical Raw Materials</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                <div id="pills-selected-commodities" class="flex flex-wrap gap-1 mt-1 empty:hidden"></div>
-                <div id="dropdown-menu-commodity" class="hidden absolute left-0 right-0 z-50 mt-1 bg-slate-950 border border-slate-700 rounded-lg p-2 max-h-40 overflow-y-auto space-y-1 shadow-2xl">
-                  <div class="grid grid-cols-2 gap-1 text-[10px]">
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="tungsten" onchange="toggleManualCheckbox('commodities', 'tungsten')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Tungsten (W)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="lithium" onchange="toggleManualCheckbox('commodities', 'lithium')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Lithium (Li)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="cobalt" onchange="toggleManualCheckbox('commodities', 'cobalt')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Cobalt (Co)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="copper" onchange="toggleManualCheckbox('commodities', 'copper')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Copper (Cu)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="rare earth elements" onchange="toggleManualCheckbox('commodities', 'rare earth elements')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Rare Earth (REE)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="nickel" onchange="toggleManualCheckbox('commodities', 'nickel')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Nickel (Ni)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="tin" onchange="toggleManualCheckbox('commodities', 'tin')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Tin (Sn)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="tantalum" onchange="toggleManualCheckbox('commodities', 'tantalum')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Tantalum (Ta)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="graphite" onchange="toggleManualCheckbox('commodities', 'graphite')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Graphite</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="titanium" onchange="toggleManualCheckbox('commodities', 'titanium')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Titanium (Ti)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="pge" onchange="toggleManualCheckbox('commodities', 'pge')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>PGE (Pt)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="manganese" onchange="toggleManualCheckbox('commodities', 'manganese')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Manganese (Mn)</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Storage Facility Type -->
-              <div>
-                <div class="flex items-center justify-between mb-0.5">
-                  <label class="text-[9.5px] text-slate-400 font-semibold">Storage Facility Type:</label>
-                  <span id="count-selected-facilities" class="text-[9px] text-slate-400 font-mono">All</span>
-                </div>
-                <select id="manual-filter-facility" onchange="handleSelectFacility(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none text-[11px]">
-                  <option value="">All Facility Types</option>
-                  <option value="waste dump">Waste Dump</option>
-                  <option value="tailings storage facility">Tailings Storage Facility (TSF)</option>
-                  <option value="stockpile">Mineral Stockpile</option>
-                  <option value="pond">Settling Pond</option>
-                </select>
-              </div>
-
-              <!-- Operational Status -->
-              <div>
-                <div class="flex items-center justify-between mb-0.5">
-                  <label class="text-[9.5px] text-slate-400 font-semibold">Operational Status:</label>
-                  <span id="count-selected-statuses" class="text-[9px] text-slate-400 font-mono">All</span>
-                </div>
-                <select id="manual-filter-status" onchange="handleSelectStatus(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none text-[11px]">
-                  <option value="">All Statuses</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                  <option value="development">Under Development</option>
-                  <option value="care and maintenance">Care & Maintenance</option>
-                </select>
-              </div>
+            <div id="manual-filter-cards-container" class="space-y-2.5 text-[10.5px]">
+              <!-- Dynamic Filter Dimension Cards (Reorderable) rendered by renderManualFilterCards() -->
             </div>
           </div>
 
-          <!-- Map floating legend -->
-          <div class="absolute bottom-3 left-3 bg-geodark-card/90 border border-geodark-border/80 backdrop-blur-md rounded-lg p-2.5 text-[11px] text-slate-300 z-[1000] shadow-xl pointer-events-auto">
-            <h5 class="font-bold text-slate-200 mb-1.5 flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-              </svg>
-              CRM Category Legend
+          <!-- Map floating dynamic legend -->
+          <div id="crm-map-legend" class="absolute bottom-3 left-3 bg-slate-900/90 border border-slate-800 backdrop-blur-md rounded-lg p-2.5 text-[11px] text-slate-300 z-[1000] shadow-xl pointer-events-auto max-w-[240px]">
+            <h5 class="font-bold text-slate-200 mb-1.5 flex items-center gap-1.5 border-b border-slate-800 pb-1">
+              <span class="text-xs">🎨</span>
+              <span id="legend-dimension-title">Marker Colors: CRM Metals</span>
             </h5>
-            <div class="space-y-1">
-              <div class="flex items-center gap-1.5">
-                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 border border-white inline-block"></span>
-                <span>Tungsten / Tin / Base (W, Sn)</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-white inline-block"></span>
-                <span>Battery Metals (Lithium, Cobalt)</span>
-              </div>
+            <div id="legend-items-container" class="space-y-1 max-h-48 overflow-y-auto pr-1">
+              <!-- Dynamically populated by renderMapLegend() -->
             </div>
           </div>
         </div>
@@ -3693,31 +3522,217 @@
     }
 
     // ==========================================
-    // MULTI-SELECTION FILTERS & BIDIRECTIONAL SYNC
+    // REORDERABLE FILTER DIMENSIONS & DYNAMIC CARTOGRAPHY
     // ==========================================
+    let filterDimensionsOrder = ['commodities', 'countries', 'facilities', 'statuses'];
+
+    const COMMODITY_COLORS = {
+      "lithium": "#10b981",
+      "cobalt": "#0ea5e9",
+      "tungsten": "#f59e0b",
+      "copper": "#f97316",
+      "rare earth elements": "#8b5cf6",
+      "nickel": "#06b6d4",
+      "tin": "#84cc16",
+      "tantalum": "#6366f1",
+      "graphite": "#64748b",
+      "titanium": "#ec4899",
+      "pge": "#eab308",
+      "manganese": "#f43f5e"
+    };
+
+    const COUNTRY_COLORS = {
+      "spain": "#10b981",
+      "portugal": "#0ea5e9",
+      "germany": "#f59e0b",
+      "france": "#a855f7",
+      "sweden": "#06b6d4",
+      "finland": "#6366f1",
+      "poland": "#f43f5e",
+      "italy": "#84cc16",
+      "austria": "#f97316",
+      "greece": "#14b8a6",
+      "ireland": "#22c55e",
+      "czechia": "#d946ef"
+    };
+
+    const FACILITY_COLORS = {
+      "waste dump": "#f59e0b",
+      "tailings storage facility": "#3b82f6",
+      "pond": "#10b981",
+      "stockpile": "#8b5cf6"
+    };
+
+    const STATUS_COLORS = {
+      "active": "#10b981",
+      "inactive": "#94a3b8",
+      "development": "#3b82f6",
+      "care and maintenance": "#f59e0b"
+    };
+
     let filterState = {
       countries: [],
       commodities: [],
+      commodities_or: [],
+      commodities_and: [],
       facility: '',
       status: ''
     };
 
+    let isCountryDropdownOpen = false;
+
     function toggleFilterMenu(type) {
-      const menu = document.getElementById(`dropdown-menu-${type}`);
-      if (!menu) return;
-      const isHidden = menu.classList.contains('hidden');
-      document.querySelectorAll('[id^="dropdown-menu-"]').forEach(el => el.classList.add('hidden'));
-      if (isHidden) {
-        menu.classList.remove('hidden');
+      if (type === 'country') {
+        isCountryDropdownOpen = !isCountryDropdownOpen;
+        const menu = document.getElementById('dropdown-menu-country');
+        if (menu) menu.classList.toggle('hidden', !isCountryDropdownOpen);
       }
     }
 
     // Close menus when clicking outside
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('#manual-filter-widget')) {
-        document.querySelectorAll('[id^="dropdown-menu-"]').forEach(el => el.classList.add('hidden'));
+      if (!e.target.closest('#card-filter-countries')) {
+        const menu = document.getElementById('dropdown-menu-country');
+        if (menu) menu.classList.add('hidden');
+        isCountryDropdownOpen = false;
       }
     });
+
+    function moveFilterDimension(index, delta) {
+      const targetIdx = index + delta;
+      if (targetIdx < 0 || targetIdx >= filterDimensionsOrder.length) return;
+      const temp = filterDimensionsOrder[index];
+      filterDimensionsOrder[index] = filterDimensionsOrder[targetIdx];
+      filterDimensionsOrder[targetIdx] = temp;
+      renderManualFilterCards();
+      renderMarkers(getCurrentMatchingSites());
+      renderMapLegend();
+    }
+
+    function renderMapLegend() {
+      const container = document.getElementById('legend-items-container');
+      const titleEl = document.getElementById('legend-dimension-title');
+      if (!container || !titleEl) return;
+      
+      const topDim = filterDimensionsOrder[0] || 'commodities';
+      container.innerHTML = '';
+      
+      if (topDim === 'commodities') {
+        titleEl.textContent = 'Marker Colors: CRM Metals';
+        Object.keys(COMMODITY_COLORS).forEach(comm => {
+          const color = COMMODITY_COLORS[comm];
+          const label = comm.charAt(0).toUpperCase() + comm.slice(1);
+          const item = document.createElement('div');
+          item.className = 'flex items-center gap-1.5 text-[10px]';
+          item.innerHTML = `
+            <span class="w-2.5 h-2.5 rounded-full shrink-0 border border-white/60 shadow-sm" style="background-color: ${color}"></span>
+            <span class="truncate text-slate-200" title="${label}">${label}</span>
+          `;
+          container.appendChild(item);
+        });
+      } else if (topDim === 'countries') {
+        titleEl.textContent = 'Marker Colors: Countries';
+        Object.keys(COUNTRY_COLORS).forEach(c => {
+          const color = COUNTRY_COLORS[c];
+          const label = c.charAt(0).toUpperCase() + c.slice(1);
+          const item = document.createElement('div');
+          item.className = 'flex items-center gap-1.5 text-[10px]';
+          item.innerHTML = `
+            <span class="w-2.5 h-2.5 rounded-full shrink-0 border border-white/60 shadow-sm" style="background-color: ${color}"></span>
+            <span class="truncate text-slate-200" title="${label}">${label}</span>
+          `;
+          container.appendChild(item);
+        });
+      } else if (topDim === 'facilities') {
+        titleEl.textContent = 'Marker Colors: Facility Types';
+        const labels = {
+          'waste dump': 'Waste Dump',
+          'tailings storage facility': 'Tailings Storage (TSF)',
+          'pond': 'Settling Pond',
+          'stockpile': 'Mineral Stockpile'
+        };
+        Object.keys(FACILITY_COLORS).forEach(fac => {
+          const color = FACILITY_COLORS[fac];
+          const label = labels[fac] || fac;
+          const item = document.createElement('div');
+          item.className = 'flex items-center gap-1.5 text-[10px]';
+          item.innerHTML = `
+            <span class="w-2.5 h-2.5 rounded-full shrink-0 border border-white/60 shadow-sm" style="background-color: ${color}"></span>
+            <span class="truncate text-slate-200" title="${label}">${label}</span>
+          `;
+          container.appendChild(item);
+        });
+      } else if (topDim === 'statuses') {
+        titleEl.textContent = 'Marker Colors: Status';
+        const labels = {
+          'active': 'Active',
+          'inactive': 'Inactive',
+          'development': 'Development',
+          'care and maintenance': 'Care & Maint.'
+        };
+        Object.keys(STATUS_COLORS).forEach(st => {
+          const color = STATUS_COLORS[st];
+          const label = labels[st] || st;
+          const item = document.createElement('div');
+          item.className = 'flex items-center gap-1.5 text-[10px]';
+          item.innerHTML = `
+            <span class="w-2.5 h-2.5 rounded-full shrink-0 border border-white/60 shadow-sm" style="background-color: ${color}"></span>
+            <span class="truncate text-slate-200" title="${label}">${label}</span>
+          `;
+          container.appendChild(item);
+        });
+      }
+    }
+
+    function addCompoundCommodity(commodity, mode) {
+      commodity = commodity.toLowerCase().trim();
+      if (mode === 'or') {
+        if (!filterState.commodities_or.includes(commodity)) filterState.commodities_or.push(commodity);
+        filterState.commodities_and = filterState.commodities_and.filter(c => c !== commodity);
+      } else {
+        if (!filterState.commodities_and.includes(commodity)) filterState.commodities_and.push(commodity);
+        filterState.commodities_or = filterState.commodities_or.filter(c => c !== commodity);
+      }
+      filterState.commodities = [...new Set([...filterState.commodities_or, ...filterState.commodities_and])];
+      renderManualFilterCards();
+      applyManualFilters();
+    }
+
+    function moveCompoundCommodity(commodity, targetMode) {
+      addCompoundCommodity(commodity, targetMode);
+    }
+
+    function removeCompoundCommodity(commodity) {
+      commodity = commodity.toLowerCase().trim();
+      filterState.commodities_or = filterState.commodities_or.filter(c => c !== commodity);
+      filterState.commodities_and = filterState.commodities_and.filter(c => c !== commodity);
+      filterState.commodities = [...new Set([...filterState.commodities_or, ...filterState.commodities_and])];
+      renderManualFilterCards();
+      applyManualFilters();
+    }
+
+    function clearCompoundCommodities() {
+      filterState.commodities_or = [];
+      filterState.commodities_and = [];
+      filterState.commodities = [];
+      renderManualFilterCards();
+      applyManualFilters();
+    }
+
+    function setAllCompoundCommoditiesMode(mode) {
+      const allCurrent = [...new Set([...filterState.commodities_or, ...filterState.commodities_and])];
+      if (allCurrent.length === 0) return;
+      if (mode === 'or') {
+        filterState.commodities_or = allCurrent;
+        filterState.commodities_and = [];
+      } else {
+        filterState.commodities_and = allCurrent;
+        filterState.commodities_or = [];
+      }
+      filterState.commodities = allCurrent;
+      renderManualFilterCards();
+      applyManualFilters();
+    }
 
     function toggleManualCheckbox(category, val) {
       val = val.toLowerCase().trim();
@@ -3727,7 +3742,7 @@
       } else {
         filterState[category].push(val);
       }
-      updateFilterUI();
+      renderManualFilterCards();
       applyManualFilters();
     }
 
@@ -3737,86 +3752,259 @@
       if (idx >= 0) {
         filterState[category].splice(idx, 1);
       }
-      updateFilterUI();
+      renderManualFilterCards();
       applyManualFilters();
     }
 
     function handleSelectFacility(val) {
       filterState.facility = val.toLowerCase().trim();
-      updateFilterUI();
+      renderManualFilterCards();
       applyManualFilters();
     }
 
     function handleSelectStatus(val) {
       filterState.status = val.toLowerCase().trim();
-      updateFilterUI();
+      renderManualFilterCards();
       applyManualFilters();
     }
 
-    function updateFilterUI() {
-      // 1. Country checkboxes & pills
-      const countryCheckboxes = document.querySelectorAll('.checkbox-country');
-      countryCheckboxes.forEach(cb => {
-        cb.checked = filterState.countries.includes(cb.value.toLowerCase());
-      });
-      const countryLabel = document.getElementById('label-selected-countries');
-      const countryCount = document.getElementById('count-selected-countries');
-      const countryPills = document.getElementById('pills-selected-countries');
-      if (filterState.countries.length === 0) {
-        if (countryLabel) countryLabel.textContent = 'All European Countries';
-        if (countryCount) countryCount.textContent = 'All';
-        if (countryPills) countryPills.innerHTML = '';
-      } else {
-        const formatted = filterState.countries.map(c => c.charAt(0).toUpperCase() + c.slice(1));
-        if (countryLabel) countryLabel.textContent = formatted.join(', ') + ` (${formatted.length})`;
-        if (countryCount) countryCount.textContent = `${formatted.length} active`;
-        if (countryPills) {
-          countryPills.innerHTML = formatted.map(c => `
-            <span class="inline-flex items-center gap-1 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-[9.5px] px-2 py-0.5 rounded font-mono">
-              ${c}
-              <button type="button" onclick="removeFilterItem('countries', '${c.toLowerCase()}')" class="hover:text-white font-bold ml-0.5">✕</button>
-            </span>
-          `).join('');
+    function renderManualFilterCards() {
+      const container = document.getElementById('manual-filter-cards-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      filterDimensionsOrder.forEach((dimKey, idx) => {
+        const isFirst = idx === 0;
+        const isLast = idx === filterDimensionsOrder.length - 1;
+        const card = document.createElement('div');
+        card.id = `card-filter-${dimKey}`;
+        card.className = `p-2.5 rounded-lg border transition-all ${isFirst ? 'bg-slate-950 border-amber-500/50 shadow-md ring-1 ring-amber-500/20' : 'bg-slate-950/80 border-slate-800'}`;
+
+        const dimMeta = {
+          'commodities': { label: 'CRM Metal / Commodity', badge: 'COMPOUND' },
+          'countries': { label: 'Country (Europe)', badge: 'MULTISELECT' },
+          'facilities': { label: 'Storage Facility Type', badge: 'SELECT' },
+          'statuses': { label: 'Operational Status', badge: 'SELECT' }
+        }[dimKey];
+
+        let headerHtml = `
+          <div class="flex items-center justify-between pb-1.5 mb-2 border-b border-slate-800">
+            <div class="flex items-center gap-1.5 min-w-0">
+              <span class="font-bold text-slate-200 text-[10.5px] truncate">${dimMeta.label}</span>
+              ${isFirst ? '<span class="text-[8.5px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 shrink-0 flex items-center gap-0.5" title="Primary dimension dictating map point colors"><span>🎨</span><span>Marker Colors</span></span>' : ''}
+            </div>
+            <div class="flex items-center gap-0.5 shrink-0">
+              <button type="button" onclick="moveFilterDimension(${idx}, -1)" ${isFirst ? 'disabled class="opacity-25 text-slate-500 cursor-not-allowed text-xs px-1"' : 'class="text-slate-400 hover:text-white text-xs px-1 hover:bg-slate-800 rounded cursor-pointer"'} title="Move dimension up (priority color)">▲</button>
+              <button type="button" onclick="moveFilterDimension(${idx}, 1)" ${isLast ? 'disabled class="opacity-25 text-slate-500 cursor-not-allowed text-xs px-1"' : 'class="text-slate-400 hover:text-white text-xs px-1 hover:bg-slate-800 rounded cursor-pointer"'} title="Move dimension down">▼</button>
+            </div>
+          </div>
+        `;
+
+        if (dimKey === 'commodities') {
+          const orList = filterState.commodities_or;
+          const andList = filterState.commodities_and;
+          let formulaText = 'All CRMs (No filter)';
+          if (orList.length > 0 && andList.length > 0) {
+            formulaText = `(${orList.join(' OR ')}) OR (${andList.join(' AND ')})`;
+          } else if (orList.length > 0) {
+            formulaText = `${orList.join(' OR ')} (Any / Disjunction)`;
+          } else if (andList.length > 0) {
+            formulaText = `${andList.join(' AND ')} (Together / Conjunction)`;
+          }
+
+          let bodyHtml = `
+            <!-- Formula Bar -->
+            <div class="text-[9px] px-2 py-1 mb-2 rounded bg-slate-900 border border-slate-800 text-cyan-300 font-mono break-words leading-tight flex items-center justify-between">
+              <div class="truncate mr-1"><span class="text-slate-500 font-sans">Formula:</span> ${formulaText}</div>
+              ${(orList.length > 0 || andList.length > 0) ? `<button type="button" onclick="clearCompoundCommodities()" class="text-[8.5px] text-slate-400 hover:text-rose-400 shrink-0 cursor-pointer">Clear</button>` : ''}
+            </div>
+
+            <!-- Quick Bulk Actions -->
+            <div class="flex items-center justify-between mb-2 text-[8.5px]">
+              <span class="text-slate-400">Bulk Mode:</span>
+              <div class="flex gap-1">
+                <button type="button" onclick="setAllCompoundCommoditiesMode('or')" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 cursor-pointer" title="Move all selected to OR">All OR</button>
+                <button type="button" onclick="setAllCompoundCommoditiesMode('and')" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 cursor-pointer" title="Move all selected to AND">All AND</button>
+              </div>
+            </div>
+
+            <!-- 2 Columns: OR (Left) & AND (Right) -->
+            <div class="grid grid-cols-2 gap-2 text-[10px] mb-2">
+              <!-- Left: OR (Disjunction) -->
+              <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 space-y-1">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-0.5">
+                  <span class="font-bold text-emerald-400 uppercase text-[9px]">🔀 OR (Separate)</span>
+                  <span class="text-[8px] text-slate-500 font-mono">Any</span>
+                </div>
+                <div id="compound-or-list" class="space-y-1 min-h-[30px]">
+                  ${orList.length === 0 ? '<span class="text-[8.5px] text-slate-500 italic block py-0.5">None in OR</span>' : orList.map(c => `
+                    <div class="flex items-center justify-between bg-slate-950 border border-slate-700/80 rounded px-1.5 py-0.5 text-[9px]">
+                      <div class="flex items-center gap-1 truncate mr-1">
+                        <span class="w-2 h-2 rounded-full shrink-0" style="background-color: ${COMMODITY_COLORS[c] || '#10b981'}"></span>
+                        <span class="truncate text-slate-200 capitalize">${c}</span>
+                      </div>
+                      <div class="flex items-center gap-0.5 shrink-0">
+                        <button type="button" onclick="moveCompoundCommodity('${c}', 'and')" class="px-1 py-0.2 rounded bg-amber-950/80 hover:bg-amber-800 text-amber-300 text-[8px] cursor-pointer" title="Move to AND (Together)">➔ AND</button>
+                        <button type="button" onclick="removeCompoundCommodity('${c}')" class="text-slate-500 hover:text-rose-400 px-0.5 cursor-pointer">✕</button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- Right: AND (Conjunction) -->
+              <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 space-y-1">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-0.5">
+                  <span class="font-bold text-amber-400 uppercase text-[9px]">🔗 AND (Together)</span>
+                  <span class="text-[8px] text-slate-500 font-mono">All</span>
+                </div>
+                <div id="compound-and-list" class="space-y-1 min-h-[30px]">
+                  ${andList.length === 0 ? '<span class="text-[8.5px] text-slate-500 italic block py-0.5">None in AND</span>' : andList.map(c => `
+                    <div class="flex items-center justify-between bg-slate-950 border border-slate-700/80 rounded px-1.5 py-0.5 text-[9px]">
+                      <div class="flex items-center gap-1 truncate mr-1">
+                        <span class="w-2 h-2 rounded-full shrink-0" style="background-color: ${COMMODITY_COLORS[c] || '#f59e0b'}"></span>
+                        <span class="truncate text-slate-200 capitalize">${c}</span>
+                      </div>
+                      <div class="flex items-center gap-0.5 shrink-0">
+                        <button type="button" onclick="moveCompoundCommodity('${c}', 'or')" class="px-1 py-0.2 rounded bg-emerald-950/80 hover:bg-emerald-800 text-emerald-300 text-[8px] cursor-pointer" title="Move to OR (Separate)">⬅ OR</button>
+                        <button type="button" onclick="removeCompoundCommodity('${c}')" class="text-slate-500 hover:text-rose-400 px-0.5 cursor-pointer">✕</button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Available CRMs Quick Add Palette -->
+            <div class="pt-1.5 border-t border-slate-800 space-y-1">
+              <div class="text-[8.5px] text-slate-400 font-semibold">Available Raw Materials:</div>
+              <div class="flex flex-wrap gap-1 max-h-24 overflow-y-auto">
+                ${Object.keys(COMMODITY_COLORS).map(c => {
+                  const isSel = orList.includes(c) || andList.includes(c);
+                  const color = COMMODITY_COLORS[c];
+                  const label = c.charAt(0).toUpperCase() + c.slice(1);
+                  return `
+                    <div class="flex items-center gap-1 text-[8.5px] px-1.5 py-0.5 rounded border ${isSel ? 'opacity-40 border-slate-800 bg-slate-950 text-slate-500' : 'bg-slate-900 border-slate-700 text-slate-300'}">
+                      <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: ${color}"></span>
+                      <span class="truncate">${label}</span>
+                      ${!isSel ? `
+                        <button type="button" onclick="addCompoundCommodity('${c}', 'or')" class="ml-0.5 px-1 py-0.2 rounded bg-emerald-950 hover:bg-emerald-800 text-emerald-300 text-[8px] cursor-pointer" title="Add to OR">+OR</button>
+                        <button type="button" onclick="addCompoundCommodity('${c}', 'and')" class="px-1 py-0.2 rounded bg-amber-950 hover:bg-amber-800 text-amber-300 text-[8px] cursor-pointer" title="Add to AND">+AND</button>
+                      ` : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+          card.innerHTML = headerHtml + bodyHtml;
+
+        } else if (dimKey === 'countries') {
+          const euCountries = [
+            "spain", "portugal", "germany", "france", "sweden", "finland",
+            "poland", "italy", "austria", "greece", "ireland", "czechia"
+          ];
+          const formatted = filterState.countries.map(c => c.charAt(0).toUpperCase() + c.slice(1));
+          let bodyHtml = `
+            <div class="relative">
+              <div class="flex items-center justify-between mb-0.5">
+                <span class="text-[9px] text-slate-400">Select European Member States:</span>
+                <span class="text-[9px] text-emerald-400 font-mono">${filterState.countries.length === 0 ? 'All' : `${filterState.countries.length} active`}</span>
+              </div>
+              <button type="button" onclick="toggleFilterMenu('country')" class="w-full bg-slate-950 border border-slate-800 hover:border-slate-700 rounded px-2 py-1.5 text-left text-slate-200 flex items-center justify-between text-[10.5px] focus:outline-none cursor-pointer">
+                <span class="truncate">${filterState.countries.length === 0 ? 'All European Countries' : formatted.join(', ')}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-slate-400 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div id="pills-selected-countries" class="flex flex-wrap gap-1 mt-1 empty:hidden">
+                ${formatted.map(c => `
+                  <span class="inline-flex items-center gap-1 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-[9px] px-1.5 py-0.5 rounded font-mono">
+                    <span class="w-1.5 h-1.5 rounded-full" style="background-color: ${COUNTRY_COLORS[c.toLowerCase()] || '#10b981'}"></span>
+                    ${c}
+                    <button type="button" onclick="removeFilterItem('countries', '${c.toLowerCase()}')" class="hover:text-white font-bold ml-0.5 cursor-pointer">✕</button>
+                  </span>
+                `).join('')}
+              </div>
+              <div id="dropdown-menu-country" class="${isCountryDropdownOpen ? '' : 'hidden'} absolute left-0 right-0 z-50 mt-1 bg-slate-950 border border-slate-700 rounded-lg p-2 max-h-40 overflow-y-auto space-y-1 shadow-2xl">
+                <div class="grid grid-cols-2 gap-1 text-[9.5px]">
+                  ${euCountries.map(c => `
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="${c}" ${filterState.countries.includes(c) ? 'checked' : ''} onchange="toggleManualCheckbox('countries', '${c}')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: ${COUNTRY_COLORS[c] || '#10b981'}"></span>
+                      <span class="capitalize">${c}</span>
+                    </label>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+          card.innerHTML = headerHtml + bodyHtml;
+
+        } else if (dimKey === 'facilities') {
+          let bodyHtml = `
+            <div class="flex items-center justify-between mb-0.5">
+              <span class="text-[9px] text-slate-400">Filter Asset Type:</span>
+              <span class="text-[9px] text-slate-400 font-mono">${filterState.facility ? '1 active' : 'All'}</span>
+            </div>
+            <select onchange="handleSelectFacility(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none text-[10.5px]">
+              <option value="" ${filterState.facility === '' ? 'selected' : ''}>All Facility Types</option>
+              <option value="waste dump" ${filterState.facility === 'waste dump' ? 'selected' : ''}>Waste Dump / Escombrera</option>
+              <option value="tailings storage facility" ${filterState.facility === 'tailings storage facility' ? 'selected' : ''}>Tailings Storage Facility (TSF)</option>
+              <option value="pond" ${filterState.facility === 'pond' ? 'selected' : ''}>Settling Pond / Balsa</option>
+              <option value="stockpile" ${filterState.facility === 'stockpile' ? 'selected' : ''}>Mineral Stockpile / Acopio</option>
+            </select>
+          `;
+          card.innerHTML = headerHtml + bodyHtml;
+
+        } else if (dimKey === 'statuses') {
+          let bodyHtml = `
+            <div class="flex items-center justify-between mb-0.5">
+              <span class="text-[9px] text-slate-400">Filter Operational Status:</span>
+              <span class="text-[9px] text-slate-400 font-mono">${filterState.status ? '1 active' : 'All'}</span>
+            </div>
+            <select onchange="handleSelectStatus(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none text-[10.5px]">
+              <option value="" ${filterState.status === '' ? 'selected' : ''}>All Statuses</option>
+              <option value="active" ${filterState.status === 'active' ? 'selected' : ''}>Active</option>
+              <option value="inactive" ${filterState.status === 'inactive' ? 'selected' : ''}>Inactive</option>
+              <option value="development" ${filterState.status === 'development' ? 'selected' : ''}>Under Development</option>
+              <option value="care and maintenance" ${filterState.status === 'care and maintenance' ? 'selected' : ''}>Care & Maintenance</option>
+            </select>
+          `;
+          card.innerHTML = headerHtml + bodyHtml;
         }
-      }
 
-      // 2. Commodity checkboxes & pills
-      const commCheckboxes = document.querySelectorAll('.checkbox-commodity');
-      commCheckboxes.forEach(cb => {
-        cb.checked = filterState.commodities.includes(cb.value.toLowerCase());
+        container.appendChild(card);
       });
-      const commLabel = document.getElementById('label-selected-commodities');
-      const commCount = document.getElementById('count-selected-commodities');
-      const commPills = document.getElementById('pills-selected-commodities');
-      if (filterState.commodities.length === 0) {
-        if (commLabel) commLabel.textContent = 'All Critical Raw Materials';
-        if (commCount) commCount.textContent = 'All';
-        if (commPills) commPills.innerHTML = '';
-      } else {
-        const formatted = filterState.commodities.map(c => c.charAt(0).toUpperCase() + c.slice(1));
-        if (commLabel) commLabel.textContent = formatted.join(', ') + ` (${formatted.length})`;
-        if (commCount) commCount.textContent = `${formatted.length} active`;
-        if (commPills) {
-          commPills.innerHTML = formatted.map(c => `
-            <span class="inline-flex items-center gap-1 bg-amber-950/80 border border-amber-800 text-amber-300 text-[9.5px] px-2 py-0.5 rounded font-mono">
-              ${c}
-              <button type="button" onclick="removeFilterItem('commodities', '${c.toLowerCase()}')" class="hover:text-white font-bold ml-0.5">✕</button>
-            </span>
-          `).join('');
+    }
+
+    function getCurrentMatchingSites() {
+      return MINING_SITES.filter(s => {
+        const siteCountry = (s.country || '').toLowerCase();
+        const siteComms = (s.commodities || []).map(c => c.toLowerCase());
+        const siteFacility = (s.storage_facility_type || s.facility_type || '').toLowerCase();
+        const siteStatus = (s.project_status || '').toLowerCase();
+
+        if (filterState.countries.length > 0 && !filterState.countries.includes(siteCountry)) return false;
+
+        const hasAnd = filterState.commodities_and.length > 0;
+        const hasOr = filterState.commodities_or.length > 0;
+        if (hasAnd && hasOr) {
+          const matchesAnd = filterState.commodities_and.every(c => siteComms.some(sc => sc.includes(c)));
+          const matchesOr = filterState.commodities_or.some(c => siteComms.some(sc => sc.includes(c)));
+          if (!matchesAnd && !matchesOr) return false;
+        } else if (hasAnd) {
+          const matchesAnd = filterState.commodities_and.every(c => siteComms.some(sc => sc.includes(c)));
+          if (!matchesAnd) return false;
+        } else if (hasOr) {
+          const matchesOr = filterState.commodities_or.some(c => siteComms.some(sc => sc.includes(c)));
+          if (!matchesOr) return false;
         }
-      }
 
-      // 3. Facility Select & count
-      const facSelect = document.getElementById('manual-filter-facility');
-      const facCount = document.getElementById('count-selected-facilities');
-      if (facSelect) facSelect.value = filterState.facility;
-      if (facCount) facCount.textContent = filterState.facility ? '1 active' : 'All';
-
-      // 4. Status Select & count
-      const statSelect = document.getElementById('manual-filter-status');
-      const statCount = document.getElementById('count-selected-statuses');
-      if (statSelect) statSelect.value = filterState.status;
-      if (statCount) statCount.textContent = filterState.status ? '1 active' : 'All';
+        if (filterState.facility && !siteFacility.includes(filterState.facility)) return false;
+        if (filterState.status && siteStatus !== filterState.status) return false;
+        return true;
+      });
     }
 
     function applyManualFilters() {
@@ -3824,9 +4012,26 @@
       if (filterState.countries.length > 0) {
         activeBadges.push({ label: 'Country', values: filterState.countries.map(c => c.charAt(0).toUpperCase() + c.slice(1)) });
       }
-      if (filterState.commodities.length > 0) {
-        activeBadges.push({ label: 'Commodity', values: filterState.commodities.map(c => c.charAt(0).toUpperCase() + c.slice(1)) });
+
+      const hasAnd = filterState.commodities_and.length > 0;
+      const hasOr = filterState.commodities_or.length > 0;
+      if (hasAnd && hasOr) {
+        activeBadges.push({
+          label: 'CRM Metals (Compound: OR + AND)',
+          values: [`OR: ${filterState.commodities_or.join(', ')}`, `AND: ${filterState.commodities_and.join(', ')}`]
+        });
+      } else if (hasAnd) {
+        activeBadges.push({
+          label: 'CRM Metals (AND - Together)',
+          values: filterState.commodities_and.map(c => c.charAt(0).toUpperCase() + c.slice(1))
+        });
+      } else if (hasOr) {
+        activeBadges.push({
+          label: 'CRM Metals (OR - Separately)',
+          values: filterState.commodities_or.map(c => c.charAt(0).toUpperCase() + c.slice(1))
+        });
       }
+
       if (filterState.facility) {
         activeBadges.push({ label: 'Facility', values: [filterState.facility] });
       }
@@ -3834,19 +4039,7 @@
         activeBadges.push({ label: 'Status', values: [filterState.status] });
       }
 
-      const matching = MINING_SITES.filter(s => {
-        const siteCountry = (s.country || '').toLowerCase();
-        const siteComms = (s.commodities || []).map(c => c.toLowerCase());
-        const siteFacility = (s.storage_facility_type || s.facility_type || '').toLowerCase();
-        const siteStatus = (s.project_status || '').toLowerCase();
-
-        if (filterState.countries.length > 0 && !filterState.countries.includes(siteCountry)) return false;
-        if (filterState.commodities.length > 0 && !filterState.commodities.some(c => siteComms.some(sc => sc.includes(c)))) return false;
-        if (filterState.facility && !siteFacility.includes(filterState.facility)) return false;
-        if (filterState.status && siteStatus !== filterState.status) return false;
-        return true;
-      });
-
+      const matching = getCurrentMatchingSites();
       renderMarkers(matching);
       updateActiveFilterBadges(activeBadges, matching.length);
     }
@@ -3855,12 +4048,15 @@
       filterState = {
         countries: [],
         commodities: [],
+        commodities_or: [],
+        commodities_and: [],
         facility: '',
         status: ''
       };
-      updateFilterUI();
+      renderManualFilterCards();
       renderMarkers(MINING_SITES);
       updateActiveFilterBadges([], MINING_SITES.length);
+      renderMapLegend();
     }
 
     function syncManualFiltersFromNLU(nluFilters, activeMapFilters = []) {
@@ -3869,7 +4065,23 @@
       }
 
       filterState.countries = (nluFilters.countries || []).map(c => c.toLowerCase().trim());
-      filterState.commodities = (nluFilters.commodities || []).map(c => c.toLowerCase().trim());
+      
+      const commOp = nluFilters.commodity_operator || 'OR';
+      const cAnd = (nluFilters.commodities_and || []).map(c => c.toLowerCase().trim());
+      const cOr = (nluFilters.commodities_or || []).map(c => c.toLowerCase().trim());
+      const rawComms = (nluFilters.commodities || []).map(c => c.toLowerCase().trim());
+
+      if (commOp === 'COMPOUND' || (cAnd.length > 0 && cOr.length > 0)) {
+        filterState.commodities_and = cAnd;
+        filterState.commodities_or = cOr;
+      } else if (commOp === 'AND' || cAnd.length > 0) {
+        filterState.commodities_and = cAnd.length > 0 ? cAnd : rawComms;
+        filterState.commodities_or = [];
+      } else {
+        filterState.commodities_or = cOr.length > 0 ? cOr : rawComms;
+        filterState.commodities_and = [];
+      }
+      filterState.commodities = [...new Set([...filterState.commodities_or, ...filterState.commodities_and])];
       
       const facs = (nluFilters.storage_facility_types || []);
       filterState.facility = facs.length > 0 ? facs[0].toLowerCase().trim() : '';
@@ -3877,8 +4089,17 @@
       const stats = (nluFilters.project_status || []);
       filterState.status = stats.length > 0 ? stats[0].toLowerCase().trim() : '';
 
-      updateFilterUI();
+      renderManualFilterCards();
+      renderMapLegend();
     }
+
+    window.applyChatFilterMode = function(mode) {
+      if (mode === 'AND') {
+        sendChatMessage("both elements together (AND)");
+      } else if (mode === 'OR') {
+        sendChatMessage("either element separately (OR)");
+      }
+    };
 
     // ==========================================
     // HELPER FUNCTIONS FOR FORM & SELECTOR
@@ -3970,8 +4191,10 @@
         console.warn("Backend /api/sites not reached, using embedded European CRM sites:", e);
       }
 
-      // Render initial markers
+      // Render initial markers, manual filter cards, and dynamic legend
+      renderManualFilterCards();
       renderMarkers();
+      renderMapLegend();
 
       // Select first site in technical inspector
       if (MINING_SITES.length > 0) {
@@ -4088,12 +4311,31 @@
         const isMatched = !sitesToHighlight || sitesToHighlight.some(s => s.id === site.id);
         const opacity = isMatched ? 1.0 : 0.22;
 
-        let color = '#10b981'; // Emerald
-        let pulseClass = isMatched ? 'marker-pulse-emerald' : '';
-        if (site.color_theme === 'gold') {
-          color = '#fbbf24'; // Gold
-          if (isMatched) pulseClass = 'marker-pulse-gold';
+        const topDim = filterDimensionsOrder[0] || 'commodities';
+        let color = '#10b981';
+
+        if (topDim === 'commodities') {
+          let c = (site.commodities && site.commodities.length > 0) ? site.commodities[0].toLowerCase() : '';
+          if (filterState.commodities.length > 0) {
+            const matched = (site.commodities || []).find(mc => filterState.commodities.includes(mc.toLowerCase()));
+            if (matched) c = matched.toLowerCase();
+          }
+          color = COMMODITY_COLORS[c] || '#10b981';
+        } else if (topDim === 'countries') {
+          const co = (site.country || '').toLowerCase();
+          color = COUNTRY_COLORS[co] || '#10b981';
+        } else if (topDim === 'facilities') {
+          const fac = (site.storage_facility_type || site.facility_type || '').toLowerCase();
+          if (fac.includes('dump') || fac.includes('escombrera')) color = FACILITY_COLORS['waste dump'];
+          else if (fac.includes('pond') || fac.includes('balsa')) color = FACILITY_COLORS['pond'];
+          else if (fac.includes('stockpile') || fac.includes('acopio')) color = FACILITY_COLORS['stockpile'];
+          else color = FACILITY_COLORS['tailings storage facility'];
+        } else if (topDim === 'statuses') {
+          const st = (site.project_status || 'active').toLowerCase();
+          color = STATUS_COLORS[st] || '#10b981';
         }
+
+        const pulseClass = isMatched ? 'marker-pulse-emerald' : '';
 
         const isSelected = selectedSite && selectedSite.id === site.id;
         
