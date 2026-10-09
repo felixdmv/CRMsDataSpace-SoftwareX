@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """
 generate_conversational_dst_battery.py
-Generates an extensive, realistic, publication-grade benchmark battery of 25 multi-turn
-dialogue episodes (110 total conversational turns) for Dialogue State Tracking (DST)
+Generates an extensive, realistic, publication-grade benchmark battery of 30 multi-turn
+dialogue episodes (132 total conversational turns) in ENGLISH for Dialogue State Tracking (DST)
 and multi-criteria spatial search in CRMsDataSpace.
 
 Specifically tagged by test categories to evaluate:
 - "search": Initial spatial search with natural linguistic variation, periphrasis, asset & metal synonyms
 - "expansion": Additive disjunction (OR) using natural conversational phrasing without rigid triggers
 - "refinement": Progressive conjunction (AND) with complex constraints and natural periphrasis
-- "removal": Subtractive exclusion with diverse natural verbs (prescinde, saca, descarta, deja fuera)
-- "context": Anaphoric, elliptical, and conversational continuity (país vecino, lo mismo en..., de las anteriores...)
-- "reset": Natural conversational resets (empecemos de cero, limpia el mapa, vuelve al catálogo)
+- "removal": Subtractive exclusion with diverse natural verbs (drop, exclude, remove, discard, leave out)
+- "context": Anaphoric, elliptical, and conversational continuity (neighboring country, do the same for..., of those...)
+- "reset": Natural conversational resets (start over, clear filters, reset map, display entire catalog)
 """
 
 import json
@@ -28,11 +28,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Quiero ver las presas de residuos mineros en la península ibérica",
+                "query": "Show tailings ponds in the Iberian Peninsula",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["spain", "portugal"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
@@ -41,11 +44,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "expansion",
-                "query": "Incluye también los yacimientos del país galo",
+                "query": "Include also deposits located in France",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["spain", "portugal", "france"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
@@ -54,11 +60,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "Quédate únicamente con aquellas que sigan extrayendo a día de hoy",
+                "query": "Keep only those that are currently active today",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["spain", "portugal", "france"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["active"],
                     "restored": None
@@ -67,11 +76,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "refinement",
-                "query": "Acota a las que contengan litio o cobalto",
+                "query": "Narrow down to those containing lithium or cobalt",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["spain", "portugal", "france"],
                     "commodities": ["lithium", "cobalt"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium", "cobalt"],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["active"],
                     "restored": None
@@ -80,11 +92,14 @@ episodes = [
             {
                 "turn": 5,
                 "test_category": "removal",
-                "query": "Prescinde de las explotaciones de cobalto",
+                "query": "Remove cobalt from the selection",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["spain", "portugal", "france"],
                     "commodities": ["lithium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium"],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["active"],
                     "restored": None
@@ -93,11 +108,14 @@ episodes = [
             {
                 "turn": 6,
                 "test_category": "reset",
-                "query": "Empecemos de cero",
+                "query": "Start over from scratch",
                 "expected_action": "reset",
                 "expected_accumulated_filters": {
                     "countries": [],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -106,7 +124,7 @@ episodes = [
         ]
     },
 
-    # Episode 2: Central European Corridor with Natural Constraints
+    # Episode 2: Central European Corridor with Negative Status Constraints
     {
         "episode_id": "EP-02",
         "title": "Central European Corridor with Negative Status Constraints",
@@ -114,11 +132,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Muestra acúmulos de estériles y escorias en territorio germano",
+                "query": "Show waste dumps and spoil heaps in Germany",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["germany"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -127,11 +148,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "expansion",
-                "query": "Suma también las instalaciones de la República Checa",
+                "query": "Also add facilities in Czechia",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["germany", "czechia"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -140,11 +164,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "Filtra aquellas donde el terreno continúe sin rehabilitar",
+                "query": "Filter to those that remain unrestored",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["germany", "czechia"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": False
@@ -153,11 +180,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "refinement",
-                "query": "Me interesan solo las que alberguen wolframio",
+                "query": "I am only interested in those containing tungsten",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["germany", "czechia"],
                     "commodities": ["tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["tungsten"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": False
@@ -166,11 +196,14 @@ episodes = [
             {
                 "turn": 5,
                 "test_category": "removal",
-                "query": "Olvídate de las de Chequia",
+                "query": "Forget about those in Czechia",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["germany"],
                     "commodities": ["tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["tungsten"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": False
@@ -179,7 +212,7 @@ episodes = [
         ]
     },
 
-    # Episode 3: Nordic Critical Raw Materials Audit
+    # Episode 3: Nordic Critical Raw Materials & Environmental Audit
     {
         "episode_id": "EP-03",
         "title": "Nordic Critical Raw Materials & Environmental Audit",
@@ -187,12 +220,15 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Localiza balsas de decantación activas en Suecia",
+                "query": "Locate active tailings storage facilities in Sweden",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["sweden"],
                     "commodities": [],
-                    "storage_facility_types": ["pond"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["active"],
                     "restored": None
                 }
@@ -200,12 +236,15 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "expansion",
-                "query": "Incorpora las instalaciones de Finlandia a la visualización",
+                "query": "Include facilities in Finland in the view",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["sweden", "finland"],
                     "commodities": [],
-                    "storage_facility_types": ["pond"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["active"],
                     "restored": None
                 }
@@ -213,12 +252,15 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "De todas esas, quédate solo con las que tengan tierras raras o níquel",
+                "query": "Of all those, keep only the ones with rare earth elements or nickel",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["sweden", "finland"],
                     "commodities": ["rare earth elements", "nickel"],
-                    "storage_facility_types": ["pond"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["rare earth elements", "nickel"],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["active"],
                     "restored": None
                 }
@@ -226,12 +268,15 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Saca las que están en Suecia",
+                "query": "Drop the ones located in Sweden",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["finland"],
                     "commodities": ["rare earth elements", "nickel"],
-                    "storage_facility_types": ["pond"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["rare earth elements", "nickel"],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["active"],
                     "restored": None
                 }
@@ -239,7 +284,7 @@ episodes = [
         ]
     },
 
-    # Episode 4: Contextual Anaphora & Cross-Border Shift
+    # Episode 4: Contextual Anaphora and Cross-Border Neighbor Query
     {
         "episode_id": "EP-04",
         "title": "Contextual Anaphora and Cross-Border Neighbor Query",
@@ -247,11 +292,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Busca escombreras de litio en España",
+                "query": "Find lithium waste dumps in Spain",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["spain"],
                     "commodities": ["lithium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -260,11 +308,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "context",
-                "query": "¿Y qué tenemos en el país vecino pero con wolframio?",
+                "query": "And what do we have in the neighboring country with tungsten?",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["spain", "portugal"],
                     "commodities": ["lithium", "tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium", "tungsten"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -273,11 +324,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "Conserva únicamente las que sigan operativas hoy",
+                "query": "Keep solely those that are still operating today",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["spain", "portugal"],
                     "commodities": ["lithium", "tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium", "tungsten"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": ["active"],
                     "restored": None
@@ -286,11 +340,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Descarta España de la selección",
+                "query": "Discard Spain from the selection",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["portugal"],
                     "commodities": ["lithium", "tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium", "tungsten"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": ["active"],
                     "restored": None
@@ -299,7 +356,7 @@ episodes = [
         ]
     },
 
-    # Episode 5: Mediterranean Corridor Exploration
+    # Episode 5: Mediterranean Corridor Exploration and Facility Filtering
     {
         "episode_id": "EP-05",
         "title": "Mediterranean Corridor Exploration and Facility Filtering",
@@ -307,11 +364,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Depósitos mineros en territorio heleno",
+                "query": "Mining waste deposits in Greece",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["greece"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -320,11 +380,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "expansion",
-                "query": "Agrega también lo que tengamos registrado en Italia",
+                "query": "Also add what we have registered in Italy",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["greece", "italy"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -333,12 +396,15 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "Conserva solo las balsas de lodos y relaves",
+                "query": "Keep only tailings storage facilities and ponds",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["greece", "italy"],
                     "commodities": [],
-                    "storage_facility_types": ["pond", "tailings storage facility"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
                 }
@@ -346,12 +412,15 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "refinement",
-                "query": "Filtra las que contengan titanio",
+                "query": "Filter for those containing titanium",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["greece", "italy"],
                     "commodities": ["titanium"],
-                    "storage_facility_types": ["pond", "tailings storage facility"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["titanium"],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
                 }
@@ -359,11 +428,14 @@ episodes = [
             {
                 "turn": 5,
                 "test_category": "reset",
-                "query": "Limpia la vista del mapa",
+                "query": "Clear the map view",
                 "expected_action": "reset",
                 "expected_accumulated_filters": {
                     "countries": [],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -372,7 +444,7 @@ episodes = [
         ]
     },
 
-    # Episode 6: Alpine Corridor with Acid Mine Drainage Focus
+    # Episode 6: Alpine Corridor with Environmental Acid Risk
     {
         "episode_id": "EP-06",
         "title": "Alpine Corridor with Environmental Acid Risk",
@@ -380,11 +452,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Instalaciones en Austria con manganeso",
+                "query": "Facilities in Austria with manganese",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["austria"],
                     "commodities": ["manganese"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["manganese"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -393,11 +468,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "expansion",
-                "query": "Incorpora las escombreras de Alemania",
+                "query": "Include waste dumps in Germany",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["austria", "germany"],
                     "commodities": ["manganese"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["manganese"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -406,11 +484,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "expansion",
-                "query": "Suma también minerales de wolframio",
+                "query": "Also add tungsten minerals",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["austria", "germany"],
                     "commodities": ["manganese", "tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["manganese", "tungsten"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -419,11 +500,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Prescinde del manganeso",
+                "query": "Drop manganese from the search",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["austria", "germany"],
                     "commodities": ["tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["tungsten"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -440,11 +524,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Escombreras de litio en Francia",
+                "query": "Lithium waste dumps in France",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["france"],
                     "commodities": ["lithium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -453,11 +540,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "context",
-                "query": "Aplica exactamente los mismos criterios para Alemania",
+                "query": "Apply the exact same criteria for Germany",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["france", "germany"],
                     "commodities": ["lithium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -466,11 +556,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "expansion",
-                "query": "Añade además cobalto",
+                "query": "Also add cobalt",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["france", "germany"],
                     "commodities": ["lithium", "cobalt"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium", "cobalt"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -479,11 +572,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "refinement",
-                "query": "Quédate únicamente con las que continúen en fase de explotación",
+                "query": "Keep only those that are still active operations",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["france", "germany"],
                     "commodities": ["lithium", "cobalt"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium", "cobalt"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": ["active"],
                     "restored": None
@@ -492,11 +588,14 @@ episodes = [
             {
                 "turn": 5,
                 "test_category": "removal",
-                "query": "Pasa de las instalaciones francesas",
+                "query": "Exclude French facilities",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["germany"],
                     "commodities": ["lithium", "cobalt"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium", "cobalt"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": ["active"],
                     "restored": None
@@ -505,7 +604,7 @@ episodes = [
         ]
     },
 
-    # Episode 8: Multi-Commodity Progressive Filtering in Italy & Greece
+    # Episode 8: Multi-Commodity Refinement and Subtraction
     {
         "episode_id": "EP-08",
         "title": "Multi-Commodity Refinement and Subtraction",
@@ -513,11 +612,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Yacimientos con titanio y grafito en Italia",
+                "query": "Sites with titanium and graphite in Italy",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["italy"],
                     "commodities": ["titanium", "graphite"],
+                    "commodity_operator": "AND",
+                    "commodities_and": ["titanium", "graphite"],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -526,11 +628,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "expansion",
-                "query": "Suma también las ubicaciones en territorio heleno",
+                "query": "Also add locations in Greece",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["italy", "greece"],
                     "commodities": ["titanium", "graphite"],
+                    "commodity_operator": "AND",
+                    "commodities_and": ["titanium", "graphite"],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -539,11 +644,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "removal",
-                "query": "El grafito ya no me interesa, déjalo fuera",
+                "query": "I am no longer interested in graphite, leave it out",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["italy", "greece"],
                     "commodities": ["titanium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["titanium"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -552,11 +660,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "refinement",
-                "query": "Acota a las que no se hayan restaurado todavía",
+                "query": "Narrow down to those not restored yet",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["italy", "greece"],
                     "commodities": ["titanium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["titanium"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": False
@@ -565,7 +676,7 @@ episodes = [
         ]
     },
 
-    # Episode 9: Polish-Czech Copper & Tin Exploration
+    # Episode 9: Polish-Czech Copper Exploration and Reset
     {
         "episode_id": "EP-09",
         "title": "Polish-Czech Copper Exploration and Reset",
@@ -573,11 +684,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Escombreras de estériles en Polonia",
+                "query": "Waste dumps in Poland",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["poland"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -586,11 +700,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "expansion",
-                "query": "Incorpora las instalaciones de Chequia",
+                "query": "Include facilities in Czechia",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["poland", "czechia"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -599,11 +716,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "Quédate únicamente con las que contengan cobre",
+                "query": "Keep only those containing copper",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["poland", "czechia"],
                     "commodities": ["copper"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["copper"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -612,11 +732,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Saca las instalaciones polacas de los filtros",
+                "query": "Remove Polish facilities from the filters",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["czechia"],
                     "commodities": ["copper"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["copper"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -625,11 +748,14 @@ episodes = [
             {
                 "turn": 5,
                 "test_category": "reset",
-                "query": "Vuelve a mostrar todo el catálogo europeo",
+                "query": "Display the entire European dataset again",
                 "expected_action": "reset",
                 "expected_accumulated_filters": {
                     "countries": [],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -638,7 +764,7 @@ episodes = [
         ]
     },
 
-    # Episode 10: English Exploration with Regional Concepts
+    # Episode 10: English Spatial Search with Regional Concepts
     {
         "episode_id": "EP-10",
         "title": "English Spatial Search with Regional Concepts",
@@ -651,7 +777,10 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["spain", "portugal"],
                     "commodities": [],
-                    "storage_facility_types": ["tailings storage facility"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["active"],
                     "restored": None
                 }
@@ -664,7 +793,10 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["spain", "portugal", "france"],
                     "commodities": [],
-                    "storage_facility_types": ["tailings storage facility"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["active"],
                     "restored": None
                 }
@@ -677,7 +809,10 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["spain", "portugal", "france"],
                     "commodities": ["lithium", "cobalt"],
-                    "storage_facility_types": ["tailings storage facility"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium", "cobalt"],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["active"],
                     "restored": None
                 }
@@ -690,7 +825,10 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["portugal", "france"],
                     "commodities": ["lithium", "cobalt"],
-                    "storage_facility_types": ["tailings storage facility"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium", "cobalt"],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["active"],
                     "restored": None
                 }
@@ -703,6 +841,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": [],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -711,7 +852,7 @@ episodes = [
         ]
     },
 
-    # Episode 11: English Neighboring Entity Context
+    # Episode 11: English Elliptical Context and Neighbor Shift
     {
         "episode_id": "EP-11",
         "title": "English Elliptical Context and Neighbor Shift",
@@ -724,6 +865,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["germany"],
                     "commodities": ["tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["tungsten"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -737,6 +881,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["germany", "czechia"],
                     "commodities": ["tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["tungsten"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -750,6 +897,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["germany", "czechia"],
                     "commodities": ["tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["tungsten"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": False
@@ -763,6 +913,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["czechia"],
                     "commodities": ["tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["tungsten"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": False
@@ -771,7 +924,7 @@ episodes = [
         ]
     },
 
-    # Episode 12: English Multi-Element Exclusion
+    # Episode 12: English Multi-Element Exclusion and Status Refinement
     {
         "episode_id": "EP-12",
         "title": "English Multi-Element Exclusion and Status Refinement",
@@ -784,6 +937,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["italy"],
                     "commodities": ["titanium", "graphite"],
+                    "commodity_operator": "AND",
+                    "commodities_and": ["titanium", "graphite"],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -797,6 +953,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["italy", "greece"],
                     "commodities": ["titanium", "graphite"],
+                    "commodity_operator": "AND",
+                    "commodities_and": ["titanium", "graphite"],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -810,6 +969,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["italy", "greece"],
                     "commodities": ["titanium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["titanium"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -823,6 +985,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["italy", "greece"],
                     "commodities": ["titanium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["titanium"],
                     "storage_facility_types": [],
                     "project_status": ["active"],
                     "restored": None
@@ -831,7 +996,7 @@ episodes = [
         ]
     },
 
-    # Episode 13: Atlantic Corridor (Ireland and Spain)
+    # Episode 13: Atlantic Corridor Exploration
     {
         "episode_id": "EP-13",
         "title": "Atlantic Corridor Exploration",
@@ -839,11 +1004,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Balsas de relaves en Irlanda",
+                "query": "Tailings ponds in Ireland",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["ireland"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
@@ -852,11 +1020,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "expansion",
-                "query": "Incorpora las instalaciones mineras de España",
+                "query": "Include mining facilities in Spain",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["ireland", "spain"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
@@ -865,11 +1036,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "Quédate únicamente con aquellas que sigan operando hoy",
+                "query": "Keep only those that are still operating today",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["ireland", "spain"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["active"],
                     "restored": None
@@ -878,11 +1052,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Descarta los depósitos de Irlanda",
+                "query": "Discard deposits in Ireland",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["spain"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["active"],
                     "restored": None
@@ -899,11 +1076,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Yacimientos con litio y níquel en Finlandia",
+                "query": "Deposits with lithium and nickel in Finland",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["finland"],
                     "commodities": ["lithium", "nickel"],
+                    "commodity_operator": "AND",
+                    "commodities_and": ["lithium", "nickel"],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -912,11 +1092,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "expansion",
-                "query": "Agrega también las explotaciones de Suecia",
+                "query": "Also add mining sites in Sweden",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["finland", "sweden"],
                     "commodities": ["lithium", "nickel"],
+                    "commodity_operator": "AND",
+                    "commodities_and": ["lithium", "nickel"],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -925,11 +1108,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "Restringe la consulta a balsas de relaves",
+                "query": "Restrict query to tailings ponds",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["finland", "sweden"],
                     "commodities": ["lithium", "nickel"],
+                    "commodity_operator": "AND",
+                    "commodities_and": ["lithium", "nickel"],
+                    "commodities_or": [],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
@@ -938,11 +1124,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Prescinde del níquel",
+                "query": "Drop nickel",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["finland", "sweden"],
                     "commodities": ["lithium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium"],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
@@ -951,11 +1140,14 @@ episodes = [
             {
                 "turn": 5,
                 "test_category": "reset",
-                "query": "Borra todos los filtros aplicados",
+                "query": "Clear all applied filters",
                 "expected_action": "reset",
                 "expected_accumulated_filters": {
                     "countries": [],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -964,7 +1156,7 @@ episodes = [
         ]
     },
 
-    # Episode 15: Environmental Legacy Liabilities
+    # Episode 15: Environmental Legacy Liabilities with AMD Risk
     {
         "episode_id": "EP-015",
         "title": "Environmental Legacy Liabilities with AMD Risk",
@@ -972,11 +1164,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Instalaciones sin rehabilitar en Alemania",
+                "query": "Unrestored facilities in Germany",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["germany"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": False
@@ -985,11 +1180,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "expansion",
-                "query": "Suma las que tengamos en Austria",
+                "query": "Add those we have in Austria",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["germany", "austria"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": False
@@ -998,11 +1196,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "Conserva solo las que alberguen tungsteno",
+                "query": "Keep only those with tungsten",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["germany", "austria"],
                     "commodities": ["tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["tungsten"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": False
@@ -1011,11 +1212,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Descarta los activos en Austria",
+                "query": "Discard assets in Austria",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["germany"],
                     "commodities": ["tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["tungsten"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": False
@@ -1024,7 +1228,7 @@ episodes = [
         ]
     },
 
-    # Episode 16: Refractory & Technology Metals
+    # Episode 16: Refractory Technology Metals in Spain & Portugal
     {
         "episode_id": "EP-16",
         "title": "Refractory Technology Metals in Spain & Portugal",
@@ -1032,11 +1236,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Escombreras de wolframio y estaño en España",
+                "query": "Tungsten and tin waste dumps in Spain",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["spain"],
                     "commodities": ["tungsten", "tin"],
+                    "commodity_operator": "AND",
+                    "commodities_and": ["tungsten", "tin"],
+                    "commodities_or": [],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -1045,11 +1252,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "expansion",
-                "query": "Incorpora a Portugal a la selección",
+                "query": "Include Portugal in the selection",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["spain", "portugal"],
                     "commodities": ["tungsten", "tin"],
+                    "commodity_operator": "AND",
+                    "commodities_and": ["tungsten", "tin"],
+                    "commodities_or": [],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -1058,11 +1268,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "removal",
-                "query": "Deja fuera el estaño",
+                "query": "Leave tin out",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["spain", "portugal"],
                     "commodities": ["tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["tungsten"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -1071,11 +1284,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "refinement",
-                "query": "Quédate únicamente con las que sigan activas hoy",
+                "query": "Keep only those that are still active today",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["spain", "portugal"],
                     "commodities": ["tungsten"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["tungsten"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": ["active"],
                     "restored": None
@@ -1084,7 +1300,7 @@ episodes = [
         ]
     },
 
-    # Episode 17: Contextual Interrogative Continuity
+    # Episode 17: Contextual Interrogative Continuity Across Regions
     {
         "episode_id": "EP-17",
         "title": "Contextual Interrogative Continuity Across Regions",
@@ -1092,12 +1308,15 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Balsas de residuos en Grecia",
+                "query": "Tailings ponds in Greece",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["greece"],
                     "commodities": [],
-                    "storage_facility_types": ["pond"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
                 }
@@ -1105,12 +1324,15 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "context",
-                "query": "¿Y qué tenemos registrado en territorio transalpino?",
+                "query": "And what do we have registered in Italy?",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["greece", "italy"],
                     "commodities": [],
-                    "storage_facility_types": ["pond"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
                 }
@@ -1118,12 +1340,15 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "context",
-                "query": "De las que me has dicho, ¿cuáles tienen níquel?",
+                "query": "Of those you mentioned, which ones have nickel?",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["greece", "italy"],
                     "commodities": ["nickel"],
-                    "storage_facility_types": ["pond"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["nickel"],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
                 }
@@ -1131,12 +1356,15 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Olvídate de Grecia",
+                "query": "Forget about Greece",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["italy"],
                     "commodities": ["nickel"],
-                    "storage_facility_types": ["pond"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["nickel"],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
                 }
@@ -1144,7 +1372,7 @@ episodes = [
         ]
     },
 
-    # Episode 18: German-Scandinavian Corridor
+    # Episode 18: German-Scandinavian Corridor with Rare Earths
     {
         "episode_id": "EP-18",
         "title": "German-Scandinavian Corridor with Rare Earths",
@@ -1152,11 +1380,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Escombreras en Alemania",
+                "query": "Waste dumps in Germany",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["germany"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -1165,11 +1396,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "expansion",
-                "query": "Suma también las de la zona nórdica",
+                "query": "Also add those in northern Europe",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["germany", "sweden", "finland"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -1178,11 +1412,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "Quédate exclusivamente con tierras raras",
+                "query": "Keep exclusively rare earth elements",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["germany", "sweden", "finland"],
                     "commodities": ["rare earth elements"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["rare earth elements"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -1191,11 +1428,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Prescinde de Alemania",
+                "query": "Drop Germany",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["sweden", "finland"],
                     "commodities": ["rare earth elements"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["rare earth elements"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -1204,7 +1444,7 @@ episodes = [
         ]
     },
 
-    # Episode 19: Complex Multi-Metal Removal
+    # Episode 19: Complex Multi-Metal Subtractive Sequence
     {
         "episode_id": "EP-19",
         "title": "Complex Multi-Metal Subtractive Sequence",
@@ -1212,11 +1452,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Instalaciones con cobre, cobalto y litio en Portugal y España",
+                "query": "Facilities with copper, cobalt and lithium in Portugal and Spain",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["portugal", "spain"],
                     "commodities": ["copper", "cobalt", "lithium"],
+                    "commodity_operator": "AND",
+                    "commodities_and": ["copper", "cobalt", "lithium"],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1225,11 +1468,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "removal",
-                "query": "Prescinde del cobre",
+                "query": "Drop copper",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["portugal", "spain"],
                     "commodities": ["cobalt", "lithium"],
+                    "commodity_operator": "AND",
+                    "commodities_and": ["cobalt", "lithium"],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1238,11 +1484,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "removal",
-                "query": "Descarta España de la lista",
+                "query": "Discard Spain from the list",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["portugal"],
                     "commodities": ["cobalt", "lithium"],
+                    "commodity_operator": "AND",
+                    "commodities_and": ["cobalt", "lithium"],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1251,11 +1500,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "refinement",
-                "query": "Restringe a instalaciones activas",
+                "query": "Restrict to active facilities",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["portugal"],
                     "commodities": ["cobalt", "lithium"],
+                    "commodity_operator": "AND",
+                    "commodities_and": ["cobalt", "lithium"],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": ["active"],
                     "restored": None
@@ -1264,7 +1516,7 @@ episodes = [
         ]
     },
 
-    # Episode 20: Cross-Border Out-of-Scope Resilient Flow
+    # Episode 20: Cross-Border Mixed Scope Dialogue
     {
         "episode_id": "EP-20",
         "title": "Cross-Border Mixed Scope Dialogue",
@@ -1272,11 +1524,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Países del sur de Europa como Grecia o Albania que tengan níquel",
+                "query": "Southern European countries like Greece or Albania that have nickel",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["greece"],
                     "commodities": ["nickel"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["nickel"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1285,11 +1540,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "expansion",
-                "query": "Agrega depósitos en Italia",
+                "query": "Add deposits in Italy",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["greece", "italy"],
                     "commodities": ["nickel"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["nickel"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1298,11 +1556,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "removal",
-                "query": "Saca las instalaciones de Grecia",
+                "query": "Remove facilities in Greece",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["italy"],
                     "commodities": ["nickel"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["nickel"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1311,11 +1572,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "refinement",
-                "query": "Quédate únicamente con balsas de relaves",
+                "query": "Keep only tailings storage facilities and ponds",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["italy"],
                     "commodities": ["nickel"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["nickel"],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
@@ -1324,7 +1588,7 @@ episodes = [
         ]
     },
 
-    # Episode 21: Consecutive Refinements Sequence
+    # Episode 21: Consecutive Multi-Dimensional Refinements
     {
         "episode_id": "EP-21",
         "title": "Consecutive Multi-Dimensional Refinements",
@@ -1332,11 +1596,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Escombreras de estériles en Francia y Alemania",
+                "query": "Waste dumps in France and Germany",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["france", "germany"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -1345,11 +1612,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "refinement",
-                "query": "Quédate únicamente con las que contengan litio",
+                "query": "Keep only those containing lithium",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["france", "germany"],
                     "commodities": ["lithium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -1358,11 +1628,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "De esas solo las que estén activas hoy en día",
+                "query": "Of those, only the ones that are currently active",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["france", "germany"],
                     "commodities": ["lithium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": ["active"],
                     "restored": None
@@ -1371,11 +1644,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "refinement",
-                "query": "Y que además sigan sin restaurar",
+                "query": "And that also remain unrestored",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["france", "germany"],
                     "commodities": ["lithium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": ["active"],
                     "restored": False
@@ -1384,7 +1660,7 @@ episodes = [
         ]
     },
 
-    # Episode 22: Rapid Switch and Exploration Reset
+    # Episode 22: Rapid Exploration Pivot and Context Rebuilding
     {
         "episode_id": "EP-22",
         "title": "Rapid Exploration Pivot and Context Rebuilding",
@@ -1392,11 +1668,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Balsas de relaves en Suecia",
+                "query": "Tailings ponds in Sweden",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["sweden"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
@@ -1405,11 +1684,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "reset",
-                "query": "Limpia la búsqueda",
+                "query": "Clear search",
                 "expected_action": "reset",
                 "expected_accumulated_filters": {
                     "countries": [],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1418,11 +1700,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "search",
-                "query": "Escombreras en España con tántalo",
+                "query": "Waste dumps in Spain with tantalum",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["spain"],
                     "commodities": ["tantalum"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["tantalum"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -1431,11 +1716,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "expansion",
-                "query": "Suma también las instalaciones en Portugal",
+                "query": "Also add facilities in Portugal",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["spain", "portugal"],
                     "commodities": ["tantalum"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["tantalum"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -1444,7 +1732,7 @@ episodes = [
         ]
     },
 
-    # Episode 23: Anaphora with Negation & Metal Swap
+    # Episode 23: Anaphora with Negation and Mineral Substitution
     {
         "episode_id": "EP-23",
         "title": "Anaphora with Negation and Mineral Substitution",
@@ -1452,11 +1740,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Instalaciones en Finlandia con níquel",
+                "query": "Facilities in Finland with nickel",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["finland"],
                     "commodities": ["nickel"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["nickel"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1465,11 +1756,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "context",
-                "query": "¿Hay algo similar en Suecia?",
+                "query": "Is there anything similar in Sweden?",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["finland", "sweden"],
                     "commodities": ["nickel"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["nickel"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1478,11 +1772,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "Descarta aquellas que ya hayan sido rehabilitadas",
+                "query": "Discard those that have already been restored",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["finland", "sweden"],
                     "commodities": ["nickel"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["nickel"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": False
@@ -1491,11 +1788,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Prescinde del níquel",
+                "query": "Remove nickel",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["finland", "sweden"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": False
@@ -1504,7 +1804,7 @@ episodes = [
         ]
     },
 
-    # Episode 24: Deep Subsurface Tailings Contrast
+    # Episode 24: Tailings and Dumps Contrast in Czechia and Poland
     {
         "episode_id": "EP-24",
         "title": "Tailings and Dumps Contrast in Czechia and Poland",
@@ -1512,12 +1812,15 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Presas de lodos y decantación en Chequia",
+                "query": "Tailings ponds in Czechia",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["czechia"],
                     "commodities": [],
-                    "storage_facility_types": ["pond"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
                 }
@@ -1525,12 +1828,15 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "expansion",
-                "query": "Añade escombreras de roca estéril en Polonia",
+                "query": "Add waste dumps in Poland",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["czechia", "poland"],
                     "commodities": [],
-                    "storage_facility_types": ["pond", "waste dump"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
+                    "storage_facility_types": ["tailings storage facility", "pond", "waste dump"],
                     "project_status": [],
                     "restored": None
                 }
@@ -1538,12 +1844,15 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "Quédate solo con las que contengan cobre",
+                "query": "Keep only those containing copper",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["czechia", "poland"],
                     "commodities": ["copper"],
-                    "storage_facility_types": ["pond", "waste dump"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["copper"],
+                    "storage_facility_types": ["tailings storage facility", "pond", "waste dump"],
                     "project_status": [],
                     "restored": None
                 }
@@ -1551,12 +1860,15 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Elimina Chequia de la búsqueda",
+                "query": "Remove Czechia from the search",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["poland"],
                     "commodities": ["copper"],
-                    "storage_facility_types": ["pond", "waste dump"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["copper"],
+                    "storage_facility_types": ["tailings storage facility", "pond", "waste dump"],
                     "project_status": [],
                     "restored": None
                 }
@@ -1564,11 +1876,14 @@ episodes = [
             {
                 "turn": 5,
                 "test_category": "reset",
-                "query": "Reinicia todos los criterios",
+                "query": "Reset all criteria",
                 "expected_action": "reset",
                 "expected_accumulated_filters": {
                     "countries": [],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1577,7 +1892,7 @@ episodes = [
         ]
     },
 
-    # Episode 25: English Anaphora & Multi-Hop Exploration
+    # Episode 25: English Multi-Hop Anaphora and Asset Selection
     {
         "episode_id": "EP-25",
         "title": "English Multi-Hop Anaphora and Asset Selection",
@@ -1590,6 +1905,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["france"],
                     "commodities": ["lithium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1603,6 +1921,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["france", "germany"],
                     "commodities": ["lithium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1616,6 +1937,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["france", "germany"],
                     "commodities": ["lithium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": ["active"],
                     "restored": None
@@ -1629,6 +1953,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["germany"],
                     "commodities": ["lithium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": ["active"],
                     "restored": None
@@ -1642,6 +1969,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": [],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1650,7 +1980,7 @@ episodes = [
         ]
     },
 
-    # Episode 26: Baltic & Scandinavian Cross-Turn Anaphora
+    # Episode 26: Baltic and Scandinavian Anaphora with Operational Refinement
     {
         "episode_id": "EP-26",
         "title": "Baltic and Scandinavian Anaphora with Operational Refinement",
@@ -1658,11 +1988,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Yacimientos con níquel en Finlandia",
+                "query": "Deposits with nickel in Finland",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["finland"],
                     "commodities": ["nickel"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["nickel"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1671,11 +2004,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "context",
-                "query": "¿Y qué tenemos en el país de al lado?",
+                "query": "And what do we have in the country next door?",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["finland", "sweden"],
                     "commodities": ["nickel"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["nickel"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1684,11 +2020,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "context",
-                "query": "¿Cuáles de las que me has dicho siguen activas a fecha de hoy?",
+                "query": "Which of those mentioned are still active today?",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["finland", "sweden"],
                     "commodities": ["nickel"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["nickel"],
                     "storage_facility_types": [],
                     "project_status": ["active"],
                     "restored": None
@@ -1697,11 +2036,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Prescinde de las instalaciones suecas",
+                "query": "Drop Swedish facilities",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["finland"],
                     "commodities": ["nickel"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["nickel"],
                     "storage_facility_types": [],
                     "project_status": ["active"],
                     "restored": None
@@ -1710,11 +2052,14 @@ episodes = [
             {
                 "turn": 5,
                 "test_category": "reset",
-                "query": "Vuelve a empezar de cero",
+                "query": "Start over from scratch again",
                 "expected_action": "reset",
                 "expected_accumulated_filters": {
                     "countries": [],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1723,7 +2068,7 @@ episodes = [
         ]
     },
 
-    # Episode 27: Iberian Ellipsis and Compound Dialogue
+    # Episode 27: Iberian Ellipsis and Multi-Commodity Synthesis
     {
         "episode_id": "EP-27",
         "title": "Iberian Ellipsis and Multi-Commodity Synthesis",
@@ -1731,11 +2076,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Depósitos de litio en territorio luso",
+                "query": "Lithium deposits in Portugal",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["portugal"],
                     "commodities": ["lithium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1744,11 +2092,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "context",
-                "query": "Suma lo que haya en la península ibérica que albergue tántalo",
+                "query": "Add what is in the Iberian peninsula containing tantalum",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["portugal", "spain"],
                     "commodities": ["lithium", "tantalum"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium", "tantalum"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1757,11 +2108,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "Quédate exclusivamente con las escombreras de roca estéril",
+                "query": "Keep exclusively barren rock waste dumps",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["portugal", "spain"],
                     "commodities": ["lithium", "tantalum"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium", "tantalum"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -1770,11 +2124,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Saca el tántalo",
+                "query": "Drop tantalum",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["portugal", "spain"],
                     "commodities": ["lithium"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["lithium"],
                     "storage_facility_types": ["waste dump"],
                     "project_status": [],
                     "restored": None
@@ -1783,7 +2140,7 @@ episodes = [
         ]
     },
 
-    # Episode 28: English Deictic Reference & Progressive Filtering
+    # Episode 28: English Deictic Reference and Environmental Constraints
     {
         "episode_id": "EP-28",
         "title": "English Deictic Reference and Environmental Constraints",
@@ -1796,7 +2153,10 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["germany"],
                     "commodities": [],
-                    "storage_facility_types": ["pond", "tailings storage facility"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
                 }
@@ -1809,7 +2169,10 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["germany", "france"],
                     "commodities": [],
-                    "storage_facility_types": ["pond", "tailings storage facility"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
                 }
@@ -1822,7 +2185,10 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["germany", "france"],
                     "commodities": [],
-                    "storage_facility_types": ["pond", "tailings storage facility"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": False
                 }
@@ -1835,7 +2201,10 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["france"],
                     "commodities": [],
-                    "storage_facility_types": ["pond", "tailings storage facility"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": False
                 }
@@ -1843,7 +2212,7 @@ episodes = [
         ]
     },
 
-    # Episode 29: Interrogative Status Shift in Austria & Italy
+    # Episode 29: Interrogative Status Shift in Alpine Region
     {
         "episode_id": "EP-29",
         "title": "Interrogative Status Shift in Alpine Region",
@@ -1851,11 +2220,14 @@ episodes = [
             {
                 "turn": 1,
                 "test_category": "search",
-                "query": "Balsas de relaves en Austria",
+                "query": "Tailings ponds in Austria",
                 "expected_action": "new_search",
                 "expected_accumulated_filters": {
                     "countries": ["austria"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
@@ -1864,11 +2236,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "context",
-                "query": "¿Y qué tenemos en territorio italiano?",
+                "query": "And what do we have in Italy?",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["austria", "italy"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
@@ -1877,11 +2252,14 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "context",
-                "query": "De las anteriores, ¿hay alguna que esté cerrada o abandonada?",
+                "query": "From the previous ones, are there any that are inactive or abandoned?",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["austria", "italy"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["inactive"],
                     "restored": None
@@ -1890,11 +2268,14 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Olvídate de Italia",
+                "query": "Forget about Italy",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["austria"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": ["inactive"],
                     "restored": None
@@ -1903,11 +2284,14 @@ episodes = [
             {
                 "turn": 5,
                 "test_category": "reset",
-                "query": "Reinicia los filtros y muestra todo el mapa",
+                "query": "Reset filters and display the entire map",
                 "expected_action": "reset",
                 "expected_accumulated_filters": {
                     "countries": [],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1916,10 +2300,10 @@ episodes = [
         ]
     },
 
-    # Episode 30: Complex Multi-Lingual Contextual Transfer
+    # Episode 30: Complex Contextual Transfer and Refinement
     {
         "episode_id": "EP-30",
-        "title": "Complex Multi-Lingual Contextual Transfer and Refinement",
+        "title": "Complex Contextual Transfer and Refinement",
         "turns": [
             {
                 "turn": 1,
@@ -1929,6 +2313,9 @@ episodes = [
                 "expected_accumulated_filters": {
                     "countries": ["greece"],
                     "commodities": [],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": [],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1937,11 +2324,14 @@ episodes = [
             {
                 "turn": 2,
                 "test_category": "context",
-                "query": "¿Y qué tenemos en España con cobre?",
+                "query": "And what do we have in Spain with copper?",
                 "expected_action": "expand",
                 "expected_accumulated_filters": {
                     "countries": ["greece", "spain"],
                     "commodities": ["copper"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["copper"],
                     "storage_facility_types": [],
                     "project_status": [],
                     "restored": None
@@ -1950,12 +2340,15 @@ episodes = [
             {
                 "turn": 3,
                 "test_category": "refinement",
-                "query": "Restringe a presas y balsas de lodos",
+                "query": "Restrict to tailings storage facilities and ponds",
                 "expected_action": "refine",
                 "expected_accumulated_filters": {
                     "countries": ["greece", "spain"],
                     "commodities": ["copper"],
-                    "storage_facility_types": ["pond", "tailings storage facility"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["copper"],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
                 }
@@ -1963,12 +2356,15 @@ episodes = [
             {
                 "turn": 4,
                 "test_category": "removal",
-                "query": "Saca las instalaciones griegas",
+                "query": "Remove Greek facilities",
                 "expected_action": "remove",
                 "expected_accumulated_filters": {
                     "countries": ["spain"],
                     "commodities": ["copper"],
-                    "storage_facility_types": ["pond", "tailings storage facility"],
+                    "commodity_operator": "OR",
+                    "commodities_and": [],
+                    "commodities_or": ["copper"],
+                    "storage_facility_types": ["tailings storage facility", "pond"],
                     "project_status": [],
                     "restored": None
                 }
@@ -1977,26 +2373,8 @@ episodes = [
     }
 ]
 
-def main():
-    total_episodes = len(episodes)
-    total_turns = sum(len(ep["turns"]) for ep in episodes)
-    
-    cat_counts = {}
-    action_counts = {}
-    for ep in episodes:
-        for t in ep["turns"]:
-            cat = t.get("test_category", "unknown")
-            act = t.get("expected_action", "unknown")
-            cat_counts[cat] = cat_counts.get(cat, 0) + 1
-            action_counts[act] = action_counts.get(act, 0) + 1
-
-    print(f"Generated {total_episodes} dialogue episodes ({total_turns} total turns).")
-    print(f"Test Category Breakdown: {cat_counts}")
-    print(f"Action Breakdown: {action_counts}")
-
+if __name__ == "__main__":
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(episodes, f, indent=2, ensure_ascii=False)
-    print(f"Saved to: {OUTPUT_FILE}")
-
-if __name__ == "__main__":
-    main()
+    total_turns = sum(len(ep["turns"]) for ep in episodes)
+    print(f"Successfully generated {len(episodes)} episodes ({total_turns} turns) in English with boolean operators to {OUTPUT_FILE}")

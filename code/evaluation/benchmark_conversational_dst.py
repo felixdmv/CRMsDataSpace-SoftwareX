@@ -245,7 +245,11 @@ def run_conversational_benchmark(provider: str, episodes: List[Dict[str, Any]]) 
                 restored_matches += 1
                 category_stats[cat]["restored_matches"] += 1
 
-            turn_exact = c_match and m_match and f_match and s_match and r_match
+            exp_op = exp_filters.get("commodity_operator", "OR")
+            pred_op = pred_filters.get("commodity_operator", "OR")
+            op_match = (len(exp_filters.get("commodities", [])) <= 1) or (exp_op == pred_op)
+
+            turn_exact = c_match and m_match and f_match and s_match and r_match and op_match
             if turn_exact:
                 exact_state_matches += 1
                 category_stats[cat]["exact"] += 1

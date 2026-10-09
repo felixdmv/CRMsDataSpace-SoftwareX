@@ -49,18 +49,79 @@ UNSUPPORTED_COUNTRY_DICT = {
     "ukraine": "Ucrania"
 }
 
+UNSUPPORTED_COUNTRY_EN = {
+    "albania": "Albania",
+    "reino unido": "United Kingdom",
+    "uk": "United Kingdom",
+    "united kingdom": "United Kingdom",
+    "chile": "Chile",
+    "china": "China",
+    "estados unidos": "United States",
+    "usa": "United States",
+    "rusia": "Russia",
+    "russia": "Russia",
+    "noruega": "Norway",
+    "norway": "Norway",
+    "suiza": "Switzerland",
+    "switzerland": "Switzerland",
+    "serbia": "Serbia",
+    "marruecos": "Morocco",
+    "morocco": "Morocco",
+    "turquia": "Turkey",
+    "turquía": "Turkey",
+    "turkey": "Turkey",
+    "australia": "Australia",
+    "canada": "Canada",
+    "canadá": "Canada",
+    "argentina": "Argentina",
+    "brasil": "Brazil",
+    "brazil": "Brazil",
+    "ucrania": "Ukraine",
+    "ukraine": "Ukraine"
+}
+
+def is_query_spanish(query: str) -> bool:
+    """
+    Strictly determines if a user query is in Spanish.
+    Defaults to English (False) whenever English indicators are present
+    or no unambiguous Spanish words are detected.
+    """
+    if not query:
+        return False
+    q = query.lower().strip()
+    
+    # 1. Unambiguous English stopwords and keywords
+    english_cues = [
+        r'\b(show|find|search|list|what|how|where|which|who|facilities|facility)\b',
+        r'\b(dumps?|waste|tailings|ponds?|stockpiles?)\b',
+        r'\b(active|inactive|restored|unrestored|near|in|of|and|or|not|the|with|from)\b',
+        r'\b(those|these|all|only|now|remove|exclude|forget|start|over|reset)\b',
+        r'\b(tungsten|copper|iron|nickel|lithium|cobalt|tin|tantalum|rare\s+earth|ree)\b',
+        r'\b(germany|spain|france|sweden|finland|italy|poland|austria|greece|ireland|portugal|czechia)\b',
+        r'\b(hello|hi|hey|help|good\s+morning|tell\s+me)\b'
+    ]
+    if any(re.search(pat, q) for pat in english_cues):
+        return False
+
+    # 2. Unambiguous Spanish words with word boundaries
+    spanish_cues = [
+        r'\b(hola|buenos\s+d[ií]as|buenas\s+tardes|buenas\s+noches)\b',
+        r'\b(dime|muestra|mu[eé]strame|busca|ens[eé][ñn]ame)\b',
+        r'\b(escombreras?|balsas?|relaves?|acopios?|dep[oó]sitos?)\b',
+        r'\b(cu[aá]l|cu[aá]les|d[oó]nde|qu[eé]\s+es|c[oó]mo\s+funciona|ayuda)\b',
+        r'\b(de\s+esas|de\s+estos|de\s+las|de\s+los|ahora\s+quita|elimina)\b',
+        r'\b(activ[ao]s?|inactiv[ao]s?|restaurad[ao]s?|sin\s+restaurar)\b',
+        r'\b(espa[ñn]a|alemania|suecia|francia|polonia|grecia)\b'
+    ]
+    return any(re.search(pat, q) for pat in spanish_cues)
+
 def build_generic_qa_response(query: str, validated: Dict[str, Any]) -> str:
     """
     Builds rich, authoritative domain answers for conversational queries,
     system onboarding/help, and conceptual/regulatory questions.
     """
     q_lower = query.lower()
-    is_spanish = any(w in q_lower for w in [
-        "hola", "buen", "dia", "días", "tardes", "noches", "que tal", "saludos",
-        "ayuda", "puedes", "cómo", "como", "sirves", "funciona", "qué", "que",
-        "diferencia", "balsa", "escombrera", "relaves", "directiva", "criterios",
-        "normativa", "explícame", "explicame", "cuál", "cual", "cuáles", "cuales"
-    ])
+    is_spanish = is_query_spanish(query)
 
     # 1. Greetings & Social Openers
     greeting_patterns = [
@@ -255,7 +316,7 @@ def generate_natural_response(
 
     # Detect multi-element conjunction with zero results or ambiguous intent
     if len(comms) >= 2 and ((num_found == 0 and comm_op in ["AND", "COMPOUND"]) or is_ambiguous):
-        is_spanish = any(w in query.lower() for w in ["dime", "muestra", "en ", "escombrera", "balsa", "donde", "hola", "que ", "de ", "los ", "las ", "paises", "países"])
+        is_spanish = is_query_spanish(query)
         comms_str = ", ".join(c.capitalize() for c in comms)
         msg = prefix_notice if prefix_notice else ""
         
@@ -288,7 +349,7 @@ def generate_natural_response(
         return msg
 
     if num_found == 0:
-        is_spanish = any(w in query.lower() for w in ["dime", "muestra", "en ", "escombrera", "balsa", "donde", "hola", "que ", "de ", "los ", "las ", "paises", "países"])
+        is_spanish = is_query_spanish(query)
         msg = prefix_notice if prefix_notice else ""
         if is_spanish:
             msg += "No se han encontrado instalaciones mineras o depósitos en el espacio de datos europeo que coincidan con estos criterios de búsqueda. Prueba a ampliar los filtros de país o materias primas."
@@ -329,10 +390,7 @@ def process_chat_message(
         current_filters = {}
 
     q_lower = query.lower().strip()
-    is_spanish = any(w in q_lower for w in [
-        "dime", "muestra", "en ", "escombrera", "balsa", "donde", "hola", "que ", "de ",
-        "los ", "las ", "paises", "países", "y ademas", "de esas", "quita", "ademas", "litio", "cobalto"
-    ])
+    is_spanish = is_query_spanish(query)
 
     # 1. Check for explicit reset requests
     detected_action = DialogueStateTracker.detect_dialogue_action(query, current_filters)
@@ -390,14 +448,29 @@ def process_chat_message(
     query_builder = QueryBuilder()
     
     normalized = normalizer.normalize(raw_json)
-    validated = validator.validate(normalized)
+    validated = validator.validate(normalized, query=query)
     
     intent = validated.get("intent", "filter_search")
     extracted_filters = validated.get("filters", {})
     action = validated.get("dialogue_action", "new_search")
     
-    # Re-verify dialogue action with deterministic tracker if LLM defaulted to new_search
-    if action == "new_search" and detected_action in ["expand", "refine", "remove"]:
+    # Re-verify dialogue action with deterministic tracker
+    if detected_action == "reset":
+        action = "reset"
+    elif detected_action == "new_search" and action == "refine":
+        # Check if query has genuine refinement markers; if not, enforce new_search
+        refine_cues = [
+            r'\bde es[ao]s\b', r'\bde est[ao]s\b', r'\bde ell[ao]s\b', r'\bde los anteriores\b',
+            r'\bsolo las que\b', r'\bsolo los que\b', r'\b[uú]nicamente\b', r'\bunicamente\b',
+            r'\bque contengan\b', r'\bque tengan\b', r'\bpero solo\b', r'\bde ah[ií] solo\b',
+            r'\bacota\b', r'\bfiltra por\b', r'\bfiltradas por\b', r'\bof those\b', r'\bfrom these\b',
+            r'\bonly (those|that|the|ones)\b', r'\bkeep only\b', r'\bfilter to\b', r'\bonly interested in\b',
+            r'\bnarrow down\b', r'\bjust the ones\b', r'\bonly active\b', r'\bonly unrestored\b', r'\bonly restored\b'
+        ]
+        has_real_refine = any(re.search(p, q_lower) for p in refine_cues)
+        if not has_real_refine:
+            action = "new_search"
+    elif action == "new_search" and detected_action in ["expand", "refine", "remove"]:
         action = detected_action
     validated["dialogue_action"] = action
 
@@ -429,7 +502,8 @@ def process_chat_message(
         current_filters=current_filters,
         extracted_filters=extracted_filters,
         action=action,
-        remove_filters=validated.get("remove_filters", {})
+        remove_filters=validated.get("remove_filters", {}),
+        query=query
     )
     validated["filters"] = updated_filters
     filters = updated_filters
@@ -438,8 +512,9 @@ def process_chat_message(
     print(f"[NLU Agent] Accumulated Active Filters: {updated_filters}")
 
     # 6. Detect Out-of-Scope / Unsupported Countries
-    unsupported_found = list(validated.get("unsupported_countries", []))
-    for ukw, ulabel in UNSUPPORTED_COUNTRY_DICT.items():
+    unsupported_map = UNSUPPORTED_COUNTRY_DICT if is_spanish else UNSUPPORTED_COUNTRY_EN
+    unsupported_found = []
+    for ukw, ulabel in unsupported_map.items():
         if re.search(r'\b' + re.escape(ukw) + r'\b', q_lower) and ulabel not in unsupported_found:
             unsupported_found.append(ulabel)
 
@@ -591,6 +666,7 @@ def process_chat_message(
         "conversation_history": hist,
         "facets": solr_results.get("facets", {}),
         "response_text": response_text,
+        "narrative": response_text,
         "docs": matched_docs,
         "disambiguation_options": disambiguation_options
     }

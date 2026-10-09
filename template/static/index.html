@@ -344,6 +344,66 @@
             <button onclick="clearAllFilters()" class="text-[10.5px] text-blue-400 hover:underline cursor-pointer">Clear</button>
           </div>
 
+          <!-- Model Selection Notice & Dropdown -->
+          <div class="space-y-1.5 p-2 rounded-lg bg-slate-950/80 border border-slate-800 text-[10.5px]">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-semibold text-slate-300 flex items-center gap-1">
+                <span>🤖</span> <span>Execution Model:</span>
+              </span>
+              <span class="text-[9px] font-mono text-amber-400 bg-amber-950/60 border border-amber-800/80 px-1.5 py-0.2 rounded" title="Standalone environment without GPU hardware attached">
+                GPU Models Not Available
+              </span>
+            </div>
+
+            <!-- Model Dropdown -->
+            <select 
+              id="template-model-select" 
+              onchange="onTemplateModelChange(this.value)"
+              class="w-full bg-slate-900 border border-slate-700 text-slate-200 text-xs px-2 py-1.5 rounded focus:outline-none focus:border-indigo-500 font-sans cursor-pointer"
+            >
+              <!-- 1. Deterministic Rule-Based Engine -->
+              <optgroup label="── 1. Deterministic Rule Engine ──" class="bg-slate-950 text-emerald-400 font-semibold">
+                <option value="rules" selected class="text-emerald-300 bg-slate-900">⚡ Deterministic Rule-Based Engine (Active / Zero-GPU)</option>
+              </optgroup>
+              <!-- 2. Cloud APIs -->
+              <optgroup label="── 2. Cloud API LLMs (Requires API Key) ──" class="bg-slate-950 text-indigo-400 font-semibold">
+                <option value="gemini" class="text-indigo-200 bg-slate-900">✨ Google Gemini 2.0 / 1.5 (Cloud API)</option>
+                <option value="openai" class="text-indigo-200 bg-slate-900">🤖 OpenAI GPT-4o (Cloud API)</option>
+                <option value="claude" class="text-indigo-200 bg-slate-900">🎭 Anthropic Claude 3.5 Sonnet (Cloud API)</option>
+              </optgroup>
+              <!-- 3. Local GPU Models (Disabled / Grayed Out) -->
+              <optgroup label="── 3. Benchmark Local GPU Models (Unavailable on Standalone) ──" class="bg-slate-950 text-slate-500 font-semibold">
+                <option value="mistral" disabled class="text-slate-500 bg-slate-950 cursor-not-allowed">🇪🇺 Mistral 7B Instruct v0.2 (Local GPU - Not Available)</option>
+                <option value="qwen" disabled class="text-slate-500 bg-slate-950 cursor-not-allowed">🚀 Qwen 2.5 7B Instruct (Local GPU - Not Available)</option>
+                <option value="llama8b" disabled class="text-slate-500 bg-slate-950 cursor-not-allowed">🦙 Meta Llama 3.1 8B (Local GPU - Not Available)</option>
+                <option value="phi3" disabled class="text-slate-500 bg-slate-950 cursor-not-allowed">🔬 Microsoft Phi-3 Mini 4K (Local GPU - Not Available)</option>
+              </optgroup>
+            </select>
+
+            <!-- Cloud API Key Input (Hidden when rules selected) -->
+            <div id="template-api-key-container" class="hidden pt-1 space-y-1">
+              <div class="flex items-center justify-between text-[9.5px] text-slate-400">
+                <span>Enter Cloud API Key:</span>
+                <span id="template-api-key-status" class="text-emerald-400 font-mono"></span>
+              </div>
+              <div class="flex gap-1">
+                <input 
+                  type="password" 
+                  id="template-api-key-input" 
+                  placeholder="Paste Gemini / OpenAI / Claude API key..." 
+                  class="flex-1 bg-slate-900 border border-slate-700 text-slate-200 text-[10px] px-2 py-1 rounded focus:outline-none focus:border-indigo-500 font-mono"
+                />
+                <button 
+                  type="button" 
+                  onclick="saveTemplateApiKey()" 
+                  class="bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] px-2 py-1 rounded transition cursor-pointer font-medium"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+
           <!-- Conversational Input -->
           <div class="relative">
             <input 
@@ -789,10 +849,19 @@
     <!-- =======================================================================
          RIGHT PANEL: DOMAIN FILTERS & LIVE FACET SCHEMAS
          ======================================================================= -->
-    <aside id="right-filter-panel" class="w-80 sm:w-88 bg-slate-900 border-l border-slate-800 flex flex-col shrink-0 z-20 shadow-xl hidden transition-all duration-300">
+    <aside id="right-filter-panel" class="relative bg-slate-900 border-l border-slate-800 flex flex-col shrink-0 z-20 shadow-xl hidden transition-[width] duration-150" style="width: 380px; min-width: 290px; max-width: 950px;">
       
+      <!-- Drag handle for horizontal resizing -->
+      <div 
+        id="right-panel-resizer" 
+        class="absolute -left-1.5 top-0 bottom-0 w-3 cursor-ew-resize hover:bg-cyan-500/50 active:bg-cyan-600 transition-colors z-30 flex items-center justify-center group select-none"
+        title="Drag left or right to expand or shrink the filters panel"
+      >
+        <div class="h-10 w-1 bg-slate-600 group-hover:bg-cyan-400 group-active:bg-white rounded-full transition-colors"></div>
+      </div>
+
       <!-- Panel Header -->
-      <div class="h-11 px-3.5 bg-slate-950 flex items-center justify-between border-b border-slate-800 text-xs shrink-0">
+      <div class="h-11 px-3.5 bg-slate-950 flex items-center justify-between border-b border-slate-800 text-xs shrink-0 select-none">
         <div class="flex items-center gap-2">
           <span class="font-bold text-white flex items-center gap-1.5">
             <span>⚙️</span>
@@ -803,6 +872,17 @@
           </span>
         </div>
         <div class="flex items-center gap-2">
+          <!-- Width expand toggle button -->
+          <button 
+            type="button" 
+            onclick="toggleRightPanelWidth()" 
+            id="btn-expand-right-panel" 
+            class="text-[10.5px] bg-slate-800 hover:bg-slate-700 text-cyan-300 hover:text-white px-2 py-0.5 rounded border border-slate-700 transition cursor-pointer flex items-center gap-1" 
+            title="Toggle between normal width (380px) and expanded width (650px)"
+          >
+            <span>↔</span>
+            <span id="label-expand-right-panel">Expand</span>
+          </button>
           <button onclick="clearAllFilters()" class="text-[11px] text-blue-400 hover:text-blue-300 hover:underline cursor-pointer">
             Clear
           </button>
@@ -950,6 +1030,7 @@
       await loadAreasCatalog();
       initMap();
       initInspectorResizer();
+      initRightPanelResizer();
       await loadAppConfig();
       await loadPointsData();
       checkInitialOnboarding();
@@ -1847,15 +1928,54 @@
     // --------------------------------------------------------------------------
     // CONVERSATIONAL & MANUAL QUERY EXECUTION
     // --------------------------------------------------------------------------
+    let templateCurrentModel = 'rules';
+
+    function onTemplateModelChange(modelVal) {
+      templateCurrentModel = modelVal;
+      const keyContainer = document.getElementById('template-api-key-container');
+      const keyInput = document.getElementById('template-api-key-input');
+      const keyStatus = document.getElementById('template-api-key-status');
+      if (['gemini', 'openai', 'claude'].includes(modelVal)) {
+        if (keyContainer) keyContainer.classList.remove('hidden');
+        const savedKey = localStorage.getItem(`template_api_key_${modelVal}`) || '';
+        if (keyInput) keyInput.value = savedKey;
+        if (keyStatus) keyStatus.textContent = savedKey ? 'Key saved ✓' : 'No key set';
+      } else {
+        if (keyContainer) keyContainer.classList.add('hidden');
+      }
+    }
+
+    function saveTemplateApiKey() {
+      const selectEl = document.getElementById('template-model-select');
+      const modelVal = selectEl ? selectEl.value : 'rules';
+      const keyInput = document.getElementById('template-api-key-input');
+      const keyStatus = document.getElementById('template-api-key-status');
+      if (keyInput && ['gemini', 'openai', 'claude'].includes(modelVal)) {
+        const val = keyInput.value.trim();
+        localStorage.setItem(`template_api_key_${modelVal}`, val);
+        if (keyStatus) keyStatus.textContent = val ? 'Key saved ✓' : 'Cleared';
+      }
+    }
+
     async function submitConversationalQuery() {
       const query = document.getElementById('conversational-input').value.trim();
       if (!query) return;
+
+      const modelSelect = document.getElementById('template-model-select');
+      const selectedModel = modelSelect ? modelSelect.value : 'rules';
+      const apiKey = ['gemini', 'openai', 'claude'].includes(selectedModel) 
+        ? (localStorage.getItem(`template_api_key_${selectedModel}`) || (document.getElementById('template-api-key-input') ? document.getElementById('template-api-key-input').value.trim() : '')) 
+        : '';
 
       try {
         const resp = await fetch('/api/query', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: query })
+          body: JSON.stringify({ 
+            query: query,
+            provider: selectedModel,
+            api_key: apiKey
+          })
         });
         const result = await resp.json();
         applyPipelineResult(result);
@@ -2556,6 +2676,95 @@
       setTimeout(() => {
         if (leafletMap) leafletMap.invalidateSize();
       }, 50);
+    }
+
+    // --------------------------------------------------------------------------
+    // RIGHT FILTER PANEL HORIZONTAL RESIZING & EXPANSION
+    // --------------------------------------------------------------------------
+    let isRightPanelExpanded = false;
+
+    function toggleRightPanelWidth() {
+      const panel = document.getElementById('right-filter-panel');
+      const label = document.getElementById('label-expand-right-panel');
+      if (!panel) return;
+      isRightPanelExpanded = !isRightPanelExpanded;
+      if (isRightPanelExpanded) {
+        panel.style.width = '640px';
+        if (label) label.textContent = 'Collapse';
+      } else {
+        panel.style.width = '380px';
+        if (label) label.textContent = 'Expand';
+      }
+      setTimeout(() => {
+        if (leafletMap) leafletMap.invalidateSize();
+      }, 150);
+    }
+
+    function initRightPanelResizer() {
+      const panel = document.getElementById('right-filter-panel');
+      const resizer = document.getElementById('right-panel-resizer');
+      if (!panel || !resizer) return;
+
+      let isDragging = false;
+      let startX = 0;
+      let startWidth = 380;
+
+      resizer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startWidth = panel.offsetWidth;
+        document.body.style.cursor = 'ew-resize';
+        document.body.classList.add('select-none');
+        e.preventDefault();
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const delta = startX - e.clientX;
+        const maxWidth = Math.min(window.innerWidth * 0.75, 950);
+        const newWidth = Math.max(290, Math.min(maxWidth, startWidth + delta));
+        panel.style.width = `${newWidth}px`;
+        const label = document.getElementById('label-expand-right-panel');
+        if (label) {
+          label.textContent = newWidth > 500 ? 'Collapse' : 'Expand';
+          isRightPanelExpanded = newWidth > 500;
+        }
+        if (leafletMap) leafletMap.invalidateSize();
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          document.body.style.cursor = '';
+          document.body.classList.remove('select-none');
+          if (leafletMap) leafletMap.invalidateSize();
+        }
+      });
+
+      // Touch events for mobile/tablet touchscreens
+      resizer.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          isDragging = true;
+          startX = e.touches[0].clientX;
+          startWidth = panel.offsetWidth;
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging || e.touches.length !== 1) return;
+        const delta = startX - e.touches[0].clientX;
+        const maxWidth = Math.min(window.innerWidth * 0.75, 950);
+        const newWidth = Math.max(290, Math.min(maxWidth, startWidth + delta));
+        panel.style.width = `${newWidth}px`;
+        if (leafletMap) leafletMap.invalidateSize();
+      }, { passive: true });
+
+      window.addEventListener('touchend', () => {
+        if (isDragging) {
+          isDragging = false;
+          if (leafletMap) leafletMap.invalidateSize();
+        }
+      });
     }
   </script>
 </body>

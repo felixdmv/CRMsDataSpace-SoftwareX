@@ -1353,8 +1353,91 @@ def generate_natural_narrative(
 
 
 # ==============================================================================
-# PIPELINE ORCHESTRATOR
+# PIPELINE ORCHESTRATOR & OPTIONAL CLOUD LLM
 # ==============================================================================
+
+def call_cloud_llm_template(query: str, config: Dict[str, Any], provider: str, api_key: str) -> Optional[Dict[str, Any]]:
+    """
+    Lightweight zero-dependency Cloud LLM caller (Gemini, OpenAI, Claude) via stdlib urllib.
+    Falls back gracefully if network fails or key is invalid.
+    """
+    import urllib.request
+    import urllib.error
+
+    fields = [f.get("key") for f in config.get("filter_fields", [])]
+    system_instruction = (
+        f"You are a GIS conversational filter extractor. Given the user query, extract structured spatial and attribute filters.\n"
+        f"Available custom attribute filter fields: {fields}. Also 'country' (e.g. 'United States', 'Spain') and 'state'.\n"
+        f"Return ONLY valid JSON with keys: 'intent' ('filter_search' or 'generic_qa') and 'filters' (dict mapping field to list of string values or single value)."
+    )
+
+    try:
+        if provider == "gemini":
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+            req_data = {
+                "contents": [{"parts": [{"text": f"{system_instruction}\n\nUser query: {query}"}]}],
+                "generationConfig": {"responseMimeType": "application/json"}
+            }
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(req_data).encode("utf-8"),
+                headers={"Content-Type": "application/json"}
+            )
+            with urllib.request.urlopen(req, timeout=10) as response:
+                res_body = json.loads(response.read().decode("utf-8"))
+                text = res_body["candidates"][0]["content"]["parts"][0]["text"]
+                return json.loads(text)
+
+        elif provider == "openai":
+            url = "https://api.openai.com/v1/chat/completions"
+            req_data = {
+                "model": "gpt-4o",
+                "messages": [
+                    {"role": "system", "content": system_instruction},
+                    {"role": "user", "content": query}
+                ],
+                "response_format": {"type": "json_object"}
+            }
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(req_data).encode("utf-8"),
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {api_key}"
+                }
+            )
+            with urllib.request.urlopen(req, timeout=10) as response:
+                res_body = json.loads(response.read().decode("utf-8"))
+                text = res_body["choices"][0]["message"]["content"]
+                return json.loads(text)
+
+        elif provider == "claude":
+            url = "https://api.anthropic.com/v1/messages"
+            req_data = {
+                "model": "claude-3-5-sonnet-20241022",
+                "max_tokens": 1024,
+                "system": system_instruction,
+                "messages": [{"role": "user", "content": query}]
+            }
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(req_data).encode("utf-8"),
+                headers={
+                    "Content-Type": "application/json",
+                    "x-api-key": api_key,
+                    "anthropic-version": "2023-06-01"
+                }
+            )
+            with urllib.request.urlopen(req, timeout=10) as response:
+                res_body = json.loads(response.read().decode("utf-8"))
+                text = res_body["content"][0]["text"]
+                clean_text = re.sub(r"^```(?:json)?\s*", "", text.strip())
+                clean_text = re.sub(r"\s*```$", "", clean_text.strip())
+                return json.loads(clean_text)
+    except Exception as e:
+        print(f"[Template Cloud LLM Notice] {provider} call did not complete ({e}). Falling back to deterministic rules.")
+        return None
+    return None
 
 def process_query_pipeline(payload: Dict[str, Any]) -> Dict[str, Any]:
     dataset = load_dataset()
@@ -1362,16 +1445,40 @@ def process_query_pipeline(payload: Dict[str, Any]) -> Dict[str, Any]:
 
     query = payload.get("query", "").strip()
     manual_filters = payload.get("manual_filters")
+    provider = str(payload.get("provider", "rules")).lower().strip()
+    api_key = str(payload.get("api_key", "")).strip()
+
+    engine_notice = ""
 
     if manual_filters is not None and isinstance(manual_filters, dict):
         validated_filters = {k: v for k, v in manual_filters.items() if v}
         intent = "filter_search"
         matched_tokens = list(validated_filters.keys())
     elif query:
-        parsed = parse_conversational_query(query, config)
-        validated_filters = parsed["filters"]
-        intent = parsed["intent"]
-        matched_tokens = parsed["matched_tokens"]
+        if provider in ["mistral", "qwen", "llama8b", "phi3"]:
+            engine_notice = f"ℹ️ **Notice:** Local GPU model *{provider}* is not hosted on this standalone Python instance. Execution was automatically resolved via the **Deterministic Rule-Based Engine**.\n\n"
+            parsed = parse_conversational_query(query, config)
+            validated_filters = parsed["filters"]
+            intent = parsed["intent"]
+            matched_tokens = parsed["matched_tokens"]
+        elif provider in ["gemini", "openai", "claude"] and api_key:
+            cloud_res = call_cloud_llm_template(query, config, provider, api_key)
+            if cloud_res and "filters" in cloud_res:
+                validated_filters = cloud_res.get("filters", {})
+                intent = cloud_res.get("intent", "filter_search")
+                matched_tokens = cloud_res.get("matched_tokens", list(validated_filters.keys()))
+                engine_notice = f"✨ *Resolved via Cloud API ({provider.upper()})*\n\n"
+            else:
+                engine_notice = f"⚠️ *Cloud API ({provider.upper()}) call unavailable or returned invalid schema. Gracefully resolved via Deterministic Engine.*\n\n"
+                parsed = parse_conversational_query(query, config)
+                validated_filters = parsed["filters"]
+                intent = parsed["intent"]
+                matched_tokens = parsed["matched_tokens"]
+        else:
+            parsed = parse_conversational_query(query, config)
+            validated_filters = parsed["filters"]
+            intent = parsed["intent"]
+            matched_tokens = parsed["matched_tokens"]
     else:
         validated_filters = {}
         intent = "generic_qa"
@@ -1409,7 +1516,8 @@ def process_query_pipeline(payload: Dict[str, Any]) -> Dict[str, Any]:
             vals = [str(v)]
         active_badges.append({"key": k, "label": label, "values": vals})
 
-    narrative = generate_natural_narrative(query, intent, validated_filters, filtering_results, config)
+    raw_narrative = generate_natural_narrative(query, intent, validated_filters, filtering_results, config)
+    narrative = engine_notice + raw_narrative if engine_notice else raw_narrative
 
     return {
         "query": query,

@@ -647,7 +647,7 @@ def mock_nlu_parse(
             
     # 2. Multi-lingual Commodity Dictionary (including chemical symbols W, Sn, Li, Co, Ni, Cu, Ta)
     comm_map = {
-        "lithium": "lithium", "litio": "lithium", "li": "lithium",
+        "lithium": "lithium", "litio": "lithium", "lithum": "lithium", "li": "lithium",
         "cobalt": "cobalt", "cobalto": "cobalt", "co": "cobalt",
         "tungsten": "tungsten", "wolframio": "tungsten", "wolfram": "tungsten", "tungsteno": "tungsten", "golfranio": "tungsten", "w": "tungsten",
         "rare earth": "rare earth elements", "rare earths": "rare earth elements", "rare earth elements": "rare earth elements",
@@ -848,6 +848,12 @@ def mock_nlu_parse(
     ]
     if any(re.search(pat, prompt_lower) for pat in reset_cues):
         dialogue_action = "reset"
+    elif any(re.search(pat, prompt_lower) for pat in [
+        r'\b(show all facilities|show all|find all facilities|find all|list all facilities|list all)\b',
+        r'\b(ver todas las instalaciones|muestra todas las instalaciones|todas las instalaciones|buscar todas)\b',
+        r'\b(buscar desde cero|nueva consulta)\b'
+    ]):
+        dialogue_action = "new_search"
     else:
         has_existing = False
         if current_filters:
@@ -862,19 +868,22 @@ def mock_nlu_parse(
             remove_cues = [
                 r'\bquita\b', r'\bquitar\b', r'\belimina\b', r'\beliminar\b', r'\bdescarta\b',
                 r'\bsin\b', r'\bexcepto\b', r'\bmenos\b', r'\bya no quiero\b', r'\bborra\b',
-                r'\bremove\b', r'\bexclude\b', r'\bdrop\b', r'\bwithout\b', r'\bexcept\b', r'\bdelete\b'
+                r'\bremove\b', r'\bexclude\b', r'\bdrop\b', r'\bwithout\b', r'\bexcept\b', r'\bdelete\b',
+                r'\bforget\s+about\b', r'\bdiscard\b'
             ]
             refine_cues = [
                 r'\bde es[ao]s\b', r'\bde est[ao]s\b', r'\bde ell[ao]s\b', r'\bde los anteriores\b',
                 r'\bsolo las que\b', r'\bsolo los que\b', r'\b[uú]nicamente\b', r'\bunicamente\b',
                 r'\bque contengan\b', r'\bque tengan\b', r'\bpero solo\b', r'\bde ah[ií] solo\b',
                 r'\bacota\b', r'\bfiltra por\b', r'\bfiltradas por\b', r'\bof those\b', r'\bfrom these\b',
-                r'\bonly (those|that)\b', r'\bnarrow down\b', r'\bjust the ones\b'
+                r'\bonly (those|that|the|ones)\b', r'\bkeep only\b', r'\bfilter to\b', r'\bonly interested in\b',
+                r'\bnarrow down\b', r'\bjust the ones\b', r'\bonly active\b', r'\bonly unrestored\b', r'\bonly restored\b'
             ]
             expand_cues = [
                 r'\by adem[aá]s\b', r'\btambi[eé]n\b', r'\ba[ñn]ade\b', r'\bagrega\b', r'\bsuma\b',
                 r'\by en\b', r'\by las de\b', r'\by los de\b', r'\by cerca de\b', r'\bo en\b',
-                r'\band also\b', r'\badditionally\b', r'\bas well as\b', r'\bplus\b', r'\binclude\b'
+                r'\band also\b', r'\balso add\b', r'\binclude also\b', r'\bshow also\b',
+                r'\badditionally\b', r'\bas well as\b', r'\bplus\b', r'\binclude\b', r'\bwhat about\b'
             ]
             if any(re.search(pat, prompt_lower) for pat in remove_cues):
                 dialogue_action = "remove"

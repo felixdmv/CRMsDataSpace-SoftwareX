@@ -8,83 +8,83 @@
     "vram_gb": 0.0,
     "total_episodes": 30,
     "total_turns": 132,
-    "mean_latency_ms": 0.9,
+    "mean_latency_ms": 1.0,
     "min_latency_ms": 0.0,
-    "max_latency_ms": 2.1,
-    "action_accuracy": 52.27,
-    "exact_state_match_rate": 23.48,
-    "episode_success_rate": 0.0,
-    "macro_f1": 58.5,
-    "country_f1": 57.43,
-    "commodity_f1": 63.78,
-    "facility_f1": 57.78,
-    "status_f1": 55.0,
-    "restored_accuracy": 90.91,
+    "max_latency_ms": 3.1,
+    "action_accuracy": 75.76,
+    "exact_state_match_rate": 45.45,
+    "episode_success_rate": 13.33,
+    "macro_f1": 76.14,
+    "country_f1": 74.32,
+    "commodity_f1": 77.89,
+    "facility_f1": 80.0,
+    "status_f1": 72.34,
+    "restored_accuracy": 95.45,
     "action_breakdown": {
       "new_search": 100.0,
-      "expand": 40.0,
-      "refine": 45.5,
-      "remove": 32.1,
-      "reset": 20.0
+      "expand": 56.7,
+      "refine": 54.5,
+      "remove": 89.3,
+      "reset": 90.0
     },
     "category_metrics": {
       "search": {
         "total_turns": 31,
-        "exact_matches": 22,
-        "exact_match_rate": 71.0,
-        "macro_f1": 86.0
+        "exact_matches": 29,
+        "exact_match_rate": 93.5,
+        "macro_f1": 91.0
       },
       "expansion": {
         "total_turns": 19,
-        "exact_matches": 3,
-        "exact_match_rate": 15.8,
-        "macro_f1": 49.8
+        "exact_matches": 8,
+        "exact_match_rate": 42.1,
+        "macro_f1": 83.0
       },
       "refinement": {
         "total_turns": 30,
-        "exact_matches": 2,
-        "exact_match_rate": 6.7,
-        "macro_f1": 58.8
+        "exact_matches": 7,
+        "exact_match_rate": 23.3,
+        "macro_f1": 68.5
       },
       "removal": {
         "total_turns": 28,
-        "exact_matches": 0,
-        "exact_match_rate": 0.0,
-        "macro_f1": 29.9
+        "exact_matches": 5,
+        "exact_match_rate": 17.9,
+        "macro_f1": 67.6
       },
       "context": {
         "total_turns": 14,
-        "exact_matches": 0,
-        "exact_match_rate": 0.0,
-        "macro_f1": 64.8
+        "exact_matches": 2,
+        "exact_match_rate": 14.3,
+        "macro_f1": 64.5
       },
       "reset": {
         "total_turns": 10,
-        "exact_matches": 4,
-        "exact_match_rate": 40.0,
-        "macro_f1": 0.0
+        "exact_matches": 9,
+        "exact_match_rate": 90.0,
+        "macro_f1": 25.0
       }
     },
     "details": {
       "country": {
-        "p": 89.69,
-        "r": 42.23,
-        "f1": 57.43
+        "p": 98.4,
+        "r": 59.71,
+        "f1": 74.32
       },
       "commodity": {
-        "p": 79.73,
-        "r": 53.15,
-        "f1": 63.78
+        "p": 93.67,
+        "r": 66.67,
+        "f1": 77.89
       },
       "facility": {
-        "p": 76.47,
-        "r": 46.43,
-        "f1": 57.78
+        "p": 98.85,
+        "r": 67.19,
+        "f1": 80.0
       },
       "status": {
-        "p": 91.67,
-        "r": 39.29,
-        "f1": 55.0
+        "p": 89.47,
+        "r": 60.71,
+        "f1": 72.34
       }
     }
   },

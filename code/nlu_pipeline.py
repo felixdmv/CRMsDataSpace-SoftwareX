@@ -194,7 +194,7 @@ JSON Output:
   "needs_rag": false
 }
 
-Example 5 (Multi-turn Sequence - Turn 3 Progressive Refinement):
+Example 5 (Multi-turn Sequence - Turn 3 Progressive Refinement with Conjunction AND):
 Active Filters: {"countries": ["france", "germany"], "storage_facility_types": ["waste dump"]}
 User Query: "de esas, solo las que contengan litio y cobalto"
 JSON Output:
@@ -202,7 +202,30 @@ JSON Output:
   "intent": "filter_search",
   "dialogue_action": "refine",
   "filters": {
-    "commodities": ["lithium", "cobalt"]
+    "commodities": ["lithium", "cobalt"],
+    "commodity_operator": "AND",
+    "commodities_and": ["lithium", "cobalt"],
+    "commodities_or": []
+  },
+  "fulltext": [],
+  "needs_rag": false
+}
+
+Example 5b (Independent Search with Active Filters - Standalone Query):
+Active Filters: {"countries": ["spain", "germany"], "storage_facility_types": ["waste dump"], "project_status": ["active"]}
+User Query: "show all facilities of lithium or cobalt in finland"
+JSON Output:
+{
+  "intent": "filter_search",
+  "dialogue_action": "new_search",
+  "filters": {
+    "countries": ["finland"],
+    "commodities": ["lithium", "cobalt"],
+    "commodity_operator": "OR",
+    "commodities_or": ["lithium", "cobalt"],
+    "commodities_and": [],
+    "storage_facility_types": [],
+    "project_status": []
   },
   "fulltext": [],
   "needs_rag": false
@@ -522,7 +545,7 @@ class Normalizer:
 class Validator:
     """Ensures structure compliance and fills missing default keys."""
     
-    def validate(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def validate(self, data: Dict[str, Any], query: str = "") -> Dict[str, Any]:
         intent = data.get("intent", "filter_search")
         if intent not in ["filter_search", "generic_qa", "hybrid"]:
             intent = "filter_search"
@@ -532,6 +555,24 @@ class Validator:
         comms_and = filters.get("commodities_and", [])
         comms_or = filters.get("commodities_or", [])
         comms = filters.get("commodities", [])
+
+        # If query is provided, verify/infer Boolean operator deterministically
+        if query and len(comms) > 1:
+            q_lower = query.lower()
+            has_or_word = bool(re.search(r'\b(o|or|u|either|por separado|separately)\b', q_lower))
+            has_and_word = bool(re.search(r'\b(y|and|e|both|ambos|ambas|juntos|juntas|together|a la vez|simult[aá]neamente)\b', q_lower))
+            
+            # Check for compound
+            if has_or_word and has_and_word:
+                comm_op = "COMPOUND"
+            elif has_and_word and not has_or_word:
+                comm_op = "AND"
+                comms_and = list(comms)
+                comms_or = []
+            elif has_or_word and not has_and_word:
+                comm_op = "OR"
+                comms_or = list(comms)
+                comms_and = []
 
         # Harmonize commodities if not explicitly split
         if not comms_and and not comms_or and comms:
@@ -656,12 +697,22 @@ class DialogueStateTracker:
                 
         if not has_existing:
             return "new_search"
+
+        # Explicit new search cues that start a brand new search topic or reset scope
+        new_search_cues = [
+            r'\b(show all facilities|show all|find all facilities|find all|list all facilities|list all)\b',
+            r'\b(ver todas las instalaciones|muestra todas las instalaciones|todas las instalaciones|buscar todas)\b',
+            r'\b(buscar desde cero|nueva consulta)\b'
+        ]
+        if any(re.search(pat, q) for pat in new_search_cues):
+            return "new_search"
             
         # 2. Removal / Exclusion
         remove_cues = [
             r'\bquita\b', r'\bquitar\b', r'\belimina\b', r'\beliminar\b', r'\bdescarta\b',
             r'\bsin\b', r'\bexcepto\b', r'\bmenos\b', r'\bya no quiero\b', r'\bborra\b',
-            r'\bremove\b', r'\bexclude\b', r'\bdrop\b', r'\bwithout\b', r'\bexcept\b', r'\bdelete\b'
+            r'\bremove\b', r'\bexclude\b', r'\bdrop\b', r'\bwithout\b', r'\bexcept\b', r'\bdelete\b',
+            r'\bforget\s+about\b', r'\bdiscard\b'
         ]
         if any(re.search(pat, q) for pat in remove_cues):
             return "remove"
@@ -672,7 +723,8 @@ class DialogueStateTracker:
             r'\bsolo las que\b', r'\bsolo los que\b', r'\b[uú]nicamente\b', r'\bunicamente\b',
             r'\bque contengan\b', r'\bque tengan\b', r'\bpero solo\b', r'\bde ah[ií] solo\b',
             r'\bacota\b', r'\bfiltra por\b', r'\bfiltradas por\b', r'\bof those\b', r'\bfrom these\b',
-            r'\bonly (those|that)\b', r'\bnarrow down\b', r'\bjust the ones\b'
+            r'\bonly (those|that|the|ones)\b', r'\bkeep only\b', r'\bfilter to\b', r'\bonly interested in\b',
+            r'\bnarrow down\b', r'\bjust the ones\b', r'\bonly active\b', r'\bonly unrestored\b', r'\bonly restored\b'
         ]
         if any(re.search(pat, q) for pat in refine_cues):
             return "refine"
@@ -681,7 +733,8 @@ class DialogueStateTracker:
         expand_cues = [
             r'\by adem[aá]s\b', r'\btambi[eé]n\b', r'\ba[ñn]ade\b', r'\bagrega\b', r'\bsuma\b',
             r'\by en\b', r'\by las de\b', r'\by los de\b', r'\by cerca de\b', r'\bo en\b',
-            r'\band also\b', r'\badditionally\b', r'\bas well as\b', r'\bplus\b', r'\binclude\b'
+            r'\band also\b', r'\balso add\b', r'\binclude also\b', r'\bshow also\b',
+            r'\badditionally\b', r'\bas well as\b', r'\bplus\b', r'\binclude\b', r'\bwhat about\b'
         ]
         if any(re.search(pat, q) for pat in expand_cues):
             return "expand"
@@ -693,7 +746,8 @@ class DialogueStateTracker:
         current_filters: Dict[str, Any], 
         extracted_filters: Dict[str, Any], 
         action: str,
-        remove_filters: Optional[Dict[str, Any]] = None
+        remove_filters: Optional[Dict[str, Any]] = None,
+        query: str = ""
     ) -> Dict[str, Any]:
         """
         Reconciles previous state with new extracted filters based on dialogue action.
@@ -747,6 +801,11 @@ class DialogueStateTracker:
                 extracted_vals = extracted_filters.get(k, [])
                 if extracted_vals:
                     state[k] = list(extracted_vals)
+            
+            # If query explicitly says 'all facilities' / 'todas las instalaciones', clear facility restriction
+            if query and re.search(r'\b(all facilities|all sites|all deposits|todas las instalaciones|todos los yacimientos)\b', query.lower()):
+                state["storage_facility_types"] = []
+
             if extracted_filters.get("restored") is not None:
                 state["restored"] = extracted_filters.get("restored")
             if extracted_filters.get("commodity_operator"):
@@ -776,7 +835,7 @@ class DialogueStateTracker:
         action: str, 
         current_filters: Dict[str, Any], 
         updated_filters: Dict[str, Any], 
-        is_spanish: bool = True
+        is_spanish: bool = False
     ) -> str:
         """Generates a conversational prefix explaining the state transition."""
         if action == "reset":

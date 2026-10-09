@@ -210,12 +210,12 @@
   <main class="flex-1 flex flex-col overflow-hidden relative">
     
     <!-- Middle: Horizontal split Panels (Chat | Map & Technical) -->
-    <div class="flex-1 flex flex-row overflow-hidden">
+    <div id="main-split-container" class="flex-1 flex flex-row overflow-hidden relative">
       
       <!-- ==========================================
-          LEFT PANEL: CHAT & EVIDENCES (50%)
+          LEFT PANEL: CHAT & EVIDENCES
           ========================================== -->
-      <section class="w-1/2 h-full flex flex-col border-r border-geodark-border bg-[#0a0d18] relative z-10">
+      <section id="left-chat-panel" class="h-full flex flex-col border-r border-geodark-border bg-[#0a0d18] relative z-10 shrink-0" style="width: 50%; min-width: 25%; max-width: 75%;">
         
         <!-- Reviewer Test Bench Bar -->
         <div class="p-3 bg-[#0d1222] border-b border-geodark-border flex flex-col gap-1.5 shadow-sm">
@@ -267,7 +267,7 @@
                 <span>💬 Multi-Turn DST</span>
                 <span class="text-[9px] bg-purple-900/60 px-1 rounded text-purple-300">Step 1/4</span>
               </span>
-              <span class="text-purple-300/80 text-[9.5px] truncate" id="multiturn-demo-sub">"dime escombreras cerca de paris"</span>
+              <span class="text-purple-300/80 text-[9.5px] truncate" id="multiturn-demo-sub">"show waste dumps near Paris"</span>
             </button>
           </div>
         </div>
@@ -391,24 +391,59 @@
 
       </section>
 
+      <!-- Vertical Split Resizer Divider Handle -->
+      <div 
+        id="split-resizer" 
+        class="w-1.5 hover:w-2 bg-slate-800/80 hover:bg-emerald-500 active:bg-emerald-600 cursor-col-resize z-20 shrink-0 transition-all select-none flex items-center justify-center group" 
+        title="Drag horizontally to resize Chat and Map panels"
+      >
+        <div class="h-8 w-0.5 bg-slate-500 group-hover:bg-white rounded-full"></div>
+      </div>
+
       <!-- ==========================================
-          RIGHT PANEL: MAP & INFORMATION (50%)
+          RIGHT PANEL: MAP & INFORMATION
           ========================================== -->
-      <section class="w-1/2 h-full flex flex-col relative">
+      <section id="right-map-panel" class="flex-1 h-full flex flex-col relative min-w-0">
         
         <!-- Leaflet Map Area -->
         <div class="flex-1 relative border-b border-geodark-border overflow-hidden">
           <div id="map" class="w-full h-full bg-[#070a13]"></div>
           
           <!-- Floating Manual Filters Widget on Map Right Side -->
-          <div id="manual-filter-widget" class="absolute top-3 right-3 z-[1000] bg-slate-900/95 border border-slate-800 backdrop-blur-md rounded-xl p-3 shadow-2xl w-72 pointer-events-auto">
-            <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-800">
+          <div 
+            id="manual-filter-widget" 
+            class="absolute top-3 right-3 z-[1000] bg-slate-900/95 border border-slate-800 backdrop-blur-md rounded-xl p-3 shadow-2xl max-h-[85vh] overflow-y-auto pointer-events-auto transition-[width] duration-150"
+            style="width: 350px; min-width: 280px; max-width: 850px;"
+          >
+            <!-- Left-edge drag handle for horizontal resizing -->
+            <div 
+              id="manual-filter-resizer" 
+              class="absolute top-0 bottom-0 -left-1.5 w-3 cursor-ew-resize hover:bg-emerald-500/50 active:bg-emerald-600 transition-colors z-30 flex items-center justify-center group select-none" 
+              title="Drag left or right to expand or shrink the filters panel"
+            >
+              <div class="h-10 w-1 bg-slate-600 group-hover:bg-emerald-400 group-active:bg-white rounded-full transition-colors"></div>
+            </div>
+
+            <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-800 select-none">
               <span class="text-[10.5px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                 🎛️ Spatial & Attribute Filters
               </span>
-              <button type="button" onclick="resetManualFilters()" class="text-[9.5px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-2 py-0.5 rounded transition-all">
-                Reset All
-              </button>
+              <div class="flex items-center gap-1.5">
+                <!-- Width expand toggle button -->
+                <button 
+                  type="button" 
+                  onclick="toggleCrmsFilterWidth()" 
+                  id="btn-crms-expand-filters" 
+                  class="text-[9.5px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-emerald-300 hover:text-white px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1" 
+                  title="Toggle wide view (350px ↔ 640px)"
+                >
+                  <span>↔</span>
+                  <span id="label-crms-expand-filters">Expand</span>
+                </button>
+                <button type="button" onclick="resetManualFilters()" class="text-[9.5px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-2 py-0.5 rounded transition-all">
+                  Reset All
+                </button>
+              </div>
             </div>
             
             <div class="space-y-2.5 text-[10.5px]">
@@ -3612,24 +3647,24 @@
 
     const MULTI_TURN_STEPS = [
       {
-        query: "dime escombreras cerca de paris",
+        query: "show waste dumps near Paris",
         title: "Step 1: Paris Dumps",
-        sub: '"dime escombreras cerca de paris"'
+        sub: '"show waste dumps near Paris"'
       },
       {
-        query: "y ademas las que esten cerca de berlin",
+        query: "and also those near Berlin",
         title: "Step 2: + Berlin (OR)",
-        sub: '"y ademas las que esten cerca de berlin"'
+        sub: '"and also those near Berlin"'
       },
       {
-        query: "de esas, solo las que contengan litio y cobalto",
+        query: "of those, only those containing lithium and cobalt",
         title: "Step 3: Li & Co (AND)",
-        sub: '"de esas, solo las que contengan litio y cobalto"'
+        sub: '"of those, only those containing lithium and cobalt"'
       },
       {
-        query: "ahora quita las de cobalto",
+        query: "now remove the cobalt ones",
         title: "Step 4: Drop Cobalt",
-        sub: '"ahora quita las de cobalto"'
+        sub: '"now remove the cobalt ones"'
       }
     ];
 
@@ -3672,7 +3707,7 @@
       multiTurnDemoStep = 0;
       updateMultiTurnDemoButton();
       updateChatMemoryStatus('reset', chatCurrentFilters, 0);
-      sendChatMessage("empezar de nuevo");
+      sendChatMessage("start over");
     }
 
     function updateChatMemoryStatus(action, filters, historyLen) {
@@ -3909,9 +3944,126 @@
     }
 
     // ==========================================
+    // HORIZONTAL RESIZING: SPLIT PANELS & FILTERS
+    // ==========================================
+    let isCrmsFilterExpanded = false;
+
+    function toggleCrmsFilterWidth() {
+      const widget = document.getElementById('manual-filter-widget');
+      const label = document.getElementById('label-crms-expand-filters');
+      if (!widget) return;
+      isCrmsFilterExpanded = !isCrmsFilterExpanded;
+      if (isCrmsFilterExpanded) {
+        widget.style.width = '640px';
+        if (label) label.textContent = 'Collapse';
+      } else {
+        widget.style.width = '350px';
+        if (label) label.textContent = 'Expand';
+      }
+    }
+
+    function initCrmsFilterResizer() {
+      const widget = document.getElementById('manual-filter-widget');
+      const resizer = document.getElementById('manual-filter-resizer');
+      if (!widget || !resizer) return;
+
+      let isDragging = false;
+      let startX = 0;
+      let startWidth = 350;
+
+      resizer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startWidth = widget.offsetWidth;
+        document.body.style.cursor = 'ew-resize';
+        document.body.classList.add('select-none');
+        e.preventDefault();
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const delta = startX - e.clientX;
+        const maxWidth = Math.min(window.innerWidth * 0.75, 850);
+        const newWidth = Math.max(280, Math.min(maxWidth, startWidth + delta));
+        widget.style.width = `${newWidth}px`;
+        const label = document.getElementById('label-crms-expand-filters');
+        if (label) {
+          label.textContent = newWidth > 500 ? 'Collapse' : 'Expand';
+          isCrmsFilterExpanded = newWidth > 500;
+        }
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          document.body.style.cursor = '';
+          document.body.classList.remove('select-none');
+        }
+      });
+
+      resizer.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          isDragging = true;
+          startX = e.touches[0].clientX;
+          startWidth = widget.offsetWidth;
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging || e.touches.length !== 1) return;
+        const delta = startX - e.touches[0].clientX;
+        const maxWidth = Math.min(window.innerWidth * 0.75, 850);
+        const newWidth = Math.max(280, Math.min(maxWidth, startWidth + delta));
+        widget.style.width = `${newWidth}px`;
+      }, { passive: true });
+
+      window.addEventListener('touchend', () => {
+        if (isDragging) isDragging = false;
+      });
+    }
+
+    function initSplitResizer() {
+      const container = document.getElementById('main-split-container');
+      const leftPanel = document.getElementById('left-chat-panel');
+      const resizer = document.getElementById('split-resizer');
+      if (!container || !leftPanel || !resizer) return;
+
+      let isDragging = false;
+
+      resizer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        document.body.style.cursor = 'col-resize';
+        document.body.classList.add('select-none');
+        e.preventDefault();
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const rect = container.getBoundingClientRect();
+        const newLeftWidth = e.clientX - rect.left;
+        const pct = (newLeftWidth / rect.width) * 100;
+        const clampedPct = Math.max(25, Math.min(75, pct));
+        leftPanel.style.width = `${clampedPct}%`;
+        if (window.map) window.map.invalidateSize();
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          document.body.style.cursor = '';
+          document.body.classList.remove('select-none');
+          if (window.map) window.map.invalidateSize();
+        }
+      });
+    }
+
+    // ==========================================
     // INITIALIZATION & EVENT LISTENERS
     // ==========================================
     window.addEventListener('DOMContentLoaded', async () => {
+      initSplitResizer();
+      initCrmsFilterResizer();
+
       // 0. Detect if running inside Codespaces preview / iframe
       try {
         const isEmbedded = (window.self !== window.top) || (window.parent !== window);
@@ -4571,17 +4723,17 @@
       const isConceptual = /\b(diferencia|qué es|que es|directiva|unfc|jorc|amd|drenaje [aá]cido)\b/i.test(qLower);
 
       if ((isGreeting || isHelp) && action === "new_search" && !hasPriorFilters) {
-        const welcomeText = `👋 **¡Hola! Bienvenido al Asistente Inteligente de CRMsDataSpace.**\n\n` +
-          `Este espacio de datos te permite consultar y analizar **100 instalaciones y depósitos mineros** (balsas de relaves, escombreras y acopios) distribuidos en **12 países de la Unión Europea**.\n\n` +
-          `**¿En qué te puedo ayudar?**\n` +
-          `- 🌍 **Filtrar por país de la UE**: España, Portugal, Francia, Alemania, Suecia, Finlandia, Polonia, Italia, Grecia, Irlanda, Austria, Chequia.\n` +
-          `- 💎 **Materias Primas Críticas (CRMs)**: Litio, Cobalto, Níquel, Wolframio/Tungsteno, Tierras Raras (REE), Cobre, Estaño, Tántalo, etc.\n` +
-          `- 🏗️ **Tipos de depósito**: Balsas de decantación (*ponds*), escombreras de estériles (*waste dumps*), acopios (*stockpiles*).\n` +
-          `- ⚠️ **Estado operativo y ambiental**: Activo, inactivo, en mantenimiento, restaurado, no restaurado o con riesgo de drenaje ácido (AMD).\n\n` +
-          `**Ejemplos recomendados para probar:**\n` +
-          `1. *"Balsas de relaves de litio y cobalto activas en España y Finlandia"*\n` +
-          `2. *"Escombreras de wolframio sin restaurar en Alemania"*\n` +
-          `3. *"Tierras raras (REE) en Suecia y Francia"*`;
+        const welcomeText = `👋 **Hello! Welcome to the CRMsDataSpace Intelligent Assistant.**\n\n` +
+          `This data space allows you to query and inspect **100 mining facilities and deposits** (tailings ponds, waste dumps, and stockpiles) across **12 European Union member states**.\n\n` +
+          `**What can I assist you with?**\n` +
+          `- 🌍 **Filter by EU Country**: Spain, Portugal, France, Germany, Sweden, Finland, Poland, Italy, Greece, Ireland, Austria, Czechia.\n` +
+          `- 💎 **Critical Raw Materials (CRMs)**: Lithium, Cobalt, Nickel, Tungsten, Rare Earth Elements (REE), Copper, Tin, Tantalum, etc.\n` +
+          `- 🏗️ **Storage Facility Types**: Tailings ponds (*ponds*), mine waste dumps (*waste dumps*), mineral stockpiles (*stockpiles*).\n` +
+          `- ⚠️ **Operational & Environmental Status**: Active, inactive, maintenance, restored, unrestored, or acid mine drainage risk (AMD).\n\n` +
+          `**Recommended queries to explore:**\n` +
+          `1. *"Active lithium and cobalt tailings ponds in Spain and Finland"*\n` +
+          `2. *"Unrestored tungsten waste dumps in Germany"*\n` +
+          `3. *"Rare earth elements (REE) facilities in Sweden and France"*`;
         return {
           query: query,
           narrative: welcomeText,
@@ -4734,7 +4886,7 @@
       const unsupportedFound = unsupportedList.filter(u => new RegExp(`\\b${u}\\b`, 'i').test(qLower));
 
       if (unsupportedFound.length > 0 && extracted.countries.length === 0 && action === "new_search") {
-        const outText = `⚠️ **País fuera de cobertura**: Has solicitado instalaciones en **${unsupportedFound.join(', ')}**, pero el espacio de datos europeo CRMsDataSpace está delimitado a **12 países de la Unión Europea** (España, Portugal, Francia, Alemania, Suecia, Finlandia, Polonia, Italia, Grecia, Irlanda, Austria y Chequia).\n\n💡 *Prueba a consultar instalaciones en países como España, Portugal, Alemania o Grecia.*`;
+        const outText = `⚠️ **Country Out of Scope**: You requested facilities in **${unsupportedFound.join(', ')}**, but the European CRMsDataSpace is delimited to **12 European Union countries** (Spain, Portugal, France, Germany, Sweden, Finland, Poland, Italy, Greece, Ireland, Austria, and Czechia).\n\n💡 *Try querying facilities in countries such as Spain, Portugal, Germany, or Greece.*`;
         return {
           query: query,
           narrative: outText,
@@ -4869,21 +5021,21 @@
       // 5. Build Transition Notice & Narrative
       let transitionNotice = "";
       if (action === "reset") {
-        transitionNotice = "🧹 **Filtros de conversación reiniciados** (mostrando el catálogo completo europeo de 100 sitios).\n\n";
+        transitionNotice = "🧹 **Conversation filters reset** (showing full European catalog of 100 facilities).\n\n";
       } else if (action === "expand") {
         const addedCountries = state.countries.filter(c => !prevFilters.countries.includes(c));
         const addedComms = state.commodities.filter(c => !prevFilters.commodities.includes(c));
         const details = [];
-        if (addedCountries.length) details.push(`países: ${addedCountries.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}`);
-        if (addedComms.length) details.push(`minerales: ${addedComms.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}`);
+        if (addedCountries.length) details.push(`countries: ${addedCountries.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}`);
+        if (addedComms.length) details.push(`commodities: ${addedComms.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}`);
         const detailStr = details.length ? ` (${details.join('; ')})` : "";
-        transitionNotice = `🔄 **Ampliando la búsqueda (OR)**${detailStr} y manteniendo los criterios anteriores:\n\n`;
+        transitionNotice = `🔄 **Broadening query (OR)**${detailStr} while retaining prior criteria:\n\n`;
       } else if (action === "refine") {
         const details = [];
-        if (extracted.commodities.length) details.push(`minerales: ${extracted.commodities.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}`);
-        if (extracted.storage_facility_types.length) details.push(`depósitos: ${extracted.storage_facility_types.join(', ')}`);
-        const detailStr = details.length ? ` a ${details.join('; ')}` : "";
-        transitionNotice = `🎯 **Refinando sobre los resultados anteriores (AND)**${detailStr}:\n\n`;
+        if (extracted.commodities.length) details.push(`commodities: ${extracted.commodities.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}`);
+        if (extracted.storage_facility_types.length) details.push(`facility types: ${extracted.storage_facility_types.join(', ')}`);
+        const detailStr = details.length ? ` to ${details.join('; ')}` : "";
+        transitionNotice = `🎯 **Refining active results (AND)**${detailStr}:\n\n`;
       } else if (action === "remove") {
         const dropped = [
           ...prevFilters.countries.filter(c => !state.countries.includes(c)),
@@ -4891,20 +5043,20 @@
           ...prevFilters.storage_facility_types.filter(f => !state.storage_facility_types.includes(f))
         ];
         const droppedStr = dropped.length ? ` **${dropped.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}**` : "";
-        transitionNotice = `✂️ **Excluyendo${droppedStr}** de los criterios activos y conservando el resto de filtros:\n\n`;
+        transitionNotice = `✂️ **Excluding${droppedStr}** from active criteria and preserving remaining filters:\n\n`;
       }
 
       let narrative = transitionNotice;
       if (matched.length === 0) {
-        narrative += `No se han localizado instalaciones mineras que cumplan con la combinación actual de filtros.\n\n` +
-          `💡 *Puedes reiniciar la conversación o ampliar la búsqueda probando con otros países o materias primas.*`;
+        narrative += `No European mining facilities matched the current combination of active filters.\n\n` +
+          `💡 *You can reset the search or broaden your query by testing other countries or commodities.*`;
       } else {
-        narrative += `Localizadas **${matched.length} instalaciones europeas** de materias primas críticas correspondientes a los criterios activos.\n\n**Instalaciones principales:**\n`;
+        narrative += `Located **${matched.length} European critical raw material facilities** matching the active criteria.\n\n**Key Facilities:**\n`;
         matched.slice(0, 3).forEach(s => {
-          narrative += `- **${s.site_name}** (${s.country_name || s.country}): ${s.facility_type || s.storage_facility_label || 'Depósito'} con ${s.commodities_label || (s.commodities || []).join(', ')}. Estado: *${s.status_label || s.project_status}*.\n`;
+          narrative += `- **${s.site_name}** (${s.country_name || s.country}): ${s.facility_type || s.storage_facility_label || 'Facility'} with ${s.commodities_label || (s.commodities || []).join(', ')}. Status: *${s.status_label || s.project_status}*.\n`;
         });
         if (matched.length > 3) {
-          narrative += `\n*...y ${matched.length - 3} instalaciones adicionales visualizadas dinámicamente en el mapa.*`;
+          narrative += `\n*...and ${matched.length - 3} additional facilities dynamically rendered on the map.*`;
         }
       }
 
