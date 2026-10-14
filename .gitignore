@@ -56,6 +56,7 @@ SoftwareX/manuscript/Graphical_abstract_v3.png
 # Legacy code & local working directories
 /legacy_code/
 SoftwareX/
+chatbot/
 
 
 architecture_comparison_report.md

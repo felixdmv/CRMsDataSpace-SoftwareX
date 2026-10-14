@@ -132,13 +132,47 @@ def start_proxy(listen_port):
     finally:
         server_sock.close()
 
+def check_slurm_availability(partition: str) -> None:
+    """Checks whether the requested Slurm partition has GPUs available immediately or is queued."""
+    try:
+        res = subprocess.run(
+            ["srun", "-p", partition, "--gres=gpu:1", "--test-only", "/bin/true"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=5
+        )
+        msg = (res.stderr or "") + (res.stdout or "")
+        match = re.search(r"start at ([\d\-T:]+)", msg)
+        if match:
+            start_str = match.group(1)
+            from datetime import datetime
+            now_str = datetime.now().strftime("%Y-%m-%dT%H")
+            if not start_str.startswith(now_str):
+                print("\n" + "!" * 70)
+                print(f"  [AVISO COLA SLURM] Todas las GPUs en '{partition}' estan ocupadas.")
+                print(f"  Slurm ha puesto el trabajo en cola con inicio estimado: {start_str}")
+                print(f"  * Si tienes acceso a otra particion, puedes especificarla con:")
+                print(f"      python3 run_gpu_app.py --partition gvisResearch")
+                print(f"  * O puedes ejecutar de inmediato en CPU (Modo Standalone / Mock):")
+                print(f"      python3 run_app.py --port 8080")
+                print("!" * 70 + "\n")
+                sys.stdout.flush()
+    except Exception:
+        pass
+
 def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="CRMs Data Space - SoftwareX (Slurm GPU Launcher)")
     parser.add_argument("--port", type=int, default=LOGIN_DEFAULT_PORT, help=f"Puerto en el nodo de login para el navegador (default: {LOGIN_DEFAULT_PORT})")
     parser.add_argument("--compute-port", type=int, default=COMPUTE_DEFAULT_PORT, help=f"Puerto interno en nodo de computo (default: {COMPUTE_DEFAULT_PORT})")
+    parser.add_argument("-p", "--partition", type=str, default=os.environ.get("SLURM_PARTITION", "computo"), help="Particion Slurm para solicitar GPU (default: computo, ej: gvisResearch)")
+    parser.add_argument("-t", "--time", type=str, default=None, help="Tiempo limite para el trabajo Slurm (ej. 04:00:00)")
     args = parser.parse_args()
+
+    # Pre-flight check: is the requested partition congested?
+    check_slurm_availability(args.partition)
 
     # 1. Dynamically find free port on login node
     try:
@@ -160,6 +194,7 @@ def main():
     print("=" * 70)
     print("  CRMs Data Space - SoftwareX Architecture Demonstrator")
     print("  Lanzador GPU Automatizado Slurm + Proxy Inverso TCP")
+    print(f"  Particion Slurm: {args.partition} | GPU: 1x NVIDIA A100")
     print("=" * 70)
     
     # Start proxy thread on the confirmed free port
@@ -197,19 +232,21 @@ def main():
             
     bind_arg = ",".join(sorted(bind_dirs))
 
-    slurm_cmd = [
-        "srun", "-p", "computo", "--gres=gpu:1",
+    slurm_cmd = ["srun", "-p", args.partition, "--gres=gpu:1"]
+    if args.time:
+        slurm_cmd.extend(["-t", args.time])
+    slurm_cmd.extend([
         "apptainer", "exec", "--nv",
         "--home", user_home,
         "--bind", bind_arg,
         "/opt/ohpc/pub/containers/nvidia-pytorch-24.03-uv.sif",
         "python3", "-u", str(run_app_path),
         "--port", str(compute_port)
-    ]
+    ])
     
     current_user = os.environ.get("USER", "usuario")
     print(f"\n[1/3] Proxy TCP activo en puerto {login_port}.")
-    print("[2/3] Solicitando nodo con GPU NVIDIA A100 en Slurm (particion 'computo')...")
+    print(f"[2/3] Solicitando nodo con GPU NVIDIA A100 en Slurm (particion '{args.partition}')...")
     
     env = dict(os.environ)
     env.pop("VSCODE_IPC_HOOK_CLI", None)

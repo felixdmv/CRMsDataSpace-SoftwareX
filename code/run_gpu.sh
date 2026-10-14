@@ -10,6 +10,7 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 fi
 
 PORT=${1:-8081}
+PARTITION=${2:-computo}
 
 # Dynamic include paths for Triton JIT compilation
 for INC in "$CONDA_PREFIX/include/python3.12" "$HOME/.local/include/python3.12" "$HOME/anaconda3/include/python3.12" "$HOME/miniconda3/include/python3.12"; do
@@ -23,7 +24,7 @@ done
 echo "============================================================"
 echo "  CRMs Data Space - SoftwareX en GPU NVIDIA A100"
 echo "============================================================"
-echo "  [INFO] Solicitando 1x GPU NVIDIA A100 a Slurm y preparando proxy..."
+echo "  [INFO] Solicitando 1x GPU NVIDIA A100 en partición '$PARTITION'..."
 echo ""
 echo "  Instrucciones de monitorización y conexión:"
 echo "  - En la interfaz web: verás el indicador 'GPU: NVIDIA A100' y barra VRAM en vivo."
@@ -33,4 +34,4 @@ echo "============================================================"
 # Silence VS Code Remote IPC socket forwarding warning across compute nodes
 unset VSCODE_IPC_HOOK_CLI
 
-exec python3 "$SCRIPT_DIR/run_gpu_app.py" --port "$PORT"
+exec python3 "$SCRIPT_DIR/run_gpu_app.py" --port "$PORT" --partition "$PARTITION" "${@:3}"
