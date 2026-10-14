@@ -132,40 +132,6 @@ def start_proxy(listen_port):
     finally:
         server_sock.close()
 
-def select_best_partition(requested: str = "computo") -> str:
-    """Finds a partition with immediately available GPUs; falls back intelligently if requested is congested."""
-    if requested and requested not in ("auto", "computo"):
-        return requested
-        
-    preferred = requested if requested and requested != "auto" else "computo"
-    candidates = [preferred, "gvisResearch"]
-    
-    for part in candidates:
-        try:
-            res = subprocess.run(
-                ["srun", "-p", part, "--gres=gpu:1", "--test-only", "/bin/true"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                timeout=5
-            )
-            msg = (res.stderr or "") + (res.stdout or "")
-            match = re.search(r"start at ([\d\-T:]+)", msg)
-            if match:
-                start_str = match.group(1)
-                from datetime import datetime
-                now_str = datetime.now().strftime("%Y-%m-%dT%H")
-                if start_str.startswith(now_str):
-                    if part != preferred:
-                        print(f"\n  [AUTO-FALLBACK] La particion '{preferred}' esta ocupada al 100%.")
-                        print(f"  >>> Asignando automaticamente particion activa '{part}' con GPUs NVIDIA A100 libres inmediatas.\n")
-                        sys.stdout.flush()
-                    return part
-        except Exception:
-            continue
-            
-    return preferred
-
 def check_slurm_availability(partition: str) -> None:
     """Checks whether the requested Slurm partition has GPUs available immediately or is queued."""
     try:
@@ -183,14 +149,13 @@ def check_slurm_availability(partition: str) -> None:
             from datetime import datetime
             now_str = datetime.now().strftime("%Y-%m-%dT%H")
             if not start_str.startswith(now_str):
-                print("\n" + "!" * 70)
-                print(f"  [AVISO COLA SLURM] Todas las GPUs en '{partition}' estan ocupadas.")
-                print(f"  Slurm ha puesto el trabajo en cola con inicio estimado: {start_str}")
-                print(f"  * Si tienes acceso a otra particion, puedes especificarla con:")
-                print(f"      python3 run_gpu_app.py --partition gvisResearch")
-                print(f"  * O puedes ejecutar de inmediato en CPU (Modo Standalone / Mock):")
-                print(f"      python3 run_app.py --port 8080")
-                print("!" * 70 + "\n")
+                print("\n" + "!" * 72)
+                print(f"  [AVISO CLUSTER] Todas las 12 GPUs NVIDIA A100 en '{partition}' estan ocupadas.")
+                print(f"  Slurm ha puesto la peticion en cola (inicio estimado: {start_str}).")
+                print("  Para probar la aplicacion DE INMEDIATO sin esperar colas de GPU,")
+                print("  ejecuta el Modo Standalone en CPU en el nodo de login:")
+                print("      python3 run_app.py --port 8080   (o ./run_demo.sh 8080)")
+                print("!" * 72 + "\n")
                 sys.stdout.flush()
     except Exception:
         pass
@@ -201,12 +166,13 @@ def main():
     parser = argparse.ArgumentParser(description="CRMs Data Space - SoftwareX (Slurm GPU Launcher)")
     parser.add_argument("--port", type=int, default=LOGIN_DEFAULT_PORT, help=f"Puerto en el nodo de login para el navegador (default: {LOGIN_DEFAULT_PORT})")
     parser.add_argument("--compute-port", type=int, default=COMPUTE_DEFAULT_PORT, help=f"Puerto interno en nodo de computo (default: {COMPUTE_DEFAULT_PORT})")
-    parser.add_argument("-p", "--partition", type=str, default=os.environ.get("SLURM_PARTITION", "computo"), help="Particion Slurm para solicitar GPU (default: computo, ej: gvisResearch)")
+    parser.add_argument("-p", "--partition", type=str, default=os.environ.get("SLURM_PARTITION", "computo"), help="Particion Slurm para solicitar GPU (default: computo)")
     parser.add_argument("-t", "--time", type=str, default=None, help="Tiempo limite para el trabajo Slurm (ej. 04:00:00)")
     args = parser.parse_args()
 
-    # Intelligent partition selection: auto-fallback if requested partition is full
-    target_partition = select_best_partition(args.partition)
+    target_partition = args.partition
+    # Pre-flight check: is the requested partition congested?
+    check_slurm_availability(target_partition)
 
     # 1. Dynamically find free port on login node
     try:
