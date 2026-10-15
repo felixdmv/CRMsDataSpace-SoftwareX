@@ -107,13 +107,26 @@ def get_model_state() -> Dict[str, Any]:
             state["vram_total_gb"] = round(torch.cuda.get_device_properties(0).total_memory / (1024**3), 2)
             state["cuda_available"] = True
             state["device_name"] = torch.cuda.get_device_name(0)
+            state["acceleration"] = "cuda"
+        elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+            state["cuda_available"] = True
+            state["device_name"] = "Apple Silicon GPU (Metal MPS)"
+            state["acceleration"] = "mps"
+            state["vram_gb"] = 0.0
+            state["vram_total_gb"] = 0.0
         else:
             state["cuda_available"] = False
             state["device_name"] = "No GPU (CPU Mode)"
+            state["acceleration"] = "cpu"
     except Exception:
         state["cuda_available"] = False
+        state["device_name"] = "No GPU (CPU Mode)"
+        state["acceleration"] = "cpu"
     state["cached_models"] = list(LOCAL_MODELS_CACHE.keys())
     return state
+
+def _resolve_model_path(snapshot_path: str, default_repo: str) -> str:
+    return snapshot_path if os.path.exists(snapshot_path) else default_repo
 
 MODEL_REPO_MAP = {
     "qwen": "Qwen/Qwen2.5-7B-Instruct",
@@ -122,13 +135,13 @@ MODEL_REPO_MAP = {
     "llama": "unsloth/Llama-3.2-3B-Instruct",
     "llama3": "unsloth/Llama-3.2-3B-Instruct",
     "llama-3.2": "unsloth/Llama-3.2-3B-Instruct",
-    "llama8b": "/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1",
-    "llama-8b": "/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1",
-    "llama3.1": "/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1",
-    "llama-3.1": "/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1",
-    "mistral": "/home/felix.demiguel/.cache/huggingface/hub/models--mistralai--Mistral-7B-Instruct-v0.2/snapshots/63a8b081895390a26e140280378bc85ec8bce07a",
-    "mistral7b": "/home/felix.demiguel/.cache/huggingface/hub/models--mistralai--Mistral-7B-Instruct-v0.2/snapshots/63a8b081895390a26e140280378bc85ec8bce07a",
-    "mistral-7b": "/home/felix.demiguel/.cache/huggingface/hub/models--mistralai--Mistral-7B-Instruct-v0.2/snapshots/63a8b081895390a26e140280378bc85ec8bce07a",
+    "llama8b": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1", "unsloth/Meta-Llama-3.1-8B-Instruct"),
+    "llama-8b": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1", "unsloth/Meta-Llama-3.1-8B-Instruct"),
+    "llama3.1": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1", "unsloth/Meta-Llama-3.1-8B-Instruct"),
+    "llama-3.1": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1", "unsloth/Meta-Llama-3.1-8B-Instruct"),
+    "mistral": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--mistralai--Mistral-7B-Instruct-v0.2/snapshots/63a8b081895390a26e140280378bc85ec8bce07a", "mistralai/Mistral-7B-Instruct-v0.2"),
+    "mistral7b": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--mistralai--Mistral-7B-Instruct-v0.2/snapshots/63a8b081895390a26e140280378bc85ec8bce07a", "mistralai/Mistral-7B-Instruct-v0.2"),
+    "mistral-7b": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--mistralai--Mistral-7B-Instruct-v0.2/snapshots/63a8b081895390a26e140280378bc85ec8bce07a", "mistralai/Mistral-7B-Instruct-v0.2"),
     "gemma": "google/gemma-2-2b-it",
     "gemma2": "google/gemma-2-2b-it",
     "deepseek": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",

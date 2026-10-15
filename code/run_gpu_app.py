@@ -171,6 +171,19 @@ def main():
     args = parser.parse_args()
 
     target_partition = args.partition
+
+    import shutil
+    if not shutil.which("srun"):
+        print("[INFO] Gestor de colas Slurm ('srun') no detectado en este sistema.")
+        print("[INFO] Ejecutando servidor directamente en host local con autodetección de GPU/CPU...")
+        base_dir = Path(__file__).resolve().parent
+        code_dir = base_dir / "code" if (base_dir / "code" / "run_app.py").exists() else base_dir
+        if str(code_dir) not in sys.path:
+            sys.path.insert(0, str(code_dir))
+        from run_app import run_server
+        run_server(port=args.port)
+        return
+
     # Pre-flight check: is the requested partition congested?
     check_slurm_availability(target_partition)
 

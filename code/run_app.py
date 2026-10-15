@@ -248,7 +248,11 @@ def run_server(port=PORT, host="0.0.0.0"):
     try:
         import torch
         if torch.cuda.is_available():
-            engine_status = f"Local GPU Acceleration ({torch.cuda.get_device_name(0)})"
+            dev_name = torch.cuda.get_device_name(0)
+            total_vram = round(torch.cuda.get_device_properties(0).total_memory / (1024**3), 1)
+            engine_status = f"Local GPU Acceleration ({dev_name} | {total_vram} GB VRAM)"
+        elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+            engine_status = "Local GPU Acceleration (Apple Silicon Metal / MPS)"
     except Exception:
         pass
 

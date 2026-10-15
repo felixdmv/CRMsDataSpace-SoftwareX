@@ -45,6 +45,16 @@ echo "============================================================"
 # Silence VS Code Remote IPC socket forwarding warning across compute nodes
 unset VSCODE_IPC_HOOK_CLI
 
+if ! command -v srun &> /dev/null; then
+    echo "============================================================"
+    echo "  CRMs Data Space - Servidor con Aceleración GPU Local"
+    echo "============================================================"
+    echo "  [INFO] Entorno sin gestor Slurm detectado (estación de trabajo / máquina local)."
+    echo "  [INFO] Iniciando backend en puerto $PORT con autodetección directa de GPU..."
+    echo "============================================================"
+    exec python3 "$SCRIPT_DIR/run_app.py" --port "$PORT"
+fi
+
 if [ -n "$PARTITION" ]; then
     exec python3 "$SCRIPT_DIR/run_gpu_app.py" --port "$PORT" --partition "$PARTITION"
 else
