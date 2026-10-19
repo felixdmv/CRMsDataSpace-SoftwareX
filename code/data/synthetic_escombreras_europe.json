@@ -1298,7 +1298,7 @@
   },
   {
     "id": "EU-CRM-045",
-    "site_name": "North Karelia Tantalum & Niobium Waste Dump #45",
+    "site_name": "North Karelia Lithium & Cobalt Waste Dump #45",
     "country": "finland",
     "country_name": "Finland",
     "region": "north karelia",
@@ -1308,20 +1308,21 @@
     "longitude": 28.6707,
     "company": "Nordic Minerals Ltd",
     "commodities": [
-      "tantalum"
+      "lithium",
+      "cobalt"
     ],
-    "commodities_label": "Tantalum & Niobium",
+    "commodities_label": "Lithium, Cobalt",
     "storage_facility_type": "waste dump",
     "storage_facility_label": "Waste Dump / Escombrera",
-    "material_type": "sludge",
+    "material_type": "tailings",
     "project_status": "active",
     "restored": true,
     "environmental_flags": [],
     "tonnage_mt": 2.94,
-    "estimated_grade": "517 ppm",
+    "estimated_grade": "0.85% Li / 0.12% Co",
     "unfc_code": "E1-F3-G1",
-    "description": "Synthetic EU CRM storage site located in North Karelia, Finland. Contains estimated 2.94 MT of sludge rich in Tantalum & Niobium with average grade of 517 ppm. Managed by Nordic Minerals Ltd under active status.",
-    "technical_summary": "Characterization tests confirm re-processing potential for Tantalum & Niobium. Geo-environmental monitoring indicates status as 'active'. Facilities include Waste Dump / Escombrera with UNFC classification E2-F3-G1."
+    "description": "Synthetic EU CRM storage site located in North Karelia, Finland. Contains estimated 2.94 MT of tailings rich in Lithium and Cobalt with average grade of 0.85% Li / 0.12% Co. Managed by Nordic Minerals Ltd under active status.",
+    "technical_summary": "Characterization tests confirm re-processing potential for Lithium and Cobalt. Geo-environmental monitoring indicates status as 'active'. Facilities include Waste Dump / Escombrera with UNFC classification E1-F3-G1."
   },
   {
     "id": "EU-CRM-046",
@@ -2808,7 +2809,7 @@
   },
   {
     "id": "EU-CRM-097",
-    "site_name": "Extremadura Copper Waste Dump #97",
+    "site_name": "Extremadura Lithium & Cobalt Waste Dump #97",
     "country": "spain",
     "country_name": "Spain",
     "region": "extremadura",
@@ -2816,24 +2817,25 @@
     "location": "39.0998,-5.3921",
     "latitude": 39.0998,
     "longitude": -5.3921,
-    "company": "Trans-European Raw Materials GmbH",
+    "company": "Iberian Critical Minerals SA",
     "commodities": [
-      "copper"
+      "lithium",
+      "cobalt"
     ],
-    "commodities_label": "Copper",
+    "commodities_label": "Lithium, Cobalt",
     "storage_facility_type": "waste dump",
     "storage_facility_label": "Waste Dump / Escombrera",
-    "material_type": "sludge",
-    "project_status": "development",
+    "material_type": "tailings",
+    "project_status": "active",
     "restored": false,
     "environmental_flags": [
       "high stability risk"
     ],
     "tonnage_mt": 14.24,
-    "estimated_grade": "1.8%",
-    "unfc_code": "E1-F2-G3",
-    "description": "Synthetic EU CRM storage site located in Extremadura, Spain. Contains estimated 14.24 MT of sludge rich in Copper with average grade of 1.8%. Managed by Trans-European Raw Materials GmbH under development status.",
-    "technical_summary": "Characterization tests confirm re-processing potential for Copper. Geo-environmental monitoring indicates status as 'development'. Facilities include Waste Dump / Escombrera with UNFC classification E2-F3-G2."
+    "estimated_grade": "1.2% Li / 0.15% Co",
+    "unfc_code": "E1-F2-G1",
+    "description": "Synthetic EU CRM storage site located in Extremadura, Spain. Contains estimated 14.24 MT of tailings rich in Lithium and Cobalt with average grade of 1.2% Li / 0.15% Co. Managed by Iberian Critical Minerals SA under active status.",
+    "technical_summary": "Characterization tests confirm re-processing potential for Lithium and Cobalt. Geo-environmental monitoring indicates status as 'active'. Facilities include Waste Dump / Escombrera with UNFC classification E1-F2-G1."
   },
   {
     "id": "EU-CRM-098",
