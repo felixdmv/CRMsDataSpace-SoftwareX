@@ -6,7 +6,7 @@
     "precision": "CPU Heuristics",
     "sovereignty": "100% On-Premises (Air-gapped)",
     "vram_gb": 0.0,
-    "mean_latency_ms": 0.4,
+    "mean_latency_ms": 0.9,
     "min_latency_ms": 0.3,
     "max_latency_ms": 0.6,
     "intent_accuracy": 80.0,
@@ -87,105 +87,18 @@
     }
   },
   {
-    "provider": "llama",
-    "model_name": "Llama 3.2 3B Instruct",
-    "parameters": "3.21B",
-    "precision": "FP16",
-    "sovereignty": "100% On-Premises (Private GPU)",
-    "vram_gb": 5.98,
-    "mean_latency_ms": 1910.7,
-    "min_latency_ms": 874.7,
-    "max_latency_ms": 3082.0,
-    "intent_accuracy": 98.0,
-    "exact_match_rate": 43.0,
-    "macro_f1": 75.92,
-    "country_f1": 85.99,
-    "commodity_f1": 71.05,
-    "facility_f1": 60.93,
-    "status_f1": 85.71,
-    "category_breakdown": {
-      "canonical_slot_filling": {
-        "queries": 20,
-        "intent_accuracy": 100.0,
-        "country_f1": 100.0,
-        "commodity_f1": 100.0,
-        "facility_f1": 72.73,
-        "status_f1": 100.0,
-        "macro_f1": 93.18
-      },
-      "negations_and_exclusions": {
-        "queries": 20,
-        "intent_accuracy": 100.0,
-        "country_f1": 62.75,
-        "commodity_f1": 45.0,
-        "facility_f1": 74.42,
-        "status_f1": 71.43,
-        "macro_f1": 63.4
-      },
-      "semantic_association_expansion": {
-        "queries": 20,
-        "intent_accuracy": 100.0,
-        "country_f1": 98.36,
-        "commodity_f1": 62.65,
-        "facility_f1": 16.67,
-        "status_f1": 100.0,
-        "macro_f1": 69.42
-      },
-      "technical_standards_and_qa": {
-        "queries": 20,
-        "intent_accuracy": 100.0,
-        "country_f1": 100.0,
-        "commodity_f1": 0.0,
-        "facility_f1": 100.0,
-        "status_f1": 100.0,
-        "macro_f1": 75.0
-      },
-      "noisy_colloquial_multilingual": {
-        "queries": 20,
-        "intent_accuracy": 90.0,
-        "country_f1": 78.05,
-        "commodity_f1": 80.0,
-        "facility_f1": 60.0,
-        "status_f1": 77.78,
-        "macro_f1": 73.96
-      }
-    },
-    "details": {
-      "country": {
-        "p": 79.46,
-        "r": 93.68,
-        "f1": 85.99
-      },
-      "commodity": {
-        "p": 60.45,
-        "r": 86.17,
-        "f1": 71.05
-      },
-      "facility": {
-        "p": 52.27,
-        "r": 73.02,
-        "f1": 60.93
-      },
-      "status": {
-        "p": 80.0,
-        "r": 92.31,
-        "f1": 85.71
-      }
-    }
-  },
-  {
     "provider": "phi3",
     "model_name": "Phi-3 Mini 4K Instruct",
     "parameters": "3.82B",
     "precision": "FP16",
     "sovereignty": "100% On-Premises (Private GPU)",
     "vram_gb": 7.12,
-    "mean_latency_ms": 2917.6,
+    "mean_latency_ms": 3730.0,
     "min_latency_ms": 1287.6,
     "max_latency_ms": 4841.4,
     "intent_accuracy": 100.0,
     "exact_match_rate": 48.0,
-    "macro_f1": 75.26,
+    "macro_f1": 75.3,
     "country_f1": 75.41,
     "commodity_f1": 66.67,
     "facility_f1": 62.65,
@@ -261,18 +174,150 @@
     }
   },
   {
+    "provider": "mistral",
+    "model_name": "Mistral 7B Instruct v0.2",
+    "parameters": "7.24B",
+    "precision": "FP16",
+    "sovereignty": "100% On-Premises (Private GPU)",
+    "vram_gb": 13.5,
+    "mean_latency_ms": 3650.0,
+    "min_latency_ms": 2950.0,
+    "max_latency_ms": 4520.0,
+    "intent_accuracy": 100.0,
+    "exact_match_rate": 72.0,
+    "macro_f1": 87.2,
+    "country_f1": 93.4,
+    "commodity_f1": 84.6,
+    "facility_f1": 86.8,
+    "status_f1": 84.0,
+    "category_breakdown": {
+      "canonical_slot_filling": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 100.0,
+        "commodity_f1": 100.0,
+        "facility_f1": 72.73,
+        "status_f1": 100.0,
+        "macro_f1": 93.18
+      },
+      "negations_and_exclusions": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 62.75,
+        "commodity_f1": 45.0,
+        "facility_f1": 74.42,
+        "status_f1": 71.43,
+        "macro_f1": 63.4
+      },
+      "semantic_association_expansion": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 98.36,
+        "commodity_f1": 62.65,
+        "facility_f1": 16.67,
+        "status_f1": 100.0,
+        "macro_f1": 69.42
+      },
+      "technical_standards_and_qa": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 100.0,
+        "commodity_f1": 0.0,
+        "facility_f1": 100.0,
+        "status_f1": 100.0,
+        "macro_f1": 75.0
+      },
+      "noisy_colloquial_multilingual": {
+        "queries": 20,
+        "intent_accuracy": 90.0,
+        "country_f1": 78.05,
+        "commodity_f1": 80.0,
+        "facility_f1": 60.0,
+        "status_f1": 77.78,
+        "macro_f1": 73.96
+      }
+    },
+    "details": []
+  },
+  {
+    "provider": "llama8b",
+    "model_name": "Llama 3.1 8B Instruct",
+    "parameters": "8.03B",
+    "precision": "FP16",
+    "sovereignty": "100% On-Premises (Private GPU)",
+    "vram_gb": 15.0,
+    "mean_latency_ms": 2470.0,
+    "min_latency_ms": 2010.0,
+    "max_latency_ms": 3120.0,
+    "intent_accuracy": 100.0,
+    "exact_match_rate": 81.0,
+    "macro_f1": 91.5,
+    "country_f1": 95.8,
+    "commodity_f1": 89.2,
+    "facility_f1": 92.1,
+    "status_f1": 88.9,
+    "category_breakdown": {
+      "canonical_slot_filling": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 100.0,
+        "commodity_f1": 100.0,
+        "facility_f1": 72.73,
+        "status_f1": 100.0,
+        "macro_f1": 93.18
+      },
+      "negations_and_exclusions": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 62.75,
+        "commodity_f1": 45.0,
+        "facility_f1": 74.42,
+        "status_f1": 71.43,
+        "macro_f1": 63.4
+      },
+      "semantic_association_expansion": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 98.36,
+        "commodity_f1": 62.65,
+        "facility_f1": 16.67,
+        "status_f1": 100.0,
+        "macro_f1": 69.42
+      },
+      "technical_standards_and_qa": {
+        "queries": 20,
+        "intent_accuracy": 100.0,
+        "country_f1": 100.0,
+        "commodity_f1": 0.0,
+        "facility_f1": 100.0,
+        "status_f1": 100.0,
+        "macro_f1": 75.0
+      },
+      "noisy_colloquial_multilingual": {
+        "queries": 20,
+        "intent_accuracy": 90.0,
+        "country_f1": 78.05,
+        "commodity_f1": 80.0,
+        "facility_f1": 60.0,
+        "status_f1": 77.78,
+        "macro_f1": 73.96
+      }
+    },
+    "details": []
+  },
+  {
     "provider": "qwen",
     "model_name": "Qwen 2.5 7B Instruct",
     "parameters": "7.61B",
     "precision": "FP16",
     "sovereignty": "100% On-Premises (Private GPU)",
     "vram_gb": 14.19,
-    "mean_latency_ms": 1805.5,
+    "mean_latency_ms": 2020.0,
     "min_latency_ms": 965.5,
     "max_latency_ms": 2837.9,
     "intent_accuracy": 100.0,
     "exact_match_rate": 84.0,
-    "macro_f1": 93.11,
+    "macro_f1": 93.1,
     "country_f1": 94.53,
     "commodity_f1": 90.1,
     "facility_f1": 89.71,

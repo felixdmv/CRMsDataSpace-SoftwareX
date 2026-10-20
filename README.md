@@ -3,14 +3,14 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python: 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
 [![SoftwareX](https://img.shields.io/badge/Elsevier-SoftwareX-orange.svg)](https://www.sciencedirect.com/journal/softwarex)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/gicap-ubu/nlu-solr-gis)
 [![Reviewer Tests: 100% Passing](https://img.shields.io/badge/Reviewer_Tests-100%25_Passing-brightgreen.svg)]()
 [![Data Sovereignty: EU Compliant](https://img.shields.io/badge/Data_Sovereignty-100%25_On--Premises-blueviolet.svg)]()
 
 > **Reference software repository and replication package for the Elsevier *SoftwareX* journal article:**  
 > **"A Modular NLU-Solr Architecture with Dynamic GIS Visual Synchronization for Conversational Spatial Search"**  
-> *Félix de Miguel*, *Daniel Urda*, *Nuño Basurto*  
-> **Grupo de Inteligencia Computacional Aplicada (GICAP)**, Departamento de Digitalización, Escuela Politécnica Superior, Universidad de Burgos, Spain.
+> *Félix de Miguel*, *Miguel Manzanedo*, *Raquel Redondo*, *Alicja Krzemień*, *Nuño Basurto*, *Daniel Urda*  
+> **Grupo de Inteligencia Computacional Aplicada (GICAP)**, Universidad de Burgos, Spain & **Central Mining Institute---National Research Institute**, Poland.
 
 ---
 
@@ -49,7 +49,7 @@ Reviewers can access and evaluate the software through three complementary modal
 
 Reviewers can launch the entire replication environment in the cloud with zero setup. Clicking the button provisions a single unified Codespace running both applications simultaneously:
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/gicap-ubu/nlu-solr-gis)
 
 Both web applications are automatically orchestrated in parallel in the background:
 - 🇪🇺 **Port 8080**: **CRMsDataSpace WebApp** — Official European Critical Raw Materials demonstrator (100 facilities across 15 countries, multi-model NLU).
@@ -57,7 +57,7 @@ Both web applications are automatically orchestrated in parallel in the backgrou
 
 > **Note on Automatic Port Forwarding**: Ports `8080` and `8085` forward automatically upon container startup and will open in separate browser tabs.
 >
-> **Note on Direct Web Access**: If you prefer an instant zero-editor web preview without VS Code, you can also explore the static deployment directly at: **[https://felixdmv.github.io/CRMsDataSpace-SoftwareX/](https://felixdmv.github.io/CRMsDataSpace-SoftwareX/)**.
+> **Note on Direct Web Access**: If you prefer an instant zero-editor web preview without VS Code, you can also explore the static deployment directly at: **[https://gicap-ubu.github.io/nlu-solr-gis/](https://gicap-ubu.github.io/nlu-solr-gis/)**.
 
 ---
 
@@ -79,8 +79,8 @@ For reviewers running on their personal laptop or desktop (Windows, macOS, Linux
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/felixdmv/CRMsDataSpace-SoftwareX.git
-cd CRMsDataSpace-SoftwareX
+git clone https://github.com/gicap-ubu/nlu-solr-gis.git
+cd nlu-solr-gis
 
 # 2. Launch the standalone application (zero external dependencies)
 python run_app.py
@@ -182,7 +182,7 @@ python code/evaluation/benchmark_conversational_dst.py --models mock phi3 mistra
 ## 📁 Repository Structure
 
 ```
-CRMsDataSpace-SoftwareX/
+nlu-solr-gis/
 ├── .devcontainer/
 │   └── devcontainer.json           # Unified Codespaces configuration (auto-forwards 8080 & 8085)
 ├── run_codespace.py                 # Codespaces background orchestrator for both web applications
@@ -271,7 +271,7 @@ If you find this software architecture or benchmark useful in your research, ple
 ```bibtex
 @article{demiguel2026modular,
   title={A Modular {NLU-Solr} Architecture with Dynamic {GIS} Visual Synchronization for Conversational Spatial Search},
-  author={de Miguel, F{\'e}lix and Urda, Daniel and Basurto, Nu{\~n}o},
+  author={de Miguel, F{\'e}lix and Manzanedo, Miguel and Redondo, Raquel and Krzemie{\'n}, Alicja and Basurto, Nu{\~n}o and Urda, Daniel},
   journal={SoftwareX},
   year={2026},
   publisher={Elsevier}

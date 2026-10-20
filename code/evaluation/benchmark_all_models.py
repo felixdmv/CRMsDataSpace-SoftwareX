@@ -37,26 +37,26 @@ MODEL_METADATA = {
         "precision": "CPU Heuristics",
         "sovereignty": "100% On-Premises (Air-gapped)"
     },
-    "llama": {
-        "name": "Llama 3.2 3B Instruct",
-        "params": "3.21B",
-        "precision": "FP16",
-        "sovereignty": "100% On-Premises (Private GPU)"
-    },
     "phi3": {
         "name": "Phi-3 Mini 4K Instruct",
         "params": "3.82B",
         "precision": "FP16",
         "sovereignty": "100% On-Premises (Private GPU)"
     },
-    "qwen": {
-        "name": "Qwen 2.5 7B Instruct",
-        "params": "7.61B",
+    "mistral": {
+        "name": "Mistral 7B Instruct v0.2",
+        "params": "7.24B",
         "precision": "FP16",
         "sovereignty": "100% On-Premises (Private GPU)"
     },
-    "deepseek": {
-        "name": "DeepSeek R1 Distill Qwen 7B",
+    "llama8b": {
+        "name": "Llama 3.1 8B Instruct",
+        "params": "8.03B",
+        "precision": "FP16",
+        "sovereignty": "100% On-Premises (Private GPU)"
+    },
+    "qwen": {
+        "name": "Qwen 2.5 7B Instruct",
         "params": "7.61B",
         "precision": "FP16",
         "sovereignty": "100% On-Premises (Private GPU)"
@@ -285,8 +285,8 @@ def generate_latex_table(results: List[Dict[str, Any]]) -> str:
 
 def main():
     parser = argparse.ArgumentParser(description="SoftwareX LLM Model Evaluation Benchmark")
-    parser.add_argument("--models", nargs="+", default=["mock", "llama", "phi3", "qwen", "deepseek"],
-                        help="List of model keys to benchmark: mock, llama, phi3, qwen, deepseek")
+    parser.add_argument("--models", nargs="+", default=["mock", "phi3", "mistral", "llama8b", "qwen"],
+                        help="List of model keys to benchmark: mock, phi3, mistral, llama8b, qwen")
     parser.add_argument("--num_queries", type=int, default=100,
                         help="Number of queries to evaluate from test_battery_100.json (default: 100)")
     args = parser.parse_args()
@@ -321,8 +321,8 @@ def main():
         if entry:
             existing_map[entry["provider"]] = entry
 
-    # Preserve consistent order: mock, llama, phi3, qwen, deepseek
-    order = ["mock", "llama", "phi3", "qwen", "deepseek"]
+    # Preserve consistent order: mock, phi3, mistral, llama8b, qwen
+    order = ["mock", "phi3", "mistral", "llama8b", "qwen"]
     benchmark_results = []
     for k in order:
         if k in existing_map:

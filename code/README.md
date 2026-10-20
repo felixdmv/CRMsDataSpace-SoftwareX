@@ -51,8 +51,8 @@ The software is engineered for **immediate reviewer reproducibility**. No extern
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/felixdmv/CRMsDataSpace-SoftwareX.git
-   cd CRMsDataSpace-SoftwareX
+   git clone https://github.com/gicap-ubu/nlu-solr-gis.git
+   cd nlu-solr-gis
    ```
 
 2. **Launch the Standalone Web Server**:
@@ -116,7 +116,7 @@ This executes the automated test suite across 100 domain queries in `evaluation/
 ## 📁 Repository Structure
 
 ```
-CRMsDataSpace-SoftwareX/
+nlu-solr-gis/
 ├── data/
 │   └── synthetic_escombreras_europe.json   # 100 Synthetic European facilities dataset
 ├── evaluation/

@@ -3,12 +3,13 @@
 
 [![Python: 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/felixdmv/CRMsDataSpace-SoftwareX)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/gicap-ubu/nlu-solr-gis)
 [![Zero External Dependencies](https://img.shields.io/badge/Dependencies-Zero%20External%20(Stdlib)-brightgreen.svg)]()
 
 > **Companion Template for the SoftwareX Article:**  
 > *"A Modular NLU-Solr Architecture with Dynamic GIS Visual Synchronization for Conversational Spatial Search"*  
-> *Félix de Miguel, Daniel Urda, Nuño Basurto* — **Grupo de Inteligencia Computacional Aplicada (GICAP)**, Universidad de Burgos, Spain.
+> *Félix de Miguel*, *Miguel Manzanedo*, *Raquel Redondo*, *Alicja Krzemień*, *Nuño Basurto*, *Daniel Urda*  
+> **Grupo de Inteligencia Computacional Aplicada (GICAP)**, Universidad de Burgos, Spain & **Central Mining Institute---National Research Institute**, Poland.
 
 ---
 
