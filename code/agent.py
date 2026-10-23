@@ -276,26 +276,27 @@ def build_generic_qa_response(query: str, validated: Dict[str, Any]) -> str:
             "💡 *Search for 'unrestored facilities with acid mine drainage potential' to explore affected sites.*"
         )
 
-    # 6. Fallback General QA / Clarification
+    # 6. Fallback General QA / Clarification (Out of Domain)
     if is_spanish:
         return (
-            "ℹ️ **Información sobre el European CRMs Data Space:**\n\n"
-            "El sistema está listo para procesar consultas sobre materias primas críticas europeas.\n\n"
-            "Para realizar una búsqueda cartográfica, especifica al menos un **país de la UE** (ej. España, Finlandia, Alemania), "
-            "un **metal estratégico** (ej. litio, cobalto, wolframio, tierras raras) o una **tipología de instalación** (balsas de relaves, escombreras).\n\n"
-            "**Ejemplos recomendados:**\n"
-            "- *\"Balsas de relaves con litio en Portugal\"*\n"
-            "- *\"Escombreras inactivas con wolframio en España\"*\n"
-            "- *\"Instalaciones con tierras raras en Suecia y Francia\"*"
+            "⚠️ **Consulta fuera de ámbito / contexto no minero**:\n\n"
+            "Esta plataforma es un espacio de datos especializado exclusivamente en **Materias Primas Críticas (CRMs)** "
+            "y depósitos de residuos mineros en **12 países de la Unión Europea**.\n\n"
+            "No se ha ejecutado ninguna consulta sobre el catálogo porque la pregunta no corresponde a este dominio temático.\n\n"
+            "💡 **Puedes consultar por:**\n"
+            "- 🌍 **Países UE**: España, Portugal, Francia, Alemania, Suecia, Finlandia, Polonia, Italia, Grecia, Irlanda, Austria o Chequia.\n"
+            "- 💎 **Metales estratégicos**: Litio, Cobalto, Níquel, Wolframio/Tungsteno, Tierras Raras (REE), Cobre, Estaño, etc.\n"
+            "- 🏗️ **Tipologías de depósito**: Balsas de relaves (*tailings ponds*), escombreras (*waste dumps*) o acopios (*stockpiles*)."
         )
     return (
-        "ℹ️ **European CRMs Data Space System Notice:**\n\n"
-        "To explore the dataset on the Leaflet GIS map, please specify criteria such as an **EU Country** (e.g. Spain, Germany, Sweden), "
-        "a **CRM Metal** (e.g. lithium, cobalt, tungsten, rare earths), or a **Facility Type** (tailings ponds, waste dumps).\n\n"
-        "**Recommended Queries:**\n"
-        "- *\"Active lithium tailings ponds in Spain\"*\n"
-        "- *\"Unrestored tungsten waste dumps in Germany\"*\n"
-        "- *\"Rare Earth Elements facilities in Sweden and France\"*"
+        "⚠️ **Out-of-Scope Query / Non-mining Context**:\n\n"
+        "This platform is dedicated exclusively to the **European Critical Raw Materials (CRMs) Data Space** "
+        "and extractive waste facilities across **12 European Union Member States**.\n\n"
+        "No database search was executed because the question is outside the scope of this repository.\n\n"
+        "💡 **You can query by:**\n"
+        "- 🌍 **EU Countries**: Spain, Portugal, France, Germany, Sweden, Finland, Poland, Italy, Greece, Ireland, Austria, or Czechia.\n"
+        "- 💎 **Strategic Metals**: Lithium, Cobalt, Nickel, Tungsten, Rare Earth Elements (REE), Copper, Tin, etc.\n"
+        "- 🏗️ **Facility Types**: Tailings Storage Facilities (TSFs / ponds), Waste Dumps, or Stockpiles."
     )
 
 def generate_natural_response(
@@ -428,7 +429,19 @@ def process_chat_message(
     if has_active:
         context_prefix = f"Active Filters: {json.dumps(current_filters, ensure_ascii=False)}\n"
         
-    user_prompt = f"{context_prefix}User Query: \"{query}\"\nJSON Output:"
+    history_prefix = ""
+    if conversation_history:
+        recent = conversation_history[-4:]
+        turns = []
+        for t in recent:
+            role = t.get("role", "user")
+            content = t.get("content", "").replace("\n", " ").strip()
+            if content:
+                turns.append(f"[{role.capitalize()}]: {content[:160]}")
+        if turns:
+            history_prefix = "Recent Turns:\n" + "\n".join(turns) + "\n"
+
+    user_prompt = f"{context_prefix}{history_prefix}User Query: \"{query}\"\nJSON Output:"
 
     raw_response = call_llm(
         system_prompt=SYSTEM_PROMPT_FEWSHOT,
@@ -462,7 +475,8 @@ def process_chat_message(
         refine_cues = [
             r'\bde es[ao]s\b', r'\bde est[ao]s\b', r'\bde ell[ao]s\b', r'\bde los anteriores\b',
             r'\bsolo las que\b', r'\bsolo los que\b', r'\b[uú]nicamente\b', r'\bunicamente\b',
-            r'\bque contengan\b', r'\bque tengan\b', r'\bpero solo\b', r'\bde ah[ií] solo\b',
+            r'\bque contengan\b', r'\bque tengan\b', r'\bque tienen\b', r'\bpero solo\b', r'\bde ah[ií] solo\b',
+            r'\blas de\b', r'\blos de\b', r'\by las de\b', r'\by los de\b',
             r'\bacota\b', r'\bfiltra por\b', r'\bfiltradas por\b', r'\bof those\b', r'\bfrom these\b',
             r'\bonly (those|that|the|ones)\b', r'\bkeep only\b', r'\bfilter to\b', r'\bonly interested in\b',
             r'\bnarrow down\b', r'\bjust the ones\b', r'\bonly active\b', r'\bonly unrestored\b', r'\bonly restored\b'
@@ -484,7 +498,7 @@ def process_chat_message(
             "query": query,
             "extracted_json": validated,
             "dialogue_action": action,
-            "solr_query": {"q": "*:*", "fq": []},
+            "solr_query": {"q": "", "fq": [], "status": "skipped (generic_qa)"},
             "num_found": 0,
             "total_dataset": 100,
             "matched_ids": [],
@@ -594,7 +608,7 @@ def process_chat_message(
             "query": query,
             "extracted_json": validated,
             "dialogue_action": action,
-            "solr_query": {"q": "*:*", "fq": []},
+            "solr_query": {"q": "", "fq": [], "status": "skipped (out_of_domain)"},
             "num_found": 0,
             "total_dataset": 100,
             "matched_ids": [],

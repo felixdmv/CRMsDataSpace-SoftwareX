@@ -5701,12 +5701,14 @@
         if (matchedIds.length > 0) {
           const matchingSites = MINING_SITES.filter(s => matchedIds.includes(s.id));
           renderMarkers(matchingSites);
+        } else if (data.dialogue_action === 'reset') {
+          renderMarkers(MINING_SITES);
         } else {
           renderMarkers([]);
         }
 
         // 6. Update Active Map Filter Badges over Map Header
-        updateActiveFilterBadges(data.active_map_filters || [], matchedIds.length);
+        updateActiveFilterBadges(data.active_map_filters || [], matchedIds.length, data.dialogue_action === 'reset');
 
         // 7. Synchronize Manual Filters Widget on Map Right Side
         const nluFilters = data.filters || (data.extracted_json && data.extracted_json.filters) || {};
@@ -5733,12 +5735,18 @@
       }
     }
 
-    function updateActiveFilterBadges(activeFilters = [], matchedCount = 0) {
+    function updateActiveFilterBadges(activeFilters = [], matchedCount = 0, isReset = false) {
       const container = document.getElementById('active-filters-badges');
       const counter = document.getElementById('site-counter-display');
 
       if (counter) {
-        counter.textContent = `Showing ${matchedCount > 0 ? matchedCount : MINING_SITES.length} / ${MINING_SITES.length} European Sites`;
+        if (matchedCount > 0) {
+          counter.textContent = `Showing ${matchedCount} / ${MINING_SITES.length} European Sites`;
+        } else if (isReset || (!activeFilters || activeFilters.length === 0)) {
+          counter.textContent = `Showing ${MINING_SITES.length} / ${MINING_SITES.length} European Sites`;
+        } else {
+          counter.textContent = `Showing 0 / ${MINING_SITES.length} European Sites`;
+        }
       }
 
       if (!container) return;

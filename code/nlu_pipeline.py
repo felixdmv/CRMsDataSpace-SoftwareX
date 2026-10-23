@@ -721,7 +721,8 @@ class DialogueStateTracker:
         refine_cues = [
             r'\bde es[ao]s\b', r'\bde est[ao]s\b', r'\bde ell[ao]s\b', r'\bde los anteriores\b',
             r'\bsolo las que\b', r'\bsolo los que\b', r'\b[uú]nicamente\b', r'\bunicamente\b',
-            r'\bque contengan\b', r'\bque tengan\b', r'\bpero solo\b', r'\bde ah[ií] solo\b',
+            r'\bque contengan\b', r'\bque tengan\b', r'\bque tienen\b', r'\bpero solo\b', r'\bde ah[ií] solo\b',
+            r'\blas de\b', r'\blos de\b', r'\by las de\b', r'\by los de\b',
             r'\bacota\b', r'\bfiltra por\b', r'\bfiltradas por\b', r'\bof those\b', r'\bfrom these\b',
             r'\bonly (those|that|the|ones)\b', r'\bkeep only\b', r'\bfilter to\b', r'\bonly interested in\b',
             r'\bnarrow down\b', r'\bjust the ones\b', r'\bonly active\b', r'\bonly unrestored\b', r'\bonly restored\b'

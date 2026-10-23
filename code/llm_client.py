@@ -209,6 +209,8 @@ def get_hf_cache_dir() -> Path:
     candidate_dirs = [
         # User's standard home cache
         Path.home() / ".cache" / "huggingface",
+        # Central shared cluster cache
+        Path("/home/felix.demiguel/.cache/huggingface"),
         # Local repository cache directories
         Path(__file__).resolve().parent / ".cache" / "huggingface",
         Path(__file__).resolve().parents[1] / ".cache" / "huggingface",

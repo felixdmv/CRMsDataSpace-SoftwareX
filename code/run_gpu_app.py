@@ -242,6 +242,16 @@ def main():
     for shared_path in ["/datasets", "/opt", "/scratch"]:
         if os.path.exists(shared_path):
             bind_dirs.add(f"{shared_path}:{shared_path}")
+
+    # Bind shared Hugging Face cache and Python site-packages for all cluster users
+    shared_hf_cache = "/home/felix.demiguel/.cache/huggingface"
+    if os.path.exists(shared_hf_cache):
+        bind_dirs.add(f"{shared_hf_cache}:{shared_hf_cache}")
+
+    shared_site_pkgs = "/home/felix.demiguel/.local/lib/python3.10/site-packages"
+    shared_local_dir = "/home/felix.demiguel/.local"
+    if os.path.exists(shared_site_pkgs):
+        bind_dirs.add(f"{shared_local_dir}:{shared_local_dir}")
             
     bind_arg = ",".join(sorted(bind_dirs))
 
@@ -265,6 +275,14 @@ def main():
     env.pop("VSCODE_IPC_HOOK_CLI", None)
     env["PYTHONUNBUFFERED"] = "1"
     env["APPTAINERENV_PYTHONUNBUFFERED"] = "1"
+    # Isolate user-site packages to prevent host OpenMPI / libmpi collisions inside container
+    env["APPTAINERENV_PYTHONNOUSERSITE"] = "1"
+    env["PYTHONNOUSERSITE"] = "1"
+    
+    # Inject verified shared dependencies into container PYTHONPATH
+    cur_pypath = env.get("PYTHONPATH", "")
+    if os.path.exists(shared_site_pkgs):
+        env["APPTAINERENV_PYTHONPATH"] = f"{shared_site_pkgs}:{cur_pypath}" if cur_pypath else shared_site_pkgs
     proc = subprocess.Popen(slurm_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, env=env)
     
     print("[3/3] Conectando servicio y transmitiendo logs del cluster GPU...")
