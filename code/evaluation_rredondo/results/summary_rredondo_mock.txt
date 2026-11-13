@@ -1,0 +1,47 @@
+================================================================================
+  EVALUATION_RREDONDO BENCHMARK SUMMARY REPORT
+================================================================================
+  Model Provider:        MOCK (Deterministic Baseline (Mock))
+  Architecture/Params:   Rule-based (CPU Heuristics)
+  Execution Node:        computo04
+  VRAM Memory Footprint: 0.0 GB
+  Timestamp:             2026-11-13 11:50:27
+--------------------------------------------------------------------------------
+  1. Out-of-Domain Guardrails & Anti-Hallucination:
+     • Queries Evaluated:    25
+     • Rejection Accuracy:   84.0%
+     • Hallucination Rate:   16.0% (0.0% is optimal)
+     • Mean Latency:         0.6 ms
+--------------------------------------------------------------------------------
+  2. Single-Turn Queries & Slot Filling:
+     • Queries Evaluated:    114
+     • Accuracy Rate:        72.81%
+     • Mean Slot F1:         89.09%
+     • Mean Latency:         0.8 ms
+--------------------------------------------------------------------------------
+  3. Boolean Aggregation & Sum of Escombreras:
+     • Queries Evaluated:    77
+     • Pass Rate:            94.81%
+     • Operator Accuracy:    94.81% (AND/OR/COMPOUND)
+     • Sum Match Rate:       100.0% (Disjunctive site count match)
+     • Mean Slot F1:         98.7%
+     • Mean Latency:         0.8 ms
+--------------------------------------------------------------------------------
+  4. Conversational Memory & Dialogue State Tracking (DST):
+     • Episodes / Turns:     36 episodes / 156 turns
+     • Turn Pass Rate:       18.59%
+     • Action Accuracy:      75.64%
+     • Exact State Match:    24.36%
+     • Episode Success Rate: 5.56% (100% flawless dialogue)
+     • 'y también' Acc:      100.0%
+     • Macro DST F1:         31.56%
+     • Mean Latency:         0.9 ms
+================================================================================
+  OVERALL BENCHMARK SCORE:   206/372 (55.4%)
+  CONSOLIDATED MEAN LATENCY: 0.8 ms
+================================================================================
+  Artifacts Saved:
+   - JSON Results: /home/ubu/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/results_rredondo_mock.json
+   - LaTeX Table:  /home/ubu/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/table_rredondo_mock.tex
+   - Text Summary: /home/ubu/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/summary_rredondo_mock.txt
+================================================================================

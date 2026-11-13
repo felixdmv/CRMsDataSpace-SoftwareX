@@ -1,0 +1,19 @@
+% Auto-generated LaTeX summary for SoftwareX evaluation_rredondo
+\begin{table}[htbp]
+\centering
+\small
+\caption{Empirical Evaluation of Deterministic Baseline (Mock) on evaluation\_rredondo Test Battery across Guardrails, Single-Turn Slot Filling, Boolean Summation, and Conversational DST.}
+\label{tab:evaluation_rredondo_mock}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{2.2cm}}
+\toprule
+\textbf{Benchmark Suite} & \textbf{Test Units} & \textbf{Pass Rate (\%)} & \textbf{Key Metric} & \textbf{Mean Latency} \\
+\midrule
+1. Out-of-Domain Guardrails & 25 queries & 84.0\% & Rejection: 84.0\% & 0.6 ms \\
+2. Single-Turn Slot Filling & 114 queries & 72.8\% & Slot F1: 89.1\% & 0.8 ms \\
+3. Boolean Sum (AND/OR) & 77 queries & 94.8\% & Sum Match: 100.0\% & 0.8 ms \\
+4. Conversational Memory & 156 turns & 18.6\% & 'Y también': 100.0\% & 0.9 ms \\
+\midrule
+\textbf{Overall Macro Score} & \textbf{372 units} & \textbf{55.4\%} & Macro F1: 31.6\% & \textbf{0.8 ms} \\
+\bottomrule
+\end{tabularx}
+\end{table}

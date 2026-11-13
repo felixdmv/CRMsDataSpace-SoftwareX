@@ -1,0 +1,19 @@
+% Auto-generated LaTeX summary for SoftwareX evaluation_rredondo
+\begin{table}[htbp]
+\centering
+\small
+\caption{Empirical Evaluation of Qwen 2.5 7B Instruct on evaluation\_rredondo Test Battery across Guardrails, Single-Turn Slot Filling, Boolean Summation, and Conversational DST.}
+\label{tab:evaluation_rredondo_qwen}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{2.2cm}}
+\toprule
+\textbf{Benchmark Suite} & \textbf{Test Units} & \textbf{Pass Rate (\%)} & \textbf{Key Metric} & \textbf{Mean Latency} \\
+\midrule
+1. Out-of-Domain Guardrails & 25 queries & 92.0\% & Rejection: 92.0\% & 1656.1 ms \\
+2. Single-Turn Slot Filling & 114 queries & 78.1\% & Slot F1: 89.9\% & 2820.1 ms \\
+3. Boolean Sum (AND/OR) & 77 queries & 89.6\% & Sum Match: 71.4\% & 2951.1 ms \\
+4. Conversational Memory & 156 turns & 17.3\% & 'Y también': 100.0\% & 2299.6 ms \\
+\midrule
+\textbf{Overall Macro Score} & \textbf{372 units} & \textbf{55.9\%} & Macro F1: 26.4\% & \textbf{2431.7 ms} \\
+\bottomrule
+\end{tabularx}
+\end{table}

@@ -1,0 +1,47 @@
+================================================================================
+  EVALUATION_RREDONDO BENCHMARK SUMMARY REPORT
+================================================================================
+  Model Provider:        QWEN (Qwen 2.5 7B Instruct)
+  Architecture/Params:   7.61B (FP16)
+  Execution Node:        computo06
+  VRAM Memory Footprint: 14.23 GB
+  Timestamp:             2026-11-13 11:16:27
+--------------------------------------------------------------------------------
+  1. Out-of-Domain Guardrails & Anti-Hallucination:
+     • Queries Evaluated:    25
+     • Rejection Accuracy:   92.0%
+     • Hallucination Rate:   8.0% (0.0% is optimal)
+     • Mean Latency:         1656.1 ms
+--------------------------------------------------------------------------------
+  2. Single-Turn Queries & Slot Filling:
+     • Queries Evaluated:    114
+     • Accuracy Rate:        78.07%
+     • Mean Slot F1:         89.9%
+     • Mean Latency:         2820.1 ms
+--------------------------------------------------------------------------------
+  3. Boolean Aggregation & Sum of Escombreras:
+     • Queries Evaluated:    77
+     • Pass Rate:            89.61%
+     • Operator Accuracy:    92.21% (AND/OR/COMPOUND)
+     • Sum Match Rate:       71.43% (Disjunctive site count match)
+     • Mean Slot F1:         98.7%
+     • Mean Latency:         2951.1 ms
+--------------------------------------------------------------------------------
+  4. Conversational Memory & Dialogue State Tracking (DST):
+     • Episodes / Turns:     36 episodes / 156 turns
+     • Turn Pass Rate:       17.31%
+     • Action Accuracy:      86.54%
+     • Exact State Match:    21.79%
+     • Episode Success Rate: 8.33% (100% flawless dialogue)
+     • 'y también' Acc:      100.0%
+     • Macro DST F1:         26.45%
+     • Mean Latency:         2299.6 ms
+================================================================================
+  OVERALL BENCHMARK SCORE:   208/372 (55.9%)
+  CONSOLIDATED MEAN LATENCY: 2431.7 ms
+================================================================================
+  Artifacts Saved:
+   - JSON Results: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/results_rredondo_qwen.json
+   - LaTeX Table:  /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/table_rredondo_qwen.tex
+   - Text Summary: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/summary_rredondo_qwen.txt
+================================================================================

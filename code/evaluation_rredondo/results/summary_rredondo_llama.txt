@@ -1,0 +1,47 @@
+================================================================================
+  EVALUATION_RREDONDO BENCHMARK SUMMARY REPORT
+================================================================================
+  Model Provider:        LLAMA (Llama 3.2 3B Instruct)
+  Architecture/Params:   3.21B (FP16)
+  Execution Node:        computo06
+  VRAM Memory Footprint: 5.98 GB
+  Timestamp:             2026-11-13 11:17:21
+--------------------------------------------------------------------------------
+  1. Out-of-Domain Guardrails & Anti-Hallucination:
+     • Queries Evaluated:    25
+     • Rejection Accuracy:   88.0%
+     • Hallucination Rate:   12.0% (0.0% is optimal)
+     • Mean Latency:         2073.1 ms
+--------------------------------------------------------------------------------
+  2. Single-Turn Queries & Slot Filling:
+     • Queries Evaluated:    114
+     • Accuracy Rate:        58.77%
+     • Mean Slot F1:         79.01%
+     • Mean Latency:         2500.1 ms
+--------------------------------------------------------------------------------
+  3. Boolean Aggregation & Sum of Escombreras:
+     • Queries Evaluated:    77
+     • Pass Rate:            79.22%
+     • Operator Accuracy:    92.21% (AND/OR/COMPOUND)
+     • Sum Match Rate:       28.57% (Disjunctive site count match)
+     • Mean Slot F1:         94.63%
+     • Mean Latency:         2976.8 ms
+--------------------------------------------------------------------------------
+  4. Conversational Memory & Dialogue State Tracking (DST):
+     • Episodes / Turns:     36 episodes / 156 turns
+     • Turn Pass Rate:       13.46%
+     • Action Accuracy:      76.28%
+     • Exact State Match:    21.15%
+     • Episode Success Rate: 2.78% (100% flawless dialogue)
+     • 'y también' Acc:      100.0%
+     • Macro DST F1:         23.48%
+     • Mean Latency:         2464.2 ms
+================================================================================
+  OVERALL BENCHMARK SCORE:   171/372 (46.0%)
+  CONSOLIDATED MEAN LATENCY: 2503.6 ms
+================================================================================
+  Artifacts Saved:
+   - JSON Results: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/results_rredondo_llama.json
+   - LaTeX Table:  /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/table_rredondo_llama.tex
+   - Text Summary: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/summary_rredondo_llama.txt
+================================================================================

@@ -1,0 +1,47 @@
+================================================================================
+  EVALUATION_RREDONDO BENCHMARK SUMMARY REPORT
+================================================================================
+  Model Provider:        MISTRAL (Mistral 7B Instruct v0.2)
+  Architecture/Params:   7.24B (FP16)
+  Execution Node:        computo05
+  VRAM Memory Footprint: 13.49 GB
+  Timestamp:             2026-11-13 11:16:04
+--------------------------------------------------------------------------------
+  1. Out-of-Domain Guardrails & Anti-Hallucination:
+     • Queries Evaluated:    25
+     • Rejection Accuracy:   96.0%
+     • Hallucination Rate:   4.0% (0.0% is optimal)
+     • Mean Latency:         3092.8 ms
+--------------------------------------------------------------------------------
+  2. Single-Turn Queries & Slot Filling:
+     • Queries Evaluated:    114
+     • Accuracy Rate:        75.44%
+     • Mean Slot F1:         88.95%
+     • Mean Latency:         3536.4 ms
+--------------------------------------------------------------------------------
+  3. Boolean Aggregation & Sum of Escombreras:
+     • Queries Evaluated:    77
+     • Pass Rate:            83.12%
+     • Operator Accuracy:    87.01% (AND/OR/COMPOUND)
+     • Sum Match Rate:       100.0% (Disjunctive site count match)
+     • Mean Slot F1:         91.56%
+     • Mean Latency:         3846.0 ms
+--------------------------------------------------------------------------------
+  4. Conversational Memory & Dialogue State Tracking (DST):
+     • Episodes / Turns:     36 episodes / 156 turns
+     • Turn Pass Rate:       15.38%
+     • Action Accuracy:      78.21%
+     • Exact State Match:    29.49%
+     • Episode Success Rate: 2.78% (100% flawless dialogue)
+     • 'y también' Acc:      100.0%
+     • Macro DST F1:         27.08%
+     • Mean Latency:         4135.6 ms
+================================================================================
+  OVERALL BENCHMARK SCORE:   198/372 (53.2%)
+  CONSOLIDATED MEAN LATENCY: 3652.7 ms
+================================================================================
+  Artifacts Saved:
+   - JSON Results: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/results_rredondo_mistral.json
+   - LaTeX Table:  /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/table_rredondo_mistral.tex
+   - Text Summary: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/summary_rredondo_mistral.txt
+================================================================================

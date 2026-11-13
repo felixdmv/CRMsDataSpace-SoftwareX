@@ -1,0 +1,47 @@
+================================================================================
+  EVALUATION_RREDONDO BENCHMARK SUMMARY REPORT
+================================================================================
+  Model Provider:        DEEPSEEK (DeepSeek R1 Distill Qwen 7B)
+  Architecture/Params:   7.61B (FP16)
+  Execution Node:        computo11
+  VRAM Memory Footprint: 14.23 GB
+  Timestamp:             2026-11-13 11:39:35
+--------------------------------------------------------------------------------
+  1. Out-of-Domain Guardrails & Anti-Hallucination:
+     • Queries Evaluated:    25
+     • Rejection Accuracy:   100.0%
+     • Hallucination Rate:   0.0% (0.0% is optimal)
+     • Mean Latency:         5645.2 ms
+--------------------------------------------------------------------------------
+  2. Single-Turn Queries & Slot Filling:
+     • Queries Evaluated:    114
+     • Accuracy Rate:        18.42%
+     • Mean Slot F1:         38.3%
+     • Mean Latency:         5621.9 ms
+--------------------------------------------------------------------------------
+  3. Boolean Aggregation & Sum of Escombreras:
+     • Queries Evaluated:    77
+     • Pass Rate:            6.49%
+     • Operator Accuracy:    36.36% (AND/OR/COMPOUND)
+     • Sum Match Rate:       0.0% (Disjunctive site count match)
+     • Mean Slot F1:         18.18%
+     • Mean Latency:         5582.7 ms
+--------------------------------------------------------------------------------
+  4. Conversational Memory & Dialogue State Tracking (DST):
+     • Episodes / Turns:     36 episodes / 156 turns
+     • Turn Pass Rate:       26.28%
+     • Action Accuracy:      30.13%
+     • Exact State Match:    85.26%
+     • Episode Success Rate: 0.0% (100% flawless dialogue)
+     • 'y también' Acc:      100.0%
+     • Macro DST F1:         0.0%
+     • Mean Latency:         5228.5 ms
+================================================================================
+  OVERALL BENCHMARK SCORE:   92/372 (24.7%)
+  CONSOLIDATED MEAN LATENCY: 5519.6 ms
+================================================================================
+  Artifacts Saved:
+   - JSON Results: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/results_rredondo_deepseek.json
+   - LaTeX Table:  /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/table_rredondo_deepseek.tex
+   - Text Summary: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/summary_rredondo_deepseek.txt
+================================================================================

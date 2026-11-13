@@ -1,0 +1,19 @@
+% Auto-generated LaTeX summary for SoftwareX evaluation_rredondo
+\begin{table}[htbp]
+\centering
+\small
+\caption{Empirical Evaluation of Phi-3 Mini 4K Instruct on evaluation\_rredondo Test Battery across Guardrails, Single-Turn Slot Filling, Boolean Summation, and Conversational DST.}
+\label{tab:evaluation_rredondo_phi3}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{2.2cm}}
+\toprule
+\textbf{Benchmark Suite} & \textbf{Test Units} & \textbf{Pass Rate (\%)} & \textbf{Key Metric} & \textbf{Mean Latency} \\
+\midrule
+1. Out-of-Domain Guardrails & 25 queries & 84.0\% & Rejection: 84.0\% & 2609.0 ms \\
+2. Single-Turn Slot Filling & 114 queries & 70.2\% & Slot F1: 86.3\% & 3535.4 ms \\
+3. Boolean Sum (AND/OR) & 77 queries & 84.4\% & Sum Match: 42.9\% & 4389.8 ms \\
+4. Conversational Memory & 156 turns & 13.5\% & 'Y también': 100.0\% & 3847.9 ms \\
+\midrule
+\textbf{Overall Macro Score} & \textbf{372 units} & \textbf{50.3\%} & Macro F1: 26.3\% & \textbf{3595.5 ms} \\
+\bottomrule
+\end{tabularx}
+\end{table}

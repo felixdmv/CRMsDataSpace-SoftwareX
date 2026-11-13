@@ -1,0 +1,19 @@
+% Auto-generated LaTeX summary for SoftwareX evaluation_rredondo
+\begin{table}[htbp]
+\centering
+\small
+\caption{Empirical Evaluation of Mistral 7B Instruct v0.2 on evaluation\_rredondo Test Battery across Guardrails, Single-Turn Slot Filling, Boolean Summation, and Conversational DST.}
+\label{tab:evaluation_rredondo_mistral}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{2.2cm}}
+\toprule
+\textbf{Benchmark Suite} & \textbf{Test Units} & \textbf{Pass Rate (\%)} & \textbf{Key Metric} & \textbf{Mean Latency} \\
+\midrule
+1. Out-of-Domain Guardrails & 25 queries & 96.0\% & Rejection: 96.0\% & 3092.8 ms \\
+2. Single-Turn Slot Filling & 114 queries & 75.4\% & Slot F1: 89.0\% & 3536.4 ms \\
+3. Boolean Sum (AND/OR) & 77 queries & 83.1\% & Sum Match: 100.0\% & 3846.0 ms \\
+4. Conversational Memory & 156 turns & 15.4\% & 'Y también': 100.0\% & 4135.6 ms \\
+\midrule
+\textbf{Overall Macro Score} & \textbf{372 units} & \textbf{53.2\%} & Macro F1: 27.1\% & \textbf{3652.7 ms} \\
+\bottomrule
+\end{tabularx}
+\end{table}

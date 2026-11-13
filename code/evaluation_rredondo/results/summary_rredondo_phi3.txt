@@ -1,0 +1,47 @@
+================================================================================
+  EVALUATION_RREDONDO BENCHMARK SUMMARY REPORT
+================================================================================
+  Model Provider:        PHI3 (Phi-3 Mini 4K Instruct)
+  Architecture/Params:   3.82B (FP16)
+  Execution Node:        computo10
+  VRAM Memory Footprint: 7.12 GB
+  Timestamp:             2026-11-13 11:27:56
+--------------------------------------------------------------------------------
+  1. Out-of-Domain Guardrails & Anti-Hallucination:
+     • Queries Evaluated:    25
+     • Rejection Accuracy:   84.0%
+     • Hallucination Rate:   8.0% (0.0% is optimal)
+     • Mean Latency:         2609.0 ms
+--------------------------------------------------------------------------------
+  2. Single-Turn Queries & Slot Filling:
+     • Queries Evaluated:    114
+     • Accuracy Rate:        70.18%
+     • Mean Slot F1:         86.29%
+     • Mean Latency:         3535.4 ms
+--------------------------------------------------------------------------------
+  3. Boolean Aggregation & Sum of Escombreras:
+     • Queries Evaluated:    77
+     • Pass Rate:            84.42%
+     • Operator Accuracy:    94.81% (AND/OR/COMPOUND)
+     • Sum Match Rate:       42.86% (Disjunctive site count match)
+     • Mean Slot F1:         95.84%
+     • Mean Latency:         4389.8 ms
+--------------------------------------------------------------------------------
+  4. Conversational Memory & Dialogue State Tracking (DST):
+     • Episodes / Turns:     36 episodes / 156 turns
+     • Turn Pass Rate:       13.46%
+     • Action Accuracy:      66.67%
+     • Exact State Match:    39.1%
+     • Episode Success Rate: 0.0% (100% flawless dialogue)
+     • 'y también' Acc:      100.0%
+     • Macro DST F1:         26.33%
+     • Mean Latency:         3847.9 ms
+================================================================================
+  OVERALL BENCHMARK SCORE:   187/372 (50.3%)
+  CONSOLIDATED MEAN LATENCY: 3595.5 ms
+================================================================================
+  Artifacts Saved:
+   - JSON Results: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/results_rredondo_phi3.json
+   - LaTeX Table:  /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/table_rredondo_phi3.tex
+   - Text Summary: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/summary_rredondo_phi3.txt
+================================================================================

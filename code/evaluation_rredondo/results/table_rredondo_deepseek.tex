@@ -1,0 +1,19 @@
+% Auto-generated LaTeX summary for SoftwareX evaluation_rredondo
+\begin{table}[htbp]
+\centering
+\small
+\caption{Empirical Evaluation of DeepSeek R1 Distill Qwen 7B on evaluation\_rredondo Test Battery across Guardrails, Single-Turn Slot Filling, Boolean Summation, and Conversational DST.}
+\label{tab:evaluation_rredondo_deepseek}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{2.2cm}}
+\toprule
+\textbf{Benchmark Suite} & \textbf{Test Units} & \textbf{Pass Rate (\%)} & \textbf{Key Metric} & \textbf{Mean Latency} \\
+\midrule
+1. Out-of-Domain Guardrails & 25 queries & 100.0\% & Rejection: 100.0\% & 5645.2 ms \\
+2. Single-Turn Slot Filling & 114 queries & 18.4\% & Slot F1: 38.3\% & 5621.9 ms \\
+3. Boolean Sum (AND/OR) & 77 queries & 6.5\% & Sum Match: 0.0\% & 5582.7 ms \\
+4. Conversational Memory & 156 turns & 26.3\% & 'Y también': 100.0\% & 5228.5 ms \\
+\midrule
+\textbf{Overall Macro Score} & \textbf{372 units} & \textbf{24.7\%} & Macro F1: 0.0\% & \textbf{5519.6 ms} \\
+\bottomrule
+\end{tabularx}
+\end{table}
