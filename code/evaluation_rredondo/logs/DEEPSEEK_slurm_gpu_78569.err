@@ -1,0 +1,7 @@
+Could not cache non-existence of file. Will ignore error and continue. Error: [Errno 13] Permission denied: '/home/felix.demiguel/.cache/huggingface/models--deepseek-ai--DeepSeek-R1-Distill-Qwen-7B/.no_exist/916b56a44061fd5cd7d6a8fb632557ed4f724f60/tokenizer.model'
+Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:35<00:35, 35.30s/it]Loading checkpoint shards: 100%|██████████| 2/2 [01:00<00:00, 29.35s/it]Loading checkpoint shards: 100%|██████████| 2/2 [01:00<00:00, 30.24s/it]
+/home/raquel.redondo/.local/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:629: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.6` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+/home/raquel.redondo/.local/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:634: UserWarning: `do_sample` is set to `False`. However, `top_p` is set to `0.95` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_p`.
+  warnings.warn(

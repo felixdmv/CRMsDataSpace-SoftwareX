@@ -1,0 +1,5 @@
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:19<00:59, 19.82s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:44<00:45, 22.65s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [01:09<00:23, 23.84s/it]Loading checkpoint shards: 100%|██████████| 4/4 [01:12<00:00, 15.59s/it]Loading checkpoint shards: 100%|██████████| 4/4 [01:12<00:00, 18.16s/it]
+/home/raquel.redondo/.local/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:629: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.6` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+/home/raquel.redondo/.local/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:634: UserWarning: `do_sample` is set to `False`. However, `top_p` is set to `0.9` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_p`.
+  warnings.warn(
