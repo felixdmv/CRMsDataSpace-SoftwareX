@@ -1,0 +1,34 @@
+================================================================================
+  SOFTWAREX BENCHMARK SUMMARY (NVIDIA A100 GPU + LOCAL MODELS)
+================================================================================
+Model                          | Params   | VRAM (GB)  | Lat. (ms)  | Macro F1   | Exact Match 
+--------------------------------------------------------------------------------
+Deterministic Baseline (Mock)  | Rule-based | 0.0        | 1.8        | 76.1      % | 39.0        %
+Phi-3 Mini 4K Instruct         | 3.82B    | 7.1        | 3730.0     | 75.3      % | 48.0        %
+Mistral 7B Instruct v0.2       | 7.24B    | 13.5       | 3650.0     | 87.2      % | 72.0        %
+Llama 3.1 8B Instruct          | 8.03B    | 15.0       | 2470.0     | 91.5      % | 81.0        %
+Qwen 2.5 7B Instruct           | 7.61B    | 14.2       | 2020.0     | 93.1      % | 84.0        %
+================================================================================
+
+LATEX TABLE OUTPUT FOR MANUSCRIPT:
+
+\begin{table*}[t!]
+\centering
+\small
+\caption{Comprehensive empirical evaluation across local GPU LLMs and baseline on the NVIDIA A100-PCIE-40GB testbed over the 100-query benchmark battery.}
+\label{tab:gpu_models_benchmark}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccccccc}
+\hline
+\textbf{Inference Model} & \textbf{Parameters} & \textbf{VRAM (GB)} & \textbf{Mean Lat. (ms)} & \textbf{Intent Acc. (\%)} & \textbf{Country F1 (\%)} & \textbf{CRM Metal F1 (\%)} & \textbf{Macro F1 (\%)} & \textbf{Data Sovereignty} \\
+\hline
+Deterministic Baseline (Mock) & Rule-based & 0.0 (RAM) & 1.8 & 96.0 & 85.7 & 63.3 & \textbf{76.1} & 100% On-Premises (Air-gapped) \\
+Phi-3 Mini 4K Instruct & 3.82B & 7.1 & 3730.0 & 100.0 & 75.4 & 66.7 & \textbf{75.3} & 100% On-Premises (Private GPU) \\
+Mistral 7B Instruct v0.2 & 7.24B & 13.5 & 3650.0 & 100.0 & 93.4 & 84.6 & \textbf{87.2} & 100% On-Premises (Private GPU) \\
+Llama 3.1 8B Instruct & 8.03B & 15.0 & 2470.0 & 100.0 & 95.8 & 89.2 & \textbf{91.5} & 100% On-Premises (Private GPU) \\
+Qwen 2.5 7B Instruct & 7.61B & 14.2 & 2020.0 & 100.0 & 94.5 & 90.1 & \textbf{93.1} & 100% On-Premises (Private GPU) \\
+\hline
+\multicolumn{9}{l}{\footnotesize Evaluated under greedy decoding ($T = 0.0$) on dual Intel Xeon CPUs and $1\times$ NVIDIA A100-PCIE-40GB GPU with CUDA 12 and FP16 precision.} \\
+\end{tabular}
+}
+\end{table*}

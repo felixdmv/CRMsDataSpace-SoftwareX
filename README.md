@@ -51,8 +51,8 @@ The software is engineered for **immediate reviewer reproducibility**. No extern
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/felixdmv/CRMsDataSpace-SoftwareX.git
-   cd CRMsDataSpace-SoftwareX
+   git clone https://github.com/gicap-ubu/nlu-solr-gis.git
+   cd nlu-solr-gis
    ```
 
 2. **Launch the Standalone Web Server**:
@@ -66,7 +66,20 @@ The software is engineered for **immediate reviewer reproducibility**. No extern
    http://localhost:8080
    ```
 
-*(Optional)*: To use live frontier LLM inference, copy `.env.example` to `.env` and configure your `GEMINI_API_KEY` or `OPENAI_API_KEY`.
+*(Optional - Cloud LLMs & Claude Code)*: To use frontier LLM APIs (Google Gemini, OpenAI GPT-4o, Anthropic Claude 3.5/3.7, or Claude Code), copy `.env.example` to `.env` and set `GEMINI_API_KEY`, `OPENAI_API_KEY`, or `ANTHROPIC_API_KEY`. Alternatively, paste keys directly in the web UI.
+
+4. **Verify All Engines & Protocols (Automated Verification Suite)**:
+   ```bash
+   python test_apis.py
+   ```
+   Validates request formatting, network connectivity, authentication responses, and zero-crash fallbacks across Mock, Gemini, GPT-4o, and Claude.
+
+*(Optional - Local Sovereign GPU Ingestion on HPC Cluster)*: If running on an institutional compute node equipped with NVIDIA GPUs (CUDA 12, e.g. NVIDIA A100):
+```bash
+chmod +x run_gpu.sh
+./run_gpu.sh 8081
+```
+This requests 1x NVIDIA A100 via Slurm inside Apptainer, sets up a transparent TCP reverse proxy on the cluster login node, and enables local open-weight foundation models (Qwen 2.5 7B, Llama 3.2 3B, DeepSeek R1 7B, Phi-3 Mini 4K, Gemma 2 2B), enforcing 100% data sovereignty without external cloud dependencies.
 
 ---
 
@@ -92,6 +105,10 @@ cd evaluation
 python evaluate_100_tests.py
 ```
 
+To run the comparative multi-model evaluation across local open-weight LLMs on GPU hardware:
+```bash
+python benchmark_all_models.py
+```
 This executes the automated test suite across 100 domain queries in `evaluation/test_battery_100.json`, verifying field-level precision, recall, and macro F1-score across all attributes.
 
 ---
@@ -99,7 +116,7 @@ This executes the automated test suite across 100 domain queries in `evaluation/
 ## 📁 Repository Structure
 
 ```
-CRMsDataSpace-SoftwareX/
+nlu-solr-gis/
 ├── data/
 │   └── synthetic_escombreras_europe.json   # 100 Synthetic European facilities dataset
 ├── evaluation/
@@ -109,10 +126,13 @@ CRMsDataSpace-SoftwareX/
 ├── static/
 │   └── index.html                          # Single-Page App (Leaflet.js + TailwindCSS UI)
 ├── agent.py                                # Hybrid architecture orchestrator
-├── llm_client.py                           # Multi-provider LLM client with OpenAPI schema
+├── llm_client.py                           # Multi-provider LLM client (Local GPU, Gemini, GPT, Claude)
 ├── mock_api.py                             # Apache Solr spatial simulator with facet engine
 ├── nlu_pipeline.py                         # Thesaurus normalizer, validator, and Solr query builder
-├── run_app.py                              # Standalone Python HTTP server (port 8080)
+├── run_app.py                              # Standalone Python HTTP server (0-dependency Mock mode)
+├── run_gpu.sh                              # Automated GPU launcher script (Slurm + Apptainer)
+├── run_gpu_app.py                          # Slurm launcher & transparent TCP reverse proxy
+├── test_apis.py                            # Automated verification suite for all APIs and engines
 ├── requirements.txt                        # Optional cloud dependencies
 ├── LICENSE                                 # MIT License
 ├── .env.example                            # Example API configuration
@@ -124,8 +144,7 @@ CRMsDataSpace-SoftwareX/
 ## 🛠️ Developer Guide & Domain Customization
 
 - **Adapting to Other Domains**: Update the canonical dictionary in [`nlu_pipeline.py`](nlu_pipeline.py) under `DOMAIN_SYNONYMS` for your domain (e.g., cadastres, environmental hazards, forestry).
-- **Modifying the OpenAPI Schema**: Adjust `SEARCH_INTENT_SCHEMA` in [`llm_client.py`](llm_client.py) to add or replace filter dimensions.
-- **Connecting a Production Apache Solr Cluster**: Replace the simulation endpoints in [`mock_api.py`](mock_api.py) with standard Solr HTTP queries using `pysolr` or the Solr JSON Request API.
+- **Connecting a Production Apache Solr / SolrCloud Cluster**: To connect to a live distributed SolrCloud collection or standalone Solr core, define the environment variable: `export SOLR_URL="http://your-solr-host:8983/solr/crms_collection"`. The search connector in [`mock_api.py`](mock_api.py) automatically routes queries via the Solr HTTP REST API (`/select`) with live faceting, while falling back gracefully to the embedded synthetic dataset if the variable is omitted.
 
 ---
 

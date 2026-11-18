@@ -1,0 +1,447 @@
+[
+  {
+    "provider": "mock",
+    "model_name": "Deterministic Baseline (Mock)",
+    "parameters": "Rule-based",
+    "precision": "CPU Heuristics",
+    "sovereignty": "100% On-Premises (Air-gapped)",
+    "vram_gb": 0.0,
+    "total_episodes": 30,
+    "total_turns": 132,
+    "mean_latency_ms": 1.0,
+    "min_latency_ms": 0.0,
+    "max_latency_ms": 3.1,
+    "action_accuracy": 75.76,
+    "exact_state_match_rate": 45.45,
+    "episode_success_rate": 13.33,
+    "macro_f1": 76.14,
+    "country_f1": 74.32,
+    "commodity_f1": 77.89,
+    "facility_f1": 80.0,
+    "status_f1": 72.34,
+    "restored_accuracy": 95.45,
+    "action_breakdown": {
+      "new_search": 100.0,
+      "expand": 56.7,
+      "refine": 54.5,
+      "remove": 89.3,
+      "reset": 90.0
+    },
+    "category_metrics": {
+      "search": {
+        "total_turns": 31,
+        "exact_matches": 29,
+        "exact_match_rate": 93.5,
+        "macro_f1": 91.0
+      },
+      "expansion": {
+        "total_turns": 19,
+        "exact_matches": 8,
+        "exact_match_rate": 42.1,
+        "macro_f1": 83.0
+      },
+      "refinement": {
+        "total_turns": 30,
+        "exact_matches": 7,
+        "exact_match_rate": 23.3,
+        "macro_f1": 68.5
+      },
+      "removal": {
+        "total_turns": 28,
+        "exact_matches": 5,
+        "exact_match_rate": 17.9,
+        "macro_f1": 67.6
+      },
+      "context": {
+        "total_turns": 14,
+        "exact_matches": 2,
+        "exact_match_rate": 14.3,
+        "macro_f1": 64.5
+      },
+      "reset": {
+        "total_turns": 10,
+        "exact_matches": 9,
+        "exact_match_rate": 90.0,
+        "macro_f1": 25.0
+      }
+    },
+    "details": {
+      "country": {
+        "p": 98.4,
+        "r": 59.71,
+        "f1": 74.32
+      },
+      "commodity": {
+        "p": 93.67,
+        "r": 66.67,
+        "f1": 77.89
+      },
+      "facility": {
+        "p": 98.85,
+        "r": 67.19,
+        "f1": 80.0
+      },
+      "status": {
+        "p": 89.47,
+        "r": 60.71,
+        "f1": 72.34
+      }
+    }
+  },
+  {
+    "provider": "phi3",
+    "model_name": "Phi-3 Mini 4K Instruct",
+    "parameters": "3.82B",
+    "precision": "FP16",
+    "sovereignty": "100% On-Premises (Private GPU)",
+    "vram_gb": 7.13,
+    "total_episodes": 30,
+    "total_turns": 132,
+    "mean_latency_ms": 3734.9,
+    "min_latency_ms": 0.0,
+    "max_latency_ms": 6416.4,
+    "action_accuracy": 57.58,
+    "exact_state_match_rate": 17.42,
+    "episode_success_rate": 0.0,
+    "macro_f1": 36.94,
+    "country_f1": 54.9,
+    "commodity_f1": 47.06,
+    "facility_f1": 45.81,
+    "status_f1": 0.0,
+    "restored_accuracy": 84.85,
+    "action_breakdown": {
+      "new_search": 100.0,
+      "expand": 53.3,
+      "refine": 39.4,
+      "remove": 46.4,
+      "reset": 30.0
+    },
+    "category_metrics": {
+      "search": {
+        "total_turns": 31,
+        "exact_matches": 13,
+        "exact_match_rate": 41.9,
+        "macro_f1": 61.4
+      },
+      "expansion": {
+        "total_turns": 19,
+        "exact_matches": 0,
+        "exact_match_rate": 0.0,
+        "macro_f1": 36.5
+      },
+      "refinement": {
+        "total_turns": 30,
+        "exact_matches": 1,
+        "exact_match_rate": 3.3,
+        "macro_f1": 32.2
+      },
+      "removal": {
+        "total_turns": 28,
+        "exact_matches": 0,
+        "exact_match_rate": 0.0,
+        "macro_f1": 13.3
+      },
+      "context": {
+        "total_turns": 14,
+        "exact_matches": 0,
+        "exact_match_rate": 0.0,
+        "macro_f1": 30.6
+      },
+      "reset": {
+        "total_turns": 10,
+        "exact_matches": 9,
+        "exact_match_rate": 90.0,
+        "macro_f1": 75.0
+      }
+    },
+    "details": {
+      "country": {
+        "p": 84.0,
+        "r": 40.78,
+        "f1": 54.9
+      },
+      "commodity": {
+        "p": 47.27,
+        "r": 46.85,
+        "f1": 47.06
+      },
+      "facility": {
+        "p": 61.19,
+        "r": 36.61,
+        "f1": 45.81
+      },
+      "status": {
+        "p": 100.0,
+        "r": 0.0,
+        "f1": 0.0
+      }
+    }
+  },
+  {
+    "provider": "mistral",
+    "model_name": "Mistral 7B Instruct v0.2",
+    "parameters": "7.24B",
+    "precision": "FP16",
+    "sovereignty": "100% On-Premises (Private GPU)",
+    "vram_gb": 13.49,
+    "total_episodes": 30,
+    "total_turns": 132,
+    "mean_latency_ms": 3645.9,
+    "min_latency_ms": 0.0,
+    "max_latency_ms": 6003.3,
+    "action_accuracy": 77.27,
+    "exact_state_match_rate": 58.33,
+    "episode_success_rate": 23.33,
+    "macro_f1": 80.73,
+    "country_f1": 88.3,
+    "commodity_f1": 84.97,
+    "facility_f1": 76.64,
+    "status_f1": 73.02,
+    "restored_accuracy": 95.45,
+    "action_breakdown": {
+      "new_search": 100.0,
+      "expand": 83.3,
+      "refine": 75.8,
+      "remove": 60.7,
+      "reset": 40.0
+    },
+    "category_metrics": {
+      "search": {
+        "total_turns": 31,
+        "exact_matches": 26,
+        "exact_match_rate": 83.9,
+        "macro_f1": 96.2
+      },
+      "expansion": {
+        "total_turns": 19,
+        "exact_matches": 13,
+        "exact_match_rate": 68.4,
+        "macro_f1": 92.6
+      },
+      "refinement": {
+        "total_turns": 30,
+        "exact_matches": 14,
+        "exact_match_rate": 46.7,
+        "macro_f1": 80.0
+      },
+      "removal": {
+        "total_turns": 28,
+        "exact_matches": 11,
+        "exact_match_rate": 39.3,
+        "macro_f1": 64.2
+      },
+      "context": {
+        "total_turns": 14,
+        "exact_matches": 3,
+        "exact_match_rate": 21.4,
+        "macro_f1": 86.7
+      },
+      "reset": {
+        "total_turns": 10,
+        "exact_matches": 10,
+        "exact_match_rate": 100.0,
+        "macro_f1": 100.0
+      }
+    },
+    "details": {
+      "country": {
+        "p": 97.65,
+        "r": 80.58,
+        "f1": 88.3
+      },
+      "commodity": {
+        "p": 100.0,
+        "r": 73.87,
+        "f1": 84.97
+      },
+      "facility": {
+        "p": 80.39,
+        "r": 73.21,
+        "f1": 76.64
+      },
+      "status": {
+        "p": 65.71,
+        "r": 82.14,
+        "f1": 73.02
+      }
+    }
+  },
+  {
+    "provider": "llama8b",
+    "model_name": "Llama 3.1 8B Instruct",
+    "parameters": "8.03B",
+    "precision": "FP16",
+    "sovereignty": "100% On-Premises (Private GPU)",
+    "vram_gb": 14.96,
+    "total_episodes": 30,
+    "total_turns": 132,
+    "mean_latency_ms": 2472.7,
+    "min_latency_ms": 0.0,
+    "max_latency_ms": 5827.9,
+    "action_accuracy": 90.15,
+    "exact_state_match_rate": 65.15,
+    "episode_success_rate": 30.0,
+    "macro_f1": 88.84,
+    "country_f1": 95.0,
+    "commodity_f1": 93.78,
+    "facility_f1": 80.89,
+    "status_f1": 85.71,
+    "restored_accuracy": 97.73,
+    "action_breakdown": {
+      "new_search": 93.5,
+      "expand": 100.0,
+      "refine": 84.8,
+      "remove": 78.6,
+      "reset": 100.0
+    },
+    "category_metrics": {
+      "search": {
+        "total_turns": 31,
+        "exact_matches": 25,
+        "exact_match_rate": 80.6,
+        "macro_f1": 96.0
+      },
+      "expansion": {
+        "total_turns": 19,
+        "exact_matches": 12,
+        "exact_match_rate": 63.2,
+        "macro_f1": 94.1
+      },
+      "refinement": {
+        "total_turns": 30,
+        "exact_matches": 17,
+        "exact_match_rate": 56.7,
+        "macro_f1": 93.4
+      },
+      "removal": {
+        "total_turns": 28,
+        "exact_matches": 14,
+        "exact_match_rate": 50.0,
+        "macro_f1": 78.2
+      },
+      "context": {
+        "total_turns": 14,
+        "exact_matches": 8,
+        "exact_match_rate": 57.1,
+        "macro_f1": 78.7
+      },
+      "reset": {
+        "total_turns": 10,
+        "exact_matches": 10,
+        "exact_match_rate": 100.0,
+        "macro_f1": 100.0
+      }
+    },
+    "details": {
+      "country": {
+        "p": 97.94,
+        "r": 92.23,
+        "f1": 95.0
+      },
+      "commodity": {
+        "p": 100.0,
+        "r": 88.29,
+        "f1": 93.78
+      },
+      "facility": {
+        "p": 80.53,
+        "r": 81.25,
+        "f1": 80.89
+      },
+      "status": {
+        "p": 100.0,
+        "r": 75.0,
+        "f1": 85.71
+      }
+    }
+  },
+  {
+    "provider": "qwen",
+    "model_name": "Qwen 2.5 7B Instruct",
+    "parameters": "7.61B",
+    "precision": "FP16",
+    "sovereignty": "100% On-Premises (Private GPU)",
+    "vram_gb": 14.19,
+    "total_episodes": 30,
+    "total_turns": 132,
+    "mean_latency_ms": 2024.5,
+    "min_latency_ms": 0.0,
+    "max_latency_ms": 2888.9,
+    "action_accuracy": 93.94,
+    "exact_state_match_rate": 72.73,
+    "episode_success_rate": 50.0,
+    "macro_f1": 94.98,
+    "country_f1": 95.61,
+    "commodity_f1": 97.8,
+    "facility_f1": 86.51,
+    "status_f1": 100.0,
+    "restored_accuracy": 97.73,
+    "action_breakdown": {
+      "new_search": 90.3,
+      "expand": 100.0,
+      "refine": 93.9,
+      "remove": 89.3,
+      "reset": 100.0
+    },
+    "category_metrics": {
+      "search": {
+        "total_turns": 31,
+        "exact_matches": 22,
+        "exact_match_rate": 71.0,
+        "macro_f1": 93.1
+      },
+      "expansion": {
+        "total_turns": 19,
+        "exact_matches": 14,
+        "exact_match_rate": 73.7,
+        "macro_f1": 96.0
+      },
+      "refinement": {
+        "total_turns": 30,
+        "exact_matches": 20,
+        "exact_match_rate": 66.7,
+        "macro_f1": 97.5
+      },
+      "removal": {
+        "total_turns": 28,
+        "exact_matches": 20,
+        "exact_match_rate": 71.4,
+        "macro_f1": 95.3
+      },
+      "context": {
+        "total_turns": 14,
+        "exact_matches": 10,
+        "exact_match_rate": 71.4,
+        "macro_f1": 90.2
+      },
+      "reset": {
+        "total_turns": 10,
+        "exact_matches": 10,
+        "exact_match_rate": 100.0,
+        "macro_f1": 100.0
+      }
+    },
+    "details": {
+      "country": {
+        "p": 96.08,
+        "r": 95.15,
+        "f1": 95.61
+      },
+      "commodity": {
+        "p": 95.69,
+        "r": 100.0,
+        "f1": 97.8
+      },
+      "facility": {
+        "p": 77.86,
+        "r": 97.32,
+        "f1": 86.51
+      },
+      "status": {
+        "p": 100.0,
+        "r": 100.0,
+        "f1": 100.0
+      }
+    }
+  }
+]

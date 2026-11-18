@@ -1,11 +1,14 @@
 """
-Mock API & Apache Solr Simulator for SoftwareX:
-Queries synthetic_escombreras_europe.json dataset, computing facets, scores, and GIS active markers.
+Search Engine Client & Apache Solr Connector for SoftwareX:
+Supports production Apache Solr / SolrCloud clusters via HTTP REST API (SOLR_URL)
+with automatic fallback to the zero-setup standalone synthetic dataset (synthetic_escombreras_europe.json).
 """
 
+import os
 import json
+import re
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 DATA_FILE = Path(__file__).resolve().parent / "data" / "synthetic_escombreras_europe.json"
 
@@ -22,18 +25,148 @@ def load_dataset() -> List[Dict[str, Any]]:
             _DATASET_CACHE = []
     return _DATASET_CACHE
 
+def query_solr_cloud(solr_base_url: str, q: str = "*:*", fq: List[str] = None) -> Optional[Dict[str, Any]]:
+    """
+    Executes search query directly against an Apache Solr / SolrCloud collection via HTTP REST API (/select).
+    Retrieves matching document records, Solr scores, and multi-dimensional facets.
+    """
+    if fq is None:
+        fq = []
+
+    base = solr_base_url.rstrip("/")
+    collection = os.getenv("SOLR_COLLECTION", "").strip()
+    if collection and not base.endswith(collection):
+        base = f"{base}/{collection}"
+
+    select_url = base if base.endswith("/select") else f"{base}/select"
+    timeout = float(os.getenv("SOLR_TIMEOUT", "5.0"))
+    rows = int(os.getenv("SOLR_ROWS", "1000"))
+
+    # Solr REST parameters
+    params = [
+        ("q", q if q else "*:*"),
+        ("wt", "json"),
+        ("rows", str(rows)),
+        ("facet", "true"),
+        ("facet.field", "country"),
+        ("facet.field", "commodities"),
+        ("facet.field", "storage_facility_type"),
+        ("facet.field", "project_status"),
+    ]
+    for rule in fq:
+        params.append(("fq", rule))
+
+    try:
+        try:
+            import requests
+            resp = requests.get(select_url, params=params, timeout=timeout)
+            if resp.status_code != 200:
+                print(f"[SolrCloud] Warning: Server returned status {resp.status_code}: {resp.text[:180]}")
+                return None
+            data = resp.json()
+        except ImportError:
+            import urllib.request
+            import urllib.parse
+            query_string = urllib.parse.urlencode(params)
+            req = urllib.request.Request(f"{select_url}?{query_string}")
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                data = json.loads(response.read().decode("utf-8"))
+
+        response_block = data.get("response", {})
+        docs = response_block.get("docs", [])
+        num_found = response_block.get("numFound", len(docs))
+
+        # Format Solr facet fields [val1, cnt1, val2, cnt2, ...] into mapping
+        raw_facets = data.get("facet_counts", {}).get("facet_fields", {})
+        parsed_facets = {
+            "country": {},
+            "commodities": {},
+            "facility_type": {},
+            "status": {}
+        }
+        for field, raw_list in raw_facets.items():
+            norm_key = "facility_type" if "facility" in field.lower() else ("status" if "status" in field.lower() else field.lower())
+            field_dict = {}
+            if isinstance(raw_list, list):
+                for i in range(0, len(raw_list), 2):
+                    if i + 1 < len(raw_list):
+                        field_dict[str(raw_list[i])] = raw_list[i + 1]
+            elif isinstance(raw_list, dict):
+                field_dict = raw_list
+            parsed_facets[norm_key] = field_dict
+
+        # Ensure docs have consistent score and id attributes
+        for d in docs:
+            if "score" not in d:
+                d["score"] = 0.98 if fq else 0.85
+
+        return {
+            "numFound": num_found,
+            "totalDatasetSize": num_found,
+            "docs": docs,
+            "facets": parsed_facets,
+            "engine": "solr_cloud"
+        }
+    except Exception as e:
+        print(f"[SolrCloud] Connection to '{select_url}' failed ({e}). Falling back to standalone mock engine.")
+        return None
+
 def query_data_space_solr(q: str = "*:*", fq: List[str] = None) -> Dict[str, Any]:
     """
-    Simulates Apache Solr execution against synthetic 100 European CRM sites.
-    Returns matched sites, Solr facets, and execution metadata.
+    Retrieves spatial CRM records from Apache Solr (SolrCloud / Standalone) if SOLR_URL is configured,
+    or from the local zero-setup synthetic European CRM dataset (Standalone Mock Mode).
     """
+    solr_url = os.getenv("SOLR_URL", "").strip()
+    if solr_url:
+        cloud_res = query_solr_cloud(solr_url, q=q, fq=fq)
+        if cloud_res is not None:
+            return cloud_res
+
     dataset = load_dataset()
     if fq is None:
         fq = []
 
     # Parse filter queries (fq)
     filter_rules = {}
+    commodities_and_rules = []
+    commodities_or_rules = []
+
     for rule in fq:
+        rule_clean = rule.strip()
+        if "commodities:" in rule_clean or rule_clean.startswith("(commodities:"):
+            if " OR " in rule_clean and "commodities:(" in rule_clean and " AND " in rule_clean:
+                # Compound rule e.g. (commodities:("nickel" OR "cobalt") OR (commodities:"tin" AND commodities:"lithium"))
+                m_or = re.search(r'commodities:\(([^)]+)\)', rule_clean)
+                if m_or:
+                    for v in m_or.group(1).split(" OR "):
+                        v_clean = v.strip().strip('"').lower()
+                        if v_clean and v_clean not in commodities_or_rules:
+                            commodities_or_rules.append(v_clean)
+                m_and = re.findall(r'commodities:"([^"]+)"', rule_clean)
+                for v in m_and:
+                    v_clean = v.strip().lower()
+                    if v_clean and v_clean not in commodities_and_rules:
+                        commodities_and_rules.append(v_clean)
+            elif "commodities:(" in rule_clean:
+                raw_inner = rule_clean.split("commodities:(", 1)[1].split(")", 1)[0]
+                if " AND " in raw_inner:
+                    for v in raw_inner.split(" AND "):
+                        v_clean = v.strip().strip('"').lower()
+                        if v_clean and v_clean not in commodities_and_rules:
+                            commodities_and_rules.append(v_clean)
+                else:
+                    for v in raw_inner.split(" OR "):
+                        v_clean = v.strip().strip('"').lower()
+                        if v_clean and v_clean not in commodities_or_rules:
+                            commodities_or_rules.append(v_clean)
+            elif 'commodities:"' in rule_clean:
+                m_direct = re.findall(r'commodities:"([^"]+)"', rule_clean)
+                for v in m_direct:
+                    v_clean = v.strip().lower()
+                    if v_clean and v_clean not in commodities_and_rules:
+                        commodities_and_rules.append(v_clean)
+            continue
+
         if ":" in rule:
             field, raw_vals = rule.split(":", 1)
             raw_vals = raw_vals.strip("()")
@@ -58,12 +191,24 @@ def query_data_space_solr(q: str = "*:*", fq: List[str] = None) -> Dict[str, Any
             if site_r not in filter_rules["region"]:
                 matches = False
 
-        # Check commodities filter
-        if "commodities" in filter_rules and matches:
+        # Check commodities filter (Supports Conjunction AND, Disjunction OR, and Compound)
+        if (commodities_and_rules or commodities_or_rules) and matches:
             site_comms = [c.lower() for c in site.get("commodities", [])]
-            target_comms = filter_rules["commodities"]
-            if not any(tc in site_comms for tc in target_comms):
-                matches = False
+            has_and = len(commodities_and_rules) > 0
+            has_or = len(commodities_or_rules) > 0
+
+            and_match = all(c in site_comms for c in commodities_and_rules) if has_and else False
+            or_match = any(c in site_comms for c in commodities_or_rules) if has_or else False
+
+            if has_and and has_or:
+                if not (and_match or or_match):
+                    matches = False
+            elif has_and:
+                if not and_match:
+                    matches = False
+            elif has_or:
+                if not or_match:
+                    matches = False
 
         # Check storage facility type
         if "storage_facility_type" in filter_rules and matches:
@@ -88,22 +233,6 @@ def query_data_space_solr(q: str = "*:*", fq: List[str] = None) -> Dict[str, Any
             site_copy = dict(site)
             site_copy["score"] = 0.98 if len(fq) > 0 else 0.85
             matched_sites.append(site_copy)
-
-    # Fallback to core filters (country & commodity) if combined filters yield 0 sites
-    if len(matched_sites) == 0 and len(fq) > 1:
-        for site in dataset:
-            core_match = True
-            if "country" in filter_rules:
-                if site.get("country", "").lower() not in filter_rules["country"]:
-                    core_match = False
-            if "commodities" in filter_rules and core_match:
-                site_comms = [c.lower() for c in site.get("commodities", [])]
-                if not any(tc in site_comms for tc in filter_rules["commodities"]):
-                    core_match = False
-            if core_match:
-                site_copy = dict(site)
-                site_copy["score"] = 0.75
-                matched_sites.append(site_copy)
 
     # Compute Solr Facets
     facet_countries = {}
@@ -133,5 +262,6 @@ def query_data_space_solr(q: str = "*:*", fq: List[str] = None) -> Dict[str, Any
             "commodities": facet_commodities,
             "facility_type": facet_facility_types,
             "status": facet_statuses
-        }
+        },
+        "engine": "standalone_mock"
     }

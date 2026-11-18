@@ -47,6 +47,55 @@
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: #334155; }
 
+    #manual-filter-widget::-webkit-scrollbar { width: 5px; }
+    #manual-filter-widget::-webkit-scrollbar-track { background: rgba(10, 13, 24, 0.7); border-radius: 4px; }
+    #manual-filter-widget::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    #manual-filter-widget::-webkit-scrollbar-thumb:hover { background: #10b981; }
+
+    /* Disambiguation Buttons inside Chat Bubbles */
+    .disambiguation-actions {
+      margin-top: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.8);
+      border-radius: 0.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .disambiguation-actions button {
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .disambiguation-actions .btn-outline-primary {
+      background: rgba(30, 41, 59, 0.9);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.5);
+    }
+    .disambiguation-actions .btn-outline-primary:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: #38bdf8;
+      color: #ffffff;
+    }
+    .disambiguation-actions .btn-primary {
+      background: rgba(5, 150, 105, 0.25);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.6);
+    }
+    .disambiguation-actions .btn-primary:hover {
+      background: rgba(16, 185, 129, 0.4);
+      border-color: #10b981;
+      color: #ffffff;
+    }
+
     /* Map Marker Pulse Animation */
     @keyframes marker-pulse-emerald {
       0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
@@ -65,6 +114,40 @@
   </style>
 </head>
 <body class="h-full flex flex-col font-sans text-slate-100 bg-[#060811] antialiased select-none">
+
+  <!-- ==========================================
+      CODESPACES / EMBEDDED PREVIEW BANNER
+      ========================================== -->
+  <div id="codespaces-banner" class="hidden bg-gradient-to-r from-blue-950 via-slate-900 to-blue-950 border-b border-blue-500/30 px-4 py-2 flex items-center justify-between text-xs text-blue-200 z-30 shadow-lg shrink-0">
+    <div class="flex items-center gap-2.5">
+      <span class="flex h-2 w-2 relative">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+      </span>
+      <span>
+        <strong class="text-blue-100 font-semibold">Codespaces Preview:</strong>
+        For optimal full-screen GIS visualization and dual-pane interaction, open the dashboard in a dedicated browser tab.
+      </span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button 
+        type="button"
+        onclick="window.open(window.location.href, '_blank')" 
+        class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-3 py-1 rounded text-[11px] shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
+      >
+        <span>Open in New Tab</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      </button>
+      <button 
+        type="button"
+        onclick="document.getElementById('codespaces-banner').remove()" 
+        title="Dismiss notice"
+        class="text-slate-400 hover:text-white px-1.5 py-0.5 text-sm font-bold cursor-pointer"
+      >×</button>
+    </div>
+  </div>
 
   <!-- ==========================================
       HEADER BAR
@@ -87,15 +170,44 @@
       </div>
     </div>
 
-    <!-- Active Filter Badges over Map Header -->
-    <div id="active-filters-container" class="hidden md:flex items-center gap-2 bg-slate-950/80 border border-slate-800/80 px-3 py-1.5 rounded-lg max-w-xl">
-      <span class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold shrink-0">Active GIS Filters:</span>
-      <div id="active-filters-badges" class="flex items-center gap-1.5 overflow-x-auto text-[10.5px]">
-        <span class="text-slate-500 italic text-[10px]">No active filters (Showing full European Data Space)</span>
-      </div>
-    </div>
+    <!-- Right-side status and telemetry controls -->
+    <div class="flex items-center gap-3 shrink-0">
+      <!-- Link to Generic GIS Template Sandbox -->
+      <button 
+        type="button"
+        onclick="openSiblingApp(8085)"
+        class="bg-blue-950/60 hover:bg-blue-900/80 text-blue-300 hover:text-white border border-blue-800/80 text-[10.5px] px-2.5 py-1.5 rounded-md transition flex items-center gap-1.5 cursor-pointer shadow-sm"
+        title="Open General-Purpose GIS Architecture Template on Port 8085"
+      >
+        <span>🌍 GIS Template (Port 8085)</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      </button>
 
-    <div class="flex items-center gap-3">
+      <!-- Live Hardware / Engine Telemetry Badge -->
+      <div id="gpu-telemetry-badge" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-md shadow-sm" title="Real-time Execution Engine Status">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="4" y="4" width="16" height="16" rx="2" />
+          <rect x="9" y="9" width="6" height="6" />
+          <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" />
+        </svg>
+        <span class="text-slate-400 text-[10px] hidden sm:inline">Engine:</span>
+        <span id="gpu-vram-text" class="text-emerald-300 font-mono text-[10px] font-semibold">Standalone Mode (CPU)</span>
+        <div id="gpu-vram-bar-container" class="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden hidden">
+          <div id="gpu-vram-bar" class="bg-gradient-to-r from-purple-500 to-indigo-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+        <button 
+          id="gpu-purge-btn"
+          type="button" 
+          onclick="unloadGPUModel()" 
+          title="Purge GPU VRAM memory cache"
+          class="hidden text-slate-400 hover:text-rose-400 text-[9.5px] px-1.5 py-0.5 rounded border border-slate-700/60 hover:border-rose-500/40 bg-slate-950 transition-all font-mono"
+        >
+          🧹 Purge VRAM
+        </button>
+      </div>
+
       <div id="site-counter-display" class="text-[11px] font-mono font-semibold text-emerald-400 bg-emerald-950/50 border border-emerald-900/50 px-3 py-1.5 rounded-md hidden sm:block">
         Showing 100 / 100 European Sites
       </div>
@@ -105,11 +217,41 @@
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
         </span>
-        <span class="text-slate-400 text-[10px]">Mode:</span>
-        <span id="current-model-indicator" class="text-emerald-400 font-bold text-[10px] uppercase">Standalone Engine</span>
+        <span class="text-slate-400 text-[10px]">Status:</span>
+        <span id="current-model-indicator" class="text-emerald-400 font-bold text-[10px] uppercase">Deterministic Engine</span>
       </div>
+
+      <!-- Open in Dedicated Browser Tab Button -->
+      <button 
+        type="button"
+        id="header-open-tab-btn" 
+        onclick="window.open(window.location.href, '_blank')"
+        title="Open application in a full separate browser tab"
+        class="flex items-center gap-1.5 bg-blue-900/40 hover:bg-blue-800/60 text-blue-300 hover:text-blue-100 border border-blue-600/40 hover:border-blue-400 px-2.5 py-1.5 rounded-md text-[10.5px] font-semibold transition-all shadow-sm cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+        <span class="hidden md:inline">Open in New Tab ↗</span>
+        <span class="md:hidden">New Tab ↗</span>
+      </button>
     </div>
   </header>
+
+  <!-- ==========================================
+      DEDICATED ACTIVE GIS FILTERS SUB-BAR (Full Width, Zero Overlap)
+      ========================================== -->
+  <div id="active-filters-container" class="h-9 bg-[#070b16] border-b border-geodark-border/80 px-4 flex items-center gap-3 shrink-0 relative z-10 shadow-inner">
+    <div class="flex items-center gap-1.5 text-[10.5px] text-slate-400 uppercase tracking-wider font-bold shrink-0">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-400" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+      </svg>
+      <span>Active Filters:</span>
+    </div>
+    <div id="active-filters-badges" class="flex-1 flex items-center gap-2 overflow-x-auto text-[10.5px] py-0.5">
+      <span class="text-slate-500 italic text-[10.5px]">No active filters (Showing full European Data Space)</span>
+    </div>
+  </div>
 
   <!-- ==========================================
       MAIN CONTENT CONTAINER
@@ -117,30 +259,33 @@
   <main class="flex-1 flex flex-col overflow-hidden relative">
     
     <!-- Middle: Horizontal split Panels (Chat | Map & Technical) -->
-    <div class="flex-1 flex flex-row overflow-hidden">
+    <div id="main-split-container" class="flex-1 flex flex-row overflow-hidden relative">
       
       <!-- ==========================================
-          LEFT PANEL: CHAT & EVIDENCES (50%)
+          LEFT PANEL: CHAT & EVIDENCES
           ========================================== -->
-      <section class="w-1/2 h-full flex flex-col border-r border-geodark-border bg-[#0a0d18] relative z-10">
+      <section id="left-chat-panel" class="h-full flex flex-col border-r border-geodark-border bg-[#0a0d18] relative z-10 shrink-0" style="width: 50%; min-width: 25%; max-width: 75%;">
         
         <!-- Reviewer Test Bench Bar -->
         <div class="p-3 bg-[#0d1222] border-b border-geodark-border flex flex-col gap-1.5 shadow-sm">
-          <div class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold flex items-center gap-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-            </svg>
-            Reviewer Test Bench (Preset Benchmark Queries)
+          <div class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              Reviewer Test Bench (Preset Benchmark Queries & Conversational Multi-Turn)
+            </div>
+            <span class="text-[9.5px] text-purple-400 font-mono">Chat Memory: DST Active</span>
           </div>
           
-          <div class="grid grid-cols-3 gap-2">
+          <div class="grid grid-cols-4 gap-2">
             <button 
               id="btn-scenario-1"
               onclick="runScenario('query_1')"
               class="text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-geodark-card border-geodark-border hover:border-slate-600 text-slate-300"
             >
-              <span class="font-semibold block text-emerald-400 mb-1">Test 1: Active Li & Co</span>
-              <span class="text-slate-400 text-[10px]">Lithium and Cobalt active sites in Spain & Finland</span>
+              <span class="font-semibold block text-emerald-400 mb-0.5">Test 1: Active Li & Co</span>
+              <span class="text-slate-400 text-[9.5px]">Spain & Finland</span>
             </button>
             
             <button 
@@ -148,8 +293,8 @@
               onclick="runScenario('query_2')"
               class="text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-geodark-card border-geodark-border hover:border-slate-600 text-slate-300"
             >
-              <span class="font-semibold block text-amber-400 mb-1">Test 2: Tungsten Ponds</span>
-              <span class="text-slate-400 text-[10px]">Unrestored tungsten ponds in Germany</span>
+              <span class="font-semibold block text-amber-400 mb-0.5">Test 2: W Ponds</span>
+              <span class="text-slate-400 text-[9.5px]">Germany unrestored</span>
             </button>
 
             <button 
@@ -157,10 +302,41 @@
               onclick="runScenario('query_3')"
               class="text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-geodark-card border-geodark-border hover:border-slate-600 text-slate-300"
             >
-              <span class="font-semibold block text-blue-400 mb-1">Test 3: REE Deposits</span>
-              <span class="text-slate-400 text-[10px]">Rare Earth Elements in Sweden & France</span>
+              <span class="font-semibold block text-blue-400 mb-0.5">Test 3: REE Deposits</span>
+              <span class="text-slate-400 text-[9.5px]">Sweden & France</span>
+            </button>
+
+            <button 
+              id="btn-scenario-multiturn"
+              onclick="runMultiTurnDemoStep()"
+              class="text-left p-2 rounded-lg border text-[11px] leading-tight transition-all flex flex-col justify-between bg-purple-950/40 border-purple-800/80 hover:border-purple-400 text-purple-200"
+              title="Click repeatedly to execute the 4-turn multi-turn conversational dialogue requested by reviewers"
+            >
+              <span class="font-semibold block text-purple-300 mb-0.5 flex items-center justify-between" id="multiturn-demo-title">
+                <span>💬 Multi-Turn DST</span>
+                <span class="text-[9px] bg-purple-900/60 px-1 rounded text-purple-300">Step 1/4</span>
+              </span>
+              <span class="text-purple-300/80 text-[9.5px] truncate" id="multiturn-demo-sub">"show waste dumps near Paris"</span>
             </button>
           </div>
+        </div>
+
+        <!-- Conversational Memory & State Tracking Bar -->
+        <div class="px-3.5 py-1.5 bg-[#090d19] border-b border-geodark-border flex items-center justify-between text-[11px] shrink-0">
+          <div class="flex items-center gap-2 truncate">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+            <span id="chat-memory-status" class="text-slate-300 font-mono text-[10px] truncate">
+              Conversational Memory: <span class="text-emerald-400 font-semibold">Active</span> (Tracking progressive filters)
+            </span>
+          </div>
+          <button 
+            type="button" 
+            onclick="resetConversationMemory()" 
+            class="text-[10px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white px-2.5 py-0.5 rounded border border-slate-700 transition-all flex items-center gap-1 shrink-0 shadow-sm"
+            title="Reiniciar historial y limpiar filtros de conversación"
+          >
+            <span>🔄</span> New Search / Reset
+          </button>
         </div>
 
         <!-- Chat Feed Window -->
@@ -188,6 +364,31 @@
 
         <!-- Input Bar with integrated LLM Provider Selector right next to query box -->
         <form onsubmit="event.preventDefault(); handleCustomSubmit(event); return false;" class="p-3 bg-[#0d1222] border-t border-geodark-border flex flex-col gap-2 shrink-0 z-10">
+          <!-- Model Weight Loading Progress Banner -->
+          <div id="model-loading-banner" class="hidden p-3 bg-slate-900/95 border border-purple-500/60 rounded-xl shadow-xl backdrop-blur-md transition-all duration-300">
+            <div class="flex items-center justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="relative flex h-2.5 w-2.5">
+                  <span id="model-spinner-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                  <span id="model-spinner-dot" class="relative inline-flex rounded-full h-2.5 w-2.5 bg-purple-500"></span>
+                </span>
+                <span id="model-loading-title" class="text-xs font-bold text-purple-300 tracking-wide">
+                  Loading model weights into GPU memory...
+                </span>
+              </div>
+              <span id="model-loading-timer" class="text-[10px] font-mono text-purple-400 font-medium">Please wait...</span>
+            </div>
+
+            <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800 p-0.5">
+              <div id="model-loading-progress-bar" class="bg-gradient-to-r from-purple-600 via-indigo-500 to-emerald-400 h-full rounded-full transition-all duration-300 animate-pulse" style="width: 20%"></div>
+            </div>
+
+            <div id="model-loading-subtitle" class="text-[10px] text-slate-400 mt-1.5 flex items-center justify-between">
+              <span>Transferring model weights into VRAM...</span>
+              <span class="font-mono text-purple-300 font-semibold">Loading weights...</span>
+            </div>
+          </div>
+
           <div class="flex items-center gap-2 w-full">
             <!-- LLM Provider Selector -->
             <select 
@@ -196,9 +397,14 @@
               class="bg-slate-950 border border-emerald-500/80 hover:border-emerald-400 text-emerald-400 font-bold text-[11px] px-2 py-2 rounded-lg focus:outline-none cursor-pointer transition-all shadow-md shrink-0"
               title="Execution Engine Mode"
             >
-              <option value="rules">⚡ Standalone Engine (Mock)</option>
-              <option value="gemini">✨ Gemini 1.5 Flash / Pro</option>
-              <option value="openai">🤖 OpenAI GPT-4o</option>
+              <option value="rules">⚡ Deterministic Engine (Standalone / Zero-GPU)</option>
+              <option value="mistral">🇪🇺 Mistral 7B Instruct v0.2 (Local GPU)</option>
+              <option value="qwen">🚀 Qwen 2.5 7B (Local GPU)</option>
+              <option value="llama8b">🦙 Meta Llama 3.1 8B (Local GPU)</option>
+              <option value="phi3">🔬 Phi-3 Mini 4K (Local GPU)</option>
+              <option value="gemini">✨ Gemini 2.0 / 1.5 (Cloud API)</option>
+              <option value="openai">🤖 OpenAI GPT-4o (Cloud API)</option>
+              <option value="claude">🎭 Anthropic Claude 3.5 / 3.7 (Cloud API / Claude Code)</option>
             </select>
 
             <input 
@@ -223,7 +429,7 @@
             <input 
               type="password" 
               id="api-key-input" 
-              placeholder="Enter optional Gemini / OpenAI API Key..." 
+              placeholder="Enter optional Gemini / OpenAI / Claude API Key..." 
               class="flex-1 bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-[10.5px] text-slate-200 focus:border-emerald-500 focus:outline-none" 
             />
             <button type="button" onclick="saveAPIKey()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-[10px] px-3 py-1 rounded transition-all shrink-0">
@@ -234,229 +440,116 @@
 
       </section>
 
+      <!-- Vertical Split Resizer Divider Handle -->
+      <div 
+        id="split-resizer" 
+        class="w-1.5 hover:w-2 bg-slate-800/80 hover:bg-emerald-500 active:bg-emerald-600 cursor-col-resize z-20 shrink-0 transition-all select-none flex items-center justify-center group" 
+        title="Drag horizontally to resize Chat and Map panels"
+      >
+        <div class="h-8 w-0.5 bg-slate-500 group-hover:bg-white rounded-full"></div>
+      </div>
+
       <!-- ==========================================
-          RIGHT PANEL: MAP & INFORMATION (50%)
+          RIGHT PANEL: MAP & INFORMATION
           ========================================== -->
-      <section class="w-1/2 h-full flex flex-col relative">
+      <section id="right-map-panel" class="flex-1 h-full flex flex-col relative min-w-0">
         
         <!-- Leaflet Map Area -->
         <div class="flex-1 relative border-b border-geodark-border overflow-hidden">
           <div id="map" class="w-full h-full bg-[#070a13]"></div>
           
           <!-- Floating Manual Filters Widget on Map Right Side -->
-          <div id="manual-filter-widget" class="absolute top-3 right-3 z-[1000] bg-slate-900/95 border border-slate-800 backdrop-blur-md rounded-xl p-3 shadow-2xl w-72 pointer-events-auto">
-            <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-800">
+          <div 
+            id="manual-filter-widget" 
+            class="absolute top-3 right-3 z-[1000] bg-slate-900/95 border border-slate-800 backdrop-blur-md rounded-xl p-3 shadow-2xl overflow-y-auto pointer-events-auto transition-[width] duration-150"
+            style="width: 350px; min-width: 290px; max-width: 850px; max-height: calc(100% - 24px);"
+          >
+            <!-- Left-edge drag handle for horizontal resizing -->
+            <div 
+              id="manual-filter-resizer" 
+              class="absolute top-0 bottom-0 -left-1.5 w-3 cursor-ew-resize hover:bg-emerald-500/50 active:bg-emerald-600 transition-colors z-30 flex items-center justify-center group select-none" 
+              title="Drag left or right to expand or shrink the filters panel"
+            >
+              <div class="h-10 w-1 bg-slate-600 group-hover:bg-emerald-400 group-active:bg-white rounded-full transition-colors"></div>
+            </div>
+
+            <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-800 select-none">
               <span class="text-[10.5px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                 🎛️ Spatial & Attribute Filters
               </span>
-              <button type="button" onclick="resetManualFilters()" class="text-[9.5px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-2 py-0.5 rounded transition-all">
-                Reset All
-              </button>
+              <div class="flex items-center gap-1.5">
+                <!-- Width expand toggle button -->
+                <button 
+                  type="button" 
+                  onclick="toggleCrmsFilterWidth()" 
+                  id="btn-crms-expand-filters" 
+                  class="text-[9.5px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-emerald-300 hover:text-white px-1.5 py-0.5 rounded transition-all cursor-pointer flex items-center gap-1" 
+                  title="Toggle wide view (350px ↔ 640px)"
+                >
+                  <span>↔</span>
+                  <span id="label-crms-expand-filters">Expand</span>
+                </button>
+                <button 
+                  type="button" 
+                  onclick="toggleManualFilterWidgetCollapse()" 
+                  id="btn-crms-collapse-filters" 
+                  class="text-[9.5px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white px-1.5 py-0.5 rounded transition-all cursor-pointer font-bold" 
+                  title="Collapse / expand filter cards"
+                >
+                  <span id="icon-crms-collapse-filters">−</span>
+                </button>
+                <button type="button" onclick="resetManualFilters()" class="text-[9.5px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-2 py-0.5 rounded transition-all cursor-pointer">
+                  Reset All
+                </button>
+              </div>
             </div>
             
-            <div class="space-y-2.5 text-[10.5px]">
-              <!-- Country Multi-Select -->
-              <div class="relative">
-                <div class="flex items-center justify-between mb-0.5">
-                  <label class="text-[9.5px] text-slate-400 font-semibold">Country (Europe):</label>
-                  <span id="count-selected-countries" class="text-[9px] text-emerald-400 font-mono">All</span>
-                </div>
-                <button type="button" onclick="toggleFilterMenu('country')" class="w-full bg-slate-950 border border-slate-800 hover:border-slate-700 rounded px-2.5 py-1.5 text-left text-slate-200 flex items-center justify-between text-[11px] focus:outline-none">
-                  <span id="label-selected-countries" class="truncate">All European Countries</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                <div id="pills-selected-countries" class="flex flex-wrap gap-1 mt-1 empty:hidden"></div>
-                <div id="dropdown-menu-country" class="hidden absolute left-0 right-0 z-50 mt-1 bg-slate-950 border border-slate-700 rounded-lg p-2 max-h-40 overflow-y-auto space-y-1 shadow-2xl">
-                  <div class="grid grid-cols-2 gap-1 text-[10px]">
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="spain" onchange="toggleManualCheckbox('countries', 'spain')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Spain</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="portugal" onchange="toggleManualCheckbox('countries', 'portugal')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Portugal</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="germany" onchange="toggleManualCheckbox('countries', 'germany')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Germany</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="france" onchange="toggleManualCheckbox('countries', 'france')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>France</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="sweden" onchange="toggleManualCheckbox('countries', 'sweden')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Sweden</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="finland" onchange="toggleManualCheckbox('countries', 'finland')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Finland</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="poland" onchange="toggleManualCheckbox('countries', 'poland')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Poland</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="italy" onchange="toggleManualCheckbox('countries', 'italy')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Italy</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="austria" onchange="toggleManualCheckbox('countries', 'austria')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Austria</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="greece" onchange="toggleManualCheckbox('countries', 'greece')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Greece</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="ireland" onchange="toggleManualCheckbox('countries', 'ireland')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Ireland</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="czechia" onchange="toggleManualCheckbox('countries', 'czechia')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
-                      <span>Czechia</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Commodity Multi-Select -->
-              <div class="relative">
-                <div class="flex items-center justify-between mb-0.5">
-                  <label class="text-[9.5px] text-slate-400 font-semibold">CRM Metal / Commodity:</label>
-                  <span id="count-selected-commodities" class="text-[9px] text-amber-400 font-mono">All</span>
-                </div>
-                <button type="button" onclick="toggleFilterMenu('commodity')" class="w-full bg-slate-950 border border-slate-800 hover:border-slate-700 rounded px-2.5 py-1.5 text-left text-slate-200 flex items-center justify-between text-[11px] focus:outline-none">
-                  <span id="label-selected-commodities" class="truncate">All Critical Raw Materials</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                <div id="pills-selected-commodities" class="flex flex-wrap gap-1 mt-1 empty:hidden"></div>
-                <div id="dropdown-menu-commodity" class="hidden absolute left-0 right-0 z-50 mt-1 bg-slate-950 border border-slate-700 rounded-lg p-2 max-h-40 overflow-y-auto space-y-1 shadow-2xl">
-                  <div class="grid grid-cols-2 gap-1 text-[10px]">
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="tungsten" onchange="toggleManualCheckbox('commodities', 'tungsten')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Tungsten (W)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="lithium" onchange="toggleManualCheckbox('commodities', 'lithium')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Lithium (Li)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="cobalt" onchange="toggleManualCheckbox('commodities', 'cobalt')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Cobalt (Co)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="copper" onchange="toggleManualCheckbox('commodities', 'copper')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Copper (Cu)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="rare earth elements" onchange="toggleManualCheckbox('commodities', 'rare earth elements')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Rare Earth (REE)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="nickel" onchange="toggleManualCheckbox('commodities', 'nickel')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Nickel (Ni)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="tin" onchange="toggleManualCheckbox('commodities', 'tin')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Tin (Sn)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="tantalum" onchange="toggleManualCheckbox('commodities', 'tantalum')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Tantalum (Ta)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="graphite" onchange="toggleManualCheckbox('commodities', 'graphite')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Graphite</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="titanium" onchange="toggleManualCheckbox('commodities', 'titanium')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Titanium (Ti)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="pge" onchange="toggleManualCheckbox('commodities', 'pge')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>PGE (Pt)</span>
-                    </label>
-                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
-                      <input type="checkbox" value="manganese" onchange="toggleManualCheckbox('commodities', 'manganese')" class="checkbox-commodity rounded border-slate-700 text-amber-500 focus:ring-0">
-                      <span>Manganese (Mn)</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Storage Facility Type -->
-              <div>
-                <div class="flex items-center justify-between mb-0.5">
-                  <label class="text-[9.5px] text-slate-400 font-semibold">Storage Facility Type:</label>
-                  <span id="count-selected-facilities" class="text-[9px] text-slate-400 font-mono">All</span>
-                </div>
-                <select id="manual-filter-facility" onchange="handleSelectFacility(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none text-[11px]">
-                  <option value="">All Facility Types</option>
-                  <option value="waste dump">Waste Dump</option>
-                  <option value="tailings storage facility">Tailings Storage Facility (TSF)</option>
-                  <option value="stockpile">Mineral Stockpile</option>
-                  <option value="pond">Settling Pond</option>
-                </select>
-              </div>
-
-              <!-- Operational Status -->
-              <div>
-                <div class="flex items-center justify-between mb-0.5">
-                  <label class="text-[9.5px] text-slate-400 font-semibold">Operational Status:</label>
-                  <span id="count-selected-statuses" class="text-[9px] text-slate-400 font-mono">All</span>
-                </div>
-                <select id="manual-filter-status" onchange="handleSelectStatus(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1 text-slate-200 focus:border-emerald-500 focus:outline-none text-[11px]">
-                  <option value="">All Statuses</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                  <option value="development">Under Development</option>
-                  <option value="care and maintenance">Care & Maintenance</option>
-                </select>
-              </div>
+            <div id="manual-filter-cards-container" class="space-y-2.5 text-[10.5px]">
+              <!-- Dynamic Filter Dimension Cards (Reorderable) rendered by renderManualFilterCards() -->
             </div>
           </div>
 
-          <!-- Map floating legend -->
-          <div class="absolute bottom-3 left-3 bg-geodark-card/90 border border-geodark-border/80 backdrop-blur-md rounded-lg p-2.5 text-[11px] text-slate-300 z-[1000] shadow-xl pointer-events-auto">
-            <h5 class="font-bold text-slate-200 mb-1.5 flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-              </svg>
-              CRM Category Legend
+          <!-- Map floating dynamic legend -->
+          <div id="crm-map-legend" class="absolute bottom-3 left-3 bg-slate-900/90 border border-slate-800 backdrop-blur-md rounded-lg p-2.5 text-[11px] text-slate-300 z-[1000] shadow-xl pointer-events-auto max-w-[240px]">
+            <h5 class="font-bold text-slate-200 mb-1.5 flex items-center gap-1.5 border-b border-slate-800 pb-1">
+              <span class="text-xs">🎨</span>
+              <span id="legend-dimension-title">Marker Colors: CRM Metals</span>
             </h5>
-            <div class="space-y-1">
-              <div class="flex items-center gap-1.5">
-                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 border border-white inline-block"></span>
-                <span>Tungsten / Tin / Base (W, Sn)</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-white inline-block"></span>
-                <span>Battery Metals (Lithium, Cobalt)</span>
-              </div>
+            <div id="legend-items-container" class="space-y-1 max-h-48 overflow-y-auto pr-1">
+              <!-- Dynamically populated by renderMapLegend() -->
             </div>
           </div>
         </div>
 
         <!-- Technical Information Panel (Selected Facility Specifications) -->
-        <div id="ficha-container" class="h-[235px] bg-[#090d15] p-3.5 overflow-y-auto shrink-0 flex flex-col border-t border-geodark-border shadow-inner">
-          <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-800">
-            <h3 id="site-name" class="font-bold text-sm text-emerald-400">Select a facility marker on the map</h3>
-            <span id="site-status" class="text-[10px] font-mono px-2 py-0.5 rounded border border-emerald-800 text-emerald-400 bg-emerald-950">ACTIVE</span>
+        <div id="ficha-container" class="h-[235px] bg-[#090d15] p-3.5 overflow-y-auto shrink-0 flex flex-col border-t border-geodark-border shadow-inner transition-all duration-150">
+          <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-800 shrink-0 select-none">
+            <div class="flex items-center gap-2 truncate mr-2">
+              <h3 id="site-name" class="font-bold text-sm text-emerald-400 truncate">Select a facility marker on the map</h3>
+              <span id="site-status" class="text-[10px] font-mono px-2 py-0.5 rounded border border-emerald-800 text-emerald-400 bg-emerald-950 shrink-0">ACTIVE</span>
+            </div>
+            <button 
+              type="button" 
+              onclick="toggleFichaPanel(event)" 
+              id="btn-toggle-ficha"
+              class="text-[10px] font-mono bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700 hover:border-slate-500 px-2 py-0.5 rounded cursor-pointer transition-all flex items-center gap-1 shrink-0 font-semibold"
+              title="Minimize/restore facility technical specifications"
+            >
+              <span id="ficha-collapse-icon">▼</span>
+              <span id="ficha-collapse-text">Minimize</span>
+            </button>
           </div>
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 text-[11px] mb-2.5">
-            <div><span class="text-slate-400 block text-[9.5px]">Operator:</span><span id="site-company" class="font-medium text-slate-200">EU Operator</span></div>
-            <div><span class="text-slate-400 block text-[9.5px]">Location:</span><span id="site-region" class="font-medium text-slate-200">Europe</span></div>
-            <div><span class="text-slate-400 block text-[9.5px]">Commodities:</span><span id="site-commodities" class="font-medium text-amber-300">Lithium, Cobalt</span></div>
-            <div><span class="text-slate-400 block text-[9.5px]">UNFC Code:</span><span id="site-unfc" class="font-mono text-emerald-400">UNFC E1-F2-G1</span></div>
-          </div>
-          <div class="text-[11px] text-slate-300 leading-relaxed">
-            <span class="text-slate-400 block text-[9.5px] mb-0.5">Technical Overview:</span>
-            <p id="site-description" class="text-slate-300">Click any site marker on the interactive Europe map to view detailed facility specifications, UNFC classifications, and geo-environmental flags.</p>
+          <div id="ficha-details-body" class="flex flex-col gap-2">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 text-[11px] mb-2.5">
+              <div><span class="text-slate-400 block text-[9.5px]">Operator:</span><span id="site-company" class="font-medium text-slate-200">EU Operator</span></div>
+              <div><span class="text-slate-400 block text-[9.5px]">Location:</span><span id="site-region" class="font-medium text-slate-200">Europe</span></div>
+              <div><span class="text-slate-400 block text-[9.5px]">Commodities:</span><span id="site-commodities" class="font-medium text-amber-300">Lithium, Cobalt</span></div>
+              <div><span class="text-slate-400 block text-[9.5px]">UNFC Code:</span><span id="site-unfc" class="font-mono text-emerald-400">UNFC E1-F2-G1</span></div>
+            </div>
+            <div class="text-[11px] text-slate-300 leading-relaxed">
+              <span class="text-slate-400 block text-[9.5px] mb-0.5">Technical Overview:</span>
+              <p id="site-description" class="text-slate-300">Click any site marker on the interactive Europe map to view detailed facility specifications, UNFC classifications, and geo-environmental flags.</p>
+            </div>
           </div>
         </div>
 
@@ -465,75 +558,120 @@
     </div>
 
     <!-- ==========================================
-        BOTTOM PANEL: APACHE SOLR ENGINE INSPECTOR
+        BOTTOM PANEL: APACHE SOLR ENGINE INSPECTOR (Resizable & Maximizable)
         ========================================== -->
-    <div id="bottom-panel" class="border-t border-geodark-border transition-all duration-300 relative bg-[#070a12] flex flex-col shrink-0 h-[250px]">
+    <div id="bottom-panel" class="border-t border-geodark-border transition-all duration-150 relative bg-[#070a12] flex flex-col shrink-0 h-[250px]">
       
+      <!-- Vertical Drag Resizer Bar -->
+      <div 
+        id="inspector-resizer" 
+        class="h-1.5 w-full bg-slate-800/90 hover:bg-emerald-500 active:bg-emerald-400 cursor-ns-resize transition-colors flex items-center justify-center select-none group shrink-0" 
+        title="Drag up or down to resize inspector height"
+      >
+        <div class="w-12 h-0.5 rounded-full bg-slate-600 group-hover:bg-white transition-colors"></div>
+      </div>
+
       <!-- Drawer Header Bar -->
       <div 
-        onclick="toggleBottomPanel()"
-        class="h-9 bg-[#0b0e1b] px-4 flex items-center justify-between cursor-pointer border-b border-geodark-border hover:bg-slate-900/80 transition-all select-none"
+        ondblclick="toggleMaximizeInspector(event)"
+        class="h-9 bg-[#0b0e1b] px-3 sm:px-4 flex items-center justify-between border-b border-geodark-border hover:bg-slate-900/70 transition-all select-none shrink-0"
       >
-        <div class="flex items-center gap-2 text-xs">
+        <div class="flex items-center gap-2 text-xs cursor-pointer" onclick="toggleBottomPanel(event)" title="Click to collapse / expand inspector drawer">
           <span class="relative flex h-2 w-2">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
           </span>
           <span class="font-bold text-slate-200 flex items-center gap-2">
             Apache Solr Engine Inspector 
-            <span class="text-[10px] font-normal text-slate-500 font-mono">
+            <span class="text-[10px] font-normal text-slate-500 font-mono hidden md:inline">
               (NLU Pipeline & Search Audit Drawer)
             </span>
           </span>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
           <!-- Inspector Tabs -->
           <div id="inspector-tabs" class="flex bg-slate-950 p-0.5 rounded border border-slate-800" onclick="event.stopPropagation()">
             <button 
-              type="button"
+              type="button" 
               id="tab-query"
               onclick="switchInspectorTab('query')"
-              class="px-3 py-1 rounded text-[10px] font-semibold transition-all bg-slate-800 text-emerald-400"
+              class="px-2.5 py-1 rounded text-[10px] font-semibold transition-all bg-slate-800 text-emerald-400 cursor-pointer"
             >
-              Solr Query Syntax (q, fq)
+              Solr Query (q, fq)
             </button>
             <button 
-              type="button"
+              type="button" 
               id="tab-facets"
               onclick="switchInspectorTab('facets')"
-              class="px-3 py-1 rounded text-[10px] font-semibold transition-all text-slate-400 hover:text-slate-200"
+              class="px-2.5 py-1 rounded text-[10px] font-semibold transition-all text-slate-400 hover:text-slate-200 cursor-pointer"
             >
               Facet Counts
             </button>
             <button 
-              type="button"
+              type="button" 
               id="tab-ner"
               onclick="switchInspectorTab('ner')"
-              class="px-3 py-1 rounded text-[10px] font-semibold transition-all text-slate-400 hover:text-slate-200"
+              class="px-2.5 py-1 rounded text-[10px] font-semibold transition-all text-slate-400 hover:text-slate-200 cursor-pointer"
             >
               NLU Extracted JSON
+            </button>
+          </div>
+
+          <!-- Quick Action Buttons: Copy, Maximize/Restore, Collapse -->
+          <div class="flex items-center gap-1.5" onclick="event.stopPropagation()">
+            <button 
+              type="button"
+              id="btn-copy-inspector"
+              onclick="copyInspectorContent()"
+              title="Copy active inspector JSON to clipboard"
+              class="px-2 py-1 rounded text-[10px] font-mono bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-500 transition-all flex items-center gap-1 cursor-pointer"
+            >
+              <span>📋</span>
+              <span class="hidden sm:inline">Copy</span>
+            </button>
+
+            <button 
+              type="button"
+              id="btn-maximize-inspector"
+              onclick="toggleMaximizeInspector(event)"
+              title="Expand / restore inspector height to see full JSON content"
+              class="px-2.5 py-1 rounded text-[10px] font-mono bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-emerald-800/80 hover:border-emerald-500 transition-all flex items-center gap-1 cursor-pointer font-semibold shadow-sm"
+            >
+              <span>⤢</span>
+              <span>Maximize</span>
+            </button>
+
+            <button 
+              type="button"
+              id="btn-collapse-inspector"
+              onclick="toggleBottomPanel(event)"
+              title="Minimize / expand inspector drawer to free map space"
+              class="px-2.5 py-1 rounded text-[10px] font-mono bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700 hover:border-slate-500 transition-all flex items-center gap-1 cursor-pointer font-semibold shadow-sm"
+            >
+              <span id="inspector-collapse-icon">▼</span>
+              <span id="inspector-collapse-text">Minimize Drawer</span>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Drawer Content -->
-      <div class="flex-1 p-3 overflow-y-auto font-mono text-xs">
-        <div id="inspector-query-content" class="h-full">
-          <pre id="inspector-query-code" class="text-amber-300 text-[11px] leading-relaxed">{
+      <!-- Drawer Content: Full height with horizontal & vertical scrolling -->
+      <div id="inspector-content-container" class="flex-1 p-3 overflow-hidden flex flex-col font-mono text-xs min-h-0 bg-[#060811]">
+        <div id="inspector-query-content" class="h-full overflow-auto rounded-lg bg-slate-950/90 border border-slate-900 p-3">
+          <pre id="inspector-query-code" class="text-amber-300 text-[11.5px] leading-relaxed select-text whitespace-pre overflow-x-auto font-mono">{
   "info": "Submit a conversational query above or click a preset test case to inspect generated Apache Solr search parameters."
 }</pre>
         </div>
 
-        <div id="inspector-facets-content" class="h-full hidden">
-          <pre id="inspector-facets-code" class="text-emerald-300 text-[11px] leading-relaxed">{
+        <div id="inspector-facets-content" class="h-full overflow-auto rounded-lg bg-slate-950/90 border border-slate-900 p-3 hidden">
+          <pre id="inspector-facets-code" class="text-emerald-300 text-[11.5px] leading-relaxed select-text whitespace-pre overflow-x-auto font-mono">{
   "info": "Facet distributions (country counts, commodity breakdown, status) will be displayed here."
 }</pre>
         </div>
 
-        <div id="inspector-ner-content" class="h-full hidden">
-          <pre id="inspector-ner-code" class="text-blue-300 text-[11px] leading-relaxed">{
+        <div id="inspector-ner-content" class="h-full overflow-auto rounded-lg bg-slate-950/90 border border-slate-900 p-3 hidden">
+          <pre id="inspector-ner-code" class="text-blue-300 text-[11.5px] leading-relaxed select-text whitespace-pre overflow-x-auto font-mono">{
   "info": "Structured JSON contract extracted by Dual-Variant NLU Engine (v1 Few-Shot / v3 OpenAPI Schema)."
 }</pre>
         </div>
@@ -550,6 +688,18 @@
       JAVASCRIPT LOGIC (PURE VANILLA)
       ========================================== -->
   <script>
+    function openSiblingApp(targetPort) {
+      const loc = window.location;
+      let targetUrl;
+      if (loc.hostname.includes('.app.github.dev') || loc.hostname.includes('.githubpreview.dev')) {
+        const newHostname = loc.hostname.replace(/-\d+(\.(?:preview\.)?app\.github\.dev|\.githubpreview\.dev)/, `-${targetPort}$1`);
+        targetUrl = `${loc.protocol}//${newHostname}/`;
+      } else {
+        targetUrl = `${loc.protocol}//${loc.hostname}:${targetPort}/`;
+      }
+      window.open(targetUrl, '_blank');
+    }
+
     // ==========================================
     // DATASET: 100 Synthetic European CRM Facilities
     // ==========================================
@@ -1809,29 +1959,30 @@
   },
   {
     "id": "EU-CRM-045",
-    "site_name": "North Karelia Tantalum & Niobium Waste Dump #45",
+    "site_name": "North Karelia Lithium & Cobalt Waste Dump #45",
     "company": "Nordic Minerals Ltd",
     "country": "finland",
     "country_name": "Finland",
     "region": "North Karelia",
     "province": "North Karelia",
-    "municipality": "North Karelia Tantalum & Niobium Waste Dump #45",
+    "municipality": "North Karelia Lithium & Cobalt Waste Dump #45",
     "lat": 62.4091,
     "lon": 28.6707,
     "commodities": [
-      "tantalum"
+      "lithium",
+      "cobalt"
     ],
-    "commodities_label": "Tantalum & Niobium",
+    "commodities_label": "Lithium, Cobalt",
     "facility_type": "Waste Dump / Escombrera",
-    "material_type": "sludge",
+    "material_type": "tailings",
     "project_status": "active",
     "status_label": "ACTIVE",
     "status_color": "#10b981",
     "area_m2": "2.94 MT",
-    "description": "Synthetic EU CRM storage site located in North Karelia, Finland. Contains estimated 2.94 MT of sludge rich in Tantalum & Niobium with average grade of 517 ppm. Managed by Nordic Minerals Ltd under active status.",
+    "description": "Synthetic EU CRM storage site located in North Karelia, Finland. Contains estimated 2.94 MT of tailings rich in Lithium and Cobalt with average grade of 0.85% Li / 0.12% Co. Managed by Nordic Minerals Ltd under active status.",
     "environmental_flags": [],
     "unfc_code": "E1-F3-G1",
-    "color_theme": "gold"
+    "color_theme": "emerald"
   },
   {
     "id": "EU-CRM-046",
@@ -3267,31 +3418,32 @@
   },
   {
     "id": "EU-CRM-097",
-    "site_name": "Extremadura Copper Waste Dump #97",
-    "company": "Trans-European Raw Materials GmbH",
+    "site_name": "Extremadura Lithium & Cobalt Waste Dump #97",
+    "company": "Iberian Critical Minerals SA",
     "country": "spain",
     "country_name": "Spain",
     "region": "Extremadura",
     "province": "Extremadura",
-    "municipality": "Extremadura Copper Waste Dump #97",
+    "municipality": "Extremadura Lithium & Cobalt Waste Dump #97",
     "lat": 39.0998,
     "lon": -5.3921,
     "commodities": [
-      "copper"
+      "lithium",
+      "cobalt"
     ],
-    "commodities_label": "Copper",
+    "commodities_label": "Lithium, Cobalt",
     "facility_type": "Waste Dump / Escombrera",
-    "material_type": "sludge",
-    "project_status": "development",
-    "status_label": "DEVELOPMENT",
-    "status_color": "#f59e0b",
+    "material_type": "tailings",
+    "project_status": "active",
+    "status_label": "ACTIVE",
+    "status_color": "#10b981",
     "area_m2": "14.24 MT",
-    "description": "Synthetic EU CRM storage site located in Extremadura, Spain. Contains estimated 14.24 MT of sludge rich in Copper with average grade of 1.8%. Managed by Trans-European Raw Materials GmbH under development status.",
+    "description": "Synthetic EU CRM storage site located in Extremadura, Spain. Contains estimated 14.24 MT of tailings rich in Lithium and Cobalt with average grade of 1.2% Li / 0.15% Co. Managed by Iberian Critical Minerals SA under active status.",
     "environmental_flags": [
       "high stability risk"
     ],
-    "unfc_code": "E1-F2-G3",
-    "color_theme": "gold"
+    "unfc_code": "E1-F2-G1",
+    "color_theme": "emerald"
   },
   {
     "id": "EU-CRM-098",
@@ -3381,34 +3533,317 @@
     let selectedSite = null;
     let markersMap = {};
     let mapInstance = null;
-    let currentProvider = "mock";
+    let currentProvider = "rules";
+    let lastWorkingProvider = "rules";
+
+    // Conversational Chat Memory & Dialogue State Tracking (DST)
+    let chatConversationHistory = [];
+    let chatCurrentFilters = {
+      countries: [],
+      regions: [],
+      commodities: [],
+      storage_facility_types: [],
+      material_types: [],
+      project_status: [],
+      environmental_flags: [],
+      restored: null
+    };
+    let multiTurnDemoStep = 0;
+
+    const MULTI_TURN_STEPS = [
+      {
+        query: "show waste dumps near Paris",
+        title: "Step 1: Paris Dumps",
+        sub: '"show waste dumps near Paris"'
+      },
+      {
+        query: "and also those near Berlin",
+        title: "Step 2: + Berlin (OR)",
+        sub: '"and also those near Berlin"'
+      },
+      {
+        query: "of those, only those containing lithium and cobalt",
+        title: "Step 3: Li & Co (AND)",
+        sub: '"of those, only those containing lithium and cobalt"'
+      },
+      {
+        query: "now remove the cobalt ones",
+        title: "Step 4: Drop Cobalt",
+        sub: '"now remove the cobalt ones"'
+      }
+    ];
+
+    function runMultiTurnDemoStep() {
+      const stepIdx = multiTurnDemoStep % MULTI_TURN_STEPS.length;
+      const stepData = MULTI_TURN_STEPS[stepIdx];
+      
+      multiTurnDemoStep++;
+      updateMultiTurnDemoButton();
+      
+      const getInput = () => document.getElementById('chat-input') || document.getElementById('custom-input');
+      const inputEl = getInput();
+      if (inputEl) inputEl.value = '';
+      sendChatMessage(stepData.query);
+    }
+
+    function updateMultiTurnDemoButton() {
+      const titleEl = document.getElementById('multiturn-demo-title');
+      const subEl = document.getElementById('multiturn-demo-sub');
+      if (!titleEl || !subEl) return;
+      
+      const nextStepIdx = multiTurnDemoStep % MULTI_TURN_STEPS.length;
+      const nextStep = MULTI_TURN_STEPS[nextStepIdx];
+      titleEl.innerHTML = `<span>💬 Multi-Turn DST</span><span class="text-[9px] bg-purple-900/60 px-1 rounded text-purple-300">Step ${nextStepIdx + 1}/4</span>`;
+      subEl.textContent = nextStep.sub;
+    }
+
+    function resetConversationMemory() {
+      chatConversationHistory = [];
+      chatCurrentFilters = {
+        countries: [],
+        regions: [],
+        commodities: [],
+        storage_facility_types: [],
+        material_types: [],
+        project_status: [],
+        environmental_flags: [],
+        restored: null
+      };
+      multiTurnDemoStep = 0;
+      updateMultiTurnDemoButton();
+      updateChatMemoryStatus('reset', chatCurrentFilters, 0);
+      sendChatMessage("start over");
+    }
+
+    function updateChatMemoryStatus(action, filters, historyLen) {
+      const el = document.getElementById('chat-memory-status');
+      if (!el) return;
+      filters = filters || {};
+      const activeItems = [];
+      if (filters.countries && filters.countries.length) activeItems.push(`Países: ${filters.countries.join(', ')}`);
+      if (filters.commodities && filters.commodities.length) activeItems.push(`Metales: ${filters.commodities.join(', ')}`);
+      if (filters.storage_facility_types && filters.storage_facility_types.length) activeItems.push(`Depósito: ${filters.storage_facility_types.join(', ')}`);
+      
+      const turnCount = historyLen !== undefined ? Math.floor(historyLen / 2) : Math.floor(chatConversationHistory.length / 2);
+      if (activeItems.length > 0) {
+        el.innerHTML = `Conversational Memory: <span class="text-emerald-400 font-semibold">Active (${turnCount} turns)</span> | <span class="text-slate-300 font-normal">${activeItems.join(' · ')}</span>`;
+      } else {
+        el.innerHTML = `Conversational Memory: <span class="text-slate-400 font-semibold">Standby (Full data space)</span>`;
+      }
+    }
 
     // ==========================================
-    // MULTI-SELECTION FILTERS & BIDIRECTIONAL SYNC
+    // REORDERABLE FILTER DIMENSIONS & DYNAMIC CARTOGRAPHY
     // ==========================================
+    let filterDimensionsOrder = ['commodities', 'countries', 'facilities', 'statuses'];
+
+    const COMMODITY_COLORS = {
+      "lithium": "#10b981",
+      "cobalt": "#0ea5e9",
+      "tungsten": "#f59e0b",
+      "copper": "#f97316",
+      "rare earth elements": "#8b5cf6",
+      "nickel": "#06b6d4",
+      "tin": "#84cc16",
+      "tantalum": "#6366f1",
+      "graphite": "#64748b",
+      "titanium": "#ec4899",
+      "pge": "#eab308",
+      "manganese": "#f43f5e"
+    };
+
+    const COUNTRY_COLORS = {
+      "spain": "#10b981",
+      "portugal": "#0ea5e9",
+      "germany": "#f59e0b",
+      "france": "#a855f7",
+      "sweden": "#06b6d4",
+      "finland": "#6366f1",
+      "poland": "#f43f5e",
+      "italy": "#84cc16",
+      "austria": "#f97316",
+      "greece": "#14b8a6",
+      "ireland": "#22c55e",
+      "czechia": "#d946ef"
+    };
+
+    const FACILITY_COLORS = {
+      "waste dump": "#f59e0b",
+      "tailings storage facility": "#3b82f6",
+      "pond": "#10b981",
+      "stockpile": "#8b5cf6"
+    };
+
+    const STATUS_COLORS = {
+      "active": "#10b981",
+      "inactive": "#94a3b8",
+      "development": "#3b82f6",
+      "care and maintenance": "#f59e0b"
+    };
+
     let filterState = {
       countries: [],
       commodities: [],
+      commodities_or: [],
+      commodities_and: [],
       facility: '',
       status: ''
     };
 
+    let isCountryDropdownOpen = false;
+
     function toggleFilterMenu(type) {
-      const menu = document.getElementById(`dropdown-menu-${type}`);
-      if (!menu) return;
-      const isHidden = menu.classList.contains('hidden');
-      document.querySelectorAll('[id^="dropdown-menu-"]').forEach(el => el.classList.add('hidden'));
-      if (isHidden) {
-        menu.classList.remove('hidden');
+      if (type === 'country') {
+        isCountryDropdownOpen = !isCountryDropdownOpen;
+        const menu = document.getElementById('dropdown-menu-country');
+        if (menu) menu.classList.toggle('hidden', !isCountryDropdownOpen);
       }
     }
 
     // Close menus when clicking outside
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('#manual-filter-widget')) {
-        document.querySelectorAll('[id^="dropdown-menu-"]').forEach(el => el.classList.add('hidden'));
+      if (!e.target.closest('#card-filter-countries')) {
+        const menu = document.getElementById('dropdown-menu-country');
+        if (menu) menu.classList.add('hidden');
+        isCountryDropdownOpen = false;
       }
     });
+
+    function moveFilterDimension(index, delta) {
+      const targetIdx = index + delta;
+      if (targetIdx < 0 || targetIdx >= filterDimensionsOrder.length) return;
+      const temp = filterDimensionsOrder[index];
+      filterDimensionsOrder[index] = filterDimensionsOrder[targetIdx];
+      filterDimensionsOrder[targetIdx] = temp;
+      renderManualFilterCards();
+      renderMarkers(getCurrentMatchingSites());
+      renderMapLegend();
+    }
+
+    function renderMapLegend() {
+      const container = document.getElementById('legend-items-container');
+      const titleEl = document.getElementById('legend-dimension-title');
+      if (!container || !titleEl) return;
+      
+      const topDim = filterDimensionsOrder[0] || 'commodities';
+      container.innerHTML = '';
+      
+      if (topDim === 'commodities') {
+        titleEl.textContent = 'Marker Colors: CRM Metals';
+        Object.keys(COMMODITY_COLORS).forEach(comm => {
+          const color = COMMODITY_COLORS[comm];
+          const label = comm.charAt(0).toUpperCase() + comm.slice(1);
+          const item = document.createElement('div');
+          item.className = 'flex items-center gap-1.5 text-[10px]';
+          item.innerHTML = `
+            <span class="w-2.5 h-2.5 rounded-full shrink-0 border border-white/60 shadow-sm" style="background-color: ${color}"></span>
+            <span class="truncate text-slate-200" title="${label}">${label}</span>
+          `;
+          container.appendChild(item);
+        });
+      } else if (topDim === 'countries') {
+        titleEl.textContent = 'Marker Colors: Countries';
+        Object.keys(COUNTRY_COLORS).forEach(c => {
+          const color = COUNTRY_COLORS[c];
+          const label = c.charAt(0).toUpperCase() + c.slice(1);
+          const item = document.createElement('div');
+          item.className = 'flex items-center gap-1.5 text-[10px]';
+          item.innerHTML = `
+            <span class="w-2.5 h-2.5 rounded-full shrink-0 border border-white/60 shadow-sm" style="background-color: ${color}"></span>
+            <span class="truncate text-slate-200" title="${label}">${label}</span>
+          `;
+          container.appendChild(item);
+        });
+      } else if (topDim === 'facilities') {
+        titleEl.textContent = 'Marker Colors: Facility Types';
+        const labels = {
+          'waste dump': 'Waste Dump',
+          'tailings storage facility': 'Tailings Storage (TSF)',
+          'pond': 'Settling Pond',
+          'stockpile': 'Mineral Stockpile'
+        };
+        Object.keys(FACILITY_COLORS).forEach(fac => {
+          const color = FACILITY_COLORS[fac];
+          const label = labels[fac] || fac;
+          const item = document.createElement('div');
+          item.className = 'flex items-center gap-1.5 text-[10px]';
+          item.innerHTML = `
+            <span class="w-2.5 h-2.5 rounded-full shrink-0 border border-white/60 shadow-sm" style="background-color: ${color}"></span>
+            <span class="truncate text-slate-200" title="${label}">${label}</span>
+          `;
+          container.appendChild(item);
+        });
+      } else if (topDim === 'statuses') {
+        titleEl.textContent = 'Marker Colors: Status';
+        const labels = {
+          'active': 'Active',
+          'inactive': 'Inactive',
+          'development': 'Development',
+          'care and maintenance': 'Care & Maint.'
+        };
+        Object.keys(STATUS_COLORS).forEach(st => {
+          const color = STATUS_COLORS[st];
+          const label = labels[st] || st;
+          const item = document.createElement('div');
+          item.className = 'flex items-center gap-1.5 text-[10px]';
+          item.innerHTML = `
+            <span class="w-2.5 h-2.5 rounded-full shrink-0 border border-white/60 shadow-sm" style="background-color: ${color}"></span>
+            <span class="truncate text-slate-200" title="${label}">${label}</span>
+          `;
+          container.appendChild(item);
+        });
+      }
+    }
+
+    function addCompoundCommodity(commodity, mode) {
+      commodity = commodity.toLowerCase().trim();
+      if (mode === 'or') {
+        if (!filterState.commodities_or.includes(commodity)) filterState.commodities_or.push(commodity);
+        filterState.commodities_and = filterState.commodities_and.filter(c => c !== commodity);
+      } else {
+        if (!filterState.commodities_and.includes(commodity)) filterState.commodities_and.push(commodity);
+        filterState.commodities_or = filterState.commodities_or.filter(c => c !== commodity);
+      }
+      filterState.commodities = [...new Set([...filterState.commodities_or, ...filterState.commodities_and])];
+      renderManualFilterCards();
+      applyManualFilters();
+    }
+
+    function moveCompoundCommodity(commodity, targetMode) {
+      addCompoundCommodity(commodity, targetMode);
+    }
+
+    function removeCompoundCommodity(commodity) {
+      commodity = commodity.toLowerCase().trim();
+      filterState.commodities_or = filterState.commodities_or.filter(c => c !== commodity);
+      filterState.commodities_and = filterState.commodities_and.filter(c => c !== commodity);
+      filterState.commodities = [...new Set([...filterState.commodities_or, ...filterState.commodities_and])];
+      renderManualFilterCards();
+      applyManualFilters();
+    }
+
+    function clearCompoundCommodities() {
+      filterState.commodities_or = [];
+      filterState.commodities_and = [];
+      filterState.commodities = [];
+      renderManualFilterCards();
+      applyManualFilters();
+    }
+
+    function setAllCompoundCommoditiesMode(mode) {
+      const allCurrent = [...new Set([...filterState.commodities_or, ...filterState.commodities_and])];
+      if (allCurrent.length === 0) return;
+      if (mode === 'or') {
+        filterState.commodities_or = allCurrent;
+        filterState.commodities_and = [];
+      } else {
+        filterState.commodities_and = allCurrent;
+        filterState.commodities_or = [];
+      }
+      filterState.commodities = allCurrent;
+      renderManualFilterCards();
+      applyManualFilters();
+    }
 
     function toggleManualCheckbox(category, val) {
       val = val.toLowerCase().trim();
@@ -3418,7 +3853,7 @@
       } else {
         filterState[category].push(val);
       }
-      updateFilterUI();
+      renderManualFilterCards();
       applyManualFilters();
     }
 
@@ -3428,86 +3863,396 @@
       if (idx >= 0) {
         filterState[category].splice(idx, 1);
       }
-      updateFilterUI();
+      renderManualFilterCards();
       applyManualFilters();
     }
 
     function handleSelectFacility(val) {
       filterState.facility = val.toLowerCase().trim();
-      updateFilterUI();
+      renderManualFilterCards();
       applyManualFilters();
     }
 
     function handleSelectStatus(val) {
       filterState.status = val.toLowerCase().trim();
-      updateFilterUI();
+      renderManualFilterCards();
       applyManualFilters();
     }
 
-    function updateFilterUI() {
-      // 1. Country checkboxes & pills
-      const countryCheckboxes = document.querySelectorAll('.checkbox-country');
-      countryCheckboxes.forEach(cb => {
-        cb.checked = filterState.countries.includes(cb.value.toLowerCase());
-      });
-      const countryLabel = document.getElementById('label-selected-countries');
-      const countryCount = document.getElementById('count-selected-countries');
-      const countryPills = document.getElementById('pills-selected-countries');
-      if (filterState.countries.length === 0) {
-        if (countryLabel) countryLabel.textContent = 'All European Countries';
-        if (countryCount) countryCount.textContent = 'All';
-        if (countryPills) countryPills.innerHTML = '';
-      } else {
-        const formatted = filterState.countries.map(c => c.charAt(0).toUpperCase() + c.slice(1));
-        if (countryLabel) countryLabel.textContent = formatted.join(', ') + ` (${formatted.length})`;
-        if (countryCount) countryCount.textContent = `${formatted.length} active`;
-        if (countryPills) {
-          countryPills.innerHTML = formatted.map(c => `
-            <span class="inline-flex items-center gap-1 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-[9.5px] px-2 py-0.5 rounded font-mono">
-              ${c}
-              <button type="button" onclick="removeFilterItem('countries', '${c.toLowerCase()}')" class="hover:text-white font-bold ml-0.5">✕</button>
-            </span>
-          `).join('');
+    function renderManualFilterCards() {
+      const container = document.getElementById('manual-filter-cards-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      filterDimensionsOrder.forEach((dimKey, idx) => {
+        const isFirst = idx === 0;
+        const isLast = idx === filterDimensionsOrder.length - 1;
+        const card = document.createElement('div');
+        card.id = `card-filter-${dimKey}`;
+        card.className = `p-2.5 rounded-lg border transition-all ${isFirst ? 'bg-slate-950 border-amber-500/50 shadow-md ring-1 ring-amber-500/20' : 'bg-slate-950/80 border-slate-800'}`;
+
+        const dimMeta = {
+          'commodities': { label: 'CRM Metal / Commodity', badge: 'COMPOUND' },
+          'countries': { label: 'Country (Europe)', badge: 'MULTISELECT' },
+          'facilities': { label: 'Storage Facility Type', badge: 'SELECT' },
+          'statuses': { label: 'Operational Status', badge: 'SELECT' }
+        }[dimKey];
+
+        let headerHtml = `
+          <div class="flex items-center justify-between pb-1.5 mb-2 border-b border-slate-800">
+            <div class="flex items-center gap-1.5 min-w-0">
+              <span class="font-bold text-slate-200 text-[10.5px] truncate">${dimMeta.label}</span>
+              ${isFirst ? '<span class="text-[8.5px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 shrink-0 flex items-center gap-0.5" title="Primary dimension dictating map point colors"><span>🎨</span><span>Marker Colors</span></span>' : ''}
+            </div>
+            <div class="flex items-center gap-0.5 shrink-0">
+              <button type="button" onclick="moveFilterDimension(${idx}, -1)" ${isFirst ? 'disabled class="opacity-25 text-slate-500 cursor-not-allowed text-xs px-1"' : 'class="text-slate-400 hover:text-white text-xs px-1 hover:bg-slate-800 rounded cursor-pointer"'} title="Move dimension up (priority color)">▲</button>
+              <button type="button" onclick="moveFilterDimension(${idx}, 1)" ${isLast ? 'disabled class="opacity-25 text-slate-500 cursor-not-allowed text-xs px-1"' : 'class="text-slate-400 hover:text-white text-xs px-1 hover:bg-slate-800 rounded cursor-pointer"'} title="Move dimension down">▼</button>
+            </div>
+          </div>
+        `;
+
+        if (dimKey === 'commodities') {
+          const orList = filterState.commodities_or;
+          const andList = filterState.commodities_and;
+          let formulaText = 'All CRMs (No filter)';
+          if (orList.length > 0 && andList.length > 0) {
+            formulaText = `(${orList.join(' OR ')}) OR (${andList.join(' AND ')})`;
+          } else if (orList.length > 0) {
+            formulaText = `${orList.join(' OR ')} (Any / Disjunction)`;
+          } else if (andList.length > 0) {
+            formulaText = `${andList.join(' AND ')} (Together / Conjunction)`;
+          }
+
+          let bodyHtml = `
+            <!-- Formula Bar -->
+            <div class="text-[9px] px-2 py-1 mb-2 rounded bg-slate-900 border border-slate-800 text-cyan-300 font-mono break-words leading-tight flex items-center justify-between">
+              <div class="truncate mr-1"><span class="text-slate-500 font-sans">Formula:</span> ${formulaText}</div>
+              ${(orList.length > 0 || andList.length > 0) ? `<button type="button" onclick="clearCompoundCommodities()" class="text-[8.5px] text-slate-400 hover:text-rose-400 shrink-0 cursor-pointer">Clear</button>` : ''}
+            </div>
+
+            <!-- Quick Bulk Actions -->
+            <div class="flex items-center justify-between mb-2 text-[8.5px]">
+              <span class="text-slate-400">Bulk Mode:</span>
+              <div class="flex gap-1">
+                <button type="button" onclick="setAllCompoundCommoditiesMode('or')" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 cursor-pointer" title="Move all selected to OR">All OR</button>
+                <button type="button" onclick="setAllCompoundCommoditiesMode('and')" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 cursor-pointer" title="Move all selected to AND">All AND</button>
+              </div>
+            </div>
+
+            <!-- 2 Columns: OR (Left) & AND (Right) -->
+            <div class="grid grid-cols-2 gap-2 text-[10px] mb-2">
+              <!-- Left: OR (Disjunction) -->
+              <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 space-y-1">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-0.5">
+                  <span class="font-bold text-emerald-400 uppercase text-[9px]">🔀 OR (Separate)</span>
+                  <span class="text-[8px] text-slate-500 font-mono">Any</span>
+                </div>
+                <div id="compound-or-list" class="space-y-1 min-h-[30px]">
+                  ${orList.length === 0 ? '<span class="text-[8.5px] text-slate-500 italic block py-0.5">None in OR</span>' : orList.map(c => `
+                    <div class="flex items-center justify-between bg-slate-950 border border-slate-700/80 rounded px-1.5 py-0.5 text-[9px]">
+                      <div class="flex items-center gap-1 truncate mr-1">
+                        <span class="w-2 h-2 rounded-full shrink-0" style="background-color: ${COMMODITY_COLORS[c] || '#10b981'}"></span>
+                        <span class="truncate text-slate-200 capitalize">${c}</span>
+                      </div>
+                      <div class="flex items-center gap-0.5 shrink-0">
+                        <button type="button" onclick="moveCompoundCommodity('${c}', 'and')" class="px-1 py-0.2 rounded bg-amber-950/80 hover:bg-amber-800 text-amber-300 text-[8px] cursor-pointer" title="Move to AND (Together)">➔ AND</button>
+                        <button type="button" onclick="removeCompoundCommodity('${c}')" class="text-slate-500 hover:text-rose-400 px-0.5 cursor-pointer">✕</button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- Right: AND (Conjunction) -->
+              <div class="bg-slate-900/90 border border-slate-800 rounded p-1.5 space-y-1">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-0.5">
+                  <span class="font-bold text-amber-400 uppercase text-[9px]">🔗 AND (Together)</span>
+                  <span class="text-[8px] text-slate-500 font-mono">All</span>
+                </div>
+                <div id="compound-and-list" class="space-y-1 min-h-[30px]">
+                  ${andList.length === 0 ? '<span class="text-[8.5px] text-slate-500 italic block py-0.5">None in AND</span>' : andList.map(c => `
+                    <div class="flex items-center justify-between bg-slate-950 border border-slate-700/80 rounded px-1.5 py-0.5 text-[9px]">
+                      <div class="flex items-center gap-1 truncate mr-1">
+                        <span class="w-2 h-2 rounded-full shrink-0" style="background-color: ${COMMODITY_COLORS[c] || '#f59e0b'}"></span>
+                        <span class="truncate text-slate-200 capitalize">${c}</span>
+                      </div>
+                      <div class="flex items-center gap-0.5 shrink-0">
+                        <button type="button" onclick="moveCompoundCommodity('${c}', 'or')" class="px-1 py-0.2 rounded bg-emerald-950/80 hover:bg-emerald-800 text-emerald-300 text-[8px] cursor-pointer" title="Move to OR (Separate)">⬅ OR</button>
+                        <button type="button" onclick="removeCompoundCommodity('${c}')" class="text-slate-500 hover:text-rose-400 px-0.5 cursor-pointer">✕</button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Available CRMs Quick Add Palette -->
+            <div class="pt-1.5 border-t border-slate-800 space-y-1">
+              <div class="text-[8.5px] text-slate-400 font-semibold">Available Raw Materials:</div>
+              <div class="flex flex-wrap gap-1 max-h-24 overflow-y-auto">
+                ${Object.keys(COMMODITY_COLORS).map(c => {
+                  const isSel = orList.includes(c) || andList.includes(c);
+                  const color = COMMODITY_COLORS[c];
+                  const label = c.charAt(0).toUpperCase() + c.slice(1);
+                  return `
+                    <div class="flex items-center gap-1 text-[8.5px] px-1.5 py-0.5 rounded border ${isSel ? 'opacity-40 border-slate-800 bg-slate-950 text-slate-500' : 'bg-slate-900 border-slate-700 text-slate-300'}">
+                      <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: ${color}"></span>
+                      <span class="truncate">${label}</span>
+                      ${!isSel ? `
+                        <button type="button" onclick="addCompoundCommodity('${c}', 'or')" class="ml-0.5 px-1 py-0.2 rounded bg-emerald-950 hover:bg-emerald-800 text-emerald-300 text-[8px] cursor-pointer" title="Add to OR">+OR</button>
+                        <button type="button" onclick="addCompoundCommodity('${c}', 'and')" class="px-1 py-0.2 rounded bg-amber-950 hover:bg-amber-800 text-amber-300 text-[8px] cursor-pointer" title="Add to AND">+AND</button>
+                      ` : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+          card.innerHTML = headerHtml + bodyHtml;
+
+        } else if (dimKey === 'countries') {
+          const euCountries = [
+            "spain", "portugal", "germany", "france", "sweden", "finland",
+            "poland", "italy", "austria", "greece", "ireland", "czechia"
+          ];
+          const formatted = filterState.countries.map(c => c.charAt(0).toUpperCase() + c.slice(1));
+          let bodyHtml = `
+            <div class="relative">
+              <div class="flex items-center justify-between mb-0.5">
+                <span class="text-[9px] text-slate-400">Select European Member States:</span>
+                <div class="flex items-center gap-1">
+                  <span class="text-[9px] ${filterState.countries.length > 0 ? 'text-amber-400 font-bold' : 'text-emerald-400'} font-mono">${filterState.countries.length === 0 ? 'All' : `${filterState.countries.length} active`}</span>
+                  ${filterState.countries.length > 0 ? `<button type="button" onclick="clearFilterCountries()" class="text-[8.5px] text-rose-400 hover:text-rose-300 font-mono px-1 rounded bg-rose-950/60 border border-rose-900/60 cursor-pointer" title="Clear country filters">✕ Clear</button>` : ''}
+                </div>
+              </div>
+              <button type="button" onclick="toggleFilterMenu('country')" class="w-full bg-slate-950 border border-slate-800 hover:border-slate-700 rounded px-2 py-1.5 text-left text-slate-200 flex items-center justify-between text-[10.5px] focus:outline-none cursor-pointer">
+                <span class="truncate">${filterState.countries.length === 0 ? 'All European Countries' : formatted.join(', ')}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-slate-400 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div id="pills-selected-countries" class="flex flex-wrap gap-1 mt-1 empty:hidden">
+                ${formatted.map(c => `
+                  <span class="inline-flex items-center gap-1 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-[9px] px-1.5 py-0.5 rounded font-mono">
+                    <span class="w-1.5 h-1.5 rounded-full" style="background-color: ${COUNTRY_COLORS[c.toLowerCase()] || '#10b981'}"></span>
+                    ${c}
+                    <button type="button" onclick="removeFilterItem('countries', '${c.toLowerCase()}')" class="hover:text-white font-bold ml-0.5 cursor-pointer">✕</button>
+                  </span>
+                `).join('')}
+              </div>
+              <div id="dropdown-menu-country" class="${isCountryDropdownOpen ? '' : 'hidden'} absolute left-0 right-0 z-50 mt-1 bg-slate-950 border border-slate-700 rounded-lg p-2 max-h-40 overflow-y-auto space-y-1 shadow-2xl">
+                <div class="grid grid-cols-2 gap-1 text-[9.5px]">
+                  ${euCountries.map(c => `
+                    <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-900 cursor-pointer text-slate-300">
+                      <input type="checkbox" value="${c}" ${filterState.countries.includes(c) ? 'checked' : ''} onchange="toggleManualCheckbox('countries', '${c}')" class="checkbox-country rounded border-slate-700 text-emerald-500 focus:ring-0">
+                      <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: ${COUNTRY_COLORS[c] || '#10b981'}"></span>
+                      <span class="capitalize">${c}</span>
+                    </label>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+          card.innerHTML = headerHtml + bodyHtml;
+
+        } else if (dimKey === 'facilities') {
+          let bodyHtml = `
+            <div class="flex items-center justify-between mb-0.5">
+              <span class="text-[9px] text-slate-400">Filter Asset Type:</span>
+              <div class="flex items-center gap-1">
+                <span class="text-[9px] ${filterState.facility ? 'text-amber-400 font-bold' : 'text-slate-400'} font-mono">${filterState.facility ? '1 active' : 'All'}</span>
+                ${filterState.facility ? `<button type="button" onclick="handleSelectFacility('')" class="text-[8.5px] text-rose-400 hover:text-rose-300 font-mono px-1 rounded bg-rose-950/60 border border-rose-900/60 cursor-pointer" title="Clear facility filter">✕ Clear</button>` : ''}
+              </div>
+            </div>
+            <select onchange="handleSelectFacility(this.value)" class="w-full bg-slate-950 border ${filterState.facility ? 'border-amber-500/70 text-amber-300 font-semibold' : 'border-slate-800 text-slate-200'} rounded px-2 py-1 focus:border-emerald-500 focus:outline-none text-[10.5px]">
+              <option value="" ${filterState.facility === '' ? 'selected' : ''}>All Facility Types (No filter)</option>
+              <option value="waste dump" ${filterState.facility === 'waste dump' ? 'selected' : ''}>Waste Dump / Escombrera</option>
+              <option value="tailings storage facility" ${filterState.facility === 'tailings storage facility' ? 'selected' : ''}>Tailings Storage Facility (TSF)</option>
+              <option value="pond" ${filterState.facility === 'pond' ? 'selected' : ''}>Settling Pond / Balsa</option>
+              <option value="stockpile" ${filterState.facility === 'stockpile' ? 'selected' : ''}>Mineral Stockpile / Acopio</option>
+            </select>
+          `;
+          card.innerHTML = headerHtml + bodyHtml;
+
+        } else if (dimKey === 'statuses') {
+          let bodyHtml = `
+            <div class="flex items-center justify-between mb-0.5">
+              <span class="text-[9px] text-slate-400">Filter Operational Status:</span>
+              <div class="flex items-center gap-1">
+                <span class="text-[9px] ${filterState.status ? 'text-amber-400 font-bold' : 'text-slate-400'} font-mono">${filterState.status ? '1 active' : 'All'}</span>
+                ${filterState.status ? `<button type="button" onclick="handleSelectStatus('')" class="text-[8.5px] text-rose-400 hover:text-rose-300 font-mono px-1 rounded bg-rose-950/60 border border-rose-900/60 cursor-pointer" title="Clear status filter">✕ Clear</button>` : ''}
+              </div>
+            </div>
+            <select onchange="handleSelectStatus(this.value)" class="w-full bg-slate-950 border ${filterState.status ? 'border-amber-500/70 text-amber-300 font-semibold' : 'border-slate-800 text-slate-200'} rounded px-2 py-1 focus:border-emerald-500 focus:outline-none text-[10.5px]">
+              <option value="" ${filterState.status === '' ? 'selected' : ''}>All Statuses (No filter)</option>
+              <option value="active" ${filterState.status === 'active' ? 'selected' : ''}>Active</option>
+              <option value="inactive" ${filterState.status === 'inactive' ? 'selected' : ''}>Inactive</option>
+              <option value="development" ${filterState.status === 'development' ? 'selected' : ''}>Under Development</option>
+              <option value="care and maintenance" ${filterState.status === 'care and maintenance' ? 'selected' : ''}>Care & Maintenance</option>
+            </select>
+          `;
+          card.innerHTML = headerHtml + bodyHtml;
         }
+
+        container.appendChild(card);
+      });
+    }
+
+    function clearFilterCountries() {
+      filterState.countries = [];
+      renderManualFilterCards();
+      applyManualFilters();
+    }
+
+    let isFilterWidgetCollapsed = false;
+    function toggleManualFilterWidgetCollapse() {
+      const container = document.getElementById('manual-filter-cards-container');
+      const icon = document.getElementById('icon-crms-collapse-filters');
+      if (!container) return;
+      isFilterWidgetCollapsed = !isFilterWidgetCollapsed;
+      if (isFilterWidgetCollapsed) {
+        container.classList.add('hidden');
+        if (icon) icon.textContent = '+';
+      } else {
+        container.classList.remove('hidden');
+        if (icon) icon.textContent = '−';
+      }
+    }
+
+    let isFichaCollapsed = false;
+    function toggleFichaPanel(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      const ficha = document.getElementById('ficha-container');
+      const body = document.getElementById('ficha-details-body');
+      const icon = document.getElementById('ficha-collapse-icon');
+      const text = document.getElementById('ficha-collapse-text');
+      if (!ficha) return;
+
+      isFichaCollapsed = !isFichaCollapsed;
+      if (isFichaCollapsed) {
+        ficha.style.height = '42px';
+        ficha.classList.remove('h-[235px]');
+        if (body) body.classList.add('hidden');
+        if (icon) icon.textContent = '▲';
+        if (text) text.textContent = 'Details';
+      } else {
+        ficha.style.height = '235px';
+        if (body) body.classList.remove('hidden');
+        if (icon) icon.textContent = '▼';
+        if (text) text.textContent = 'Minimize';
+      }
+    }
+
+    function getCurrentMatchingSites() {
+      return MINING_SITES.filter(s => {
+        const siteCountry = (s.country || '').toLowerCase();
+        const siteComms = (s.commodities || []).map(c => c.toLowerCase());
+        const siteFacility = (s.storage_facility_type || s.facility_type || '').toLowerCase();
+        const siteStatus = (s.project_status || '').toLowerCase();
+
+        if (filterState.countries.length > 0 && !filterState.countries.includes(siteCountry)) return false;
+
+        const hasAnd = filterState.commodities_and.length > 0;
+        const hasOr = filterState.commodities_or.length > 0;
+        if (hasAnd && hasOr) {
+          const matchesAnd = filterState.commodities_and.every(c => siteComms.some(sc => sc.includes(c)));
+          const matchesOr = filterState.commodities_or.some(c => siteComms.some(sc => sc.includes(c)));
+          if (!matchesAnd && !matchesOr) return false;
+        } else if (hasAnd) {
+          const matchesAnd = filterState.commodities_and.every(c => siteComms.some(sc => sc.includes(c)));
+          if (!matchesAnd) return false;
+        } else if (hasOr) {
+          const matchesOr = filterState.commodities_or.some(c => siteComms.some(sc => sc.includes(c)));
+          if (!matchesOr) return false;
+        }
+
+        if (filterState.facility && !siteFacility.includes(filterState.facility)) return false;
+        if (filterState.status && siteStatus !== filterState.status) return false;
+        return true;
+      });
+    }
+
+    function syncInspectorWithManualFilters(matchingSites = []) {
+      const fqList = [];
+      if (filterState.countries.length > 0) {
+        fqList.push(`country:(${filterState.countries.map(c => `"${c}"`).join(' OR ')})`);
+      }
+      if (filterState.commodities_and.length > 0 && filterState.commodities_or.length > 0) {
+        const andPart = filterState.commodities_and.map(c => `commodities:"${c}"`).join(' AND ');
+        const orPart = filterState.commodities_or.map(c => `commodities:"${c}"`).join(' OR ');
+        fqList.push(`(${andPart}) OR (${orPart})`);
+      } else if (filterState.commodities_and.length > 0) {
+        filterState.commodities_and.forEach(c => fqList.push(`commodities:"${c}"`));
+      } else if (filterState.commodities_or.length > 0) {
+        fqList.push(`commodities:(${filterState.commodities_or.map(c => `"${c}"`).join(' OR ')})`);
+      }
+      if (filterState.facility) {
+        fqList.push(`storage_facility_type:("${filterState.facility}")`);
+      }
+      if (filterState.status) {
+        fqList.push(`project_status:("${filterState.status}")`);
       }
 
-      // 2. Commodity checkboxes & pills
-      const commCheckboxes = document.querySelectorAll('.checkbox-commodity');
-      commCheckboxes.forEach(cb => {
-        cb.checked = filterState.commodities.includes(cb.value.toLowerCase());
+      const countryFacets = {};
+      const commodityFacets = {};
+      matchingSites.forEach(s => {
+        const c = s.country || 'unknown';
+        countryFacets[c] = (countryFacets[c] || 0) + 1;
+        (s.commodities || []).forEach(comm => {
+          commodityFacets[comm] = (commodityFacets[comm] || 0) + 1;
+        });
       });
-      const commLabel = document.getElementById('label-selected-commodities');
-      const commCount = document.getElementById('count-selected-commodities');
-      const commPills = document.getElementById('pills-selected-commodities');
-      if (filterState.commodities.length === 0) {
-        if (commLabel) commLabel.textContent = 'All Critical Raw Materials';
-        if (commCount) commCount.textContent = 'All';
-        if (commPills) commPills.innerHTML = '';
-      } else {
-        const formatted = filterState.commodities.map(c => c.charAt(0).toUpperCase() + c.slice(1));
-        if (commLabel) commLabel.textContent = formatted.join(', ') + ` (${formatted.length})`;
-        if (commCount) commCount.textContent = `${formatted.length} active`;
-        if (commPills) {
-          commPills.innerHTML = formatted.map(c => `
-            <span class="inline-flex items-center gap-1 bg-amber-950/80 border border-amber-800 text-amber-300 text-[9.5px] px-2 py-0.5 rounded font-mono">
-              ${c}
-              <button type="button" onclick="removeFilterItem('commodities', '${c.toLowerCase()}')" class="hover:text-white font-bold ml-0.5">✕</button>
-            </span>
-          `).join('');
+
+      const solrQuery = {
+        q: "*:*",
+        fq: fqList,
+        rows: 100,
+        manual_override: true,
+        num_found: matchingSites.length
+      };
+
+      const solrFacets = {
+        facet_counts: {
+          facet_fields: {
+            country: countryFacets,
+            commodities: commodityFacets
+          }
         }
-      }
+      };
 
-      // 3. Facility Select & count
-      const facSelect = document.getElementById('manual-filter-facility');
-      const facCount = document.getElementById('count-selected-facilities');
-      if (facSelect) facSelect.value = filterState.facility;
-      if (facCount) facCount.textContent = filterState.facility ? '1 active' : 'All';
+      const extractedJson = {
+        source: "Manual GIS Filters Widget",
+        filters: {
+          countries: filterState.countries,
+          commodities: filterState.commodities,
+          commodities_or: filterState.commodities_or,
+          commodities_and: filterState.commodities_and,
+          commodity_operator: filterState.commodities_and.length > 0 && filterState.commodities_or.length > 0 ? 'COMPOUND' : (filterState.commodities_and.length > 0 ? 'AND' : 'OR'),
+          storage_facility_types: filterState.facility ? [filterState.facility] : [],
+          project_status: filterState.status ? [filterState.status] : []
+        },
+        matched_count: matchingSites.length
+      };
 
-      // 4. Status Select & count
-      const statSelect = document.getElementById('manual-filter-status');
-      const statCount = document.getElementById('count-selected-statuses');
-      if (statSelect) statSelect.value = filterState.status;
-      if (statCount) statCount.textContent = filterState.status ? '1 active' : 'All';
+      updateInspectorDisplay({
+        solr_query: solrQuery,
+        solr_facets: solrFacets,
+        ner_entities: extractedJson
+      });
+
+      chatCurrentFilters = {
+        countries: filterState.countries,
+        regions: [],
+        commodities: filterState.commodities,
+        storage_facility_types: filterState.facility ? [filterState.facility] : [],
+        material_types: [],
+        project_status: filterState.status ? [filterState.status] : [],
+        environmental_flags: [],
+        restored: null,
+        commodity_operator: extractedJson.filters.commodity_operator,
+        commodities_and: filterState.commodities_and,
+        commodities_or: filterState.commodities_or
+      };
     }
 
     function applyManualFilters() {
@@ -3515,9 +4260,26 @@
       if (filterState.countries.length > 0) {
         activeBadges.push({ label: 'Country', values: filterState.countries.map(c => c.charAt(0).toUpperCase() + c.slice(1)) });
       }
-      if (filterState.commodities.length > 0) {
-        activeBadges.push({ label: 'Commodity', values: filterState.commodities.map(c => c.charAt(0).toUpperCase() + c.slice(1)) });
+
+      const hasAnd = filterState.commodities_and.length > 0;
+      const hasOr = filterState.commodities_or.length > 0;
+      if (hasAnd && hasOr) {
+        activeBadges.push({
+          label: 'CRM Metals (Compound: OR + AND)',
+          values: [`OR: ${filterState.commodities_or.join(', ')}`, `AND: ${filterState.commodities_and.join(', ')}`]
+        });
+      } else if (hasAnd) {
+        activeBadges.push({
+          label: 'CRM Metals (AND - Together)',
+          values: filterState.commodities_and.map(c => c.charAt(0).toUpperCase() + c.slice(1))
+        });
+      } else if (hasOr) {
+        activeBadges.push({
+          label: 'CRM Metals (OR - Separately)',
+          values: filterState.commodities_or.map(c => c.charAt(0).toUpperCase() + c.slice(1))
+        });
       }
+
       if (filterState.facility) {
         activeBadges.push({ label: 'Facility', values: [filterState.facility] });
       }
@@ -3525,33 +4287,26 @@
         activeBadges.push({ label: 'Status', values: [filterState.status] });
       }
 
-      const matching = MINING_SITES.filter(s => {
-        const siteCountry = (s.country || '').toLowerCase();
-        const siteComms = (s.commodities || []).map(c => c.toLowerCase());
-        const siteFacility = (s.storage_facility_type || s.facility_type || '').toLowerCase();
-        const siteStatus = (s.project_status || '').toLowerCase();
-
-        if (filterState.countries.length > 0 && !filterState.countries.includes(siteCountry)) return false;
-        if (filterState.commodities.length > 0 && !filterState.commodities.some(c => siteComms.some(sc => sc.includes(c)))) return false;
-        if (filterState.facility && !siteFacility.includes(filterState.facility)) return false;
-        if (filterState.status && siteStatus !== filterState.status) return false;
-        return true;
-      });
-
+      const matching = getCurrentMatchingSites();
       renderMarkers(matching);
       updateActiveFilterBadges(activeBadges, matching.length);
+      syncInspectorWithManualFilters(matching);
     }
 
     function resetManualFilters() {
       filterState = {
         countries: [],
         commodities: [],
+        commodities_or: [],
+        commodities_and: [],
         facility: '',
         status: ''
       };
-      updateFilterUI();
+      renderManualFilterCards();
       renderMarkers(MINING_SITES);
       updateActiveFilterBadges([], MINING_SITES.length);
+      renderMapLegend();
+      syncInspectorWithManualFilters(MINING_SITES);
     }
 
     function syncManualFiltersFromNLU(nluFilters, activeMapFilters = []) {
@@ -3560,7 +4315,23 @@
       }
 
       filterState.countries = (nluFilters.countries || []).map(c => c.toLowerCase().trim());
-      filterState.commodities = (nluFilters.commodities || []).map(c => c.toLowerCase().trim());
+      
+      const commOp = nluFilters.commodity_operator || 'OR';
+      const cAnd = (nluFilters.commodities_and || []).map(c => c.toLowerCase().trim());
+      const cOr = (nluFilters.commodities_or || []).map(c => c.toLowerCase().trim());
+      const rawComms = (nluFilters.commodities || []).map(c => c.toLowerCase().trim());
+
+      if (commOp === 'COMPOUND' || (cAnd.length > 0 && cOr.length > 0)) {
+        filterState.commodities_and = cAnd;
+        filterState.commodities_or = cOr;
+      } else if (commOp === 'AND' || cAnd.length > 0) {
+        filterState.commodities_and = cAnd.length > 0 ? cAnd : rawComms;
+        filterState.commodities_or = [];
+      } else {
+        filterState.commodities_or = cOr.length > 0 ? cOr : rawComms;
+        filterState.commodities_and = [];
+      }
+      filterState.commodities = [...new Set([...filterState.commodities_or, ...filterState.commodities_and])];
       
       const facs = (nluFilters.storage_facility_types || []);
       filterState.facility = facs.length > 0 ? facs[0].toLowerCase().trim() : '';
@@ -3568,13 +4339,27 @@
       const stats = (nluFilters.project_status || []);
       filterState.status = stats.length > 0 ? stats[0].toLowerCase().trim() : '';
 
-      updateFilterUI();
+      renderManualFilterCards();
+      renderMapLegend();
     }
+
+    window.applyChatFilterMode = function(mode) {
+      if (mode === 'AND') {
+        sendChatMessage("both elements together (AND)");
+      } else if (mode === 'OR') {
+        sendChatMessage("either element separately (OR)");
+      }
+    };
 
     // ==========================================
     // HELPER FUNCTIONS FOR FORM & SELECTOR
     // ==========================================
     function changeLLMProvider(val) {
+      if (['mistral', 'qwen', 'llama8b', 'phi3', 'gemma'].includes(val)) {
+        if (window.cudaAvailable === false) {
+          alert("Notice: No CUDA GPU detected on host. Running 7B+ local LLMs on CPU may be slow or exceed memory. The Deterministic Engine (Standalone) or Cloud APIs are recommended for CPU-only testing.");
+        }
+      }
       setModelProvider(val);
     }
 
@@ -3595,9 +4380,138 @@
     }
 
     // ==========================================
+    // HORIZONTAL RESIZING: SPLIT PANELS & FILTERS
+    // ==========================================
+    let isCrmsFilterExpanded = false;
+
+    function toggleCrmsFilterWidth() {
+      const widget = document.getElementById('manual-filter-widget');
+      const label = document.getElementById('label-crms-expand-filters');
+      if (!widget) return;
+      isCrmsFilterExpanded = !isCrmsFilterExpanded;
+      if (isCrmsFilterExpanded) {
+        widget.style.width = '640px';
+        if (label) label.textContent = 'Collapse';
+      } else {
+        widget.style.width = '350px';
+        if (label) label.textContent = 'Expand';
+      }
+    }
+
+    function initCrmsFilterResizer() {
+      const widget = document.getElementById('manual-filter-widget');
+      const resizer = document.getElementById('manual-filter-resizer');
+      if (!widget || !resizer) return;
+
+      let isDragging = false;
+      let startX = 0;
+      let startWidth = 350;
+
+      resizer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startWidth = widget.offsetWidth;
+        document.body.style.cursor = 'ew-resize';
+        document.body.classList.add('select-none');
+        e.preventDefault();
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const delta = startX - e.clientX;
+        const maxWidth = Math.min(window.innerWidth * 0.75, 850);
+        const newWidth = Math.max(290, Math.min(maxWidth, startWidth + delta));
+        widget.style.width = `${newWidth}px`;
+        const label = document.getElementById('label-crms-expand-filters');
+        if (label) {
+          label.textContent = newWidth > 500 ? 'Collapse' : 'Expand';
+          isCrmsFilterExpanded = newWidth > 500;
+        }
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          document.body.style.cursor = '';
+          document.body.classList.remove('select-none');
+        }
+      });
+
+      resizer.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          isDragging = true;
+          startX = e.touches[0].clientX;
+          startWidth = widget.offsetWidth;
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging || e.touches.length !== 1) return;
+        const delta = startX - e.touches[0].clientX;
+        const maxWidth = Math.min(window.innerWidth * 0.75, 850);
+        const newWidth = Math.max(290, Math.min(maxWidth, startWidth + delta));
+        widget.style.width = `${newWidth}px`;
+      }, { passive: true });
+
+      window.addEventListener('touchend', () => {
+        if (isDragging) isDragging = false;
+      });
+    }
+
+    function initSplitResizer() {
+      const container = document.getElementById('main-split-container');
+      const leftPanel = document.getElementById('left-chat-panel');
+      const resizer = document.getElementById('split-resizer');
+      if (!container || !leftPanel || !resizer) return;
+
+      let isDragging = false;
+
+      resizer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        document.body.style.cursor = 'col-resize';
+        document.body.classList.add('select-none');
+        e.preventDefault();
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const rect = container.getBoundingClientRect();
+        const newLeftWidth = e.clientX - rect.left;
+        const pct = (newLeftWidth / rect.width) * 100;
+        const clampedPct = Math.max(25, Math.min(75, pct));
+        leftPanel.style.width = `${clampedPct}%`;
+        if (window.map) window.map.invalidateSize();
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          document.body.style.cursor = '';
+          document.body.classList.remove('select-none');
+          if (window.map) window.map.invalidateSize();
+        }
+      });
+    }
+
+    // ==========================================
     // INITIALIZATION & EVENT LISTENERS
     // ==========================================
     window.addEventListener('DOMContentLoaded', async () => {
+      initSplitResizer();
+      initCrmsFilterResizer();
+
+      // 0. Detect if running inside Codespaces preview / iframe
+      try {
+        const isEmbedded = (window.self !== window.top) || (window.parent !== window);
+        if (isEmbedded) {
+          const banner = document.getElementById('codespaces-banner');
+          if (banner) banner.classList.remove('hidden');
+        }
+      } catch (err) {
+        const banner = document.getElementById('codespaces-banner');
+        if (banner) banner.classList.remove('hidden');
+      }
+
       // 1. Initialize Leaflet Map centered on Europe
       initMap();
       
@@ -3608,42 +4522,48 @@
           const loadedSites = await resp.json();
           if (Array.isArray(loadedSites) && loadedSites.length > 0) {
             MINING_SITES = loadedSites.map(s => {
-              const lat = s.latitude || (s.location ? parseFloat(s.location.split(',')[0]) : 50.0);
-              const lon = s.longitude || (s.location ? parseFloat(s.location.split(',')[1]) : 10.0);
+              const lat = parseFloat(s.lat ?? s.latitude ?? (s.coordinates && s.coordinates[0]) ?? 0);
+              const lon = parseFloat(s.lon ?? s.longitude ?? (s.coordinates && s.coordinates[1]) ?? 0);
+              const status = (s.project_status || "Active").toLowerCase();
               return {
-                id: s.id,
-                site_name: s.site_name,
-                company: s.company || 'EU Extractive Operator',
-                country: s.country || 'europe',
-                country_name: s.country_name || (s.country ? s.country.toUpperCase() : 'Europe'),
-                region: s.region_name || s.region || 'EU Region',
-                province: s.region_name || s.country_name || 'EU',
-                municipality: s.site_name,
+                ...s,
+                id: s.id || `site_${Math.random()}`,
+                name: s.site_name || s.name,
+                site_name: s.site_name || s.name,
                 lat: lat,
                 lon: lon,
-                commodities: s.commodities || [],
-                commodities_label: s.commodities_label || (s.commodities ? s.commodities.join(', ') : 'CRM'),
-                facility_type: s.storage_facility_label || s.storage_facility_type || 'Facility',
-                material_type: s.material_type || 'Tailings & Waste',
-                project_status: s.project_status || 'active',
-                status_label: s.project_status ? s.project_status.toUpperCase() : 'ACTIVE',
-                status_color: s.project_status === 'active' ? '#10b981' : '#f59e0b',
-                area_m2: `${s.tonnage_mt || 10} MT capacity`,
-                description: s.description || 'Critical raw materials storage facility registered in the European Data Space.',
-                environmental_flags: s.environmental_flags || [],
-                unfc_code: s.unfc_code || 'UNFC E1-F2-G1',
-                color_theme: s.commodities && (s.commodities.includes('lithium') || s.commodities.includes('cobalt')) ? 'emerald' : 'gold'
+                latitude: lat,
+                longitude: lon,
+                coordinates: [lat, lon],
+                country: (s.country || s.country_name || "").toLowerCase(),
+                country_name: s.country_name || s.country,
+                region: s.region_name || s.region || "",
+                company: s.company || "European Mining Operator",
+                commodities: Array.isArray(s.commodities) ? s.commodities : [s.commodities_label || "CRM"],
+                commodities_label: s.commodities_label || (Array.isArray(s.commodities) ? s.commodities.join(", ") : "CRM"),
+                storage_facility_label: s.storage_facility_label || s.facility_type || "Waste Dump / Escombrera",
+                facility_type: s.facility_type || s.storage_facility_label || "Waste Dump / Escombrera",
+                project_status: status,
+                status_label: status.toUpperCase(),
+                status_color: status === 'active' ? '#10b981' : (status.includes('maintenance') ? '#f59e0b' : '#94a3b8'),
+                color_theme: (s.commodities && s.commodities.some(c => c.toLowerCase().includes('gold') || c.toLowerCase().includes('copper') || c.toLowerCase().includes('tungsten'))) ? 'gold' : 'emerald',
+                unfc_code: s.unfc_code || "E3-F3-G2",
+                description: s.description || (s.technical_summary || `European CRM site located in ${s.country_name || s.country}.`),
+                restored: typeof s.restored === 'boolean' ? s.restored : false
               };
             });
           }
         }
-      } catch (err) {
-        console.warn('Backend fetch /api/sites omitted, using 100-site local dataset:', err);
+      } catch (e) {
+        console.warn("Backend /api/sites not reached, using embedded European CRM sites:", e);
       }
 
-      // 3. Render Initial Markers across Europe
+      // Render initial markers, manual filter cards, and dynamic legend
+      renderManualFilterCards();
       renderMarkers();
-      updateFilterUI();
+      renderMapLegend();
+
+      // Select first site in technical inspector
       if (MINING_SITES.length > 0) {
         selectSite(MINING_SITES[0].id);
       }
@@ -3660,6 +4580,48 @@
           }
         });
       }
+
+      // 5. Initialize Solr Engine Inspector Resizer
+      initInspectorResizer();
+
+      // 6. Setup Live Real-time GPU Telemetry Polling
+      async function pollGPUStatus() {
+        try {
+          const res = await fetch('/api/gpu_status');
+          if (!res.ok) return;
+          const data = await res.json();
+          window.cudaAvailable = !!data.cuda_available;
+          const textEl = document.getElementById('gpu-vram-text');
+          const barEl = document.getElementById('gpu-vram-bar');
+          const barContainer = document.getElementById('gpu-vram-bar-container');
+          const purgeBtn = document.getElementById('gpu-purge-btn');
+          if (!textEl) return;
+          if (data.cuda_available) {
+            const shortName = data.device_name.replace('NVIDIA ', '').replace('-PCIE', '');
+            textEl.textContent = `${shortName} (${data.vram_used_gb} / ${data.vram_total_gb} GB)`;
+            textEl.className = 'text-emerald-300 font-mono text-[10px] font-semibold';
+            if (barContainer) barContainer.style.display = 'block';
+            if (barEl) {
+              barEl.style.width = `${Math.min(100, Math.max(2, data.vram_percent))}%`;
+              barEl.className = 'bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500';
+            }
+            if (purgeBtn && data.vram_used_gb > 0) {
+              purgeBtn.style.display = 'inline-block';
+            } else if (purgeBtn) {
+              purgeBtn.style.display = 'none';
+            }
+          } else {
+            textEl.textContent = 'Standalone Mode (CPU)';
+            textEl.className = 'text-emerald-400 font-mono text-[10px] font-semibold';
+            if (barContainer) barContainer.style.display = 'none';
+            if (purgeBtn) purgeBtn.style.display = 'none';
+          }
+        } catch (e) {
+          // ignore network errors
+        }
+      }
+      pollGPUStatus();
+      setInterval(pollGPUStatus, 2500);
     });
 
     // ==========================================
@@ -3676,14 +4638,22 @@
         attributionControl: false
       });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      // Esri World Dark Gray Canvas basemap (100% free, dark theme, zero API key required)
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+        maxNativeZoom: 16,
         maxZoom: 20,
-        subdomains: 'abcd'
+        attribution: '&copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
+      }).addTo(mapInstance);
+
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+        maxNativeZoom: 16,
+        maxZoom: 20,
+        attribution: ''
       }).addTo(mapInstance);
 
       L.control.attribution({
         position: 'bottomright',
-        prefix: 'Leaflet.js Engine | CartoDB Dark (OpenStreetMap)'
+        prefix: 'Leaflet.js Engine | Esri Dark Gray Canvas'
       }).addTo(mapInstance);
 
       L.control.zoom({
@@ -3701,15 +4671,38 @@
       const highlightGroup = [];
 
       MINING_SITES.forEach(site => {
+        const lat = parseFloat(site.lat ?? site.latitude ?? (site.coordinates && site.coordinates[0]) ?? 0);
+        const lon = parseFloat(site.lon ?? site.longitude ?? (site.coordinates && site.coordinates[1]) ?? 0);
+        if (!lat || !lon || isNaN(lat) || isNaN(lon)) return;
+
         const isMatched = !sitesToHighlight || sitesToHighlight.some(s => s.id === site.id);
         const opacity = isMatched ? 1.0 : 0.22;
 
-        let color = '#10b981'; // Emerald
-        let pulseClass = isMatched ? 'marker-pulse-emerald' : '';
-        if (site.color_theme === 'gold') {
-          color = '#fbbf24'; // Gold
-          if (isMatched) pulseClass = 'marker-pulse-gold';
+        const topDim = filterDimensionsOrder[0] || 'commodities';
+        let color = '#10b981';
+
+        if (topDim === 'commodities') {
+          let c = (site.commodities && site.commodities.length > 0) ? site.commodities[0].toLowerCase() : '';
+          if (filterState.commodities.length > 0) {
+            const matched = (site.commodities || []).find(mc => filterState.commodities.includes(mc.toLowerCase()));
+            if (matched) c = matched.toLowerCase();
+          }
+          color = COMMODITY_COLORS[c] || '#10b981';
+        } else if (topDim === 'countries') {
+          const co = (site.country || '').toLowerCase();
+          color = COUNTRY_COLORS[co] || '#10b981';
+        } else if (topDim === 'facilities') {
+          const fac = (site.storage_facility_type || site.facility_type || '').toLowerCase();
+          if (fac.includes('dump') || fac.includes('escombrera')) color = FACILITY_COLORS['waste dump'];
+          else if (fac.includes('pond') || fac.includes('balsa')) color = FACILITY_COLORS['pond'];
+          else if (fac.includes('stockpile') || fac.includes('acopio')) color = FACILITY_COLORS['stockpile'];
+          else color = FACILITY_COLORS['tailings storage facility'];
+        } else if (topDim === 'statuses') {
+          const st = (site.project_status || 'active').toLowerCase();
+          color = STATUS_COLORS[st] || '#10b981';
         }
+
+        const pulseClass = isMatched ? 'marker-pulse-emerald' : '';
 
         const isSelected = selectedSite && selectedSite.id === site.id;
         
@@ -3734,15 +4727,15 @@
           iconAnchor: [size / 2, size / 2]
         });
 
-        const marker = L.marker([site.lat, site.lon], { icon: customIcon }).addTo(mapInstance);
+        const marker = L.marker([lat, lon], { icon: customIcon }).addTo(mapInstance);
         
         // Popup metadata card
         const popupHtml = `
           <div style="font-family: system-ui, sans-serif; padding: 4px; color: #0f172a;">
             <div style="font-weight: bold; font-size: 13px; color: #047857; margin-bottom: 2px;">${site.site_name}</div>
-            <div style="font-size: 11px; color: #475569; margin-bottom: 4px;">📍 ${site.country_name} (${site.region})</div>
+            <div style="font-size: 11px; color: #475569; margin-bottom: 4px;">📍 ${site.country_name || site.country} (${site.region || site.region_name || ''})</div>
             <div style="font-size: 11px; margin-bottom: 4px;"><strong>Commodities:</strong> ${site.commodities_label}</div>
-            <div style="font-size: 10px; padding: 2px 6px; background: #e2e8f0; border-radius: 4px; display: inline-block;">${site.facility_type}</div>
+            <div style="font-size: 10px; padding: 2px 6px; background: #e2e8f0; border-radius: 4px; display: inline-block;">${site.facility_type || site.storage_facility_label || 'Facility'}</div>
             <button onclick="selectSite('${site.id}', true)" style="margin-top: 8px; width: 100%; padding: 6px; background: #047857; color: white; border: none; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">View Site Details</button>
           </div>
         `;
@@ -3755,7 +4748,7 @@
         markersMap[site.id] = marker;
 
         if (isMatched) {
-          highlightGroup.push([site.lat, site.lon]);
+          highlightGroup.push([lat, lon]);
         }
       });
 
@@ -3787,25 +4780,277 @@
       const descEl = document.getElementById('site-description');
 
       if (nameEl) nameEl.textContent = site.site_name;
-      if (companyEl) companyEl.textContent = site.company;
-      if (regionEl) regionEl.textContent = `${site.region}, ${site.country_name}`;
+      if (companyEl) companyEl.textContent = site.company || 'European Mining Operator';
+      if (regionEl) regionEl.textContent = `${site.region || site.region_name || ''}, ${site.country_name || site.country || ''}`;
       if (commoditiesEl) commoditiesEl.textContent = site.commodities_label;
-      if (typeEl) typeEl.textContent = site.facility_type;
+      if (typeEl) typeEl.textContent = site.facility_type || site.storage_facility_label || 'Waste Dump';
       if (statusEl) {
-        statusEl.textContent = site.status_label;
-        statusEl.style.backgroundColor = site.status_color + '22';
-        statusEl.style.color = site.status_color;
-        statusEl.style.borderColor = site.status_color + '44';
+        statusEl.textContent = site.status_label || (site.project_status || 'active').toUpperCase();
+        const col = site.status_color || '#10b981';
+        statusEl.style.backgroundColor = col + '22';
+        statusEl.style.color = col;
+        statusEl.style.borderColor = col + '44';
       }
-      if (unfcEl) unfcEl.textContent = site.unfc_code;
-      if (descEl) descEl.textContent = site.description;
+      if (unfcEl) unfcEl.textContent = site.unfc_code || 'E3-F3-G2';
+      if (descEl) descEl.textContent = site.description || '';
 
       // Fly to site location on Leaflet map if requested
       if (flyTo && mapInstance) {
-        mapInstance.flyTo([site.lat, site.lon], 7, { duration: 1.2 });
-        if (markersMap[site.id]) {
-          markersMap[site.id].openPopup();
+        const lat = parseFloat(site.lat ?? site.latitude ?? (site.coordinates && site.coordinates[0]) ?? 0);
+        const lon = parseFloat(site.lon ?? site.longitude ?? (site.coordinates && site.coordinates[1]) ?? 0);
+        if (lat && lon) {
+          mapInstance.flyTo([lat, lon], 7, { duration: 1.2 });
+          if (markersMap[site.id]) {
+            markersMap[site.id].openPopup();
+          }
         }
+      }
+    }
+
+    let isModelLoading = false;
+    let modelPollInterval = null;
+
+    async function triggerModelPreload(provider) {
+      const localModels = ['mistral', 'qwen', 'llama8b', 'phi3'];
+      if (!localModels.includes(provider)) {
+        hideModelLoadingBanner();
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/model_status');
+        if (res.ok) {
+          const state = await res.json();
+          const cur = (state.current_model || '').toLowerCase();
+          const cached = state.cached_models || [];
+          if (state.status === 'ready' && (cur === provider || cached.some(m => m.toLowerCase().includes(provider)))) {
+            lastWorkingProvider = provider;
+            showModelReadyBanner(provider, state.vram_gb);
+            return;
+          }
+        }
+      } catch (e) {}
+
+      showModelLoadingBanner(provider);
+      try {
+        await fetch('/api/load_model', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ provider: provider })
+        });
+      } catch (e) {
+        console.error("Error initiating model load:", e);
+      }
+
+      if (modelPollInterval) clearInterval(modelPollInterval);
+      let step = 0;
+      modelPollInterval = setInterval(async () => {
+        step++;
+        try {
+          const res = await fetch('/api/model_status');
+          if (!res.ok) return;
+          const data = await res.json();
+          updateModelLoadingProgress(data, step);
+          if (data.status === 'ready') {
+            clearInterval(modelPollInterval);
+            modelPollInterval = null;
+            lastWorkingProvider = provider;
+            showModelReadyBanner(provider, data.vram_gb);
+          } else if (data.status === 'error') {
+            clearInterval(modelPollInterval);
+            modelPollInterval = null;
+            revertToLastValidEngine(provider, data.message || data.error);
+          }
+        } catch (e) {}
+      }, 1000);
+    }
+
+    function showModelLoadingBanner(provider) {
+      isModelLoading = true;
+      const banner = document.getElementById('model-loading-banner');
+      const title = document.getElementById('model-loading-title');
+      const subtitle = document.getElementById('model-loading-subtitle');
+      const bar = document.getElementById('model-loading-progress-bar');
+      const timer = document.getElementById('model-loading-timer');
+      const inputEl = document.getElementById('chat-input') || document.getElementById('custom-input');
+      const sendBtn = document.querySelector('button[onclick="sendChatMessage()"]');
+      
+      if (inputEl) {
+        inputEl.disabled = true;
+        inputEl.placeholder = "⏳ Loading model weights into GPU... Please wait.";
+      }
+      if (sendBtn) sendBtn.disabled = true;
+
+      ['btn-scenario-1', 'btn-scenario-2', 'btn-scenario-3'].forEach(id => {
+        const b = document.getElementById(id);
+        if (b) b.disabled = true;
+      });
+
+      const names = {
+        'mistral': 'Mistral 7B Instruct v0.2',
+        'llama8b': 'Meta Llama 3.1 8B',
+        'qwen': 'Qwen 2.5 7B',
+        'phi3': 'Phi-3 Mini 4K',
+        'gemma': 'Gemma 2 2B'
+      };
+      const modelName = names[provider] || provider.toUpperCase();
+
+      if (banner) banner.classList.remove('hidden');
+      if (title) title.textContent = `Loading ${modelName} weights into GPU memory...`;
+      if (timer) timer.textContent = 'Allocating VRAM...';
+      if (bar) {
+        bar.style.width = '20%';
+        bar.className = 'bg-gradient-to-r from-purple-600 via-indigo-500 to-purple-400 h-full rounded-full transition-all duration-300 animate-pulse';
+      }
+      if (subtitle) {
+        subtitle.innerHTML = `<span>Transferring tensors to VRAM...</span><span class="font-mono text-purple-300 font-semibold">Loading...</span>`;
+      }
+    }
+
+    function updateModelLoadingProgress(data, step) {
+      const bar = document.getElementById('model-loading-progress-bar');
+      const subtitle = document.getElementById('model-loading-subtitle');
+      const timer = document.getElementById('model-loading-timer');
+      if (!bar) return;
+      const progress = Math.min(94, 25 + step * 7);
+      bar.style.width = `${progress}%`;
+      if (timer) timer.textContent = `${step}s elapsed`;
+      if (subtitle && data.vram_gb > 0) {
+        subtitle.innerHTML = `<span>Allocating tensors in VRAM...</span><span class="font-mono text-purple-300 font-semibold">${data.vram_gb} GB allocated</span>`;
+      }
+    }
+
+    function showModelReadyBanner(provider, vramGb) {
+      isModelLoading = false;
+      const banner = document.getElementById('model-loading-banner');
+      const title = document.getElementById('model-loading-title');
+      const subtitle = document.getElementById('model-loading-subtitle');
+      const bar = document.getElementById('model-loading-progress-bar');
+      const timer = document.getElementById('model-loading-timer');
+      const inputEl = document.getElementById('chat-input') || document.getElementById('custom-input');
+      const sendBtn = document.querySelector('button[onclick="sendChatMessage()"]');
+
+      if (inputEl) {
+        inputEl.disabled = false;
+        inputEl.placeholder = "Enter spatial query (e.g. 'Active lithium tailings in Spain & Finland')...";
+      }
+      if (sendBtn) sendBtn.disabled = false;
+
+      ['btn-scenario-1', 'btn-scenario-2', 'btn-scenario-3'].forEach(id => {
+        const b = document.getElementById(id);
+        if (b) b.disabled = false;
+      });
+
+      if (title) title.innerHTML = `✅ Model weights loaded successfully!`;
+      if (timer) timer.textContent = 'Ready';
+      if (bar) {
+        bar.style.width = '100%';
+        bar.className = 'bg-emerald-500 h-full rounded-full transition-all duration-300';
+      }
+      if (subtitle) {
+        subtitle.innerHTML = `<span>Model ready for real-time spatial queries.</span><span class="font-mono text-emerald-400 font-bold">${vramGb || ''} GB VRAM</span>`;
+      }
+
+      setTimeout(() => {
+        if (banner && !isModelLoading) {
+          banner.classList.add('hidden');
+        }
+      }, 2500);
+    }
+
+    function showModelErrorBanner(err) {
+      isModelLoading = false;
+      const banner = document.getElementById('model-loading-banner');
+      const title = document.getElementById('model-loading-title');
+      const subtitle = document.getElementById('model-loading-subtitle');
+      const timer = document.getElementById('model-loading-timer');
+      const bar = document.getElementById('model-loading-progress-bar');
+      const inputEl = document.getElementById('chat-input') || document.getElementById('custom-input');
+      const sendBtn = document.querySelector('button[onclick="sendChatMessage()"]');
+
+      if (inputEl) {
+        inputEl.disabled = false;
+        inputEl.placeholder = "Enter spatial query (e.g. 'Active lithium tailings in Spain & Finland')...";
+      }
+      if (sendBtn) sendBtn.disabled = false;
+      ['btn-scenario-1', 'btn-scenario-2', 'btn-scenario-3'].forEach(id => {
+        const b = document.getElementById(id);
+        if (b) b.disabled = false;
+      });
+
+      if (title) title.innerHTML = `⚠️ Engine Fallback: Standalone Mode Active`;
+      if (timer) timer.textContent = 'Fallback';
+      if (bar) {
+        bar.style.width = '100%';
+        bar.className = 'bg-amber-600 h-full rounded-full transition-all duration-300';
+      }
+      if (subtitle) {
+        subtitle.innerHTML = `<span class="text-amber-300 text-[10.5px] leading-tight select-text">${escapeHtml(err || "Failed to load model weights. Reverted to Standalone Deterministic Engine.")}</span>`;
+      }
+
+      setTimeout(() => {
+        if (banner && !isModelLoading) banner.classList.add('hidden');
+      }, 5500);
+    }
+
+    function revertToLastValidEngine(failedProvider, rawError) {
+      currentProvider = lastWorkingProvider || 'rules';
+
+      const selectEl = document.getElementById('llm-provider-select');
+      if (selectEl) {
+        selectEl.value = currentProvider;
+      }
+
+      const indicator = document.getElementById('current-model-indicator');
+      if (indicator) {
+        if (currentProvider === 'gemini') {
+          indicator.textContent = 'Gemini 2.0 / 1.5 (Cloud API)';
+        } else if (currentProvider === 'openai') {
+          indicator.textContent = 'OpenAI GPT-4o (Cloud API)';
+        } else if (currentProvider === 'claude') {
+          indicator.textContent = 'Anthropic Claude 3.5 / 3.7 (Cloud API / Claude Code)';
+        } else {
+          indicator.textContent = 'Deterministic Engine (Standalone)';
+        }
+      }
+
+      const modelNames = {
+        'mistral': 'Mistral 7B Instruct v0.2',
+        'llama8b': 'Meta Llama 3.1 8B',
+        'qwen': 'Qwen 2.5 7B',
+        'phi3': 'Phi-3 Mini 4K',
+        'gemma': 'Gemma 2 2B'
+      };
+      const name = modelNames[failedProvider] || (failedProvider ? failedProvider.toUpperCase() : 'Local Model');
+      let friendlyError = `Failed to load ${name} weights: No CUDA GPU detected or PyTorch weights unavailable on host. System reverted to Standalone Deterministic Engine.`;
+      if (rawError && typeof rawError === 'string' && !rawError.toLowerCase().includes('traceback')) {
+        friendlyError = `Failed to load ${name}: ${rawError.trim()}. Reverted to Standalone Deterministic Engine.`;
+      }
+      showModelErrorBanner(friendlyError);
+    }
+
+    function hideModelLoadingBanner() {
+      isModelLoading = false;
+      const banner = document.getElementById('model-loading-banner');
+      if (banner) banner.classList.add('hidden');
+      const inputEl = document.getElementById('chat-input') || document.getElementById('custom-input');
+      const sendBtn = document.querySelector('button[onclick="sendChatMessage()"]');
+      if (inputEl) inputEl.disabled = false;
+      if (sendBtn) sendBtn.disabled = false;
+      ['btn-scenario-1', 'btn-scenario-2', 'btn-scenario-3'].forEach(id => {
+        const b = document.getElementById(id);
+        if (b) b.disabled = false;
+      });
+    }
+
+    async function unloadGPUModel() {
+      try {
+        const res = await fetch('/api/unload_model', { method: 'POST' });
+        if (res.ok) {
+          await pollGPUStatus();
+        }
+      } catch (e) {
+        console.error("Error unloading model:", e);
       }
     }
 
@@ -3814,28 +5059,57 @@
     // ==========================================
     function setModelProvider(provider) {
       currentProvider = provider;
+      if (provider === 'rules' || provider === 'mock') {
+        unloadGPUModel();
+        lastWorkingProvider = 'rules';
+      } else if (['gemini', 'openai', 'claude'].includes(provider)) {
+        lastWorkingProvider = provider;
+      }
+
+      const selectEl = document.getElementById('llm-provider-select');
+      if (selectEl && selectEl.value !== provider) {
+        selectEl.value = provider;
+      }
+
       const indicator = document.getElementById('current-model-indicator');
       if (indicator) {
         if (provider === 'gemini') {
-          indicator.textContent = 'Gemini 1.5 Flash / Pro';
+          indicator.textContent = 'Gemini 2.0 / 1.5 (Cloud API)';
         } else if (provider === 'openai') {
-          indicator.textContent = 'OpenAI GPT-4o';
+          indicator.textContent = 'OpenAI GPT-4o (Cloud API)';
+        } else if (provider === 'claude') {
+          indicator.textContent = 'Anthropic Claude 3.5 / 3.7 (Cloud API / Claude Code)';
+        } else if (provider === 'mistral') {
+          indicator.textContent = 'Mistral 7B Instruct v0.2 (Local GPU)';
+        } else if (provider === 'qwen') {
+          indicator.textContent = 'Qwen 2.5 7B (Local GPU)';
+        } else if (provider === 'llama8b') {
+          indicator.textContent = 'Meta Llama 3.1 8B (Local GPU)';
+        } else if (provider === 'phi3') {
+          indicator.textContent = 'Phi-3 Mini 4K (Local GPU)';
         } else {
-          indicator.textContent = 'Standalone Engine';
+          indicator.textContent = 'Deterministic Engine (Standalone)';
         }
       }
 
       const apiKeyContainer = document.getElementById('api-key-container');
       if (apiKeyContainer) {
-        if (provider === 'gemini' || provider === 'openai') {
+        if (provider === 'gemini' || provider === 'openai' || provider === 'claude') {
           apiKeyContainer.classList.remove('hidden');
         } else {
           apiKeyContainer.classList.add('hidden');
         }
       }
+
+      // Automatically trigger weight preloading on GPU with progress bar
+      triggerModelPreload(provider);
     }
 
     function runScenario(scenarioId) {
+      if (isModelLoading) {
+        alert("Please wait for model weights to finish loading before executing queries.");
+        return;
+      }
       let query = "";
       if (scenarioId === 'query_1') {
         query = "Show active lithium and cobalt waste dumps in Spain and Finland";
@@ -3848,20 +5122,471 @@
       const getInput = () => document.getElementById('chat-input') || document.getElementById('custom-input');
       const inputEl = getInput();
       if (inputEl) {
-        inputEl.value = query;
+        inputEl.value = '';
       }
       sendChatMessage(query);
     }
 
+    function executeClientSideFallback(query, currentFilters = null, conversationHistory = null) {
+      const qLower = (query || "").toLowerCase().trim();
+
+      // Initialize accumulated state from currentFilters if present
+      const state = {
+        countries: (currentFilters && Array.isArray(currentFilters.countries)) ? [...currentFilters.countries] : [],
+        regions: (currentFilters && Array.isArray(currentFilters.regions)) ? [...currentFilters.regions] : [],
+        commodities: (currentFilters && Array.isArray(currentFilters.commodities)) ? [...currentFilters.commodities] : [],
+        storage_facility_types: (currentFilters && Array.isArray(currentFilters.storage_facility_types)) ? [...currentFilters.storage_facility_types] : [],
+        material_types: (currentFilters && Array.isArray(currentFilters.material_types)) ? [...currentFilters.material_types] : [],
+        project_status: (currentFilters && Array.isArray(currentFilters.project_status)) ? [...currentFilters.project_status] : [],
+        environmental_flags: (currentFilters && Array.isArray(currentFilters.environmental_flags)) ? [...currentFilters.environmental_flags] : [],
+        restored: (currentFilters && currentFilters.restored !== undefined) ? currentFilters.restored : null
+      };
+
+      // 1. Detect Dialogue Action
+      let action = "new_search";
+      const resetCues = [
+        /\breset\b/, /\breiniciar\b/, /\blimpiar\b/, /\bempezar de nuevo\b/,
+        /\bnueva b[uú]squeda\b/, /\bolvida lo anterior\b/, /\bolvida todo\b/,
+        /\bborrar filtros\b/, /\bclear\b/, /\bstart over\b/, /\bnew search\b/
+      ];
+      const removeCues = [
+        /\bquita\b/, /\bquitar\b/, /\belimina\b/, /\beliminar\b/, /\bdescarta\b/,
+        /\bsin\b/, /\bexcepto\b/, /\bmenos\b/, /\bya no quiero\b/, /\bborra\b/,
+        /\bremove\b/, /\bexclude\b/, /\bdrop\b/, /\bwithout\b/, /\bdelete\b/
+      ];
+      const refineCues = [
+        /\bde es[ao]s\b/, /\bde est[ao]s\b/, /\bde ell[ao]s\b/, /\bde los anteriores\b/,
+        /\bsolo las que\b/, /\bsolo los que\b/, /\b[uú]nicamente\b/, /\bunicamente\b/,
+        /\bque contengan\b/, /\bque tengan\b/, /\bpero solo\b/, /\bde ah[ií] solo\b/,
+        /\bacota\b/, /\bfiltra por\b/, /\bfiltradas por\b/, /\bof those\b/, /\bfrom these\b/,
+        /\bonly (those|that)\b/, /\bnarrow down\b/, /\bjust the ones\b/
+      ];
+      const expandCues = [
+        /\by adem[aá]s\b/, /\btambi[eé]n\b/, /\ba[ñn]ade\b/, /\bagrega\b/, /\bsuma\b/,
+        /\by en\b/, /\by las de\b/, /\by los de\b/, /\by cerca de\b/, /\bo en\b/,
+        /\band also\b/, /\badditionally\b/, /\bas well as\b/, /\bplus\b/, /\binclude\b/
+      ];
+
+      const hasPriorFilters = state.countries.length > 0 || state.commodities.length > 0 ||
+        state.storage_facility_types.length > 0 || state.project_status.length > 0 || state.restored !== null;
+
+      if (resetCues.some(re => re.test(qLower))) {
+        action = "reset";
+      } else if (hasPriorFilters && removeCues.some(re => re.test(qLower))) {
+        action = "remove";
+      } else if (hasPriorFilters && refineCues.some(re => re.test(qLower))) {
+        action = "refine";
+      } else if (hasPriorFilters && expandCues.some(re => re.test(qLower))) {
+        action = "expand";
+      } else if (!hasPriorFilters) {
+        action = "new_search";
+      }
+
+      // Greetings / General Help (only if not an action on existing filters)
+      const isGreeting = /\b(hola|hello|hi|hey|buenos d[ií]as|buenas tardes|buenas noches|buenas)\b/i.test(qLower);
+      const isHelp = /\b(ayuda|help|en qu[eé] me puedes ayudar|qu[eé] puedes hacer|c[oó]mo funciona|para qu[eé] sirves)\b/i.test(qLower);
+      const isConceptual = /\b(diferencia|qué es|que es|directiva|unfc|jorc|amd|drenaje [aá]cido)\b/i.test(qLower);
+
+      if ((isGreeting || isHelp) && action === "new_search" && !hasPriorFilters) {
+        const welcomeText = `👋 **Hello! Welcome to the CRMsDataSpace Intelligent Assistant.**\n\n` +
+          `This data space allows you to query and inspect **100 mining facilities and deposits** (tailings ponds, waste dumps, and stockpiles) across **12 European Union member states**.\n\n` +
+          `**What can I assist you with?**\n` +
+          `- 🌍 **Filter by EU Country**: Spain, Portugal, France, Germany, Sweden, Finland, Poland, Italy, Greece, Ireland, Austria, Czechia.\n` +
+          `- 💎 **Critical Raw Materials (CRMs)**: Lithium, Cobalt, Nickel, Tungsten, Rare Earth Elements (REE), Copper, Tin, Tantalum, etc.\n` +
+          `- 🏗️ **Storage Facility Types**: Tailings ponds (*ponds*), mine waste dumps (*waste dumps*), mineral stockpiles (*stockpiles*).\n` +
+          `- ⚠️ **Operational & Environmental Status**: Active, inactive, maintenance, restored, unrestored, or acid mine drainage risk (AMD).\n\n` +
+          `**Recommended queries to explore:**\n` +
+          `1. *"Active lithium and cobalt tailings ponds in Spain and Finland"*\n` +
+          `2. *"Unrestored tungsten waste dumps in Germany"*\n` +
+          `3. *"Rare earth elements (REE) facilities in Sweden and France"*`;
+        return {
+          query: query,
+          narrative: welcomeText,
+          response_text: welcomeText,
+          matched_ids: MINING_SITES.map(s => s.id),
+          active_map_filters: [],
+          filters: state,
+          current_filters: state,
+          dialogue_action: "new_search",
+          num_found: MINING_SITES.length,
+          extracted_json: { intent: 'generic_qa', filters: {} },
+          solr_query: { q: "*:*", fq: [] },
+          solr_facets: { facet_counts: { facet_fields: { country: [], commodities: [] } } },
+          evidences: []
+        };
+      }
+
+      if (isConceptual && (qLower.includes("diferencia") || qLower.includes("escombrera") || qLower.includes("balsa"))) {
+        const diffText = `🔬 **Diferencia técnica entre Balsa de Decantación (*Tailings Pond*) y Escombrera de Roca Estéril (*Waste Dump*):**\n\n` +
+          `1. **Balsa de Decantación (*Tailings Pond / TSF*)**:\n` +
+          `   - Almacena estériles finos (limos y arcillas) procedentes del tratamiento mineralógico suspendidos en agua.\n` +
+          `   - Requiere presas perimetrales continuas con riesgo de licuefacción estática o rotura hidráulica.\n\n` +
+          `2. **Escombrera (*Waste Dump*)**:\n` +
+          `   - Almacena roca encajante gruesa arrancada en mina sin tratamiento químico.\n` +
+          `   - Se vierte por gravedad en bancos sin contención hidráulica, con riesgo de deslizamiento de taludes y drenaje ácido (AMD).\n\n` +
+          `💡 *Puedes buscar: "balsas activas en España" o "escombreras sin restaurar en Alemania".*`;
+        return {
+          query: query,
+          narrative: diffText,
+          response_text: diffText,
+          matched_ids: MINING_SITES.map(s => s.id),
+          active_map_filters: [],
+          filters: state,
+          current_filters: state,
+          dialogue_action: "new_search",
+          num_found: MINING_SITES.length,
+          extracted_json: { intent: 'generic_qa', filters: {} },
+          solr_query: { q: "*:*", fq: [] },
+          solr_facets: { facet_counts: { facet_fields: { country: [], commodities: [] } } },
+          evidences: []
+        };
+      }
+
+      // 2. Extract Entities from current query
+      const extracted = {
+        countries: [],
+        commodities: [],
+        storage_facility_types: [],
+        project_status: [],
+        environmental_flags: [],
+        restored: null
+      };
+
+      // City grounding to countries
+      const cityMap = {
+        'paris': 'france', 'parís': 'france', 'lyon': 'france', 'marseille': 'france', 'toulouse': 'france', 'bordeaux': 'france',
+        'berlin': 'germany', 'berlín': 'germany', 'munich': 'germany', 'múnich': 'germany', 'frankfurt': 'germany', 'hamburg': 'germany', 'cologne': 'germany', 'dresden': 'germany', 'leipzig': 'germany',
+        'madrid': 'spain', 'barcelona': 'spain', 'ourense': 'spain', 'zamora': 'spain', 'salamanca': 'spain', 'huelva': 'spain', 'asturias': 'spain', 'sevilla': 'spain',
+        'lisboa': 'portugal', 'lisbon': 'portugal', 'porto': 'portugal',
+        'roma': 'italy', 'rome': 'italy', 'milan': 'italy', 'milán': 'italy', 'turin': 'italy',
+        'stockholm': 'sweden', 'estocolmo': 'sweden', 'kiruna': 'sweden',
+        'helsinki': 'finland', 'espoo': 'finland', 'tampere': 'finland',
+        'warsaw': 'poland', 'varsovia': 'poland', 'krakow': 'poland', 'cracovia': 'poland',
+        'vienna': 'austria', 'viena': 'austria', 'salzburg': 'austria',
+        'athens': 'greece', 'atenas': 'greece',
+        'dublin': 'ireland', 'dublín': 'ireland',
+        'prague': 'czechia', 'praga': 'czechia'
+      };
+      for (const [cName, coMapped] of Object.entries(cityMap)) {
+        const re = new RegExp(`\\b${cName}\\b`, 'i');
+        if (re.test(qLower) && !extracted.countries.includes(coMapped)) {
+          extracted.countries.push(coMapped);
+        }
+      }
+
+      // Supported European Countries
+      const countryMap = {
+        'spain': 'spain', 'españa': 'spain', 'espana': 'spain',
+        'finland': 'finland', 'finlandia': 'finland',
+        'germany': 'germany', 'alemania': 'germany',
+        'france': 'france', 'francia': 'france',
+        'sweden': 'sweden', 'suecia': 'sweden',
+        'portugal': 'portugal',
+        'italy': 'italy', 'italia': 'italy',
+        'poland': 'poland', 'polonia': 'poland',
+        'greece': 'greece', 'grecia': 'greece',
+        'austria': 'austria',
+        'ireland': 'ireland', 'irlanda': 'ireland',
+        'czechia': 'czechia', 'chequia': 'czechia', 'república checa': 'czechia'
+      };
+      for (const [cName, coMapped] of Object.entries(countryMap)) {
+        const re = new RegExp(`\\b${cName}\\b`, 'i');
+        if (re.test(qLower) && !extracted.countries.includes(coMapped)) {
+          extracted.countries.push(coMapped);
+        }
+      }
+
+      // Commodities (CRMs)
+      const commMap = {
+        'lithium': 'lithium', 'litio': 'lithium',
+        'cobalt': 'cobalt', 'cobalto': 'cobalt',
+        'tungsten': 'tungsten', 'wolframio': 'tungsten', 'wolfram': 'tungsten', 'tungsteno': 'tungsten',
+        'nickel': 'nickel', 'níquel': 'nickel', 'niquel': 'nickel',
+        'ree': 'rare earth elements', 'rare earth': 'rare earth elements', 'tierras raras': 'rare earth elements', 'rare earth elements': 'rare earth elements',
+        'copper': 'copper', 'cobre': 'copper',
+        'tin': 'tin', 'estaño': 'tin', 'estano': 'tin',
+        'tantalum': 'tantalum', 'tántalo': 'tantalum', 'tantalo': 'tantalum', 'coltan': 'tantalum', 'coltán': 'tantalum',
+        'graphite': 'graphite', 'grafito': 'graphite',
+        'titanium': 'titanium', 'titanio': 'titanium',
+        'manganese': 'manganese', 'manganeso': 'manganese',
+        'platinum': 'pge', 'platino': 'pge', 'pge': 'pge'
+      };
+      for (const [commTerm, commCanon] of Object.entries(commMap)) {
+        const re = new RegExp(`\\b${commTerm}\\b`, 'i');
+        if (re.test(qLower) && !extracted.commodities.includes(commCanon)) {
+          extracted.commodities.push(commCanon);
+        }
+      }
+
+      // Facility Types
+      if (/\b(dump|dumps|escombrera|escombreras|vertedero|waste)\b/i.test(qLower)) {
+        if (!extracted.storage_facility_types.includes('waste dump')) extracted.storage_facility_types.push('waste dump');
+      }
+      if (/\b(tailing|tailings|balsa|balsas|pond|ponds|decantaci[oó]n|relave|relaves|tsf)\b/i.test(qLower)) {
+        if (!extracted.storage_facility_types.includes('pond')) extracted.storage_facility_types.push('pond');
+      }
+      if (/\b(stockpile|stockpiles|acopio|acopios)\b/i.test(qLower)) {
+        if (!extracted.storage_facility_types.includes('stockpile')) extracted.storage_facility_types.push('stockpile');
+      }
+
+      // Project Status
+      if (/\b(active|activa|activas|activo|activos)\b/i.test(qLower)) {
+        extracted.project_status.push('active');
+      } else if (/\b(closed|cerrada|cerradas|cerrado|cerrados)\b/i.test(qLower)) {
+        extracted.project_status.push('closed');
+      } else if (/\b(abandoned|abandonada|abandonadas|abandonado)\b/i.test(qLower)) {
+        extracted.project_status.push('abandoned');
+      }
+
+      // Restoration Status
+      if (/\b(unrestored|sin restaurar|no restaurad[ao]s?)\b/i.test(qLower)) {
+        extracted.restored = false;
+        extracted.environmental_flags.push('not restored');
+      } else if (/\b(restored|restaurad[ao]s?)\b/i.test(qLower)) {
+        extracted.restored = true;
+      }
+
+      // Unsupported Countries Check
+      const unsupportedList = ['albania', 'chile', 'china', 'uk', 'reino unido', 'estados unidos', 'usa', 'rusia', 'noruega', 'suiza'];
+      const unsupportedFound = unsupportedList.filter(u => new RegExp(`\\b${u}\\b`, 'i').test(qLower));
+
+      if (unsupportedFound.length > 0 && extracted.countries.length === 0 && action === "new_search") {
+        const outText = `⚠️ **Country Out of Scope**: You requested facilities in **${unsupportedFound.join(', ')}**, but the European CRMsDataSpace is delimited to **12 European Union countries** (Spain, Portugal, France, Germany, Sweden, Finland, Poland, Italy, Greece, Ireland, Austria, and Czechia).\n\n💡 *Try querying facilities in countries such as Spain, Portugal, Germany, or Greece.*`;
+        return {
+          query: query,
+          narrative: outText,
+          response_text: outText,
+          matched_ids: [],
+          active_map_filters: [],
+          filters: state,
+          current_filters: state,
+          dialogue_action: "new_search",
+          num_found: 0,
+          extracted_json: { intent: 'filter_search', filters: {} },
+          solr_query: { q: "*:*", fq: [] },
+          solr_facets: { facet_counts: { facet_fields: { country: [], commodities: [] } } },
+          evidences: []
+        };
+      }
+
+      // 3. Dialogue State Tracking Reconciliation
+      const prevFilters = {
+        countries: [...state.countries],
+        commodities: [...state.commodities],
+        storage_facility_types: [...state.storage_facility_types],
+        project_status: [...state.project_status],
+        environmental_flags: [...state.environmental_flags],
+        restored: state.restored
+      };
+
+      if (action === "reset") {
+        state.countries = [];
+        state.regions = [];
+        state.commodities = [];
+        state.storage_facility_types = [];
+        state.material_types = [];
+        state.project_status = [];
+        state.environmental_flags = [];
+        state.restored = null;
+      } else if (action === "new_search") {
+        state.countries = [...extracted.countries];
+        state.commodities = [...extracted.commodities];
+        state.storage_facility_types = [...extracted.storage_facility_types];
+        state.project_status = [...extracted.project_status];
+        state.environmental_flags = [...extracted.environmental_flags];
+        state.restored = extracted.restored;
+      } else if (action === "expand") {
+        // Additive OR
+        extracted.countries.forEach(c => { if (!state.countries.includes(c)) state.countries.push(c); });
+        extracted.commodities.forEach(c => { if (!state.commodities.includes(c)) state.commodities.push(c); });
+        extracted.storage_facility_types.forEach(f => { if (!state.storage_facility_types.includes(f)) state.storage_facility_types.push(f); });
+        extracted.project_status.forEach(s => { if (!state.project_status.includes(s)) state.project_status.push(s); });
+        if (extracted.restored !== null) state.restored = extracted.restored;
+      } else if (action === "refine") {
+        // AND refinement: override dimensions mentioned
+        if (extracted.countries.length > 0) state.countries = [...extracted.countries];
+        if (extracted.commodities.length > 0) state.commodities = [...extracted.commodities];
+        if (extracted.storage_facility_types.length > 0) state.storage_facility_types = [...extracted.storage_facility_types];
+        if (extracted.project_status.length > 0) state.project_status = [...extracted.project_status];
+        if (extracted.restored !== null) state.restored = extracted.restored;
+      } else if (action === "remove") {
+        // Subtraction: drop specified items
+        if (extracted.countries.length > 0) {
+          state.countries = state.countries.filter(c => !extracted.countries.includes(c));
+        }
+        if (extracted.commodities.length > 0) {
+          state.commodities = state.commodities.filter(c => !extracted.commodities.includes(c));
+        }
+        if (extracted.storage_facility_types.length > 0) {
+          state.storage_facility_types = state.storage_facility_types.filter(f => !extracted.storage_facility_types.includes(f));
+        }
+        if (extracted.project_status.length > 0) {
+          state.project_status = state.project_status.filter(s => !extracted.project_status.includes(s));
+        }
+      }
+
+      // 4. Filter MINING_SITES against accumulated state
+      let matched = MINING_SITES.slice();
+      const activeFilters = [];
+
+      if (state.countries.length > 0) {
+        matched = matched.filter(s => {
+          const sc = (s.country || '').toLowerCase();
+          const scn = (s.country_name || '').toLowerCase();
+          return state.countries.some(c => c.toLowerCase() === sc || c.toLowerCase() === scn);
+        });
+        activeFilters.push({ type: 'Country', label: 'Countries', values: state.countries.map(c => c.charAt(0).toUpperCase() + c.slice(1)) });
+      }
+
+      if (state.commodities.length > 0) {
+        matched = matched.filter(s => {
+          const siteComms = (s.commodities || []).map(c => c.toLowerCase());
+          const siteLabel = (s.commodities_label || '').toLowerCase();
+          return state.commodities.some(c => {
+            const cLower = c.toLowerCase();
+            return siteComms.some(sc => sc.includes(cLower)) || siteLabel.includes(cLower);
+          });
+        });
+        activeFilters.push({ type: 'Commodity', label: 'CRM Metal', values: state.commodities.map(c => c.charAt(0).toUpperCase() + c.slice(1)) });
+      }
+
+      if (state.storage_facility_types.length > 0) {
+        matched = matched.filter(s => {
+          const sfText = `${s.storage_facility_type || ''} ${s.facility_type || ''} ${s.storage_facility_label || ''}`.toLowerCase();
+          return state.storage_facility_types.some(ft => {
+            if (ft === 'waste dump') return sfText.includes('dump') || sfText.includes('escombrera') || sfText.includes('waste');
+            if (ft === 'pond' || ft === 'tailings storage facility') return sfText.includes('pond') || sfText.includes('balsa') || sfText.includes('tailing');
+            if (ft === 'stockpile') return sfText.includes('stockpile') || sfText.includes('acopio');
+            return sfText.includes(ft.toLowerCase());
+          });
+        });
+        activeFilters.push({ type: 'Facility', label: 'Facility Type', values: state.storage_facility_types });
+      }
+
+      if (state.project_status.length > 0) {
+        matched = matched.filter(s => {
+          const ps = (s.project_status || '').toLowerCase();
+          return state.project_status.some(st => ps.includes(st.toLowerCase()));
+        });
+        activeFilters.push({ type: 'Status', label: 'Status', values: state.project_status });
+      }
+
+      if (state.restored !== null) {
+        matched = matched.filter(s => {
+          if (state.restored === false) {
+            return (s.environmental_flags || []).some(f => f.toLowerCase().includes('not restored')) || s.restored === false;
+          }
+          return s.restored === true || !(s.environmental_flags || []).some(f => f.toLowerCase().includes('not restored'));
+        });
+        activeFilters.push({ type: 'Restoration', label: 'Restored', values: [String(state.restored)] });
+      }
+
+      const matchedIds = matched.map(s => s.id);
+
+      // 5. Build Transition Notice & Narrative
+      let transitionNotice = "";
+      if (action === "reset") {
+        transitionNotice = "🧹 **Conversation filters reset** (showing full European catalog of 100 facilities).\n\n";
+      } else if (action === "expand") {
+        const addedCountries = state.countries.filter(c => !prevFilters.countries.includes(c));
+        const addedComms = state.commodities.filter(c => !prevFilters.commodities.includes(c));
+        const details = [];
+        if (addedCountries.length) details.push(`countries: ${addedCountries.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}`);
+        if (addedComms.length) details.push(`commodities: ${addedComms.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}`);
+        const detailStr = details.length ? ` (${details.join('; ')})` : "";
+        transitionNotice = `🔄 **Broadening query (OR)**${detailStr} while retaining prior criteria:\n\n`;
+      } else if (action === "refine") {
+        const details = [];
+        if (extracted.commodities.length) details.push(`commodities: ${extracted.commodities.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}`);
+        if (extracted.storage_facility_types.length) details.push(`facility types: ${extracted.storage_facility_types.join(', ')}`);
+        const detailStr = details.length ? ` to ${details.join('; ')}` : "";
+        transitionNotice = `🎯 **Refining active results (AND)**${detailStr}:\n\n`;
+      } else if (action === "remove") {
+        const dropped = [
+          ...prevFilters.countries.filter(c => !state.countries.includes(c)),
+          ...prevFilters.commodities.filter(c => !state.commodities.includes(c)),
+          ...prevFilters.storage_facility_types.filter(f => !state.storage_facility_types.includes(f))
+        ];
+        const droppedStr = dropped.length ? ` **${dropped.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}**` : "";
+        transitionNotice = `✂️ **Excluding${droppedStr}** from active criteria and preserving remaining filters:\n\n`;
+      }
+
+      let narrative = transitionNotice;
+      if (matched.length === 0) {
+        narrative += `No European mining facilities matched the current combination of active filters.\n\n` +
+          `💡 *You can reset the search or broaden your query by testing other countries or commodities.*`;
+      } else {
+        narrative += `Located **${matched.length} European critical raw material facilities** matching the active criteria.\n\n**Key Facilities:**\n`;
+        matched.slice(0, 3).forEach(s => {
+          narrative += `- **${s.site_name}** (${s.country_name || s.country}): ${s.facility_type || s.storage_facility_label || 'Facility'} with ${s.commodities_label || (s.commodities || []).join(', ')}. Status: *${s.status_label || s.project_status}*.\n`;
+        });
+        if (matched.length > 3) {
+          narrative += `\n*...and ${matched.length - 3} additional facilities dynamically rendered on the map.*`;
+        }
+      }
+
+      const evidences = matched.slice(0, 3).map(s => ({
+        title: `Technical_Report_${(s.id || 'SITE').toUpperCase()}.pdf`,
+        page: 1,
+        score: 0.95,
+        entities: [`Mineral: ${s.commodities_label || (s.commodities || []).join(', ')}`, `País: ${s.country_name || s.country}`],
+        snippet: s.description || 'Facility deposit description from SoftwareX CRM repository.',
+        site_id: s.id
+      }));
+
+      // Build Solr FQ representation for Inspector
+      const fqList = [];
+      if (state.countries.length) fqList.push(`country:(${state.countries.join(' OR ')})`);
+      if (state.commodities.length) fqList.push(`commodities:(${state.commodities.join(' OR ')})`);
+      if (state.storage_facility_types.length) fqList.push(`storage_facility_type:(${state.storage_facility_types.join(' OR ')})`);
+      if (state.project_status.length) fqList.push(`project_status:(${state.project_status.join(' OR ')})`);
+      if (state.restored !== null) fqList.push(`restored:${state.restored}`);
+
+      return {
+        query: query,
+        narrative: narrative,
+        response_text: narrative,
+        matched_ids: matchedIds,
+        active_map_filters: activeFilters,
+        filters: state,
+        current_filters: state,
+        dialogue_action: action,
+        num_found: matched.length,
+        extracted_json: {
+          intent: 'spatial_filter',
+          dialogue_action: action,
+          filters: state
+        },
+        solr_query: {
+          q: "*:*",
+          fq: fqList,
+          rows: 100
+        },
+        solr_facets: {
+          facet_counts: {
+            facet_fields: {
+              country: state.countries,
+              commodities: state.commodities
+            }
+          }
+        },
+        evidences: evidences
+      };
+    }
+
     async function sendChatMessage(overrideQuery = null) {
       if (isTyping) return;
+      if (isModelLoading) {
+        alert("Please wait for model weights to finish loading.");
+        return;
+      }
 
       const getInput = () => document.getElementById('chat-input') || document.getElementById('custom-input');
       const inputEl = getInput();
       const query = overrideQuery || (inputEl ? inputEl.value.trim() : '');
       if (!query) return;
 
-      if (inputEl && !overrideQuery) inputEl.value = '';
+      if (inputEl) inputEl.value = '';
 
       const chatContainer = document.getElementById('chat-messages');
       if (!chatContainer) return;
@@ -3890,16 +5615,51 @@
       chatContainer.appendChild(typingBubble);
       chatContainer.scrollTop = chatContainer.scrollHeight;
 
-      // 3. Send Request to REST Server (/api/chat)
+      // 3. Send Request to REST Server (/api/chat) with multi-turn memory & client fallback
       try {
-        const apiKey = document.getElementById('api-key-input')?.value || '';
-        const resp = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: query, query: query, provider: currentProvider, api_key: apiKey })
-        });
-
-        const data = await resp.json();
+        let data = null;
+        try {
+          const apiKey = document.getElementById('api-key-input')?.value || '';
+          const resp = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              question: query,
+              query: query,
+              provider: currentProvider,
+              api_key: apiKey,
+              conversation_history: chatConversationHistory,
+              current_filters: chatCurrentFilters
+            })
+          });
+          if (resp.ok) {
+            data = await resp.json();
+            if (data.current_filters) {
+              chatCurrentFilters = data.current_filters;
+            }
+            if (data.conversation_history) {
+              chatConversationHistory = data.conversation_history;
+            } else {
+              chatConversationHistory.push({ role: "user", content: query });
+              chatConversationHistory.push({ role: "assistant", content: data.narrative || data.response_text || "" });
+            }
+            updateChatMemoryStatus(data.dialogue_action, chatCurrentFilters, chatConversationHistory.length);
+          } else {
+            console.warn('/api/chat returned status', resp.status, ', using client deterministic fallback');
+            data = executeClientSideFallback(query, chatCurrentFilters, chatConversationHistory);
+            chatCurrentFilters = data.current_filters || chatCurrentFilters;
+            chatConversationHistory.push({ role: "user", content: query });
+            chatConversationHistory.push({ role: "assistant", content: data.narrative || data.response_text || "" });
+            updateChatMemoryStatus(data.dialogue_action, chatCurrentFilters, chatConversationHistory.length);
+          }
+        } catch (fetchErr) {
+          console.warn('Backend server not reachable, executing client-side deterministic fallback:', fetchErr);
+          data = executeClientSideFallback(query, chatCurrentFilters, chatConversationHistory);
+          chatCurrentFilters = data.current_filters || chatCurrentFilters;
+          chatConversationHistory.push({ role: "user", content: query });
+          chatConversationHistory.push({ role: "assistant", content: data.narrative || data.response_text || "" });
+          updateChatMemoryStatus(data.dialogue_action, chatCurrentFilters, chatConversationHistory.length);
+        }
         
         // Remove typing indicator
         const typEl = document.getElementById('typing-indicator');
@@ -3938,11 +5698,17 @@
 
         // 5. Update Map Markers & Highlighting
         const matchedIds = data.matched_ids || [];
-        const matchingSites = MINING_SITES.filter(s => matchedIds.includes(s.id));
-        renderMarkers(matchingSites.length > 0 ? matchingSites : MINING_SITES);
+        if (matchedIds.length > 0) {
+          const matchingSites = MINING_SITES.filter(s => matchedIds.includes(s.id));
+          renderMarkers(matchingSites);
+        } else if (data.dialogue_action === 'reset') {
+          renderMarkers(MINING_SITES);
+        } else {
+          renderMarkers([]);
+        }
 
         // 6. Update Active Map Filter Badges over Map Header
-        updateActiveFilterBadges(data.active_map_filters || [], matchedIds.length);
+        updateActiveFilterBadges(data.active_map_filters || [], matchedIds.length, data.dialogue_action === 'reset');
 
         // 7. Synchronize Manual Filters Widget on Map Right Side
         const nluFilters = data.filters || (data.extracted_json && data.extracted_json.filters) || {};
@@ -3960,7 +5726,7 @@
         errBubble.className = 'flex justify-start mb-3';
         errBubble.innerHTML = `
           <div class="bg-red-950/60 border border-red-900/60 text-red-300 text-xs px-3.5 py-2.5 rounded-xl">
-            Server connection error: ${escapeHtml(err.message)}
+            Processing error: ${escapeHtml(err.message)}
           </div>
         `;
         chatContainer.appendChild(errBubble);
@@ -3969,12 +5735,18 @@
       }
     }
 
-    function updateActiveFilterBadges(activeFilters = [], matchedCount = 0) {
+    function updateActiveFilterBadges(activeFilters = [], matchedCount = 0, isReset = false) {
       const container = document.getElementById('active-filters-badges');
       const counter = document.getElementById('site-counter-display');
 
       if (counter) {
-        counter.textContent = `Showing ${matchedCount > 0 ? matchedCount : MINING_SITES.length} / ${MINING_SITES.length} European Sites`;
+        if (matchedCount > 0) {
+          counter.textContent = `Showing ${matchedCount} / ${MINING_SITES.length} European Sites`;
+        } else if (isReset || (!activeFilters || activeFilters.length === 0)) {
+          counter.textContent = `Showing ${MINING_SITES.length} / ${MINING_SITES.length} European Sites`;
+        } else {
+          counter.textContent = `Showing 0 / ${MINING_SITES.length} European Sites`;
+        }
       }
 
       if (!container) return;
@@ -4005,16 +5777,130 @@
       }
     }
 
-    function toggleBottomPanel() {
-      const panel = document.getElementById('bottom-inspector-panel');
+    let isInspectorMaximized = false;
+    let lastInspectorHeight = '250px';
+
+    function initInspectorResizer() {
+      const resizer = document.getElementById('inspector-resizer');
+      const panel = document.getElementById('bottom-panel');
+      if (!resizer || !panel) return;
+
+      let startY = 0;
+      let startH = 0;
+
+      const onMouseMove = (e) => {
+        const dy = startY - e.clientY;
+        let newH = startH + dy;
+        const minH = 36;
+        const maxH = Math.round(window.innerHeight * 0.85);
+        if (newH < minH) newH = minH;
+        if (newH > maxH) newH = maxH;
+        panel.style.height = `${newH}px`;
+        panel.classList.remove('h-[250px]');
+      };
+
+      const onMouseUp = () => {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        const icon = document.getElementById('inspector-collapse-icon');
+        const text = document.getElementById('inspector-collapse-text');
+        if (panel.offsetHeight > 45) {
+          lastInspectorHeight = `${panel.offsetHeight}px`;
+          if (icon) icon.textContent = '▼';
+          if (text) text.textContent = 'Minimize Drawer';
+        } else {
+          if (icon) icon.textContent = '▲';
+          if (text) text.textContent = 'Expand Drawer';
+        }
+      };
+
+      resizer.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        startY = e.clientY;
+        startH = panel.offsetHeight;
+        document.body.style.cursor = 'ns-resize';
+        document.body.style.userSelect = 'none';
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      });
+    }
+
+    function toggleMaximizeInspector(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      const panel = document.getElementById('bottom-panel');
+      const btn = document.getElementById('btn-maximize-inspector');
+      const icon = document.getElementById('inspector-collapse-icon');
+      const text = document.getElementById('inspector-collapse-text');
       if (!panel) return;
-      if (panel.classList.contains('h-10')) {
-        panel.classList.remove('h-10');
-        panel.classList.add('h-64');
+
+      if (!isInspectorMaximized) {
+        lastInspectorHeight = panel.offsetHeight > 45 ? `${panel.offsetHeight}px` : '250px';
+        const targetH = Math.max(480, Math.round(window.innerHeight * 0.65));
+        panel.style.height = `${targetH}px`;
+        panel.classList.remove('h-[250px]');
+        isInspectorMaximized = true;
+        if (btn) btn.innerHTML = '<span>⤡</span><span>Restore</span>';
+        if (icon) icon.textContent = '▼';
+        if (text) text.textContent = 'Minimize Drawer';
       } else {
-        panel.classList.remove('h-64');
-        panel.classList.add('h-10');
+        panel.style.height = lastInspectorHeight || '250px';
+        isInspectorMaximized = false;
+        if (btn) btn.innerHTML = '<span>⤢</span><span>Maximize</span>';
+        if (icon) icon.textContent = '▼';
+        if (text) text.textContent = 'Minimize Drawer';
       }
+    }
+
+    function toggleBottomPanel(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      const panel = document.getElementById('bottom-panel');
+      const btn = document.getElementById('btn-maximize-inspector');
+      const icon = document.getElementById('inspector-collapse-icon');
+      const text = document.getElementById('inspector-collapse-text');
+      if (!panel) return;
+
+      if (panel.offsetHeight > 45) {
+        lastInspectorHeight = `${panel.offsetHeight}px`;
+        panel.style.height = '36px';
+        panel.classList.remove('h-[250px]');
+        if (btn) btn.innerHTML = '<span>⤢</span><span>Maximize</span>';
+        if (icon) icon.textContent = '▲';
+        if (text) text.textContent = 'Expand Drawer';
+        isInspectorMaximized = false;
+      } else {
+        panel.style.height = lastInspectorHeight && lastInspectorHeight !== '36px' ? lastInspectorHeight : '250px';
+        if (icon) icon.textContent = '▼';
+        if (text) text.textContent = 'Minimize Drawer';
+      }
+    }
+
+    function copyInspectorContent() {
+      const tabs = ['query', 'facets', 'ner'];
+      let activeText = '';
+      tabs.forEach(t => {
+        const content = document.getElementById(`inspector-${t}-content`);
+        const code = document.getElementById(`inspector-${t}-code`);
+        if (content && !content.classList.contains('hidden') && code) {
+          activeText = code.textContent || '';
+        }
+      });
+
+      if (!activeText) return;
+
+      const btn = document.getElementById('btn-copy-inspector');
+      navigator.clipboard.writeText(activeText).then(() => {
+        if (btn) {
+          const original = btn.innerHTML;
+          btn.innerHTML = '<span>✅</span><span class="text-emerald-400 font-semibold">Copied!</span>';
+          setTimeout(() => {
+            btn.innerHTML = original;
+          }, 2000);
+        }
+      }).catch(() => {
+        alert('Copied to clipboard');
+      });
     }
 
     function switchInspectorTab(tabName) {

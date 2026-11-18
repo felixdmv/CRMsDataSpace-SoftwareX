@@ -1,0 +1,880 @@
+[
+  {
+    "id": "CC-001",
+    "category": "pure_conjunction",
+    "query": "escombreras en españa con wolframio y manganeso",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "tungsten",
+      "manganese"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [
+      "spain"
+    ],
+    "expected_disambiguation": false,
+    "min_expected_sites": 1,
+    "description": "Valid co-occurring metals in Spain waste dumps (EU-CRM-017)."
+  },
+  {
+    "id": "CC-002",
+    "category": "pure_conjunction",
+    "query": "tailings with lithium and cobalt",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "lithium",
+      "cobalt"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Conjunction of lithium and cobalt co-occurring in European tailings."
+  },
+  {
+    "id": "CC-003",
+    "category": "pure_conjunction",
+    "query": "waste dumps in Finland containing nickel and cobalt",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "nickel",
+      "cobalt"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [
+      "finland"
+    ],
+    "expected_disambiguation": false,
+    "description": "Conjunction in Finland with nickel and cobalt."
+  },
+  {
+    "id": "CC-004",
+    "category": "pure_conjunction",
+    "query": "balsas de decantacion con cobre y niquel",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "copper",
+      "nickel"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Spanish synonym query for tailings with copper and nickel co-occurrence."
+  },
+  {
+    "id": "CC-005",
+    "category": "pure_conjunction",
+    "query": "active tailings storage facilities in Sweden with cobalt and lithium",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "cobalt",
+      "lithium"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [
+      "sweden"
+    ],
+    "expected_disambiguation": false,
+    "description": "Conjunction with country and status filter in Sweden."
+  },
+  {
+    "id": "CC-006",
+    "category": "pure_conjunction",
+    "query": "deposits with germanium and gallium",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "germanium",
+      "gallium"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Critical semiconductor CRMs co-occurring."
+  },
+  {
+    "id": "CC-007",
+    "category": "pure_conjunction",
+    "query": "escombreras con litio y estaño juntos",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "lithium",
+      "tin"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "min_expected_sites": 1,
+    "description": "Explicit juntos keyword emphasizing conjunction across Europe."
+  },
+  {
+    "id": "CC-008",
+    "category": "pure_conjunction",
+    "query": "facilities with both nickel and tin",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "nickel",
+      "tin"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Explicit English both keyword for conjunction."
+  },
+  {
+    "id": "CC-009",
+    "category": "pure_conjunction",
+    "query": "spoil heaps in France with tungsten and copper",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "tungsten",
+      "copper"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [
+      "france"
+    ],
+    "expected_disambiguation": false,
+    "description": "Conjunction in France with spoil heaps."
+  },
+  {
+    "id": "CC-010",
+    "category": "pure_conjunction",
+    "query": "balsas con litio y cobalto a la vez",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "lithium",
+      "cobalt"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Spanish idiom a la vez confirming conjunction."
+  },
+  {
+    "id": "CC-011",
+    "category": "pure_conjunction",
+    "query": "tailings in Poland with copper and manganese",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "copper",
+      "manganese"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [
+      "poland"
+    ],
+    "expected_disambiguation": false,
+    "description": "Conjunction in Poland."
+  },
+  {
+    "id": "CC-012",
+    "category": "pure_conjunction",
+    "query": "waste dumps with titanium and platinum",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "titanium",
+      "pge"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Conjunction with titanium and platinum group elements."
+  },
+  {
+    "id": "CC-013",
+    "category": "pure_conjunction",
+    "query": "escombreras con manganeso y tantalio",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "manganese",
+      "tantalum"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Conjunction with manganese and tantalum."
+  },
+  {
+    "id": "CC-014",
+    "category": "pure_conjunction",
+    "query": "facilities in Germany with lithium and nickel",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "lithium",
+      "nickel"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [
+      "germany"
+    ],
+    "expected_disambiguation": false,
+    "description": "Conjunction in Germany."
+  },
+  {
+    "id": "CC-015",
+    "category": "pure_conjunction",
+    "query": "tailings with cobalt and nickel and copper",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "cobalt",
+      "nickel",
+      "copper"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Three-element polymetallic conjunction."
+  },
+  {
+    "id": "CC-016",
+    "category": "pure_disjunction",
+    "query": "escombreras con litio o estaño",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "lithium",
+      "tin"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "min_expected_sites": 5,
+    "description": "Disjunction of lithium or tin across Europe."
+  },
+  {
+    "id": "CC-017",
+    "category": "pure_disjunction",
+    "query": "tailings with lithium or cobalt",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "lithium",
+      "cobalt"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Disjunction of battery metals in European tailings."
+  },
+  {
+    "id": "CC-018",
+    "category": "pure_disjunction",
+    "query": "escombreras en españa con wolframio o cobre",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "tungsten",
+      "copper"
+    ],
+    "expected_countries": [
+      "spain"
+    ],
+    "expected_disambiguation": false,
+    "min_expected_sites": 3,
+    "description": "Disjunction in Spain with tungsten or copper."
+  },
+  {
+    "id": "CC-019",
+    "category": "pure_disjunction",
+    "query": "balsas de decantacion en Alemania con germanio o galio",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "germanium",
+      "gallium"
+    ],
+    "expected_countries": [
+      "germany"
+    ],
+    "expected_disambiguation": false,
+    "description": "Disjunction in Germany with germanium or gallium."
+  },
+  {
+    "id": "CC-020",
+    "category": "pure_disjunction",
+    "query": "facilities with nickel or copper",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "nickel",
+      "copper"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Disjunction of base CRMs."
+  },
+  {
+    "id": "CC-021",
+    "category": "pure_disjunction",
+    "query": "escombreras con cobalto o manganeso",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "cobalt",
+      "manganese"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Disjunction with cobalt or manganese."
+  },
+  {
+    "id": "CC-022",
+    "category": "pure_disjunction",
+    "query": "tailings in Finland with nickel or cobalt",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "nickel",
+      "cobalt"
+    ],
+    "expected_countries": [
+      "finland"
+    ],
+    "expected_disambiguation": false,
+    "description": "Disjunction in Finland."
+  },
+  {
+    "id": "CC-023",
+    "category": "pure_disjunction",
+    "query": "balsas de residuos con litio o grafito",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "lithium",
+      "graphite"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Disjunction with lithium or graphite."
+  },
+  {
+    "id": "CC-024",
+    "category": "pure_disjunction",
+    "query": "waste dumps with tin or tungsten",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "tin",
+      "tungsten"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Disjunction with tin or tungsten."
+  },
+  {
+    "id": "CC-025",
+    "category": "pure_disjunction",
+    "query": "facilities in France with copper or lithium",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "copper",
+      "lithium"
+    ],
+    "expected_countries": [
+      "france"
+    ],
+    "expected_disambiguation": false,
+    "description": "Disjunction in France."
+  },
+  {
+    "id": "CC-026",
+    "category": "pure_disjunction",
+    "query": "tailings with lithium or cobalt or nickel",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "lithium",
+      "cobalt",
+      "nickel"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Three-element battery metals disjunction."
+  },
+  {
+    "id": "CC-027",
+    "category": "pure_disjunction",
+    "query": "escombreras con platino o paladio o titanio",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "pge",
+      "titanium"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Disjunction of platinum and titanium."
+  },
+  {
+    "id": "CC-028",
+    "category": "pure_disjunction",
+    "query": "deposits containing either manganese or tantalum",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "manganese",
+      "tantalum"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "English either keyword confirming disjunction."
+  },
+  {
+    "id": "CC-029",
+    "category": "pure_disjunction",
+    "query": "spoil heaps with copper or tin",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "copper",
+      "tin"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Disjunction of copper and tin."
+  },
+  {
+    "id": "CC-030",
+    "category": "pure_disjunction",
+    "query": "balsas con niquel o cobalto por separado",
+    "expected_operator": "OR",
+    "expected_commodities_and": [],
+    "expected_commodities_or": [
+      "nickel",
+      "cobalt"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Explicit por separado keyword verifying disjunction."
+  },
+  {
+    "id": "CC-031",
+    "category": "complex_compound",
+    "query": "niquel o cobalto o estaño y litio",
+    "expected_operator": "COMPOUND",
+    "expected_commodities_or": [
+      "nickel",
+      "cobalt"
+    ],
+    "expected_commodities_and": [
+      "tin",
+      "lithium"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "min_expected_sites": 20,
+    "description": "Exact compound user example: nickel OR cobalt OR (tin AND lithium)."
+  },
+  {
+    "id": "CC-032",
+    "category": "complex_compound",
+    "query": "litio o (estaño y cobalto)",
+    "expected_operator": "COMPOUND",
+    "expected_commodities_or": [
+      "lithium"
+    ],
+    "expected_commodities_and": [
+      "tin",
+      "cobalt"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "min_expected_sites": 10,
+    "description": "Parenthesized compound expression: lithium OR (tin AND cobalt)."
+  },
+  {
+    "id": "CC-033",
+    "category": "complex_compound",
+    "query": "balsas con wolframio y manganeso o cobre",
+    "expected_operator": "COMPOUND",
+    "expected_commodities_and": [
+      "tungsten",
+      "manganese"
+    ],
+    "expected_commodities_or": [
+      "copper"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Spanish compound query: (tungsten AND manganese) OR copper."
+  },
+  {
+    "id": "CC-034",
+    "category": "complex_compound",
+    "query": "tailings with (copper and nickel) or cobalt",
+    "expected_operator": "COMPOUND",
+    "expected_commodities_and": [
+      "copper",
+      "nickel"
+    ],
+    "expected_commodities_or": [
+      "cobalt"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "English parenthesized compound: (copper AND nickel) OR cobalt."
+  },
+  {
+    "id": "CC-035",
+    "category": "complex_compound",
+    "query": "escombreras con grafito o (litio y estaño)",
+    "expected_operator": "COMPOUND",
+    "expected_commodities_or": [
+      "graphite"
+    ],
+    "expected_commodities_and": [
+      "tin",
+      "lithium"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Compound: graphite OR (lithium AND tin)."
+  },
+  {
+    "id": "CC-036",
+    "category": "complex_compound",
+    "query": "facilities with titanium or (manganese and tantalum)",
+    "expected_operator": "COMPOUND",
+    "expected_commodities_or": [
+      "titanium"
+    ],
+    "expected_commodities_and": [
+      "manganese",
+      "tantalum"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Compound: titanium OR (manganese AND tantalum)."
+  },
+  {
+    "id": "CC-037",
+    "category": "complex_compound",
+    "query": "tailings in Spain with copper or (wolfram and manganese)",
+    "expected_operator": "COMPOUND",
+    "expected_commodities_or": [
+      "copper"
+    ],
+    "expected_commodities_and": [
+      "tungsten",
+      "manganese"
+    ],
+    "expected_countries": [
+      "spain"
+    ],
+    "expected_disambiguation": false,
+    "min_expected_sites": 2,
+    "description": "Geographically scoped compound query in Spain."
+  },
+  {
+    "id": "CC-038",
+    "category": "complex_compound",
+    "query": "balsas con cobalto o (niquel y litio)",
+    "expected_operator": "COMPOUND",
+    "expected_commodities_or": [
+      "cobalt"
+    ],
+    "expected_commodities_and": [
+      "nickel",
+      "lithium"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Compound with cobalt OR (nickel AND lithium)."
+  },
+  {
+    "id": "CC-039",
+    "category": "complex_compound",
+    "query": "waste dumps with tin and lithium or copper",
+    "expected_operator": "COMPOUND",
+    "expected_commodities_and": [
+      "tin",
+      "lithium"
+    ],
+    "expected_commodities_or": [
+      "copper"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Compound with (tin AND lithium) OR copper."
+  },
+  {
+    "id": "CC-040",
+    "category": "complex_compound",
+    "query": "facilities with nickel and cobalt or lithium and tin",
+    "expected_operator": "COMPOUND",
+    "expected_commodities_and": [
+      "nickel",
+      "cobalt",
+      "tin",
+      "lithium"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Multi-clause compound conjunction expression."
+  },
+  {
+    "id": "CC-041",
+    "category": "complex_compound",
+    "query": "tailings with manganese or copper or (tungsten and cobalt)",
+    "expected_operator": "COMPOUND",
+    "expected_commodities_or": [
+      "manganese",
+      "copper"
+    ],
+    "expected_commodities_and": [
+      "tungsten",
+      "cobalt"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Multiple disjunctions with parenthesized conjunction."
+  },
+  {
+    "id": "CC-042",
+    "category": "complex_compound",
+    "query": "escombreras con litio o (cobre y niquel) o cobalto",
+    "expected_operator": "COMPOUND",
+    "expected_commodities_or": [
+      "lithium",
+      "cobalt"
+    ],
+    "expected_commodities_and": [
+      "copper",
+      "nickel"
+    ],
+    "expected_countries": [],
+    "expected_disambiguation": false,
+    "description": "Interleaved disjunction and conjunction clauses."
+  },
+  {
+    "id": "CC-043",
+    "category": "zero_result_disambiguation",
+    "query": "escombreras en españa con litio y estaño",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "lithium",
+      "tin"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [
+      "spain"
+    ],
+    "expected_disambiguation": true,
+    "expected_matched_sites": 0,
+    "description": "Primary user example: 0 sites in Spain with Li & Sn co-occurring -> triggers Option 1 / Option 2."
+  },
+  {
+    "id": "CC-044",
+    "category": "zero_result_disambiguation",
+    "query": "tailings in Portugal with cobalt and nickel",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "cobalt",
+      "nickel"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [
+      "portugal"
+    ],
+    "expected_disambiguation": true,
+    "expected_matched_sites": 0,
+    "description": "Zero sites in Portugal with cobalt & nickel -> triggers disambiguation."
+  },
+  {
+    "id": "CC-045",
+    "category": "zero_result_disambiguation",
+    "query": "waste dumps in Sweden with lithium and tin",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "lithium",
+      "tin"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [
+      "sweden"
+    ],
+    "expected_disambiguation": true,
+    "expected_matched_sites": 0,
+    "description": "Zero sites in Sweden with lithium & tin co-occurring -> triggers disambiguation."
+  },
+  {
+    "id": "CC-046",
+    "category": "zero_result_disambiguation",
+    "query": "balsas en Francia con litio y grafito",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "lithium",
+      "graphite"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [
+      "france"
+    ],
+    "expected_disambiguation": true,
+    "expected_matched_sites": 0,
+    "description": "Zero sites in France with lithium & graphite co-occurring -> triggers disambiguation."
+  },
+  {
+    "id": "CC-047",
+    "category": "zero_result_disambiguation",
+    "query": "tailings in Germany with titanium and tantalum",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "titanium",
+      "tantalum"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [
+      "germany"
+    ],
+    "expected_disambiguation": true,
+    "expected_matched_sites": 0,
+    "description": "Zero sites in Germany with titanium & tantalum -> triggers disambiguation."
+  },
+  {
+    "id": "CC-048",
+    "category": "zero_result_disambiguation",
+    "query": "escombreras con litio estaño",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "lithium",
+      "tin"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [],
+    "expected_disambiguation": true,
+    "description": "Implicit co-listing of metals."
+  },
+  {
+    "id": "CC-049",
+    "category": "zero_result_disambiguation",
+    "query": "waste dumps lithium cobalt",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "lithium",
+      "cobalt"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [],
+    "expected_disambiguation": true,
+    "description": "Keyword list query without explicit boolean operator."
+  },
+  {
+    "id": "CC-050",
+    "category": "zero_result_disambiguation",
+    "query": "escombreras en españa con cobalto y niquel",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "cobalt",
+      "nickel"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [
+      "spain"
+    ],
+    "expected_disambiguation": true,
+    "expected_matched_sites": 0,
+    "description": "Zero sites in Spain with cobalt & nickel -> triggers disambiguation."
+  },
+  {
+    "id": "CC-051",
+    "category": "zero_result_disambiguation",
+    "query": "facilities in Finland with manganese and titanium",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "manganese",
+      "titanium"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [
+      "finland"
+    ],
+    "expected_disambiguation": true,
+    "expected_matched_sites": 0,
+    "description": "Zero sites in Finland with Mn & Ti -> triggers disambiguation."
+  },
+  {
+    "id": "CC-052",
+    "category": "zero_result_disambiguation",
+    "query": "balsas en Polonia con litio y cobalto",
+    "expected_operator": "AND",
+    "expected_commodities_and": [
+      "lithium",
+      "cobalt"
+    ],
+    "expected_commodities_or": [],
+    "expected_countries": [
+      "poland"
+    ],
+    "expected_disambiguation": true,
+    "expected_matched_sites": 0,
+    "description": "Zero sites in Poland with Li & Co -> triggers disambiguation."
+  },
+  {
+    "id": "CC-053",
+    "category": "conversational_disambiguation_followup",
+    "query": "opcion 2",
+    "prior_query": "escombreras en españa con litio y estaño",
+    "expected_operator": "OR",
+    "expected_disambiguation": false,
+    "description": "Follow-up turn selecting Option 2 (Separately / OR)."
+  },
+  {
+    "id": "CC-054",
+    "category": "conversational_disambiguation_followup",
+    "query": "por separado",
+    "prior_query": "escombreras en españa con litio y estaño",
+    "expected_operator": "OR",
+    "expected_disambiguation": false,
+    "description": "Follow-up turn answering por separado to execute disjunction."
+  },
+  {
+    "id": "CC-055",
+    "category": "conversational_disambiguation_followup",
+    "query": "opcion 1",
+    "prior_query": "escombreras en españa con litio y estaño",
+    "expected_operator": "AND",
+    "expected_disambiguation": false,
+    "description": "Follow-up turn selecting Option 1 (Together / AND)."
+  },
+  {
+    "id": "CC-056",
+    "category": "conversational_disambiguation_followup",
+    "query": "separately",
+    "prior_query": "tailings in Portugal with cobalt and nickel",
+    "expected_operator": "OR",
+    "expected_disambiguation": false,
+    "description": "English follow-up turn answering separately."
+  },
+  {
+    "id": "CC-057",
+    "category": "template_compound_preset",
+    "query": "solar and wind facilities",
+    "preset": "energy",
+    "expected_operator": "AND",
+    "description": "Template Energy preset conjunction testing co-located solar and wind."
+  },
+  {
+    "id": "CC-058",
+    "category": "template_compound_preset",
+    "query": "solar or wind facilities",
+    "preset": "energy",
+    "expected_operator": "OR",
+    "description": "Template Energy preset disjunction testing alternative solar or wind."
+  },
+  {
+    "id": "CC-059",
+    "category": "template_compound_preset",
+    "query": "public schools and urban parks",
+    "preset": "smartcity",
+    "expected_operator": "AND",
+    "description": "Template Smart Cities preset conjunction testing co-located civic amenities."
+  },
+  {
+    "id": "CC-060",
+    "category": "template_compound_preset",
+    "query": "public schools or urban parks",
+    "preset": "smartcity",
+    "expected_operator": "OR",
+    "description": "Template Smart Cities preset disjunction testing either schools or parks."
+  }
+]

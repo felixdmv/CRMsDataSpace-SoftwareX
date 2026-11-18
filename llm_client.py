@@ -11,17 +11,37 @@ try:
 except ImportError:
     pass
 
+# Built-in fallback loader for .env without external dependencies
+def _load_env_fallback():
+    for p in [Path(__file__).resolve().parent / ".env", Path.cwd() / ".env"]:
+        if p.exists():
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith("#") and "=" in line:
+                            k, v = line.split("=", 1)
+                            k, v = k.strip(), v.strip().strip("'\"")
+                            if k and k not in os.environ:
+                                os.environ[k] = v
+            except Exception:
+                pass
+
+_load_env_fallback()
+
 def extract_json_block(text: str) -> Dict[str, Any]:
-    """Extracts and parses JSON object from LLM raw output text."""
+    """Extracts and parses JSON object from LLM raw output text robustly."""
     if not text:
         return {}
     text = text.strip()
     
+    # 1. Direct full text parse
     try:
         return json.loads(text)
     except Exception:
         pass
         
+    # 2. Markdown fenced code block ```json ... ```
     match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
     if match:
         try:
@@ -29,29 +49,365 @@ def extract_json_block(text: str) -> Dict[str, Any]:
         except Exception:
             pass
             
-    start = text.find("{")
-    end = text.rfind("}")
-    if start != -1 and end != -1 and end > start:
+    # 3. Stream raw_decode from the first '{' using JSONDecoder (handles trailing thoughts/tokens)
+    decoder = json.JSONDecoder()
+    pos = 0
+    while True:
+        idx = text.find("{", pos)
+        if idx == -1:
+            break
         try:
-            return json.loads(text[start:end+1])
+            obj, _ = decoder.raw_decode(text[idx:])
+            if isinstance(obj, dict) and ("intent" in obj or "filters" in obj):
+                return obj
         except Exception:
             pass
+        pos = idx + 1
             
     return {}
+
+# Ensure Python.h and system headers are available for Triton JIT compilation
+header_candidates = [
+    os.path.expanduser("~/.local/include/python3.12"),
+    os.path.expanduser("~/anaconda3/include/python3.12"),
+    os.path.expanduser("~/miniconda3/include/python3.12"),
+]
+if "CONDA_PREFIX" in os.environ:
+    header_candidates.insert(0, os.path.join(os.environ["CONDA_PREFIX"], "include", "python3.12"))
+
+for candidate in header_candidates:
+    if os.path.exists(candidate):
+        cur_cpath = os.environ.get("CPATH", "")
+        if candidate not in cur_cpath:
+            os.environ["CPATH"] = f"{candidate}:{cur_cpath}" if cur_cpath else candidate
+        cur_cinc = os.environ.get("C_INCLUDE_PATH", "")
+        if candidate not in cur_cinc:
+            os.environ["C_INCLUDE_PATH"] = f"{candidate}:{cur_cinc}" if cur_cinc else candidate
+        break
+
+LOCAL_MODELS_CACHE = {}
+LOCAL_TOKENIZERS_CACHE = {}
+
+MODEL_STATE = {
+    "status": "idle",  # "idle", "loading", "ready", "error"
+    "current_model": "",
+    "repo_id": "",
+    "message": "No local model currently loaded in VRAM.",
+    "vram_gb": 0.0,
+    "vram_total_gb": 0.0,
+    "error": ""
+}
+
+def get_model_state() -> Dict[str, Any]:
+    state = dict(MODEL_STATE)
+    try:
+        import torch
+        if torch.cuda.is_available():
+            state["vram_gb"] = round(torch.cuda.memory_allocated(0) / (1024**3), 2)
+            state["vram_total_gb"] = round(torch.cuda.get_device_properties(0).total_memory / (1024**3), 2)
+            state["cuda_available"] = True
+            state["device_name"] = torch.cuda.get_device_name(0)
+            state["acceleration"] = "cuda"
+        elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+            state["cuda_available"] = True
+            state["device_name"] = "Apple Silicon GPU (Metal MPS)"
+            state["acceleration"] = "mps"
+            state["vram_gb"] = 0.0
+            state["vram_total_gb"] = 0.0
+        else:
+            state["cuda_available"] = False
+            state["device_name"] = "No GPU (CPU Mode)"
+            state["acceleration"] = "cpu"
+    except Exception:
+        state["cuda_available"] = False
+        state["device_name"] = "No GPU (CPU Mode)"
+        state["acceleration"] = "cpu"
+    state["cached_models"] = list(LOCAL_MODELS_CACHE.keys())
+    return state
+
+def _resolve_model_path(snapshot_path: str, default_repo: str) -> str:
+    return snapshot_path if os.path.exists(snapshot_path) else default_repo
+
+MODEL_REPO_MAP = {
+    "qwen": "Qwen/Qwen2.5-7B-Instruct",
+    "qwen2.5": "Qwen/Qwen2.5-7B-Instruct",
+    "qwen-7b": "Qwen/Qwen2.5-7B-Instruct",
+    "llama": "unsloth/Llama-3.2-3B-Instruct",
+    "llama3": "unsloth/Llama-3.2-3B-Instruct",
+    "llama-3.2": "unsloth/Llama-3.2-3B-Instruct",
+    "llama8b": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1", "unsloth/Meta-Llama-3.1-8B-Instruct"),
+    "llama-8b": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1", "unsloth/Meta-Llama-3.1-8B-Instruct"),
+    "llama3.1": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1", "unsloth/Meta-Llama-3.1-8B-Instruct"),
+    "llama-3.1": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1", "unsloth/Meta-Llama-3.1-8B-Instruct"),
+    "mistral": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--mistralai--Mistral-7B-Instruct-v0.2/snapshots/63a8b081895390a26e140280378bc85ec8bce07a", "mistralai/Mistral-7B-Instruct-v0.2"),
+    "mistral7b": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--mistralai--Mistral-7B-Instruct-v0.2/snapshots/63a8b081895390a26e140280378bc85ec8bce07a", "mistralai/Mistral-7B-Instruct-v0.2"),
+    "mistral-7b": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--mistralai--Mistral-7B-Instruct-v0.2/snapshots/63a8b081895390a26e140280378bc85ec8bce07a", "mistralai/Mistral-7B-Instruct-v0.2"),
+    "gemma": "google/gemma-2-2b-it",
+    "gemma2": "google/gemma-2-2b-it",
+    "deepseek": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "phi3": "microsoft/Phi-3-mini-4k-instruct",
+    "local": "microsoft/Phi-3-mini-4k-instruct"
+}
+
+def unload_all_local_models():
+    """Completely unloads all cached models and tokenizers to free GPU VRAM."""
+    global LOCAL_MODELS_CACHE, LOCAL_TOKENIZERS_CACHE, MODEL_STATE
+    import gc
+    
+    print("[LLM Client] Releasing VRAM cache of previous models...", flush=True)
+    for k in list(LOCAL_MODELS_CACHE.keys()):
+        try:
+            del LOCAL_MODELS_CACHE[k]
+        except Exception:
+            pass
+    for k in list(LOCAL_TOKENIZERS_CACHE.keys()):
+        try:
+            del LOCAL_TOKENIZERS_CACHE[k]
+        except Exception:
+            pass
+    LOCAL_MODELS_CACHE.clear()
+    LOCAL_TOKENIZERS_CACHE.clear()
+    
+    gc.collect()
+    try:
+        import torch
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            torch.cuda.ipc_collect()
+    except Exception:
+        pass
+        
+    MODEL_STATE["status"] = "idle"
+    MODEL_STATE["current_model"] = ""
+    MODEL_STATE["repo_id"] = ""
+    MODEL_STATE["vram_gb"] = 0.0
+    MODEL_STATE["message"] = "VRAM memory cache cleared successfully."
+    print("[LLM Client] VRAM cache cleared.", flush=True)
+
+def get_hf_cache_dir() -> Path:
+    """Resolves the best available Hugging Face model cache directory."""
+    os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
+    
+    if os.environ.get("HF_HOME"):
+        p = Path(os.environ["HF_HOME"])
+        if p.exists():
+            return p
+
+    def _has_models(p: Path) -> bool:
+        try:
+            if not p.exists() or not os.access(p, os.R_OK):
+                return False
+            if any(p.glob("models--*")):
+                return True
+            hub = p / "hub"
+            if hub.exists() and os.access(hub, os.R_OK) and any(hub.glob("models--*")):
+                return True
+        except Exception:
+            pass
+        return False
+            
+    candidate_dirs = [
+        # User's standard home cache
+        Path.home() / ".cache" / "huggingface",
+        # Central shared cluster cache
+        Path("/home/felix.demiguel/.cache/huggingface"),
+        # Local repository cache directories
+        Path(__file__).resolve().parent / ".cache" / "huggingface",
+        Path(__file__).resolve().parents[1] / ".cache" / "huggingface",
+        Path(__file__).resolve().parents[2] / ".cache" / "huggingface",
+        Path("/datasets/huggingface"),
+        Path("/opt/huggingface"),
+    ]
+    
+    for cand in candidate_dirs:
+        if _has_models(cand):
+            return cand
+        
+    user_cache = Path.home() / ".cache" / "huggingface"
+    user_cache.mkdir(parents=True, exist_ok=True)
+    return user_cache
+
+def load_local_model_weights(provider: str) -> bool:
+    """Pre-loads local model weights into GPU VRAM with state tracking and VRAM eviction."""
+    global MODEL_STATE
+    prov = provider.lower().strip()
+    repo_id = MODEL_REPO_MAP.get(prov, prov)
+    
+    if repo_id in LOCAL_MODELS_CACHE:
+        MODEL_STATE["status"] = "ready"
+        MODEL_STATE["current_model"] = prov
+        MODEL_STATE["repo_id"] = repo_id
+        MODEL_STATE["message"] = f"Model {repo_id} is already loaded in GPU memory."
+        return True
+
+    if "gemma" in prov:
+        MODEL_STATE["status"] = "error"
+        MODEL_STATE["current_model"] = ""
+        MODEL_STATE["repo_id"] = repo_id
+        MODEL_STATE["error"] = "Gemma 2 2B requires a Hugging Face Token (HF_TOKEN) with accepted gated terms on Hugging Face."
+        MODEL_STATE["message"] = "Gemma 2 2B es un modelo protegido ('gated repo') por Google que requiere token HF. Por favor, utiliza Qwen 2.5 7B, Llama 3.2 3B o DeepSeek R1 7B que están preinstalados en la GPU."
+        print(f"[LLM Client Warning] {MODEL_STATE['message']}")
+        return False
+
+    # Evict previously loaded models to ensure VRAM is never saturated
+    if LOCAL_MODELS_CACHE:
+        unload_all_local_models()
+        
+    MODEL_STATE["status"] = "loading"
+    MODEL_STATE["current_model"] = prov
+    MODEL_STATE["repo_id"] = repo_id
+    MODEL_STATE["message"] = f"Loading weights of {repo_id} into GPU..."
+    MODEL_STATE["error"] = ""
+    
+    try:
+        import torch
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+        
+        cache_dir = get_hf_cache_dir()
+        os.environ["HF_HOME"] = str(cache_dir)
+        print(f"[LLM Client] Using Hugging Face model cache directory: {cache_dir}")
+        
+        use_cuda = torch.cuda.is_available()
+        dtype = torch.float16 if use_cuda else torch.float32
+        
+        print(f"[LLM Client] Loading local model '{repo_id}' onto GPU (CUDA)...")
+        is_local_path = os.path.exists(repo_id)
+        trust_remote = (repo_id not in ["microsoft/Phi-3-mini-4k-instruct"])
+        tokenizer = AutoTokenizer.from_pretrained(
+            repo_id, 
+            cache_dir=str(cache_dir) if not is_local_path else None, 
+            local_files_only=is_local_path,
+            trust_remote_code=trust_remote
+        )
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+            
+        model = AutoModelForCausalLM.from_pretrained(
+            repo_id,
+            cache_dir=str(cache_dir) if not is_local_path else None,
+            local_files_only=is_local_path,
+            torch_dtype=dtype,
+            device_map="auto" if use_cuda else None,
+            trust_remote_code=trust_remote
+        )
+        if not use_cuda:
+            model = model.to("cpu")
+            
+        LOCAL_MODELS_CACHE[repo_id] = model
+        LOCAL_TOKENIZERS_CACHE[repo_id] = tokenizer
+        
+        alloc_gb = round(torch.cuda.memory_allocated(0) / (1024**3), 2) if use_cuda else 0.0
+        MODEL_STATE["status"] = "ready"
+        MODEL_STATE["vram_gb"] = alloc_gb
+        MODEL_STATE["message"] = f"Model '{repo_id}' successfully loaded into GPU VRAM ({alloc_gb} GB)."
+        print(f"[LLM Client] {MODEL_STATE['message']}")
+        return True
+    except Exception as err:
+        MODEL_STATE["status"] = "error"
+        MODEL_STATE["current_model"] = ""
+        MODEL_STATE["repo_id"] = ""
+        MODEL_STATE["error"] = str(err)
+        MODEL_STATE["message"] = f"Failed to load '{repo_id}': {err}"
+        print(f"[LLM Client Warning] {MODEL_STATE['message']}. Using intelligent standalone fallback.")
+        return False
+
+def call_local_gpu_model(
+    system_prompt: str, 
+    user_prompt: str, 
+    provider: str = "qwen", 
+    json_mode: bool = False,
+    conversation_history: Optional[list] = None,
+    current_filters: Optional[Dict[str, Any]] = None
+) -> str:
+    """
+    Executes local inference on available CUDA GPUs using Hugging Face Transformers.
+    """
+    try:
+        import torch
+    except ImportError:
+        print("[LLM Client Warning] PyTorch not installed. Falling back to mock NLU parse.")
+        return mock_nlu_parse(user_prompt, current_filters=current_filters, conversation_history=conversation_history)
+        
+    prov = provider.lower().strip()
+    repo_id = MODEL_REPO_MAP.get(prov, prov)
+    
+    if repo_id not in LOCAL_MODELS_CACHE:
+        success = load_local_model_weights(prov)
+        if not success:
+            return mock_nlu_parse(user_prompt, current_filters=current_filters, conversation_history=conversation_history)
+            
+    try:
+        model = LOCAL_MODELS_CACHE[repo_id]
+        tokenizer = LOCAL_TOKENIZERS_CACHE[repo_id]
+        
+        messages = []
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+        if conversation_history:
+            for turn in conversation_history[-6:]:
+                r = turn.get("role", "user")
+                c = turn.get("content", "")
+                if r in ["user", "assistant"] and c:
+                    messages.append({"role": r, "content": c})
+        messages.append({"role": "user", "content": user_prompt})
+        
+        try:
+            prompt_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        except Exception:
+            prompt_text = f"System: {system_prompt}\nUser: {user_prompt}\nAssistant:"
+            
+        inputs = tokenizer(prompt_text, return_tensors="pt").to(model.device)
+        
+        # Determine model stop token IDs for immediate completion
+        eos_ids = [tokenizer.eos_token_id] if tokenizer.eos_token_id is not None else []
+        for extra_stop in ["<|eot_id|>", "<|im_end|>", "<|end|>", "}\n"]:
+            tid = tokenizer.convert_tokens_to_ids(extra_stop)
+            if tid is not None and isinstance(tid, int) and tid > 0 and tid not in eos_ids:
+                eos_ids.append(tid)
+
+        with torch.no_grad():
+            outputs = model.generate(
+                **inputs,
+                max_new_tokens=180,
+                do_sample=False,
+                pad_token_id=tokenizer.pad_token_id or tokenizer.eos_token_id,
+                eos_token_id=eos_ids if eos_ids else tokenizer.eos_token_id
+            )
+            
+        generated_tokens = outputs[0][inputs.input_ids.shape[1]:]
+        response_text = tokenizer.decode(generated_tokens, skip_special_tokens=True).strip()
+        return response_text
+    except Exception as err:
+        print(f"[LLM Client Warning] GPU Inference failed for model '{repo_id}': {err}. Using intelligent mock parser.")
+        return mock_nlu_parse(user_prompt, current_filters=current_filters, conversation_history=conversation_history)
 
 def call_llm(
     system_prompt: str, 
     user_prompt: str, 
     provider: str = "mock", 
     json_mode: bool = False,
-    response_schema: Optional[Dict[str, Any]] = None
+    response_schema: Optional[Dict[str, Any]] = None,
+    conversation_history: Optional[list] = None,
+    current_filters: Optional[Dict[str, Any]] = None
 ) -> str:
     """
-    Unified LLM call supporting Gemini (v3 responseSchema), OpenAI, or Standalone Mock mode.
+    Unified LLM call supporting local GPU models (Qwen, Llama, DeepSeek, Phi3, Gemma),
+    Gemini (v3 responseSchema), OpenAI, Anthropic, or Standalone Mock mode.
     """
-    provider = provider.lower()
+    provider = provider.lower().strip()
     gemini_key = os.getenv("GEMINI_API_KEY")
     openai_key = os.getenv("OPENAI_API_KEY")
+    anthropic_key = os.getenv("ANTHROPIC_API_KEY")
+    
+    if provider in MODEL_REPO_MAP or "/" in provider:
+        return call_local_gpu_model(
+            system_prompt, 
+            user_prompt, 
+            provider=provider, 
+            json_mode=json_mode,
+            conversation_history=conversation_history,
+            current_filters=current_filters
+        )
     
     if "gemini" in provider and gemini_key:
         try:
@@ -141,16 +497,102 @@ def call_llm(
                     return res_json["choices"][0]["message"]["content"]
             except Exception as rest_err:
                 print(f"[LLM Client Warning] OpenAI call failed: {rest_err}. Using intelligent mock parser.")
+
+    elif provider in ["claude", "anthropic", "claude-code"] or "claude" in provider:
+        import shutil
+        claude_cli = shutil.which("claude")
+        
+        # 1. Try Anthropic Python SDK if installed
+        if anthropic_key:
+            try:
+                import anthropic
+                client = anthropic.Anthropic(api_key=anthropic_key)
+                prompt_content = user_prompt
+                if json_mode:
+                    prompt_content += "\nRespond strictly with valid JSON without markdown codeblocks or explanation."
+                
+                resp = client.messages.create(
+                    model="claude-3-5-sonnet-20241022",
+                    max_tokens=1024,
+                    temperature=0.0,
+                    system=system_prompt,
+                    messages=[{"role": "user", "content": prompt_content}]
+                )
+                if resp.content and hasattr(resp.content[0], "text"):
+                    return resp.content[0].text
+            except ImportError:
+                pass
+            except Exception as e:
+                print(f"[LLM Client Warning] Anthropic SDK call failed: {e}. Trying REST API fallback.")
+                
+            # 2. Direct HTTP REST API via urllib (zero external dependencies)
+            try:
+                import urllib.request
+                api_url = "https://api.anthropic.com/v1/messages"
+                prompt_content = user_prompt
+                if json_mode:
+                    prompt_content += "\nRespond strictly with valid JSON without markdown codeblocks or explanation."
+                headers = {
+                    "Content-Type": "application/json",
+                    "x-api-key": anthropic_key,
+                    "anthropic-version": "2023-06-01"
+                }
+                body = {
+                    "model": "claude-3-5-sonnet-20241022",
+                    "max_tokens": 1024,
+                    "temperature": 0.0,
+                    "system": system_prompt,
+                    "messages": [{"role": "user", "content": prompt_content}]
+                }
+                req = urllib.request.Request(
+                    api_url,
+                    data=json.dumps(body).encode("utf-8"),
+                    headers=headers,
+                    method="POST"
+                )
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    res_json = json.loads(resp.read().decode("utf-8"))
+                    content_list = res_json.get("content", [])
+                    if content_list and "text" in content_list[0]:
+                        return content_list[0]["text"]
+            except Exception as rest_err:
+                print(f"[LLM Client Warning] Anthropic Claude call failed: {rest_err}. Using intelligent mock parser.")
+
+        # 3. Check for Claude Code CLI tool
+        if claude_cli and (provider == "claude-code" or not anthropic_key):
+            try:
+                import subprocess
+                full_prompt = f"{system_prompt}\n\n{user_prompt}\n\nRespond strictly with valid JSON."
+                res = subprocess.run(
+                    [claude_cli, "-p", full_prompt],
+                    capture_output=True,
+                    text=True,
+                    timeout=35
+                )
+                if res.returncode == 0 and res.stdout.strip():
+                    return res.stdout.strip()
+            except Exception as cli_err:
+                print(f"[LLM Client Warning] Claude Code CLI execution failed: {cli_err}.")
             
     # Intelligent, highly accurate NLU parser for standalone reviewer execution
-    return mock_nlu_parse(user_prompt)
+    return mock_nlu_parse(user_prompt, current_filters=current_filters, conversation_history=conversation_history)
 
-def mock_nlu_parse(user_prompt: str) -> str:
+def mock_nlu_parse(
+    user_prompt: str, 
+    current_filters: Optional[Dict[str, Any]] = None, 
+    conversation_history: Optional[list] = None
+) -> str:
     """
-    Advanced multi-entity NLU parser for offline reviewer execution.
+    Advanced multi-entity NLU parser for offline reviewer execution with Conversational State Tracking.
     Supports comprehensive keyword dictionary matching across English and Spanish.
     """
-    prompt_lower = user_prompt.lower()
+    # Extract clean query if wrapped in prompt template
+    clean_query = user_prompt
+    m = re.search(r'User Query:\s*"([^"]+)"', user_prompt, re.IGNORECASE)
+    if m:
+        clean_query = m.group(1)
+    prompt_lower = clean_query.lower().strip()
+    clean_prefix = re.sub(r'^[¿¡"\'\s]+', '', prompt_lower)
     
     countries = []
     commodities = []
@@ -160,52 +602,194 @@ def mock_nlu_parse(user_prompt: str) -> str:
     env_flags = []
     restored = None
     
-    # 1. Multi-lingual Country Dictionary
+    # 1. Multi-lingual Country & Regional Dictionary + European Major Cities
     country_map = {
+        # Countries
         "spain": "spain", "españa": "spain", "espana": "spain", "spanish": "spain",
+        "ourense": "spain", "zamora": "spain", "galicia": "spain", "galiza": "spain",
+        "salamanca": "spain", "andalucia": "spain", "andalucía": "spain", "asturias": "spain",
+        "castilla": "spain", "peninsula": "spain", "península": "spain",
+        "madrid": "spain", "barcelona": "spain", "sevilla": "spain", "valencia": "spain", "huelva": "spain",
         "portugal": "portugal", "portugués": "portugal", "portuguese": "portugal",
+        "lisboa": "portugal", "lisbon": "portugal", "porto": "portugal", "oporto": "portugal",
         "germany": "germany", "alemania": "germany", "german": "germany",
+        "berlin": "germany", "berlín": "germany", "munich": "germany", "múnich": "germany", "frankfurt": "germany", "hamburg": "germany",
         "france": "france", "francia": "france", "french": "france",
+        "paris": "france", "parís": "france", "lyon": "france", "marseille": "france", "marsella": "france",
         "sweden": "sweden", "suecia": "sweden", "swedish": "sweden",
+        "stockholm": "sweden", "estocolmo": "sweden", "kiruna": "sweden",
         "finland": "finland", "finlandia": "finland", "finnish": "finland",
+        "helsinki": "finland", "espoo": "finland",
         "poland": "poland", "polonia": "poland", "polish": "poland",
+        "warsaw": "poland", "varsovia": "poland", "krakow": "poland", "katowice": "poland", "lubin": "poland",
         "italy": "italy", "italia": "italy", "italian": "italy",
+        "roma": "italy", "rome": "italy", "milan": "italy", "milán": "italy",
         "greece": "greece", "grecia": "greece", "greek": "greece",
+        "athens": "greece", "atenas": "greece",
         "ireland": "ireland", "irlanda": "ireland", "irish": "ireland",
+        "dublin": "ireland", "dublín": "ireland",
         "austria": "austria", "austriaco": "austria",
-        "czechia": "czechia", "chequia": "czechia", "czech": "czechia"
+        "vienna": "austria", "viena": "austria",
+        "czechia": "czechia", "chequia": "czechia", "czech": "czechia",
+        "prague": "czechia", "praga": "czechia"
     }
     for kw, val in country_map.items():
         if re.search(r'\b' + re.escape(kw) + r'\b', prompt_lower) and val not in countries:
             countries.append(val)
+
+    # Detect unsupported countries outside European dataset
+    unsupported_map = {
+        "albania": "Albania", "reino unido": "Reino Unido", "uk": "Reino Unido", "united kingdom": "Reino Unido",
+        "chile": "Chile", "china": "China", "estados unidos": "Estados Unidos", "usa": "Estados Unidos",
+        "russia": "Rusia", "rusia": "Rusia", "noruega": "Noruega", "norway": "Noruega",
+        "suiza": "Suiza", "switzerland": "Suiza", "serbia": "Serbia", "marruecos": "Marruecos", "morocco": "Marruecos",
+        "turquia": "Turquía", "turquía": "Turquía", "turkey": "Turquía"
+    }
+    unsupported_found = []
+    for ukw, ulabel in unsupported_map.items():
+        if re.search(r'\b' + re.escape(ukw) + r'\b', prompt_lower) and ulabel not in unsupported_found:
+            unsupported_found.append(ulabel)
+
+    # Macro-region geographic mappings
+    if any(k in prompt_lower for k in ["sur de europa", "europa del sur", "southern europe"]):
+        for sc in ["spain", "portugal", "italy", "greece"]:
+            if sc not in countries and not countries:
+                countries.append(sc)
+    if any(k in prompt_lower for k in ["norte de europa", "europa del norte", "northern europe", "nordic", "paises nordicos", "países nórdicos"]):
+        for nc in ["sweden", "finland"]:
+            if nc not in countries and not countries:
+                countries.append(nc)
             
-    # 2. Multi-lingual Commodity Dictionary
+    # 2. Multi-lingual Commodity Dictionary (including chemical symbols W, Sn, Li, Co, Ni, Cu, Ta)
     comm_map = {
-        "lithium": "lithium", "litio": "lithium",
-        "cobalt": "cobalt", "cobalto": "cobalt",
-        "tungsten": "tungsten", "wolframio": "tungsten", "wolfram": "tungsten", "tungsteno": "tungsten",
-        "rare earth": "rare earth elements", "tierras raras": "rare earth elements", "ree": "rare earth elements",
-        "nickel": "nickel", "niquel": "nickel", "níquel": "nickel",
-        "copper": "copper", "cobre": "copper",
-        "tin": "tin", "estaño": "tin", "estano": "tin",
-        "tantalum": "tantalum", "tántalo": "tantalum", "tantalo": "tantalum", "coltan": "tantalum", "coltán": "tantalum", "niobium": "tantalum",
+        "lithium": "lithium", "litio": "lithium", "lithum": "lithium", "li": "lithium",
+        "cobalt": "cobalt", "cobalto": "cobalt", "co": "cobalt",
+        "tungsten": "tungsten", "wolframio": "tungsten", "wolfram": "tungsten", "tungsteno": "tungsten", "golfranio": "tungsten", "w": "tungsten",
+        "rare earth": "rare earth elements", "rare earths": "rare earth elements", "rare earth elements": "rare earth elements",
+        "tierras raras": "rare earth elements", "tierra rara": "rare earth elements",
+        "elementos raros": "rare earth elements", "elemento raro": "rare earth elements", "minerales raros": "rare earth elements",
+        "ree": "rare earth elements", "rees": "rare earth elements",
+        "nickel": "nickel", "niquel": "nickel", "níquel": "nickel", "nikel": "nickel", "ni": "nickel",
+        "copper": "copper", "cobre": "copper", "cu": "copper",
+        "tin": "tin", "estaño": "tin", "estano": "tin", "sn": "tin",
+        "tantalum": "tantalum", "tántalo": "tantalum", "tantalo": "tantalum", "tantalio": "tantalum", "coltan": "tantalum", "coltán": "tantalum", "niobium": "tantalum", "ta": "tantalum",
         "graphite": "graphite", "grafito": "graphite",
-        "titanium": "titanium", "titanio": "titanium",
-        "pge": "pge", "platino": "pge", "platinum": "pge",
-        "manganese": "manganese", "manganeso": "manganese"
+        "titanium": "titanium", "titanio": "titanium", "ti": "titanium",
+        "pge": "pge", "platino": "pge", "platinum": "pge", "paladio": "pge", "palladium": "pge", "platinum group elements": "pge",
+        "manganese": "manganese", "manganeso": "manganese", "mn": "manganese",
+        "germanium": "germanium", "germanio": "germanium", "ge": "germanium",
+        "gallium": "gallium", "galio": "gallium", "ga": "gallium"
     }
     for kw, val in comm_map.items():
         if re.search(r'\b' + re.escape(kw) + r'\b', prompt_lower) and val not in commodities:
             commodities.append(val)
-            
-    # 3. Storage Facility Types
+
+    # Contextual disambiguation response check (e.g. user selected Option 1 / Option 2 or said 'juntos' / 'por separado')
+    commodity_operator = "OR"
+    commodities_and = []
+    commodities_or = []
+    is_ambiguous_commodities = False
+    is_disambiguation_resolved = False
+
+    if not commodities and current_filters and current_filters.get("commodities"):
+        if any(re.search(pat, prompt_lower) for pat in [r'\b(ambos|ambas|juntos|juntas|a la vez|together|both|option 1|opcion 1|opción 1)\b']):
+            commodities = list(current_filters["commodities"])
+            commodity_operator = "AND"
+            commodities_and = list(commodities)
+            commodities_or = []
+            is_disambiguation_resolved = True
+            if current_filters.get("countries"):
+                countries = list(current_filters["countries"])
+        elif any(re.search(pat, prompt_lower) for pat in [r'\b(por separado|separado|separados|either|separately|option 2|opcion 2|opción 2)\b']):
+            commodities = list(current_filters["commodities"])
+            commodity_operator = "OR"
+            commodities_or = list(commodities)
+            commodities_and = []
+            is_disambiguation_resolved = True
+            if current_filters.get("countries"):
+                countries = list(current_filters["countries"])
+
+    if not is_disambiguation_resolved and len(commodities) > 1:
+        # Check for parentheses compound expression, e.g., "litio o (estaño y cobalto)"
+        paren_match = re.search(r'\(([^)]+)\)', prompt_lower)
+        if paren_match:
+            inside_paren = paren_match.group(1)
+            inside_comms = []
+            for kw, val in comm_map.items():
+                if re.search(r'\b' + re.escape(kw) + r'\b', inside_paren) and val in commodities and val not in inside_comms:
+                    inside_comms.append(val)
+            outside_comms = [c for c in commodities if c not in inside_comms]
+            if inside_comms and outside_comms:
+                commodity_operator = "COMPOUND"
+                commodities_and = inside_comms
+                commodities_or = outside_comms
+
+        # Check for multi-clause compound expression without parentheses, e.g. "niquel o cobalto o estaño y litio"
+        if commodity_operator != "COMPOUND":
+            has_or_word = bool(re.search(r'\b(o|or|u)\b', prompt_lower))
+            has_and_word = bool(re.search(r'\b(y|and|e|ambos|both|juntos|together|a la vez)\b', prompt_lower))
+            if has_or_word and has_and_word:
+                # Split along disjunction tokens ' o ' / ' or '
+                parts = re.split(r'\b(?:o|or)\b', prompt_lower)
+                comp_and = []
+                comp_or = []
+                for p in parts:
+                    p_comms = []
+                    for kw, val in comm_map.items():
+                        if re.search(r'\b' + re.escape(kw) + r'\b', p) and val in commodities and val not in p_comms:
+                            p_comms.append(val)
+                    if len(p_comms) > 1 or re.search(r'\b(?:y|and|e|juntos|together|a la vez)\b', p):
+                        for c in p_comms:
+                            if c not in comp_and: comp_and.append(c)
+                    else:
+                        for c in p_comms:
+                            if c not in comp_or: comp_or.append(c)
+                if comp_and and comp_or:
+                    commodity_operator = "COMPOUND"
+                    commodities_and = comp_and
+                    commodities_or = comp_or
+                elif comp_and and has_or_word:
+                    commodity_operator = "COMPOUND"
+                    commodities_and = comp_and
+                    commodities_or = []
+
+        if commodity_operator != "COMPOUND":
+            conjunction_patterns = [
+                r'\b(y|and|e)\b', r'\bambos\b', r'\bambas\b', r'\bboth\b',
+                r'\bjuntos\b', r'\bjuntas\b', r'\ba la vez\b', r'\bal mismo tiempo\b',
+                r'\btogether\b', r'\bco-occurring\b', r'\bsimult[aá]neamente\b'
+            ]
+            disjunction_patterns = [
+                r'\b(o|or|u)\b', r'\bpor separado\b', r'\bseparately\b',
+                r'\beither\b', r'\bindistintamente\b', r'\bcualquiera\b'
+            ]
+            has_conj = any(re.search(p, prompt_lower) for p in conjunction_patterns)
+            has_disj = any(re.search(p, prompt_lower) for p in disjunction_patterns)
+            if has_conj and not has_disj:
+                commodity_operator = "AND"
+                commodities_and = list(commodities)
+                commodities_or = []
+            elif has_disj and not has_conj:
+                commodity_operator = "OR"
+                commodities_or = list(commodities)
+                commodities_and = []
+            else:
+                commodity_operator = "AND"
+                commodities_and = list(commodities)
+                commodities_or = []
+                is_ambiguous_commodities = True
+    elif not is_disambiguation_resolved:
+        commodity_operator = "OR"
+        commodities_or = list(commodities)
+        commodities_and = []
+
     if any(k in prompt_lower for k in ["tailing", "tailings", "relave", "relaves", "balsa", "balsas", "pond", "ponds", "decantación", "decantacion"]):
         facility_types.extend(["tailings storage facility", "pond"])
     if any(k in prompt_lower for k in ["dump", "dumps", "waste dump", "waste dumps", "vertedero", "vertederos"]):
         if "waste dump" not in facility_types:
             facility_types.append("waste dump")
     if "escombrera" in prompt_lower or "escombreras" in prompt_lower:
-        if not any(k in prompt_lower for k in ["dime", "abandonadas", "inactivas", "diferencia", " y ", " and "]):
+        if not any(k in prompt_lower for k in ["abandonadas", "inactivas", "diferencia"]):
             if "waste dump" not in facility_types:
                 facility_types.append("waste dump")
     if any(k in prompt_lower for k in ["stockpile", "stockpiles", "acopio", "acopios"]):
@@ -216,9 +800,9 @@ def mock_nlu_parse(user_prompt: str) -> str:
     facility_types = list(set(facility_types))
         
     # 4. Project Status
-    if any(k in prompt_lower for k in ["active", "activa", "activas", "activo", "activos"]):
+    if any(k in prompt_lower for k in ["active", "activa", "activas", "activo", "activos", "operativas", "operativos", "operativa"]):
         statuses.append("active")
-    if any(k in prompt_lower for k in ["inactive", "inactiva", "inactivas", "abandoned", "abandonada", "abandonadas"]):
+    if any(k in prompt_lower for k in ["inactive", "inactiva", "inactivas", "abandoned", "abandonada", "abandonadas", "parados"]):
         statuses.append("inactive")
     if any(k in prompt_lower for k in ["care and maintenance", "mantenimiento"]):
         statuses.append("care and maintenance")
@@ -226,7 +810,7 @@ def mock_nlu_parse(user_prompt: str) -> str:
         statuses.append("development")
 
     # 5. Restoration & Environmental Flags
-    if any(k in prompt_lower for k in ["sin restaurar", "unrestored", "not restored", "no restaurada"]):
+    if any(k in prompt_lower for k in ["sin restaurar", "unrestored", "not restored", "no restaurada", "no restauradas"]):
         restored = False
         env_flags.append("not restored")
     elif any(k in prompt_lower for k in ["restaurada", "restauradas", "restored"]):
@@ -235,20 +819,139 @@ def mock_nlu_parse(user_prompt: str) -> str:
     if any(k in prompt_lower for k in ["acid", "ácido", "acidez", "drainage", "drenaje"]):
         env_flags.append("acid mine drainage potential")
 
-    intent = "generic_qa" if len(prompt_lower) < 12 and any(k in prompt_lower for k in ["hola", "hello", "hi", "help"]) else "filter_search"
+    # 6. Comprehensive Intent Detection
+    greeting_patterns = [
+        r'\bhola\b', r'\bhello\b', r'\bhi\b', r'\bhey\b', 
+        r'\bbuenos d[ií]as\b', r'\bbuenas tardes\b', r'\bbuenas noches\b', r'\bbuenas\b',
+        r'\bgood morning\b', r'\bgood afternoon\b'
+    ]
+    is_greeting = any(re.search(pat, prompt_lower) for pat in greeting_patterns)
+
+    help_patterns = [
+        r'\bayuda\b', r'\bhelp\b', r'en qu[eé] me puedes ayudar', r'qu[eé] puedes hacer',
+        r'c[oó]mo funciona', r'para qu[eé] sirves', r'qui[eé]n eres', r'how can (you|this system) (help|assist)',
+        r'what can you do', r'how to use', r'provide guidance', r'help me understand'
+    ]
+    is_help = any(re.search(pat, prompt_lower) for pat in help_patterns)
+
+    conceptual_prefixes = [
+        "qué es", "que es", "qué son", "que son", "cuál es", "cual es", "cuáles son", "cuales son",
+        "cómo se", "como se", "explícame", "explicame", "explain", "what is", "what are", "what criteria",
+        "how does", "how do", "can you explain", "qué criterios", "que criterios", "cómo reportan", "como reportan",
+        "qué diferencia", "que diferencia", "cuáles riesgos", "cuales riesgos", "qué normativa", "que normativa",
+        "qué directivas", "que directivas", "cómo evalúa", "como evalua", "qué precauciones", "que precauciones",
+        "qué procesos", "que procesos", "what chemical processes"
+    ]
+    is_conceptual = any(clean_prefix.startswith(p) for p in conceptual_prefixes) or any(p in clean_prefix for p in [
+        "diferencia técnica", "diferencia tecnica", "diferencia entre", "difference between", "distinction between"
+    ])
+    is_framework = any(kw in prompt_lower for kw in ["unfc", "jorc", "ni 43-101", "samrec", "2006/21", "crma", "insar", "drenaje ácido", "drenaje acido", "acid mine drainage", "licuefacción", "licuefaccion"])
+
+    search_verbs = [
+        "mostrar", "muestra", "dime las", "dime los", "dime", "buscar", "busca", "filtrar", "filtra",
+        "show", "find", "locate", "list", "where are", "dónde hay", "donde hay", "hay balsas",
+        "hay escombreras", "are there", "unrestored", "sin restaurar", "tenéis registrado", "teneis registrado"
+    ]
+    has_search_action = any(v in prompt_lower for v in search_verbs)
+
+    # 7. Dialogue Action Detection (DST)
+    dialogue_action = "new_search"
+    reset_cues = [
+        r'\breset\b', r'\breiniciar\b', r'\blimpiar\b', r'\bempezar de nuevo\b',
+        r'\bnueva b[uú]squeda\b', r'\bolvida lo anterior\b', r'\bolvida todo\b',
+        r'\bborrar filtros\b', r'\bclear\b', r'\bstart over\b', r'\bnew search\b'
+    ]
+    if any(re.search(pat, prompt_lower) for pat in reset_cues):
+        dialogue_action = "reset"
+    elif any(re.search(pat, prompt_lower) for pat in [
+        r'\b(show all facilities|show all|find all facilities|find all|list all facilities|list all)\b',
+        r'\b(ver todas las instalaciones|muestra todas las instalaciones|todas las instalaciones|buscar todas)\b',
+        r'\b(buscar desde cero|nueva consulta)\b'
+    ]):
+        dialogue_action = "new_search"
+    else:
+        has_existing = False
+        if current_filters:
+            for k in ["countries", "commodities", "storage_facility_types", "project_status", "environmental_flags"]:
+                if current_filters.get(k):
+                    has_existing = True
+                    break
+            if current_filters.get("restored") is not None:
+                has_existing = True
+
+        if has_existing:
+            remove_cues = [
+                r'\bquita\b', r'\bquitar\b', r'\belimina\b', r'\beliminar\b', r'\bdescarta\b',
+                r'\bsin\b', r'\bexcepto\b', r'\bmenos\b', r'\bya no quiero\b', r'\bborra\b',
+                r'\bremove\b', r'\bexclude\b', r'\bdrop\b', r'\bwithout\b', r'\bexcept\b', r'\bdelete\b',
+                r'\bforget\s+about\b', r'\bdiscard\b'
+            ]
+            refine_cues = [
+                r'\bde es[ao]s\b', r'\bde est[ao]s\b', r'\bde ell[ao]s\b', r'\bde los anteriores\b',
+                r'\bsolo las que\b', r'\bsolo los que\b', r'\b[uú]nicamente\b', r'\bunicamente\b',
+                r'\bque contengan\b', r'\bque tengan\b', r'\bpero solo\b', r'\bde ah[ií] solo\b',
+                r'\bacota\b', r'\bfiltra por\b', r'\bfiltradas por\b', r'\bof those\b', r'\bfrom these\b',
+                r'\bonly (those|that|the|ones)\b', r'\bkeep only\b', r'\bfilter to\b', r'\bonly interested in\b',
+                r'\bnarrow down\b', r'\bjust the ones\b', r'\bonly active\b', r'\bonly unrestored\b', r'\bonly restored\b'
+            ]
+            expand_cues = [
+                r'\by adem[aá]s\b', r'\btambi[eé]n\b', r'\ba[ñn]ade\b', r'\bagrega\b', r'\bsuma\b',
+                r'\by en\b', r'\by las de\b', r'\by los de\b', r'\by cerca de\b', r'\bo en\b',
+                r'\band also\b', r'\balso add\b', r'\binclude also\b', r'\bshow also\b',
+                r'\badditionally\b', r'\bas well as\b', r'\bplus\b', r'\binclude\b', r'\bwhat about\b'
+            ]
+            if any(re.search(pat, prompt_lower) for pat in remove_cues):
+                dialogue_action = "remove"
+            elif any(re.search(pat, prompt_lower) for pat in refine_cues):
+                dialogue_action = "refine"
+            elif any(re.search(pat, prompt_lower) for pat in expand_cues):
+                dialogue_action = "expand"
+
+    has_specific_data = bool(countries or commodities or facility_types or statuses or restored is not None or env_flags)
     
+    if is_conceptual or (is_framework and not has_search_action):
+        intent = "generic_qa"
+        countries, commodities, facility_types, statuses, env_flags, restored = [], [], [], [], [], None
+    elif is_help:
+        intent = "generic_qa"
+        countries, commodities, facility_types, statuses, env_flags, restored = [], [], [], [], [], None
+    elif is_greeting and not has_specific_data:
+        intent = "generic_qa"
+        countries, commodities, facility_types, statuses, env_flags, restored = [], [], [], [], [], None
+    elif not has_specific_data and not has_search_action and dialogue_action not in ["remove", "reset"]:
+        intent = "generic_qa"
+    else:
+        intent = "filter_search"
+    
+    remove_filters = {}
+    if dialogue_action == "remove":
+        remove_filters = {
+            "commodities": list(commodities),
+            "countries": list(countries),
+            "storage_facility_types": list(facility_types)
+        }
+    elif dialogue_action == "reset":
+        countries, commodities, facility_types, statuses, env_flags, restored = [], [], [], [], [], None
+
     mock_result = {
         "intent": intent,
+        "dialogue_action": dialogue_action,
         "filters": {
             "countries": countries,
             "regions": regions,
             "commodities": commodities,
+            "commodity_operator": commodity_operator,
+            "commodities_and": commodities_and,
+            "commodities_or": commodities_or,
+            "is_ambiguous_commodities": is_ambiguous_commodities,
             "storage_facility_types": facility_types,
             "project_status": statuses,
             "environmental_flags": env_flags,
             "restored": restored
         },
-        "fulltext": [],
+        "remove_filters": remove_filters,
+        "fulltext": unsupported_found,
+        "unsupported_countries": unsupported_found,
         "needs_rag": False
     }
     return json.dumps(mock_result)
