@@ -1,0 +1,19 @@
+% Auto-generated LaTeX summary for SoftwareX evaluation_rredondo
+\begin{table}[htbp]
+\centering
+\small
+\caption{Empirical Evaluation of Llama 3.1 8B Instruct on evaluation\_rredondo Test Battery across Guardrails, Single-Turn Slot Filling, Boolean Summation, and Conversational DST.}
+\label{tab:evaluation_rredondo_llama8b}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{2.2cm}}
+\toprule
+\textbf{Benchmark Suite} & \textbf{Test Units} & \textbf{Pass Rate (\%)} & \textbf{Key Metric} & \textbf{Mean Latency} \\
+\midrule
+1. Out-of-Domain Guardrails & 25 queries & 76.0\% & Rejection: 87.5\% & 2383.2 ms \\
+2. Single-Turn Slot Filling & 114 queries & 52.6\% & Slot F1: 88.8\% & 3086.1 ms \\
+3. Boolean Sum (AND/OR) & 77 queries & 61.0\% & Sum Match: 42.9\% & 3524.8 ms \\
+4. Conversational Memory & 156 turns & 41.0\% & Expansion: 44.7\% & 2854.7 ms \\
+\midrule
+\textbf{Overall Pass Rate} & \textbf{372 units} & \textbf{51.1\%} & DST Macro F1: 85.1\% & \textbf{3032.6 ms} \\
+\bottomrule
+\end{tabularx}
+\end{table}

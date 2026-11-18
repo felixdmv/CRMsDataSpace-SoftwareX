@@ -1,0 +1,48 @@
+================================================================================
+  EVALUATION_RREDONDO BENCHMARK SUMMARY REPORT
+================================================================================
+  Model Provider:        LLAMA8B (Llama 3.1 8B Instruct)
+  Architecture/Params:   8.03B (FP16)
+  Execution Node:        computo12
+  VRAM Memory Footprint: 14.96 GB
+  Timestamp:             2026-11-18 12:22:23
+--------------------------------------------------------------------------------
+  1. Out-of-Domain Guardrails & Anti-Hallucination:
+     • Queries Evaluated:    25
+     • Rejection Accuracy:   87.5%
+     • Hallucination Rate:   12.0% (0.0% is optimal)
+     • Mean Latency:         2383.2 ms
+--------------------------------------------------------------------------------
+  2. Single-Turn Queries & Slot Filling:
+     • Queries Evaluated:    114
+     • Accuracy Rate:        52.63%
+     • Mean Slot F1:         88.83%
+     • Mean Latency:         3086.1 ms
+--------------------------------------------------------------------------------
+  3. Boolean Aggregation & Sum of Escombreras:
+     • Queries Evaluated:    77
+     • Pass Rate:            61.04%
+     • Operator Accuracy:    92.21% (AND/OR/COMPOUND)
+     • Count Accuracy:       64.29%
+     • Sum Match Rate:       42.86% (Disjunctive site count match)
+     • Mean Slot F1:         91.54%
+     • Mean Latency:         3524.8 ms
+--------------------------------------------------------------------------------
+  4. Conversational Memory & Dialogue State Tracking (DST):
+     • Episodes / Turns:     36 episodes / 156 turns
+     • Turn Pass Rate:       41.03%
+     • Action Accuracy:      85.26%
+     • Exact State Match:    41.67%
+     • Episode Success Rate: 5.56% (100% flawless dialogue)
+     • Expansion Turn Rate: 44.74%
+     • Macro DST F1:         85.11%
+     • Mean Latency:         2854.7 ms
+================================================================================
+  OVERALL BENCHMARK SCORE:   190/372 (51.1%)
+  CONSOLIDATED MEAN LATENCY: 3032.6 ms
+================================================================================
+  Artifacts Saved:
+   - JSON Results: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/results_rredondo_llama8b.json
+   - LaTeX Table:  /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/table_rredondo_llama8b.tex
+   - Text Summary: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/summary_rredondo_llama8b.txt
+================================================================================

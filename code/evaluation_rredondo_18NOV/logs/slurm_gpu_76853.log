@@ -1,0 +1,571 @@
+==========================================================================
+  STARTING SOFTWAREX BENCHMARK ON HPC CLUSTER: evaluation_rredondo
+  Date:       Tue Nov 10 21:33:57 CET 2026
+  Host:       computo04
+  Slurm Job:  76853
+  Partition:  computo
+  Model:      qwen
+==========================================================================
+[Cluster Info] Active GPU Hardware:
+GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-9d67984e-ce81-92d4-a628-bf2a0e5d7f11)
+name, memory.total [MiB], driver_version
+NVIDIA A100-PCIE-40GB, 40960 MiB, 595.58.03
+==========================================================================
+[Container] Launching Apptainer with NVIDIA CUDA acceleration...
+================================================================================
+  SOFTWAREX EVALUATION SUITE: evaluation_rredondo
+  Provider:         QWEN (Qwen 2.5 7B Instruct)
+  Parameters:       7.61B | Precision: FP16
+  Sovereignty:      100% On-Premises (Private GPU)
+  Host Machine:     computo04 (Linux x86_64)
+  Test Battery:     test_battery_rredondo.json
+  Timestamp:        2026-11-10 21:33:59
+================================================================================
+
+[Cluster GPU] Allocating tensor memory and loading weights for 'qwen'...
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[Warning] Failed to allocate GPU weights for 'qwen'. Falling back to CPU heuristic execution.
+[Cluster GPU] Status: error | VRAM Allocated: 0.0 GB
+[Warm-up] Initializing query pipeline with test prompt...
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Muestra escombreras de litio en España'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain'], 'regions': [], 'commodities': ['lithium'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium'], 'is_ambiguous_commodities': False}
+
+--- [Suite 1] Evaluating Out-of-Domain Guardrails & Anti-Hallucination (25 tests) ---
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Show lithium waste dumps in Chile'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['lithium'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Active cobalt tailings ponds in China'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['cobalt'], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['cobalt'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Nickel deposits and stockpiles in Russia'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['nickel'], 'storage_facility_types': ['stockpile'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['nickel'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Tungsten waste dumps in the United States'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['tungsten'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tungsten'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Rare earth facilities in Australia'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['rare earth elements'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['rare earth elements'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Mining tailings ponds in Norway'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Critical mineral waste dumps in Switzerland'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Tantalum and coltan facilities in Brazil'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['tantalum'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tantalum'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Tailings and waste heaps in United Kingdom'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Show me facilities that are active and, at the same time, not active.'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Show me those over there.'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Show me facilities with a lot of lithium.'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['lithium'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Show me lithium facilities in Wakanda.'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['lithium'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+  -> Suite 1 Result: 21/25 Passed (84.0%) | Hallucination Rate: 16.0% | Mean Latency: 0.8 ms
+
+--- [Suite 2] Evaluating Boolean Aggregation & Sum of Escombreras (0 tests) ---
+  -> Suite 2 Result: 0/0 Passed (0.0%) | Operator Acc: 0.0% | Sum Match Rate: 0.0% | Mean Latency: 0.0 ms
+
+--- [Suite 3] Evaluating Conversational Memory & DST (36 episodes) ---
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Show waste dumps in Spain'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain'], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'and also in Portugal'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain', 'portugal'], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'and of those, only the ones containing tungsten'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain', 'portugal'], 'regions': [], 'commodities': ['tungsten'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tungsten'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'of those, only the ones under development'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain', 'portugal'], 'regions': [], 'commodities': ['tungsten'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': ['development'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tungsten'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'now remove Portugal'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain'], 'regions': [], 'commodities': ['tungsten'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': ['development'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tungsten'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Search for tailings ponds in Finland'
+[NLU Agent] Accumulated Active Filters: {'countries': ['finland'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'and also in Sweden'
+[NLU Agent] Accumulated Active Filters: {'countries': ['finland', 'sweden'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'and also containing nickel'
+[NLU Agent] Accumulated Active Filters: {'countries': ['finland', 'sweden'], 'regions': [], 'commodities': ['nickel'], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['nickel'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'and also add cobalt'
+[NLU Agent] Accumulated Active Filters: {'countries': ['finland', 'sweden'], 'regions': [], 'commodities': ['nickel', 'cobalt'], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['cobalt'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'of those, only the ones that are inactive'
+[NLU Agent] Accumulated Active Filters: {'countries': ['finland', 'sweden'], 'regions': [], 'commodities': ['nickel', 'cobalt'], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': ['active', 'inactive'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['cobalt'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Tailings ponds with lithium and tin'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['lithium', 'tin'], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'AND', 'commodities_and': ['lithium', 'tin'], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'search for them separately'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['lithium', 'tin'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium', 'tin'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'and also in France'
+[NLU Agent] Accumulated Active Filters: {'countries': ['france'], 'regions': [], 'commodities': ['lithium', 'tin'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium', 'tin'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Facilities in Germany'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'and also in Austria'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany', 'austria'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'of those, only waste dumps'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany', 'austria'], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'and also containing tungsten'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany', 'austria'], 'regions': [], 'commodities': ['tungsten'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tungsten'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Are there lithium waste dumps in Spain?'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain'], 'regions': [], 'commodities': ['lithium'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'And in Portugal?'
+[NLU Agent] Accumulated Active Filters: {'countries': ['portugal'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'And in Finland?'
+[NLU Agent] Accumulated Active Filters: {'countries': ['finland'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Show tailings ponds in the Iberian Peninsula'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Include also deposits located in France'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain', 'france'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Keep only those that are currently active today'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain', 'france'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Narrow down to those containing lithium or cobalt'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain', 'france'], 'regions': [], 'commodities': ['lithium', 'cobalt'], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium', 'cobalt'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Remove cobalt from the selection'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain', 'france'], 'regions': [], 'commodities': ['lithium'], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Show waste dumps and spoil heaps in Germany'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany'], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Also add facilities in Czechia'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany', 'czechia'], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Filter to those that remain unrestored'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany', 'czechia'], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': ['not restored'], 'restored': False, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'I am only interested in those containing tungsten'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany', 'czechia'], 'regions': [], 'commodities': ['tungsten'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': ['not restored'], 'restored': False, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tungsten'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Forget about those in Czechia'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany'], 'regions': [], 'commodities': ['tungsten'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': ['not restored'], 'restored': False, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tungsten'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Locate active tailings storage facilities in Sweden'
+[NLU Agent] Accumulated Active Filters: {'countries': ['sweden'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Include facilities in Finland in the view'
+[NLU Agent] Accumulated Active Filters: {'countries': ['sweden', 'finland'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Of all those, keep only the ones with rare earth elements or nickel'
+[NLU Agent] Accumulated Active Filters: {'countries': ['sweden', 'finland'], 'regions': [], 'commodities': ['rare earth elements', 'nickel'], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['rare earth elements', 'nickel'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Drop the ones located in Sweden'
+[NLU Agent] Accumulated Active Filters: {'countries': ['finland'], 'regions': [], 'commodities': ['rare earth elements', 'nickel'], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['rare earth elements', 'nickel'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Find lithium waste dumps in Spain'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain'], 'regions': [], 'commodities': ['lithium'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'And what do we have in the neighboring country with tungsten?'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['tungsten'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tungsten'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Discard Spain from the selection'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['tungsten'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tungsten'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Mining waste deposits in Greece'
+[NLU Agent] Accumulated Active Filters: {'countries': ['greece'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Also add what we have registered in Italy'
+[NLU Agent] Accumulated Active Filters: {'countries': ['greece', 'italy'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Keep only tailings storage facilities and ponds'
+[NLU Agent] Accumulated Active Filters: {'countries': ['greece', 'italy'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Filter for those containing titanium'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['titanium'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['titanium'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Facilities in Austria with manganese'
+[NLU Agent] Accumulated Active Filters: {'countries': ['austria'], 'regions': [], 'commodities': ['manganese'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['manganese'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Include waste dumps in Germany'
+[NLU Agent] Accumulated Active Filters: {'countries': ['austria', 'germany'], 'regions': [], 'commodities': ['manganese'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['manganese'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Also add tungsten minerals'
+[NLU Agent] Accumulated Active Filters: {'countries': ['austria', 'germany'], 'regions': [], 'commodities': ['manganese', 'tungsten'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tungsten'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Drop manganese from the search'
+[NLU Agent] Accumulated Active Filters: {'countries': ['austria', 'germany'], 'regions': [], 'commodities': ['tungsten'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Lithium waste dumps in France'
+[NLU Agent] Accumulated Active Filters: {'countries': ['france'], 'regions': [], 'commodities': ['lithium'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Apply the exact same criteria for Germany'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Also add cobalt'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany'], 'regions': [], 'commodities': ['cobalt'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['cobalt'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Keep only those that are still active operations'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany'], 'regions': [], 'commodities': ['cobalt'], 'storage_facility_types': [], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['cobalt'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Exclude French facilities'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany'], 'regions': [], 'commodities': ['cobalt'], 'storage_facility_types': [], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['cobalt'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Sites with titanium and graphite in Italy'
+[NLU Agent] Accumulated Active Filters: {'countries': ['italy'], 'regions': [], 'commodities': ['graphite', 'titanium'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'AND', 'commodities_and': ['graphite', 'titanium'], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Also add locations in Greece'
+[NLU Agent] Accumulated Active Filters: {'countries': ['italy', 'greece'], 'regions': [], 'commodities': ['graphite', 'titanium'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': ['graphite', 'titanium'], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'I am no longer interested in graphite, leave it out'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['graphite'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['graphite'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Narrow down to those not restored yet'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['graphite'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': ['not restored'], 'restored': False, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['graphite'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Waste dumps in Poland'
+[NLU Agent] Accumulated Active Filters: {'countries': ['poland'], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Include facilities in Czechia'
+[NLU Agent] Accumulated Active Filters: {'countries': ['poland', 'czechia'], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Keep only those containing copper'
+[NLU Agent] Accumulated Active Filters: {'countries': ['poland', 'czechia'], 'regions': [], 'commodities': ['copper'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['copper'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Remove Polish facilities from the filters'
+[NLU Agent] Accumulated Active Filters: {'countries': ['czechia'], 'regions': [], 'commodities': ['copper'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['copper'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Locate operational tailings storage facilities in the Iberian peninsula'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Include also mining waste sites across France'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain', 'france'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Filter down to those containing lithium or cobalt'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['lithium', 'cobalt'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium', 'cobalt'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Drop facilities located in Spain'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['lithium', 'cobalt'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium', 'cobalt'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Show tungsten waste dumps in Germany'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany'], 'regions': [], 'commodities': ['tungsten'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tungsten'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'What about in the neighboring Czech Republic?'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany', 'czechia'], 'regions': [], 'commodities': ['tungsten'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tungsten'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Keep solely unrestored sites'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': ['not restored'], 'restored': False, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Get rid of the German deposits'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Find facilities with titanium and graphite in Italy'
+[NLU Agent] Accumulated Active Filters: {'countries': ['italy'], 'regions': [], 'commodities': ['graphite', 'titanium'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'AND', 'commodities_and': ['graphite', 'titanium'], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Also bring in locations in Greece'
+[NLU Agent] Accumulated Active Filters: {'countries': ['greece'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Exclude graphite from the results'
+[NLU Agent] Accumulated Active Filters: {'countries': ['greece'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Restrict to active commercial operations'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Tailings ponds in Ireland'
+[NLU Agent] Accumulated Active Filters: {'countries': ['ireland'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Include mining facilities in Spain'
+[NLU Agent] Accumulated Active Filters: {'countries': ['ireland', 'spain'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Keep only those that are still operating today'
+[NLU Agent] Accumulated Active Filters: {'countries': ['ireland', 'spain'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Discard deposits in Ireland'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Deposits with lithium and nickel in Finland'
+[NLU Agent] Accumulated Active Filters: {'countries': ['finland'], 'regions': [], 'commodities': ['lithium', 'nickel'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'AND', 'commodities_and': ['lithium', 'nickel'], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Also add mining sites in Sweden'
+[NLU Agent] Accumulated Active Filters: {'countries': ['finland', 'sweden'], 'regions': [], 'commodities': ['lithium', 'nickel'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': ['lithium', 'nickel'], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Restrict query to tailings ponds'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Drop nickel'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Unrestored facilities in Germany'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': ['not restored'], 'restored': False, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Add those we have in Austria'
+[NLU Agent] Accumulated Active Filters: {'countries': ['austria'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Keep only those with tungsten'
+[NLU Agent] Accumulated Active Filters: {'countries': ['austria'], 'regions': [], 'commodities': ['tungsten'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tungsten'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Discard assets in Austria'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['tungsten'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tungsten'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Tungsten and tin waste dumps in Spain'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain'], 'regions': [], 'commodities': ['tungsten', 'tin'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'AND', 'commodities_and': ['tungsten', 'tin'], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Include Portugal in the selection'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain', 'portugal'], 'regions': [], 'commodities': ['tungsten', 'tin'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': ['tungsten', 'tin'], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Leave tin out'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['tin'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tin'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Keep only those that are still active today'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['tin'], 'storage_facility_types': [], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tin'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Tailings ponds in Greece'
+[NLU Agent] Accumulated Active Filters: {'countries': ['greece'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'And what do we have registered in Italy?'
+[NLU Agent] Accumulated Active Filters: {'countries': ['italy'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Of those you mentioned, which ones have nickel?'
+[NLU Agent] Accumulated Active Filters: {'countries': ['italy'], 'regions': [], 'commodities': ['nickel'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['nickel'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Forget about Greece'
+[NLU Agent] Accumulated Active Filters: {'countries': ['italy'], 'regions': [], 'commodities': ['nickel'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['nickel'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Waste dumps in Germany'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany'], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Also add those in northern Europe'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany', 'sweden'], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Keep exclusively rare earth elements'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['rare earth elements'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['rare earth elements'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Drop Germany'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': ['rare earth elements'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['rare earth elements'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Facilities with copper, cobalt and lithium in Portugal and Spain'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain', 'portugal'], 'regions': [], 'commodities': ['lithium', 'cobalt', 'copper'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'AND', 'commodities_and': ['lithium', 'cobalt', 'copper'], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Drop copper'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain', 'portugal'], 'regions': [], 'commodities': ['lithium', 'cobalt'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': ['lithium', 'cobalt'], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Discard Spain from the list'
+[NLU Agent] Accumulated Active Filters: {'countries': ['portugal'], 'regions': [], 'commodities': ['lithium', 'cobalt'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': ['lithium', 'cobalt'], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Restrict to active facilities'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Southern European countries like Greece or Albania that have nickel'
+[NLU Agent] Accumulated Active Filters: {'countries': ['greece'], 'regions': [], 'commodities': ['nickel'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['nickel'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Add deposits in Italy'
+[NLU Agent] Accumulated Active Filters: {'countries': ['italy'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Remove facilities in Greece'
+[NLU Agent] Accumulated Active Filters: {'countries': ['italy'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Keep only tailings storage facilities and ponds'
+[NLU Agent] Accumulated Active Filters: {'countries': ['italy'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Waste dumps in France and Germany'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany', 'france'], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Keep only those containing lithium'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany', 'france'], 'regions': [], 'commodities': ['lithium'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Of those, only the ones that are currently active'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany', 'france'], 'regions': [], 'commodities': ['lithium'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'And that also remain unrestored'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': ['not restored'], 'restored': False, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Tailings ponds in Sweden'
+[NLU Agent] Accumulated Active Filters: {'countries': ['sweden'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Waste dumps in Spain with tantalum'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain'], 'regions': [], 'commodities': ['tantalum'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tantalum'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'Also add facilities in Portugal'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain', 'portugal'], 'regions': [], 'commodities': ['tantalum'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tantalum'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Facilities in Finland with nickel'
+[NLU Agent] Accumulated Active Filters: {'countries': ['finland'], 'regions': [], 'commodities': ['nickel'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['nickel'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Is there anything similar in Sweden?'
+[NLU Agent] Accumulated Active Filters: {'countries': ['sweden'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Discard those that have already been restored'
+[NLU Agent] Accumulated Active Filters: {'countries': ['sweden'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Remove nickel'
+[NLU Agent] Accumulated Active Filters: {'countries': ['sweden'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Tailings ponds in Czechia'
+[NLU Agent] Accumulated Active Filters: {'countries': ['czechia'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Add waste dumps in Poland'
+[NLU Agent] Accumulated Active Filters: {'countries': ['poland'], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Keep only those containing copper'
+[NLU Agent] Accumulated Active Filters: {'countries': ['poland'], 'regions': [], 'commodities': ['copper'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['copper'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Remove Czechia from the search'
+[NLU Agent] Accumulated Active Filters: {'countries': ['poland'], 'regions': [], 'commodities': ['copper'], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['copper'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Locate lithium extraction waste in France'
+[NLU Agent] Accumulated Active Filters: {'countries': ['france'], 'regions': [], 'commodities': ['lithium'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Do the same for Germany'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'From those, solely keep operational waste dumps'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Drop French facilities'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Deposits with nickel in Finland'
+[NLU Agent] Accumulated Active Filters: {'countries': ['finland'], 'regions': [], 'commodities': ['nickel'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['nickel'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Which of those mentioned are still active today?'
+[NLU Agent] Accumulated Active Filters: {'countries': ['finland'], 'regions': [], 'commodities': ['nickel'], 'storage_facility_types': [], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['nickel'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Drop Swedish facilities'
+[NLU Agent] Accumulated Active Filters: {'countries': ['finland'], 'regions': [], 'commodities': ['nickel'], 'storage_facility_types': [], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['nickel'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Lithium deposits in Portugal'
+[NLU Agent] Accumulated Active Filters: {'countries': ['portugal'], 'regions': [], 'commodities': ['lithium'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Add what is in the Iberian peninsula containing tantalum'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain'], 'regions': [], 'commodities': ['tantalum'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['tantalum'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Keep exclusively barren rock waste dumps'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Drop tantalum'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': ['waste dump'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Display tailings ponds in Germany'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: expand | Query: 'What about in France?'
+[NLU Agent] Accumulated Active Filters: {'countries': ['germany', 'france'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'From the previous ones, solely keep unrestored sites'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': ['not restored'], 'restored': False, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Exclude the German deposits'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': ['not restored'], 'restored': False, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Tailings ponds in Austria'
+[NLU Agent] Accumulated Active Filters: {'countries': ['austria'], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'And what do we have in Italy?'
+[NLU Agent] Accumulated Active Filters: {'countries': ['italy'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'From the previous ones, are there any that are inactive or abandoned?'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': ['active', 'inactive'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Forget about Italy'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': ['active', 'inactive'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Mining waste deposits in Greece'
+[NLU Agent] Accumulated Active Filters: {'countries': ['greece'], 'regions': [], 'commodities': [], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'And what do we have in Spain with copper?'
+[NLU Agent] Accumulated Active Filters: {'countries': ['spain'], 'regions': [], 'commodities': ['copper'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['copper'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Restrict to tailings storage facilities and ponds'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: remove | Query: 'Remove Greek facilities'
+[NLU Agent] Accumulated Active Filters: {'countries': [], 'regions': [], 'commodities': [], 'storage_facility_types': ['pond', 'tailings storage facility'], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': [], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: new_search | Query: 'Add Sweden, keeping Finland and the lithium filter.'
+[NLU Agent] Accumulated Active Filters: {'countries': ['sweden', 'finland'], 'regions': [], 'commodities': ['lithium'], 'storage_facility_types': [], 'material_types': [], 'project_status': [], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium'], 'is_ambiguous_commodities': False}
+[LLM Client Warning] Failed to load 'Qwen/Qwen2.5-7B-Instruct': No module named 'transformers'. Using intelligent standalone fallback.
+[NLU Agent] Model/Provider: qwen | Action: refine | Query: 'Now, of those, show me only the active ones.'
+[NLU Agent] Accumulated Active Filters: {'countries': ['sweden', 'finland'], 'regions': [], 'commodities': ['lithium'], 'storage_facility_types': [], 'material_types': [], 'project_status': ['active'], 'environmental_flags': [], 'restored': None, 'commodity_operator': 'OR', 'commodities_and': [], 'commodities_or': ['lithium'], 'is_ambiguous_commodities': False}
+  -> Suite 3 Result: 29/156 Turns Passed (18.6%) | Action Acc: 75.6% | Exact State Match: 24.4% | Episode Success: 5.6% | 'y también' Acc: 100.0%
+
+================================================================================
+  EVALUATION_RREDONDO BENCHMARK SUMMARY REPORT
+================================================================================
+  Model Provider:        QWEN (Qwen 2.5 7B Instruct)
+  Architecture/Params:   7.61B (FP16)
+  Execution Node:        computo04
+  VRAM Memory Footprint: 0.0 GB
+  Timestamp:             2026-11-10 21:34:16
+--------------------------------------------------------------------------------
+  1. Out-of-Domain Guardrails & Anti-Hallucination:
+     • Queries Evaluated:    25
+     • Rejection Accuracy:   84.0%
+     • Hallucination Rate:   16.0% (0.0% is optimal)
+     • Mean Latency:         0.8 ms
+--------------------------------------------------------------------------------
+  2. Boolean Aggregation & Sum of Escombreras:
+     • Queries Evaluated:    0
+     • Pass Rate:            0.0%
+     • Operator Accuracy:    0.0% (AND/OR/COMPOUND)
+     • Sum Match Rate:       0.0% (Disjunctive site count match)
+     • Mean Slot F1:         0.0%
+     • Mean Latency:         0.0 ms
+--------------------------------------------------------------------------------
+  3. Conversational Memory & Dialogue State Tracking (DST):
+     • Episodes / Turns:     36 episodes / 156 turns
+     • Turn Pass Rate:       18.59%
+     • Action Accuracy:      75.64%
+     • Exact State Match:    24.36%
+     • Episode Success Rate: 5.56% (100% flawless dialogue)
+     • 'y también' Acc:      100.0%
+     • Macro DST F1:         31.56%
+     • Mean Latency:         0.9 ms
+================================================================================
+  OVERALL BENCHMARK SCORE:   50/181 (27.6%)
+  CONSOLIDATED MEAN LATENCY: 0.6 ms
+================================================================================
+  Artifacts Saved:
+   - JSON Results: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/results_rredondo_qwen.json
+   - LaTeX Table:  /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/table_rredondo_qwen.tex
+   - Text Summary: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/summary_rredondo_qwen.txt
+================================================================================
+
+[Cluster GPU] Reclaiming VRAM allocations...
+[LLM Client] Releasing VRAM cache of previous models...
+[LLM Client] VRAM cache cleared.
+==========================================================================
+  FINISHED EVALUATION BENCHMARK: Tue Nov 10 21:34:17 CET 2026
+  Exit Code: 1
+==========================================================================

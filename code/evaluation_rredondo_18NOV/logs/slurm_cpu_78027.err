@@ -1,0 +1,6 @@
+/home/ubu/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/benchmark_rredondo.py:545: SyntaxWarning: invalid escape sequence '\c'
+  \centering
+  File "/home/ubu/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/benchmark_rredondo.py", line 608
+    sys.stderr.write(f"[ERROR] Test battery not found at {test_file}.
+                     ^
+SyntaxError: unterminated f-string literal (detected at line 608)

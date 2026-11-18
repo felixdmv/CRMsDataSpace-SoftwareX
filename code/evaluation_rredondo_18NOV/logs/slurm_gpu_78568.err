@@ -1,0 +1,3 @@
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:26<00:26, 26.19s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:41<00:00, 19.60s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:41<00:00, 20.59s/it]
+Token indices sequence length is longer than the specified maximum sequence length for this model (4202 > 4096). Running this sequence through the model will result in indexing errors
+This is a friendly reminder - the current text generation call will exceed the model's predefined maximum length (4096). Depending on the model, you may observe exceptions, performance degradation, or nothing at all.

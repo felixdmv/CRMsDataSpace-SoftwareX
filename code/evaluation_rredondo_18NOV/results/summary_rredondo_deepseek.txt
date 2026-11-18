@@ -1,0 +1,48 @@
+================================================================================
+  EVALUATION_RREDONDO BENCHMARK SUMMARY REPORT
+================================================================================
+  Model Provider:        DEEPSEEK (DeepSeek R1 Distill Qwen 7B)
+  Architecture/Params:   7.61B (FP16)
+  Execution Node:        computo10
+  VRAM Memory Footprint: 14.23 GB
+  Timestamp:             2026-11-18 12:38:55
+--------------------------------------------------------------------------------
+  1. Out-of-Domain Guardrails & Anti-Hallucination:
+     • Queries Evaluated:    25
+     • Rejection Accuracy:   100.0%
+     • Hallucination Rate:   0.0% (0.0% is optimal)
+     • Mean Latency:         5637.8 ms
+--------------------------------------------------------------------------------
+  2. Single-Turn Queries & Slot Filling:
+     • Queries Evaluated:    114
+     • Accuracy Rate:        0.0%
+     • Mean Slot F1:         46.46%
+     • Mean Latency:         5646.8 ms
+--------------------------------------------------------------------------------
+  3. Boolean Aggregation & Sum of Escombreras:
+     • Queries Evaluated:    77
+     • Pass Rate:            6.49%
+     • Operator Accuracy:    36.36% (AND/OR/COMPOUND)
+     • Count Accuracy:       7.14%
+     • Sum Match Rate:       0.0% (Disjunctive site count match)
+     • Mean Slot F1:         45.17%
+     • Mean Latency:         5936.9 ms
+--------------------------------------------------------------------------------
+  4. Conversational Memory & Dialogue State Tracking (DST):
+     • Episodes / Turns:     36 episodes / 156 turns
+     • Turn Pass Rate:       6.41%
+     • Action Accuracy:      30.13%
+     • Exact State Match:    7.05%
+     • Episode Success Rate: 0.0% (100% flawless dialogue)
+     • Expansion Turn Rate: 0.0%
+     • Macro DST F1:         0.0%
+     • Mean Latency:         5250.1 ms
+================================================================================
+  OVERALL BENCHMARK SCORE:   28/372 (7.5%)
+  CONSOLIDATED MEAN LATENCY: 5539.9 ms
+================================================================================
+  Artifacts Saved:
+   - JSON Results: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/results_rredondo_deepseek.json
+   - LaTeX Table:  /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/table_rredondo_deepseek.tex
+   - Text Summary: /home/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/results/summary_rredondo_deepseek.txt
+================================================================================
