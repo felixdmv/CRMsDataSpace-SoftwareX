@@ -51,6 +51,9 @@ hilo_correos.txt
 iniciar_proyecto.ps1
 diagnose_cluster.py
 diagnose_gpu.sh
+# Local paper drafting and reference papers (not for code repository)
+manuscript/
+otros papers/
 SoftwareX/manuscript/Graphical_abstract_v3.png
 
 # Legacy code & local working directories
