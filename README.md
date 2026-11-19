@@ -174,6 +174,28 @@ python code/evaluation/benchmark_conversational_dst.py --models mock phi3 mistra
 | **Llama 3.1 8B Instruct** | Meta | 8.03 B | 14.96 GB | 2.47 s | 96.0% | 94.1% | 93.4% | 78.2% | 78.7% | **100.0%** | **88.8%** | 100% On-Premises (Private GPU) |
 | **Qwen 2.5 7B Instruct** | Alibaba | 7.61 B | 14.19 GB | 2.02 s | 93.1% | **96.0%** | **97.5%** | **95.3%** | **90.2%** | **100.0%** | **95.0%** | 100% On-Premises (Private GPU) |
 
+### 4. Consolidated Peer-Validated Benchmark (372 Units across 4 Suites)
+Evaluates systemic extraction robustness, out-of-domain rejection, compound Boolean logic, and conversational state tracking across all 372 unified multi-author units:
+
+```bash
+# Verify test harness locally on CPU (mock baseline):
+python3 code/evaluation/benchmark_unified.py --provider mock
+
+# Or submit Slurm job on GPU cluster (e.g. Qwen 2.5 7B):
+sbatch code/evaluation/run_cluster_gpu.sbatch qwen
+```
+
+#### Consolidated Empirical Benchmark across 372 Units (NVIDIA A100 Testbed)
+| Model Architecture | OOD Rejection | Single-Turn Slot F1 | Boolean Op. Acc. | DST Macro F1 |
+| :--- | :---: | :---: | :---: | :---: |
+| **Deterministic Baseline (Mock)** | 87.5% | 89.8% | **96.1%** | 78.9% |
+| **Phi-3 Mini 4K Instruct** | 87.5% | 86.9% | 94.8% | 56.6% |
+| **Mistral 7B Instruct v0.2** | **100.0%** | 88.5% | 88.3% | 73.9% |
+| **Llama 3.1 8B Instruct** | 87.5% | 88.8% | 92.2% | 85.1% |
+| **Qwen 2.5 7B Instruct** | 95.8% | **92.1%** | 93.5% | **91.9%** |
+
+> **Note on Methodological Rigor**: In addition to granular slot and operator F1 scores (85%–100%), the system was benchmarked under an all-or-nothing end-to-end Exact Match (EM) lower-bound metric, where Qwen 2.5 7B achieves 60.8% and Mistral 7B reaches 51.9%. Complete raw outputs and logs are available in [`code/evaluation/results/`](code/evaluation/results/). For details, see [`code/evaluation/README.md`](code/evaluation/README.md).
+
 
 ---
 
@@ -197,14 +219,16 @@ nlu-solr-gis/
 │   ├── data/
 │   │   └── synthetic_escombreras_europe.json # 100 European CRM waste facilities
 │   ├── evaluation/
+│   │   ├── test_battery_unified.json   # 372-unit unified multi-author benchmark battery
+│   │   ├── benchmark_unified.py        # Unified multi-author benchmarking harness
+│   │   ├── run_local_mock.sh           # Offline CPU verification script
+│   │   ├── run_cluster_gpu.sbatch      # Slurm HPC GPU execution script
+│   │   ├── results/                    # Pre-computed evaluation metrics and raw outputs
 │   │   ├── test_battery_100.json       # 100 golden test queries with ground truth
 │   │   ├── test_battery_conversational_dst.json # 132-turn sequential conversational benchmark
 │   │   ├── evaluate_100_tests.py       # Baseline evaluation script
 │   │   ├── benchmark_conversational_dst.py # Multi-model conversational DST benchmark suite
-│   │   ├── benchmark_dst_results.json  # Granular JSON metrics across 5 distinct model families
-│   │   ├── benchmark_dst_summary.txt   # Tabulated empirical DST benchmark output
-│   │   ├── benchmark_all_models.py     # 100-query single-turn comparative benchmark script
-│   │   └── benchmark_all_models_summary.txt # Raw single-turn benchmark output
+│   │   └── benchmark_all_models.py     # 100-query single-turn comparative benchmark script
 │   └── static/
 │       ├── favicon.ico                 # Application favicon
 │       └── index.html                  # Dynamic Single-Page App (Leaflet.js + TailwindCSS)

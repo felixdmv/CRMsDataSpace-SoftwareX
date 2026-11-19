@@ -98,7 +98,22 @@ Inside the web interface, click any of the preset test buttons or enter custom f
 
 ## 📊 Running Empirical Evaluations
 
-To reproduce the benchmark accuracy evaluation reported in the paper (Section 3, Table 4):
+### 1. Consolidated Multi-Author Benchmark (372 Units across 4 Suites)
+To reproduce the full-spectrum empirical evaluation (Section 3, Table 9) across Out-of-Domain Guardrails, Single-Turn Slot Filling, Boolean Summation, and Conversational DST:
+
+```bash
+cd evaluation
+# Run offline rule baseline harness on CPU:
+python benchmark_unified.py --provider mock
+
+# Or submit GPU evaluation on Slurm cluster:
+sbatch run_cluster_gpu.sbatch qwen
+```
+
+Pre-computed raw results across all models (Qwen, Mistral, Llama, Phi-3, Baseline) are available directly in `evaluation/results/`.
+
+### 2. Golden 100-Query Baseline Evaluation
+To reproduce the baseline single-turn extraction accuracy reported in the paper (Section 3, Table 5 & 6):
 
 ```bash
 cd evaluation
@@ -109,7 +124,7 @@ To run the comparative multi-model evaluation across local open-weight LLMs on G
 ```bash
 python benchmark_all_models.py
 ```
-This executes the automated test suite across 100 domain queries in `evaluation/test_battery_100.json`, verifying field-level precision, recall, and macro F1-score across all attributes.
+This executes the automated test suite across 100 domain queries in `evaluation/test_battery_100.json`.
 
 ---
 
@@ -120,6 +135,11 @@ nlu-solr-gis/
 ├── data/
 │   └── synthetic_escombreras_europe.json   # 100 Synthetic European facilities dataset
 ├── evaluation/
+│   ├── test_battery_unified.json           # 372-unit unified multi-author benchmark battery
+│   ├── benchmark_unified.py                # Unified benchmarking harness
+│   ├── run_local_mock.sh                   # Offline CPU verification script
+│   ├── run_cluster_gpu.sbatch              # Slurm HPC GPU execution script
+│   ├── results/                            # Pre-computed evaluation metrics and raw outputs
 │   ├── test_battery_100.json               # 100 Golden test queries with ground truth
 │   ├── evaluate_100_tests.py               # Benchmark execution & evaluation script
 │   └── benchmark_results_summary.txt       # Field-level accuracy results
