@@ -258,21 +258,9 @@ The package in [`template/`](template/) allows reviewers to evaluate the framewo
 
 ---
 
-## 📄 License & Citation
+## 📄 License
 
 This software is released under the **MIT License**. See [`LICENSE`](LICENSE) for complete details.
-
-If you find this software architecture or benchmark useful in your research, please cite our article:
-
-```bibtex
-@article{demiguel2026modular,
-  title={A Modular {NLU-Solr} Architecture with Dynamic {GIS} Visual Synchronization for Conversational Spatial Search},
-  author={de Miguel, F{\'e}lix and Manzanedo, Miguel and Redondo, Raquel and Krzemie{\'n}, Alicja and Basurto, Nu{\~n}o and Urda, Daniel},
-  journal={SoftwareX},
-  year={2026},
-  publisher={Elsevier}
-}
-```
 
 ---
 

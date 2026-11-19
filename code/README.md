@@ -19,7 +19,7 @@ Reference software implementation for the **SoftwareX** paper:
 - [Running Empirical Evaluations](#-running-empirical-evaluations)
 - [Repository Structure](#-repository-structure)
 - [Developer Guide & Domain Customization](#-developer-guide--domain-customization)
-- [License & Citation](#-license--citation)
+- [License](#-license)
 - [Acknowledgements](#-acknowledgements)
 
 ---
@@ -148,21 +148,9 @@ nlu-solr-gis/
 
 ---
 
-## 📄 License & Citation
+## 📄 License
 
 Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for complete terms.
-
-If you use this software architecture in your research, please cite our SoftwareX paper:
-
-```bibtex
-@article{demiguel2026modular,
-  title={A Modular {NLU-Solr} Architecture with Dynamic {GIS} Visual Synchronization for Conversational Spatial Search},
-  author={de Miguel, F{\'e}lix and Urda, Daniel and Basurto, Nu{\~n}o},
-  journal={SoftwareX},
-  year={2026},
-  publisher={Elsevier}
-}
-```
 
 ---
 
