@@ -1,0 +1,19 @@
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\caption{Consolidated empirical evaluation across the 372-unit unified multi-author benchmark on NVIDIA A100 testbed (FP16, greedy decoding) and deterministic CPU baseline.}
+\label{tab:unified_372_benchmark}
+\begin{tabularx}{\linewidth}{lcccccc}
+\toprule
+\textbf{Model Architecture} & \shortstack{\textbf{OOD}\\\textbf{Rej.}} & \shortstack{\textbf{Single}\\\textbf{Slot F1}} & \shortstack{\textbf{Boolean}\\\textbf{Op. Acc.}} & \shortstack{\textbf{DST}\\\textbf{Macro F1}} & \shortstack{\textbf{Strict}\\\textbf{EM Pass}} & \shortstack{\textbf{Mean}\\\textbf{Latency}} \\
+\midrule
+Deterministic Baseline (Mock) & 87.5\% & 89.8\% & \textbf{96.1\%} & 78.9\% & 56.5\% & \textbf{0.9 ms} \\
+Phi-3 Mini 4K (3.82B)          & 87.5\% & 86.9\% & 94.8\%          & 56.6\% & 40.9\% & 3.82 s \\
+Mistral 7B v0.2 (7.24B)        & \textbf{100.0\%} & 88.5\% & 88.3\% & 73.9\% & 51.9\% & 3.97 s \\
+Meta Llama 3.1 8B (8.03B)      & 87.5\% & 88.8\% & 92.2\%          & 85.1\% & 51.1\% & 3.03 s \\
+\textbf{Qwen 2.5 7B (7.61B)}   & 95.8\% & \textbf{92.1\%} & 93.5\% & \textbf{91.9\%} & \textbf{60.8\%} & \textbf{2.68 s} \\
+\bottomrule
+\multicolumn{7}{@{}p{\linewidth}@{}}{\footnotesize Note: \textit{Strict EM Pass} denotes end-to-end Exact Match requiring simultaneous 100\% agreement across intent, all entity slots, Solr document counts, and spatial boundaries. In contrast, granular extraction metrics (\textit{Slot F1}, \textit{DST Macro F1}) reflect high semantic robustness without conversational breakdown.}
+\end{tabularx}
+\end{table}

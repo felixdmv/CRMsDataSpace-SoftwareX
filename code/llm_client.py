@@ -35,6 +35,13 @@ def extract_json_block(text: str) -> Dict[str, Any]:
         return {}
     text = text.strip()
     
+    # Strip reasoning tags from models such as DeepSeek-R1
+    if "<think>" in text or "</think>" in text:
+        text = re.sub(r"<think>[\s\S]*?</think>", "", text).strip()
+        if "<think>" in text:
+            parts = text.split("</think>", 1)
+            text = parts[1].strip() if len(parts) > 1 else text
+    
     # 1. Direct full text parse
     try:
         return json.loads(text)
@@ -365,10 +372,14 @@ def call_local_gpu_model(
             if tid is not None and isinstance(tid, int) and tid > 0 and tid not in eos_ids:
                 eos_ids.append(tid)
 
+        # Allow higher token ceiling for reasoning models (e.g. DeepSeek-R1) emitting <think> tags
+        is_reasoning_model = any(k in prov for k in ["deepseek", "r1"])
+        max_gen_tokens = 768 if is_reasoning_model else 256
+
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
-                max_new_tokens=180,
+                max_new_tokens=max_gen_tokens,
                 do_sample=False,
                 pad_token_id=tokenizer.pad_token_id or tokenizer.eos_token_id,
                 eos_token_id=eos_ids if eos_ids else tokenizer.eos_token_id
@@ -376,6 +387,15 @@ def call_local_gpu_model(
             
         generated_tokens = outputs[0][inputs.input_ids.shape[1]:]
         response_text = tokenizer.decode(generated_tokens, skip_special_tokens=True).strip()
+        
+        # Post-process reasoning model outputs: strip <think>...</think> chain of thought
+        if "<think>" in response_text or "</think>" in response_text:
+            import re
+            response_text = re.sub(r'<think>[\s\S]*?</think>', '', response_text).strip()
+            if response_text.startswith("<think>"):
+                parts = response_text.split("</think>", 1)
+                response_text = parts[1].strip() if len(parts) > 1 else response_text
+
         return response_text
     except Exception as err:
         print(f"[LLM Client Warning] GPU Inference failed for model '{repo_id}': {err}. Using intelligent mock parser.")

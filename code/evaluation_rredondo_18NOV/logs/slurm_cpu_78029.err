@@ -1,3 +1,0 @@
-/home/ubu/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/benchmark_rredondo.py:545: SyntaxWarning: invalid escape sequence '\c'
-  \centering
-[ERROR] Test battery not found at /home/ubu/raquel.redondo/contenido_computo03/SoftwareX/evaluation_rredondo/test_battery_rredondo_2.json. Run scripts/generate_battery_rredondo.py first.

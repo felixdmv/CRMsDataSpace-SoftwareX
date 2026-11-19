@@ -398,10 +398,10 @@
               title="Execution Engine Mode"
             >
               <option value="rules">⚡ Deterministic Engine (Standalone / Zero-GPU)</option>
-              <option value="mistral">🇪🇺 Mistral 7B Instruct v0.2 (Local GPU)</option>
-              <option value="qwen">🚀 Qwen 2.5 7B (Local GPU)</option>
-              <option value="llama8b">🦙 Meta Llama 3.1 8B (Local GPU)</option>
-              <option value="phi3">🔬 Phi-3 Mini 4K (Local GPU)</option>
+              <option value="mistral" disabled class="text-slate-500 bg-slate-900 cursor-not-allowed">🔒 Mistral 7B Instruct v0.2 (HPC GPU Cluster only)</option>
+              <option value="qwen" disabled class="text-slate-500 bg-slate-900 cursor-not-allowed">🔒 Qwen 2.5 7B (HPC GPU Cluster only)</option>
+              <option value="llama8b" disabled class="text-slate-500 bg-slate-900 cursor-not-allowed">🔒 Meta Llama 3.1 8B (HPC GPU Cluster only)</option>
+              <option value="phi3" disabled class="text-slate-500 bg-slate-900 cursor-not-allowed">🔒 Phi-3 Mini 4K (HPC GPU Cluster only)</option>
               <option value="gemini">✨ Gemini 2.0 / 1.5 (Cloud API)</option>
               <option value="openai">🤖 OpenAI GPT-4o (Cloud API)</option>
               <option value="claude">🎭 Anthropic Claude 3.5 / 3.7 (Cloud API / Claude Code)</option>
@@ -4356,8 +4356,12 @@
     // ==========================================
     function changeLLMProvider(val) {
       if (['mistral', 'qwen', 'llama8b', 'phi3', 'gemma'].includes(val)) {
-        if (window.cudaAvailable === false) {
-          alert("Notice: No CUDA GPU detected on host. Running 7B+ local LLMs on CPU may be slow or exceed memory. The Deterministic Engine (Standalone) or Cloud APIs are recommended for CPU-only testing.");
+        if (!window.cudaAvailable) {
+          alert("Notice: Local open-weight LLMs (Mistral, Qwen, Llama, Phi-3) require an institutional NVIDIA GPU cluster (evaluated on NVIDIA A100 in our paper). In standalone CPU mode, please use the Deterministic Engine (Zero-GPU) or Cloud APIs (Gemini/OpenAI/Claude).");
+          const selectEl = document.getElementById('llm-provider-select');
+          if (selectEl) selectEl.value = 'rules';
+          setModelProvider('rules');
+          return;
         }
       }
       setModelProvider(val);
@@ -4615,6 +4619,24 @@
             textEl.className = 'text-emerald-400 font-mono text-[10px] font-semibold';
             if (barContainer) barContainer.style.display = 'none';
             if (purgeBtn) purgeBtn.style.display = 'none';
+          }
+
+          // Dynamically toggle GPU models availability in dropdown based on hardware
+          const selectEl = document.getElementById('llm-provider-select');
+          if (selectEl) {
+            const gpuOptions = ['mistral', 'qwen', 'llama8b', 'phi3'];
+            gpuOptions.forEach(optVal => {
+              const opt = selectEl.querySelector(`option[value="${optVal}"]`);
+              if (opt) {
+                if (data.cuda_available) {
+                  opt.disabled = false;
+                  opt.classList.remove('text-slate-500', 'bg-slate-900', 'cursor-not-allowed');
+                } else {
+                  opt.disabled = true;
+                  opt.classList.add('text-slate-500', 'bg-slate-900', 'cursor-not-allowed');
+                }
+              }
+            });
           }
         } catch (e) {
           // ignore network errors

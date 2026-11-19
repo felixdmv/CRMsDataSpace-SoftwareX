@@ -1,0 +1,48 @@
+================================================================================
+  SOFTWAREX UNIFIED BENCHMARK SUMMARY REPORT
+================================================================================
+  Model Provider:        MOCK (Deterministic Baseline (Mock))
+  Architecture/Params:   Rule-based (CPU Heuristics)
+  Execution Node:        Legion-7-Pro
+  VRAM Memory Footprint: 0.0 GB
+  Timestamp:             2026-11-19 14:09:44
+--------------------------------------------------------------------------------
+  1. Out-of-Domain Guardrails & Anti-Hallucination:
+     • Queries Evaluated:    25
+     • Rejection Accuracy:   87.5%
+     • Hallucination Rate:   12.0% (0.0% is optimal)
+     • Mean Latency:         0.9 ms
+--------------------------------------------------------------------------------
+  2. Single-Turn Queries & Slot Filling:
+     • Queries Evaluated:    114
+     • Accuracy Rate:        51.75%
+     • Mean Slot F1:         89.81%
+     • Mean Latency:         1.0 ms
+--------------------------------------------------------------------------------
+  3. Boolean Aggregation & Sum of Escombreras:
+     • Queries Evaluated:    77
+     • Pass Rate:            75.32%
+     • Operator Accuracy:    96.1% (AND/OR/COMPOUND)
+     • Count Accuracy:       100.0%
+     • Sum Match Rate:       100.0% (Disjunctive site count match)
+     • Mean Slot F1:         100.0%
+     • Mean Latency:         1.4 ms
+--------------------------------------------------------------------------------
+  4. Conversational Memory & Dialogue State Tracking (DST):
+     • Episodes / Turns:     36 episodes / 156 turns
+     • Turn Pass Rate:       48.08%
+     • Action Accuracy:      75.64%
+     • Exact State Match:    50.0%
+     • Episode Success Rate: 13.89% (100% flawless dialogue)
+     • Expansion Turn Rate: 36.84%
+     • Macro DST F1:         78.88%
+     • Mean Latency:         1.1 ms
+================================================================================
+  OVERALL BENCHMARK SCORE:   210/372 (56.5%)
+  CONSOLIDATED MEAN LATENCY: 1.1 ms
+================================================================================
+  Artifacts Saved:
+   - JSON Results: C:\Users\felix\OneDrive - Universidad de Burgos\Documentos\CRMsDataSpace\SoftwareX\code\evaluation\results\results_mock.json
+   - LaTeX Table:  C:\Users\felix\OneDrive - Universidad de Burgos\Documentos\CRMsDataSpace\SoftwareX\code\evaluation\results\table_mock.tex
+   - Text Summary: C:\Users\felix\OneDrive - Universidad de Burgos\Documentos\CRMsDataSpace\SoftwareX\code\evaluation\results\summary_mock.txt
+================================================================================
