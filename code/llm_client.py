@@ -139,9 +139,8 @@ MODEL_REPO_MAP = {
     "qwen": "Qwen/Qwen2.5-7B-Instruct",
     "qwen2.5": "Qwen/Qwen2.5-7B-Instruct",
     "qwen-7b": "Qwen/Qwen2.5-7B-Instruct",
-    "llama": "unsloth/Llama-3.2-3B-Instruct",
-    "llama3": "unsloth/Llama-3.2-3B-Instruct",
-    "llama-3.2": "unsloth/Llama-3.2-3B-Instruct",
+    "llama": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1", "unsloth/Meta-Llama-3.1-8B-Instruct"),
+    "llama3": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1", "unsloth/Meta-Llama-3.1-8B-Instruct"),
     "llama8b": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1", "unsloth/Meta-Llama-3.1-8B-Instruct"),
     "llama-8b": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1", "unsloth/Meta-Llama-3.1-8B-Instruct"),
     "llama3.1": _resolve_model_path("/home/felix.demiguel/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B-Instruct/snapshots/a2856192dd7c25b842431f39c179a6c2c2f627d1", "unsloth/Meta-Llama-3.1-8B-Instruct"),
@@ -252,7 +251,7 @@ def load_local_model_weights(provider: str) -> bool:
         MODEL_STATE["current_model"] = ""
         MODEL_STATE["repo_id"] = repo_id
         MODEL_STATE["error"] = "Gemma 2 2B requires a Hugging Face Token (HF_TOKEN) with accepted gated terms on Hugging Face."
-        MODEL_STATE["message"] = "Gemma 2 2B es un modelo protegido ('gated repo') por Google que requiere token HF. Por favor, utiliza Qwen 2.5 7B, Llama 3.2 3B o DeepSeek R1 7B que están preinstalados en la GPU."
+        MODEL_STATE["message"] = "Gemma 2 2B es un modelo protegido ('gated repo') por Google que requiere token HF. Por favor, utiliza Qwen 2.5 7B, Llama 3.1 8B o Mistral 7B que están preinstalados en la GPU."
         print(f"[LLM Client Warning] {MODEL_STATE['message']}")
         return False
 

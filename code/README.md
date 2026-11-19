@@ -79,7 +79,7 @@ The software is engineered for **immediate reviewer reproducibility**. No extern
 chmod +x run_gpu.sh
 ./run_gpu.sh 8081
 ```
-This requests 1x NVIDIA A100 via Slurm inside Apptainer, sets up a transparent TCP reverse proxy on the cluster login node, and enables local open-weight foundation models (Qwen 2.5 7B, Llama 3.2 3B, DeepSeek R1 7B, Phi-3 Mini 4K, Gemma 2 2B), enforcing 100% data sovereignty without external cloud dependencies.
+This requests 1x NVIDIA A100 via Slurm inside Apptainer, sets up a transparent TCP reverse proxy on the cluster login node, and enables local open-weight foundation models (Qwen 2.5 7B, Llama 3.1 8B, Mistral 7B, Phi-3 Mini 4K), enforcing 100% data sovereignty without external cloud dependencies.
 
 ---
 

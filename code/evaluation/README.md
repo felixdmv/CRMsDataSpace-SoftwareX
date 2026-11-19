@@ -32,7 +32,6 @@ Evaluations were performed on institutional HPC cluster nodes equipped with **NV
 | **Llama 3.1 8B Instruct** | 8.03B | 15.0 GB | 87.5% | 88.8% | 42.9% | 85.1% | 51.1% | 3.03 s |
 | **Deterministic Baseline (Mock)** | CPU Rules | 0.0 GB | 87.5% | 89.8% | **100.0%** | 78.9% | 56.5% | **0.9 ms** |
 | **Phi-3 Mini 4K Instruct** | 3.82B | 7.1 GB | 87.5% | 86.9% | 42.9% | 56.6% | 40.9% | 3.82 s |
-| *Llama 3.2 3B Instruct* | 3.21B | 6.0 GB | 91.7% | 80.5% | 28.6% | 77.5% | 42.5% | 2.62 s |
 
 ### 🔬 Methodological Note: Slot F1 vs. Strict End-to-End Exact Match (EM)
 

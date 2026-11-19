@@ -1,6 +1,6 @@
 """
 Comprehensive Evaluation Benchmark across Local GPU Models and Baseline:
-Compares Mock Baseline, Llama 3.2 3B, Phi-3 Mini 4K, Qwen 2.5 7B, and DeepSeek R1 7B
+Compares Mock Baseline, Llama 3.1 8B, Phi-3 Mini 4K, Qwen 2.5 7B, and DeepSeek R1 7B
 on NVIDIA A100-PCIE-40GB GPU across the 100-query test battery.
 Measures latency (ms), GPU VRAM memory footprint (GB), intent accuracy,
 field-level F1-scores, and overall filter match rate.

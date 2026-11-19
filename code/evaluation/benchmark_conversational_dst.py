@@ -44,8 +44,8 @@ MODEL_METADATA = {
         "sovereignty": "100% On-Premises (Air-gapped)"
     },
     "llama": {
-        "name": "Llama 3.2 3B Instruct",
-        "params": "3.21B",
+        "name": "Llama 3.1 8B Instruct",
+        "params": "8.03B",
         "precision": "FP16",
         "sovereignty": "100% On-Premises (Private GPU)"
     },
