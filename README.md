@@ -43,7 +43,7 @@ Additionally, to allow reviewers and developers to test the **generality and reu
 
 ## 🚀 Reviewer Access & Quick Start Guide
 
-Reviewers can access and evaluate the software through three complementary modalities:
+Reviewers can access and evaluate the software through two complementary modalities:
 
 ### Method 1: One-Click Cloud Execution (GitHub Codespaces)
 
@@ -56,8 +56,6 @@ Both web applications are automatically orchestrated in parallel in the backgrou
 - 🌍 **Port 8085**: **General GIS Template Sandbox** — Domain-agnostic sandbox with in-browser **Filter Studio** to create custom filters by hand and test framework generality.
 
 > **Note on Automatic Port Forwarding**: Ports `8080` and `8085` forward automatically upon container startup and will open in separate browser tabs.
->
-> **Note on Direct Web Access**: If you prefer an instant zero-editor web preview without VS Code, you can also explore the static deployment directly at: **[https://gicap-ubu.github.io/nlu-solr-gis/](https://gicap-ubu.github.io/nlu-solr-gis/)**.
 
 ---
 
@@ -221,8 +219,6 @@ nlu-solr-gis/
 │   └── static/
 │       ├── favicon.ico                 # App icon
 │       └── index.html                  # Reactive Leaflet GIS UI with Live Filter Studio
-├── docs/
-│   └── index.html                      # Standalone GitHub Pages web demonstrator
 ├── .gitignore                          # Git exclude rules
 ├── LICENSE                             # MIT Open-Source License
 ├── README.md                           # Main documentation & quickstart
